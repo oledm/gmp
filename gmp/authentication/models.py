@@ -10,8 +10,9 @@ class EmployeeManager(BaseUserManager):
 
         if not kwargs.get('username'):
             raise ValueError('Введите корректное имя пользователя')
+        if not kwargs.get('department'):
+            raise ValueError('Введите название отдела')
 
-        print('kwargs', kwargs)
         employee = self.model(
             email=self.normalize_email(email),
             username=kwargs.get('username'),
@@ -49,7 +50,7 @@ class Employee(AbstractBaseUser):
     last_name = models.CharField(max_length=40, blank=True)
 
     department = models.ForeignKey('Department', 
-        on_delete=models.CASCADE, related_name='department')
+        on_delete=models.CASCADE)
     phone = models.CharField(max_length=11, blank=True)
     birth_date = models.DateField(null=True)
 

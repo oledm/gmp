@@ -1,7 +1,9 @@
 from .permissions import IsEmployeeMatch
 from .models import Employee, Department
-from .serializers import EmployeeSerializer
+from .serializers import EmployeeSerializer, DepartmentSerializer
 from rest_framework import permissions, viewsets
+from rest_framework.response import Response
+from rest_framework import status
 
 class EmployeeViewset(viewsets.ModelViewSet):
     lookup_field = 'username'
@@ -19,17 +21,18 @@ class EmployeeViewset(viewsets.ModelViewSet):
 
     def create(self, request):
         data = request.data
-        print('Unvalidated data:', data)
+        dep_name = data['department']
 
         serializer = self.serializer_class(data=data)
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             print('Valid data:', serializer.validated_data)
-            Employee.objects.create_user(**serializer.validated_data)
+            Employee.objects.create_user(**serializer.validated_data, 
+                department=Department.objects.get(name=dep_name)
+            )
             print(len(Employee.objects.all()))
 
             return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
-
 
         return Response({
             'status': 'Bad request',

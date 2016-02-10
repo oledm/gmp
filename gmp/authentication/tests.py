@@ -106,7 +106,7 @@ class EmployeeSerializerTest(TestCase):
         now = timezone.now()
         self.userdata = dict(
             email='test@mail.ru', username='TestAdmin',
-            first_name='Имя', last_name='Фамилия', department='Тестовый отдел',
+            first_name='Имя', last_name='Фамилия', department=self.department.name,
             phone='79101234567', birth_date=now.date(),
             created_at=now, modified_at=now, is_admin=False
         )
