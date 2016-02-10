@@ -42,6 +42,11 @@ module.exports = function (grunt) {
           atBegin: true
         }
       },
+      python: {
+        files: ['<%= paths.app %>/**/*.py'],
+        tasks: ['bgShell:runTests'],
+
+      },
       livereload: {
         files: [
           '<%= paths.js %>/**/*.js',
@@ -112,13 +117,17 @@ module.exports = function (grunt) {
       runDjango: {
         cmd: 'python <%= paths.manageScript %> runserver'
       },
+      runTests: {
+        cmd: 'python <%= paths.manageScript %> test gmp.authentication',
+        bg: false
+      }
       
     }
   });
 
   grunt.registerTask('serve', [
-    
     'bgShell:runDjango',
+    'bgShell:runTests',
     'watch'
   ]);
 

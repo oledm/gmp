@@ -1,7 +1,7 @@
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 class EmployeeManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
@@ -35,17 +35,21 @@ class Department(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Employee(AbstractBaseUser):
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(blank=True, unique=True)
     username = models.CharField(max_length=40, unique=True)
 
     first_name = models.CharField(max_length=40, blank=True)
     last_name = models.CharField(max_length=40, blank=True)
 
-    department = models.ForeignKey('Department')
-    phone = models.CharField(max_length=10, blank=True)
+    department = models.ForeignKey('Department', 
+        on_delete=models.CASCADE)
+    phone = models.CharField(max_length=11, blank=True)
     birth_date = models.DateField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -66,3 +70,11 @@ class Employee(AbstractBaseUser):
 
     def get_short_name(self):
         return self.first_name
+
+    def save(self, *args, **kwargs):
+        self.email = self.email.lower().strip()
+        if self.email != "": 
+            validate_email(self.email)
+        else:
+            raise ValidationError('Введите корректный email.') 
+        super(Employee, self).save(*args, **kwargs)
