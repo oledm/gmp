@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 from rest_framework.renderers import JSONRenderer
+from rest_framework.test import APIClient
 
 from gmp.authentication.models import Employee, Department
 from gmp.authentication.serializers import EmployeeSerializer
@@ -98,24 +99,33 @@ class EmployeeTest(TestCase):
             employee.email = self.email2
             employee.save()
 
-#class EmployeeSerializerTest(TestCase):
-#    def setUp(self):
-#        self.department = Department.objects.create(name='Тестовый отдел')
-#        now = timezone.now()
-#        self.userdata = dict(
-#            email='test@mail.ru', username='TestAdmin',
-#            first_name='Имя', last_name='Фамилия', department=self.department,
-#            phone='79101234567', birth_date=now.date(),
-#            created_at=now, modified_at=now, is_admin=False
-#        )
-#
-#    def test_serialize_correctly(self):
-#        employee = Employee.objects.create(**self.userdata)
-#        serializer = EmployeeSerializer(employee)
-#        serializer.is_valid()
-#        print('SERIALIZED:', serializer.data)
-#        print('SERIALIZED VALIDATED:', serializer.validated_data)
-#        #print('SERIALIZED JSON:', JSONRenderer().render(self.userdata))
-#        print('GENERIC:', self.userdata)
-#        self.assertDictEqual(self.userdata, serialized_data.data)
-#
+class EmployeeSerializerTest(TestCase):
+    def setUp(self):
+        self.department = Department.objects.create(name='Тестовый отдел')
+        #print('ОТДЕЛ:', str(self.department))
+        now = timezone.now()
+        self.userdata = dict(
+            email='test@mail.ru', username='TestAdmin',
+            first_name='Имя', last_name='Фамилия', department='Тестовый отдел',
+            phone='79101234567', birth_date=now.date(),
+            created_at=now, modified_at=now, is_admin=False
+        )
+    def test_post(self):
+        client = APIClient()
+        client.post('/api/user/', self.userdata)
+        response = client.get('/api/user/')
+        print(response.content)
+
+    #def test_serialize_correctly(self):
+    #    Employee.objects.create(**self.userdata)
+    #    response = self.client.get('/api/user/')
+    #    self.assertEquals(response.status_code, 200)
+    #    print(response.content)
+    #    serializer = EmployeeSerializer(data=response.content)
+    #    serializer.is_valid()
+    #    print('SERIALIZED:', serializer.data)
+    #    #print('SERIALIZED VALIDATED:', serializer.validated_data)
+    #    ##print('SERIALIZED JSON:', JSONRenderer().render(self.userdata))
+    #    #print('GENERIC:', self.userdata)
+
+    #    ##self.assertDictEqual(self.userdata, serialized_data.data)

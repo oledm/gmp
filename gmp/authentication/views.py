@@ -1,5 +1,5 @@
-from .permissions import IsEmployeeIdent
-from .models import Employee
+from .permissions import IsEmployeeMatch
+from .models import Employee, Department
 from .serializers import EmployeeSerializer
 from rest_framework import permissions, viewsets
 
@@ -15,15 +15,21 @@ class EmployeeViewset(viewsets.ModelViewSet):
         if self.request.method == 'POST':
             return (permissions.AllowAny(),)
 
-        return (permissions.IsAuthenticated(), IsEmployeeIdent(),)
+        return (permissions.IsAuthenticated(), IsEmployeeMatch(),)
 
     def create(self, request):
-        serializer = self.serializer_class(data=request.data)
+        data = request.data
+        print('Unvalidated data:', data)
+
+        serializer = self.serializer_class(data=data)
 
         if serializer.is_valid():
+            print('Valid data:', serializer.validated_data)
             Employee.objects.create_user(**serializer.validated_data)
+            print(len(Employee.objects.all()))
 
             return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+
 
         return Response({
             'status': 'Bad request',

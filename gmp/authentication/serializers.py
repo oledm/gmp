@@ -18,6 +18,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'modified_at',)
 
         def create(self, validated_data):
+            print('from create:', validated_data)
             return Employee.objects.create(**validated_data)
 
 
