@@ -1,15 +1,15 @@
-from django.test import TestCase
 from django.db.utils import IntegrityError
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 from rest_framework.renderers import JSONRenderer
-from rest_framework.test import APIClient
+from rest_framework.test import APITestCase
+from rest_framework import status
 
 from gmp.authentication.models import Employee, Department
 from gmp.authentication.serializers import EmployeeSerializer
 
-class EmployeeTest(TestCase):
+class EmployeeTest(APITestCase):
     def setUp(self):
         self.department = Department.objects.create(name='Тестовый отдел')
         self.email = 'test@mail.ru'
@@ -99,33 +99,35 @@ class EmployeeTest(TestCase):
             employee.email = self.email2
             employee.save()
 
-class EmployeeSerializerTest(TestCase):
+class EmployeeCreateTest(APITestCase):
     def setUp(self):
         self.department = Department.objects.create(name='Тестовый отдел')
-        #print('ОТДЕЛ:', str(self.department))
         now = timezone.now()
-        self.userdata = dict(
+        self.full_user_data = dict(
             email='test@mail.ru', username='TestAdmin',
             first_name='Имя', last_name='Фамилия', department=self.department.name,
-            phone='79101234567', birth_date=now.date(),
-            created_at=now, modified_at=now, is_admin=False
+            phone='79101234567', birth_date=now.date(), is_admin=False
         )
-    def test_post(self):
-        client = APIClient()
-        client.post('/api/user/', self.userdata)
-        response = client.get('/api/user/')
-        print(response.content)
+        self.required_user_data = dict(
+            email='test@mail.ru', username='TestAdmin',
+            department=self.department.name,
+            is_admin=False # это необязательно. Но т.к. у is_admin есть
+            # default-значение, то, пропустив данный ключ, словари с
+            # исходными данными и с ответом не совпадут.
+        )
 
-    #def test_serialize_correctly(self):
-    #    Employee.objects.create(**self.userdata)
-    #    response = self.client.get('/api/user/')
-    #    self.assertEquals(response.status_code, 200)
-    #    print(response.content)
-    #    serializer = EmployeeSerializer(data=response.content)
-    #    serializer.is_valid()
-    #    print('SERIALIZED:', serializer.data)
-    #    #print('SERIALIZED VALIDATED:', serializer.validated_data)
-    #    ##print('SERIALIZED JSON:', JSONRenderer().render(self.userdata))
-    #    #print('GENERIC:', self.userdata)
+    def test_post_all_user_data(self):
+        response = self.client.post('/api/user/', self.full_user_data)
+        self.assertEqual(dict(response.data), self.full_user_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    #    ##self.assertDictEqual(self.userdata, serialized_data.data)
+    def test_post_required_user_data(self):
+        response = self.client.post('/api/user/', self.required_user_data)
+        self.assertEqual(dict(response.data), self.required_user_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_post_admin_data(self):
+        self.required_user_data.update({'is_admin': True})
+        response = self.client.post('/api/user/', self.required_user_data)
+        self.assertEqual(dict(response.data), self.required_user_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

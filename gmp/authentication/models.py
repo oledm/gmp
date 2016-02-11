@@ -7,18 +7,12 @@ class EmployeeManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
         if not email:
             raise ValueError('Введите корректный email.')
-
         if not kwargs.get('username'):
             raise ValueError('Введите корректное имя пользователя')
         if not kwargs.get('department'):
             raise ValueError('Введите название отдела')
 
-        employee = self.model(
-            email=self.normalize_email(email),
-            username=kwargs.get('username'),
-            department=kwargs.get('department')
-        )
-
+        employee = self.model(email=self.normalize_email(email), **kwargs)
         employee.set_password(password)
         employee.save()
 
