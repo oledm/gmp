@@ -40,6 +40,7 @@ THIRD_PARTY_APPS = (
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
     'rest_framework',
+    'djangobower',
 )
 
 # Apps specific for this project go here.
@@ -185,7 +186,20 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
 )
+
+BOWER_COMPONENTS_ROOT = str(APPS_DIR.path('bower_components'))
+BOWER_PATH = '/usr/bin/bower'
+BOWER_INSTALLED_APPS = ( 
+    'angular#1.5.0',
+    'angular-i18n#1.5.0',
+    'angular-ui-router#0.2.18',
+    #'angular-material',
+    'angular-resource#1.5.0',
+    #'angular-material-data-table',
+)
+
 
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------

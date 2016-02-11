@@ -1,5 +1,5 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
-<html lang="en" ng-app>
+<html lang="en" ng-app='gmp'>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -24,7 +24,13 @@
     {% endblock %}
 
     {% block angular %}
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+    <script src="{% static 'angular/angular.min.js' %}"></script>
+    <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
+    <script src="{% static 'js/gmp.js' %}"></script>
+    <script src="{% static 'js/gmp.routes.js' %}"></script>
+    <script src="{% static 'js/authentication/authentication.module.js' %}"></script>
+    <script src="{% static 'js/authentication/controllers/register.controller.js' %}"></script>
+    <script src="{% static 'js/authentication/services/authentication.service.js' %}"></script>
     {% endblock %}
 
   </head>
