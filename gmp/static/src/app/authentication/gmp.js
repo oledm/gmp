@@ -1,8 +1,8 @@
-'use strict';
-
 (function() {
+    'use strict';
+
     angular.module('gmp', [
-        'ui.router',
+        'ui.router'
     ])
         .config(['$stateProvider', '$urlRouterProvider', 
                 function($stateProvider, $urlRouterProvider) {
@@ -18,8 +18,6 @@
         }])
         .factory('Authentication', ['$http', 
             function($http) {
-                return {register: register};
-
                 function register(email, username, password, department) {
                     return $http.post('/api/user/', {
                         email: email,
@@ -28,6 +26,8 @@
                         department: department
                     });
                 }
+
+                return {register: register};
             }
         ])
         .controller('RegisterController', ['$scope', 'Authentication',

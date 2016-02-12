@@ -20,7 +20,7 @@ module.exports = function (grunt) {
       sass: this.app + '/static/sass',
       fonts: this.app + '/static/fonts',
       images: this.app + '/static/images',
-      js: this.app + '/static/js',
+      js: this.app + '/static/src',
       manageScript: 'manage.py',
     }
   };
@@ -46,6 +46,10 @@ module.exports = function (grunt) {
         files: ['<%= paths.app %>/**/*.py'],
         tasks: ['bgShell:runTests'],
 
+      },
+      js: {
+        files: ['<%= paths.js %>/**/*.js'],
+        tasks: ['eslint']
       },
       livereload: {
         files: [
@@ -122,7 +126,12 @@ module.exports = function (grunt) {
         bg: false
       }
       
-    }
+    },
+
+    eslint: {
+        src: ['<%= paths.js %>/**/*.js']
+    },
+
   });
 
   grunt.registerTask('serve', [
@@ -131,8 +140,10 @@ module.exports = function (grunt) {
     'watch'
   ]);
 
+
   grunt.registerTask('build', [
     'sass:dist',
+    'eslint',
     'postcss'
   ]);
 
