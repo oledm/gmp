@@ -10,7 +10,7 @@
 
     <md-input-container class="md-block" flex-gt-sm>
       <label>Имя пользователя</label>
-      <input md-maxlength="30" required name="name" ng-model="vm.name" />
+      <input md-maxlength="50" required name="name" ng-model="vm.name" />
       <div ng-messages="userForm.name.$error">
         <div ng-message="required">Обязательное поле</div>
         <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
@@ -19,14 +19,26 @@
 
     <md-input-container class="md-block" flex-gt-sm>
       <label>E-mail</label>
-      <input md-maxlength="30" required name="email" ng-model="vm.email" />
+      <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
       <div ng-messages="userForm.email.$error">
+        <div ng-message="required">Обязательное поле</div>
+        <div ng-message="email">Некорректно указан email</div>
+        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+      </div>
+    </md-input-container>
+
+    <md-input-container class="md-block" flex-gt-sm>
+      <label>Отдел</label>
+        <md-select required name="department" placeholder="Отдел" ng-model="vm.department">
+            <md-option ng-repeat="d in vm.deps">{{ d }}</md-option>
+        </md-select>
+      <div ng-messages="userForm.department.$error">
         <div ng-message="required">Обязательное поле</div>
         <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
       </div>
     </md-input-container>
 
-      <md-button class="md-raised" ng-click="vm.send();"> Отправить </md-button>
+      <md-button class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.send();"> Отправить </md-button>
     </md-card-actions>
   </md-card>
   </form>

@@ -1,9 +1,13 @@
 from .permissions import IsEmployeeMatch
 from .models import Employee, Department
-from .serializers import EmployeeSerializer
-from rest_framework import permissions, viewsets
+from .serializers import EmployeeSerializer, DepartmentSerializer
+from rest_framework import permissions, viewsets, generics
 from rest_framework.response import Response
 from rest_framework import status
+
+class DepartmentList(generics.ListAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
 
 class EmployeeViewset(viewsets.ModelViewSet):
     lookup_field = 'username'

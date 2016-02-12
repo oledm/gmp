@@ -35,10 +35,14 @@
         .controller('RegisterController', ['$scope', 'Authentication',
             function($scope, Authentication) {
                 var vm = this;
-                vm.test = 'Angular data';
-                Authentication.register('masdar@list.ru', 'AngularUser', 'ssss', 'Первый отдел');
+                vm.deps = ['Первый отдел', 'Второй отдел'];
+
+                vm.loadDeps = function() {
+
+                };
+
                 vm.send = function() {
-                    console.log('Отправляем ' + vm.email + ' ' + vm.name);
+                    Authentication.register(vm.email, vm.name, 'ssss', vm.department);
                 };
             }
         ]);

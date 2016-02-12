@@ -15,6 +15,7 @@ from gmp.authentication import views
 
 router = routers.SimpleRouter()
 router.register('user', views.EmployeeViewset)
+#router.register('department', views.)
 
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
     url(r'^api/', include(router.urls)),
+    url(r'^api/department', views.DepartmentList.as_view()),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
