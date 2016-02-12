@@ -4,7 +4,7 @@
 {% block angular %}
     <script src="{% static 'angular/angular.js' %}"></script>
     <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
-    <script src="{% static 'js/gmpnew.js' %}"></script>
+    <script src="{% static 'src/app/authentication/gmpnew.js' %}"></script>
     <!-- 
         <script src="{% static 'angular-cookies/angular-cookies.min.js' %}"></script>
         <script src="{% static 'js/gmp.js' %}"></script>
@@ -16,10 +16,12 @@
 {% endblock %}
 
 {% block javascript  %}
+{% if debug %}
+    <script src="//localhost:35729/livereload.js"></script>
+{% endif %}
 {% endblock %}
 
 
 {% block content %}
-DFDDDDDDDDDDDDDDDd
 <div ui-view></div>
 {% endblock %}

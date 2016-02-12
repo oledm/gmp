@@ -189,7 +189,7 @@ STATICFILES_FINDERS = (
     'djangobower.finders.BowerFinder',
 )
 
-BOWER_COMPONENTS_ROOT = str(APPS_DIR.path('bower_components'))
+BOWER_COMPONENTS_ROOT = str(APPS_DIR.path('static/vendor'))
 BOWER_PATH = '/usr/bin/bower'
 BOWER_INSTALLED_APPS = ( 
     'angular#1.5.0',
