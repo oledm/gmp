@@ -2,7 +2,9 @@
     'use strict';
 
     angular.module('gmp', [
-        'ui.router'
+        'ui.router',
+	'ngMaterial',
+        'ngMessages'
     ])
         .config(['$stateProvider', '$urlRouterProvider', 
                 function($stateProvider, $urlRouterProvider) {
@@ -35,6 +37,9 @@
                 var vm = this;
                 vm.test = 'Angular data';
                 Authentication.register('masdar@list.ru', 'AngularUser', 'ssss', 'Первый отдел');
+                vm.send = function() {
+                    console.log('Отправляем ' + vm.email + ' ' + vm.name);
+                };
             }
         ]);
 })();

@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% load staticfiles i18n %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'angular-material/angular-material.css' %}">
+<link rel="stylesheet" href="{% static 'src/assets/app.css' %}">
+{% endblock %}
+
 {% block angular %}
     <script src="{% static 'angular/angular.js' %}"></script>
+    <script src="{% static 'angular-aria/angular-aria.js' %}"></script>
+    <script src="{% static 'angular-animate/angular-animate.js' %}"></script>
+    <script src="{% static 'angular-messages/angular-messages.js' %}"></script>
+    <script src="{% static 'angular-material/angular-material.min.js' %}"></script>
     <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
-    <script src="{% static 'src/app/authentication/gmpnew.js' %}"></script>
-    <!-- 
-        <script src="{% static 'angular-cookies/angular-cookies.min.js' %}"></script>
-        <script src="{% static 'js/gmp.js' %}"></script>
-        <script src="{% static 'js/gmp.routes.js' %}"></script>
-        <script src="{% static 'js/authentication/authentication.module.js' %}"></script>
-        <script src="{% static 'js/authentication/controllers/register.controller.js' %}"></script>
-        <script src="{% static 'js/authentication/services/authentication.service.js' %}"></script>
-     -->
+    <script src="{% static 'src/app/authentication/gmp.js' %}"></script>
 {% endblock %}
 
 {% block javascript  %}
@@ -23,5 +24,27 @@
 
 
 {% block content %}
-<div ui-view></div>
+     <md-toolbar class="md-whiteframe-z2 md-toolbar-tools md-scroll-shrink" layout-align="start center" flex>
+      <h1 class="md-title">Главная</h1>
+     </md-toolbar>
+
+   <!-- 
+<md-card layout="column" layout-padding>
+      <md-content  class="md-padding">
+        <md-tabs  md-dynamic-height md-border-bottom>
+          <md-tab label="Заказы">
+              <div ui-view></div>
+          </md-tab>
+          <md-tab label="Клиенты">
+            <md-content class="md-padding">
+              <h1 class="md-display-2">Tab Two</h1>
+              <p>Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo lectus.</p>
+            </md-content>
+          </md-tab>
+        </md-tabs>
+      </md-content>
+  </md-card> -->
+
+
+              <div ui-view></div>
 {% endblock %}

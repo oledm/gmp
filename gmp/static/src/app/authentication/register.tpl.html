@@ -1,1 +1,33 @@
-<div>{{ vm.test }}</div>
+<div class="md-padding" ng-cloak layout="row" layout-align="center center">
+  <form name="userForm" flex-xs flex-gt-xs="40" >
+    <md-card class="md-padding" layout-xs="column" layout="column">
+    <md-card-title>
+      <md-card-title-text>
+        <span class="md-headline" layout="row" layout-align="center center">Регистрация нового пользователя</span>
+      </md-card-title-text>
+    </md-card-title>
+    <md-card-actions layout="column" layout-align="center center">
+
+    <md-input-container class="md-block" flex-gt-sm>
+      <label>Имя пользователя</label>
+      <input md-maxlength="30" required name="name" ng-model="vm.name" />
+      <div ng-messages="userForm.name.$error">
+        <div ng-message="required">Обязательное поле</div>
+        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+      </div>
+    </md-input-container>
+
+    <md-input-container class="md-block" flex-gt-sm>
+      <label>E-mail</label>
+      <input md-maxlength="30" required name="email" ng-model="vm.email" />
+      <div ng-messages="userForm.email.$error">
+        <div ng-message="required">Обязательное поле</div>
+        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+      </div>
+    </md-input-container>
+
+      <md-button class="md-raised" ng-click="vm.send();"> Отправить </md-button>
+    </md-card-actions>
+  </md-card>
+  </form>
+</div>
