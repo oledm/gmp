@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+
+{% block angular %}
+    <script src="{% static 'angular/angular.js' %}"></script>
+    <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
+    <script src="{% static 'js/gmpnew.js' %}"></script>
+    <!-- 
+        <script src="{% static 'angular-cookies/angular-cookies.min.js' %}"></script>
+        <script src="{% static 'js/gmp.js' %}"></script>
+        <script src="{% static 'js/gmp.routes.js' %}"></script>
+        <script src="{% static 'js/authentication/authentication.module.js' %}"></script>
+        <script src="{% static 'js/authentication/controllers/register.controller.js' %}"></script>
+        <script src="{% static 'js/authentication/services/authentication.service.js' %}"></script>
+     -->
+{% endblock %}
+
+{% block javascript  %}
+{% endblock %}
+
+
+{% block content %}
+DFDDDDDDDDDDDDDDDd
+<div ui-view></div>
+{% endblock %}
