@@ -2,6 +2,7 @@
 {% load staticfiles i18n %}
 
 {% block css %}
+<base href="/">
 <link rel="stylesheet" href="{% static 'angular-material/angular-material.css' %}">
 <link rel="stylesheet" href="{% static 'src/assets/app.css' %}">
 {% endblock %}
@@ -11,6 +12,7 @@
     <script src="{% static 'angular-aria/angular-aria.js' %}"></script>
     <script src="{% static 'angular-animate/angular-animate.js' %}"></script>
     <script src="{% static 'angular-messages/angular-messages.js' %}"></script>
+    <script src="{% static 'angular-resource/angular-resource.js' %}"></script>
     <script src="{% static 'angular-material/angular-material.min.js' %}"></script>
     <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
     <script src="{% static 'src/app/authentication/gmp.js' %}"></script>

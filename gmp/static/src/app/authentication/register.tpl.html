@@ -29,8 +29,8 @@
 
     <md-input-container class="md-block" flex-gt-sm>
       <label>Отдел</label>
-        <md-select required name="department" placeholder="Отдел" ng-model="vm.department">
-            <md-option ng-repeat="d in vm.deps">{{ d }}</md-option>
+        <md-select required name="department" placeholder="Отдел" md-on-open="vm.loadDeps()" ng-model="vm.department">
+            <md-option ng-repeat="d in vm.allDeps | orderBy: 'name'">{{ d.name }}</md-option>
         </md-select>
       <div ng-messages="userForm.department.$error">
         <div ng-message="required">Обязательное поле</div>

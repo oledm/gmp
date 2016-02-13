@@ -4,7 +4,8 @@
     angular.module('gmp', [
         'ui.router',
 	'ngMaterial',
-        'ngMessages'
+        'ngMessages',
+        'ngResource'
     ])
         .config(['$stateProvider', '$urlRouterProvider', 
                 function($stateProvider, $urlRouterProvider) {
@@ -18,31 +19,50 @@
             );
             $urlRouterProvider.otherwise('/');
         }])
-        .factory('Authentication', ['$http', 
-            function($http) {
-                function register(email, username, password, department) {
-                    return $http.post('/api/user/', {
-                        email: email,
-                        username: username,
-                        password: password,
-                        department: department
-                    });
-                }
-
-                return {register: register};
+        .config(['$mdThemingProvider',
+                function($mdThemingProvider) {
+            $mdThemingProvider.theme('default')
+                .primaryPalette('blue');
+        }])
+        .config(['$resourceProvider', function($resourceProvider) {
+            $resourceProvider.defaults.stripTrailingSlashes = false;
+        }])
+        .config(['$locationProvider', function($locationProvider) {
+            $locationProvider.html5Mode(true);
+            $locationProvider.hashPrefix('!');
+        }])
+        .run(['$http', function($http) {
+            $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+            $http.defaults.xsrfCookieName = 'csrftoken';
+        }])
+        .factory('Authentication', ['$resource',
+            function($resource) {
+                return $resource('/api/user/');
             }
         ])
-        .controller('RegisterController', ['$scope', 'Authentication',
-            function($scope, Authentication) {
+        .factory('Department', ['$resource',
+            function($resource) {
+                return $resource('/api/department/');
+            }
+        ])
+        .controller('RegisterController', ['$scope', 'Authentication', 'Department',
+            function($scope, Authentication, Department) {
                 var vm = this;
-                vm.deps = ['Первый отдел', 'Второй отдел'];
 
                 vm.loadDeps = function() {
+                    Department.query(function(data) {
+                        vm.allDeps = data;
+                    });
 
                 };
 
                 vm.send = function() {
-                    Authentication.register(vm.email, vm.name, 'ssss', vm.department);
+                    Authentication.save({
+                        email: vm.email,
+                        username: vm.name,
+                        password: 'ssss',
+                        department: vm.department
+                    });
                 };
             }
         ]);
