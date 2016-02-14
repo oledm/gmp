@@ -13,19 +13,23 @@
             $stateProvider
                 .state('home', {
                     url: '/',
+                    templateUrl: '/static/src/app/authentication/login_register.tpl.html',
+                    controller: function($state) {
+                        $state.transitionTo('home.login');
+                    }
+                })
+                .state('home.register', {
                     controller: 'RegisterController',
                     controllerAs: 'vm',
                     templateUrl: '/static/src/app/authentication/register.tpl.html'
                 })
+                .state('home.login', {
+                    controller: 'LoginController',
+                    controllerAs: 'vm',
+                    templateUrl: '/static/src/app/authentication/login.tpl.html'
+                })
                 .state('account', {
-                    url: '/account',
-                    template: 'My personal cabinet'
-                })
-                .state('tab1', {
-                    template: 'TAB1'
-                })
-                .state('tab2', {
-                    template: 'TAB2'
+                    template: 'Личная страница пользователя'
                 });
             $urlRouterProvider.otherwise('/');
         }])
@@ -73,8 +77,8 @@
 
                 function login(email, password) {
                     return $http.post('/api/login/', {
-                        email: 'masdar@list.ru',
-                        password: 'ssss'
+                        email: email,
+                        password: password
                     }).then(loginSuccess, loginFail);
                 }
 
@@ -83,9 +87,8 @@
                     $state.go('account');
                 }
 
-
                 function loginFail(response) {
-                    console.log('Login failed!!!!!')
+                    console.log('Login failed')
                 }
 
                 function getAuthenticatedAccount() {
@@ -114,6 +117,16 @@
                 return $resource('/api/department/');
             }
         ])
+        .controller('LoginController', ['$scope', 'Authentication', '$state',
+            function($scope, Authentication, $state) {
+                var vm = this;
+
+                vm.login = function() {
+                    Authentication.login(vm.email, vm.password);
+                    $state.go('account');
+                }
+            }
+        ])
         .controller('RegisterController', ['$scope', 'Authentication', 'Department',
             function($scope, Authentication, Department) {
                 var vm = this;
@@ -125,21 +138,18 @@
 
                 };
 
-                vm.login = function() {
-                    Authentication.login({
-                        email: 'masdar@list.ru',
-                        password: 'ssss'
-                    });
+                vm.register = function() {
+                    Authentication.register(vm.email, vm.name, 'ssss', vm.department)
+                        .then(registerSuccess, registerFail);
                 };
 
-                vm.register = function() {
-                    Authentication.register({
-                        email: vm.email,
-                        username: vm.name,
-                        password: 'ssss',
-                        department: vm.department
-                    });
-                };
+                function registerSuccess() {
+                    Authentication.login(vm.email, 'ssss');
+                }
+
+                function registerFail() {
+                    console.log('Registration failed')
+                }
             }
         ]);
 })();
