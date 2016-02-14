@@ -29,7 +29,7 @@ describe('GMP homepage', function() {
     element.all(by.css('md-select')).each(function (eachElement, index) {
         eachElement.click(); // select the
         browser.waitForAngular(); // wait for the renderings to take effect
-        element(by.css(‘md-option’)).click(); // select the first md-option
+        element(by.css('md-option')).click(); // select the first md-option
         browser.waitForAngular(); // wait for the renderings to take effect
     });
     });

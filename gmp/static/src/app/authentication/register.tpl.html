@@ -1,11 +1,8 @@
 <div class="md-padding" ng-cloak layout="row" layout-align="center center">
   <form name="userForm" flex-xs flex-gt-xs="40" >
     <md-card class="md-padding" layout-xs="column" layout="column">
-    <md-card-title>
-      <md-card-title-text>
-        <span class="md-headline" layout="row" layout-align="center center">Регистрация нового пользователя</span>
-      </md-card-title-text>
-    </md-card-title>
+        <md-tabs  md-dynamic-height md-border-bottom>
+          <md-tab ui-sref="tab1" label="Регистрация">
     <md-card-actions layout="column" layout-align="center center">
 
     <md-input-container class="md-block" flex-gt-sm>
@@ -38,8 +35,17 @@
       </div>
     </md-input-container>
 
-      <md-button class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.send();"> Отправить </md-button>
+      <md-button class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.register();"> Отправить </md-button>
+      <md-button class="md-raised" ng-click="vm.login();"> Войти </md-button>
+
     </md-card-actions>
+
+          </md-tab>
+          <md-tab ui-sref="tab1" label="Вход">
+          </md-tab>
+      </md-tabs>
+
   </md-card>
   </form>
+
 </div>

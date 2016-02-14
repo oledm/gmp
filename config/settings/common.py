@@ -198,6 +198,7 @@ BOWER_INSTALLED_APPS = (
     'angular-ui-router#0.2.18',
     'angular-cookies',
     'angular-material',
+    'angular-cookies',
     #'angular-material-data-table',
 )
 

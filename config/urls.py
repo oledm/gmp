@@ -32,6 +32,7 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
     url(r'^api/', include(router.urls)),
     url(r'^api/department', views.DepartmentList.as_view()),
+    url(r'^api/login', views.LoginView.as_view(), name='login'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
