@@ -93,7 +93,6 @@
                 }
 
                 function register(email, username, password, department) {
-                    console.log('register ' + email + ' ' + username + ' ' + password + ' ' + department);
                     return $http.post('/api/user/', {
                         email: email,
                         username: username,
@@ -173,9 +172,12 @@
                 var vm = this;
 
                 vm.logout = function() {
-                    console.log('logout');
                     Authentication.logout();
-                }
+                };
+
+                vm.isAuthenticated = function() {
+                    return Authentication.isAuthenticated();
+                };
             }
         ])
         .controller('RegisterController', ['$scope', 'Authentication', 'Department',
