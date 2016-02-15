@@ -8,14 +8,14 @@
         'ngResource',
         'ngCookies'
     ])
-        .config(['$stateProvider', '$urlRouterProvider', 
+        .config(['$stateProvider', '$urlRouterProvider',
                 function($stateProvider, $urlRouterProvider) {
             $stateProvider
                 .state('gmp', {
                     abstract: true,
                     controller: 'ToolbarController',
                     controllerAs: 'vm',
-                    templateUrl: '/static/src/app/authentication/toolbar.tpl.html',
+                    templateUrl: '/static/src/app/authentication/toolbar.tpl.html'
                 })
                 .state('gmp.home', {
                     url: '/',
@@ -53,7 +53,7 @@
             $locationProvider.html5Mode(true);
             $locationProvider.hashPrefix('!');
         }])
-        .run(['$http', 
+        .run(['$http',
              function($http) {
             $http.defaults.xsrfHeaderName = 'X-CSRFToken';
             $http.defaults.xsrfCookieName = 'csrftoken';
@@ -74,10 +74,10 @@
 
                 function getAuthenticatedAccount() {
                     if ($cookies.get('authenticatedAccount')) {
-                        return;
+                        return undefined;
                     }
 
-                    return JSON.parse($cookies.get(authenticatedAccount));
+                    return JSON.parse($cookies.get('authenticatedAccount'));
                 }
 
                 function setAuthenticatedAccount(account) {
@@ -114,7 +114,7 @@
                     $state.go('gmp.account');
                 }
 
-                function loginFail(response) {
+                function loginFail() {
                     $mdDialog
                         .show(
                             $mdDialog.alert({
@@ -132,11 +132,11 @@
                 function logoutSuccess() {
                     Authentication.unauthenticate();
 
-                    $state.go('gmp.home')
+                    $state.go('gmp.home');
                 }
 
                 function logoutFailed() {
-                    console.log('Logut failed');
+                    console.log('Logout failed');
                 }
             }
         ])
@@ -145,7 +145,7 @@
                 return $resource('/api/department/');
             }
         ])
-        .controller('LoginController', ['Authentication', '$state', 
+        .controller('LoginController', ['Authentication', '$state',
             function(Authentication, $state) {
                 var vm = this;
 
@@ -159,8 +159,6 @@
 
                 function activate() {
                     if (Authentication.isAuthenticated()) {
-                        console.log('User already authenticated');
-                        console.log('Account is ' + Authentication.getAuthenticatedAccount());
                         $state.go('gmp.account');
                     }
                 }
@@ -197,7 +195,6 @@
                 };
 
                 function registerSuccess() {
-                    console.log('registerSuccess');
                     Authentication.login(vm.email, vm.password);
                 }
 
