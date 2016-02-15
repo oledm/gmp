@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api/department', views.DepartmentList.as_view()),
     url(r'^api/login', views.LoginView.as_view(), name='login'),
+    url(r'^api/logout', views.LogoutView.as_view(), name='logout'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

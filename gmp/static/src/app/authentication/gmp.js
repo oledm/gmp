@@ -11,24 +11,30 @@
         .config(['$stateProvider', '$urlRouterProvider', 
                 function($stateProvider, $urlRouterProvider) {
             $stateProvider
-                .state('home', {
+                .state('gmp', {
+                    abstract: true,
+                    controller: 'ToolbarController',
+                    controllerAs: 'vm',
+                    templateUrl: '/static/src/app/authentication/toolbar.tpl.html',
+                })
+                .state('gmp.home', {
                     url: '/',
                     templateUrl: '/static/src/app/authentication/login_register.tpl.html',
                     controller: function($state) {
-                        $state.transitionTo('home.login');
+                        $state.transitionTo('gmp.home.login');
                     }
                 })
-                .state('home.register', {
+               .state('gmp.home.register', {
                     controller: 'RegisterController',
                     controllerAs: 'vm',
                     templateUrl: '/static/src/app/authentication/register.tpl.html'
                 })
-                .state('home.login', {
+                .state('gmp.home.login', {
                     controller: 'LoginController',
                     controllerAs: 'vm',
                     templateUrl: '/static/src/app/authentication/login.tpl.html'
                 })
-                .state('account', {
+                .state('gmp.account', {
                     template: 'Личная страница'
                 });
             $urlRouterProvider.otherwise('/');
@@ -57,6 +63,7 @@
                 var Authentication = {
                     register: register,
                     login: login,
+                    logout: logout,
                     getAuthenticatedAccount: getAuthenticatedAccount,
                     setAuthenticatedAccount: setAuthenticatedAccount,
                     isAuthenticated: isAuthenticated,
@@ -64,6 +71,26 @@
                 };
 
                 return Authentication;
+
+                function getAuthenticatedAccount() {
+                    if ($cookies.get('authenticatedAccount')) {
+                        return;
+                    }
+
+                    return JSON.parse($cookies.get(authenticatedAccount));
+                }
+
+                function setAuthenticatedAccount(account) {
+                    $cookies.put('authenticatedAccount', JSON.stringify(account));
+                }
+
+                function isAuthenticated() {
+                    return !!$cookies.get('authenticatedAccount');
+                }
+
+                function unauthenticate() {
+                    $cookies.remove('authenticatedAccount');
+                }
 
                 function register(email, username, password, department) {
                     console.log('register ' + email + ' ' + username + ' ' + password + ' ' + department);
@@ -85,7 +112,7 @@
                 function loginSuccess(response) {
                     console.log('loginSuccess');
                     Authentication.setAuthenticatedAccount(response.data);
-                    $state.go('account');
+                    $state.go('gmp.account');
                 }
 
                 function loginFail(response) {
@@ -98,24 +125,19 @@
                     }));
                 }
 
-                function getAuthenticatedAccount() {
-                    if ($cookies.get('authenticatedAccount')) {
-                        return;
-                    }
-
-                    return JSON.parse($cookies.authenticatedAccount);
+                function logout() {
+                    return $http.post('/api/logout/', {})
+                        .then(logoutSuccess, logoutFailed);
                 }
 
-                function setAuthenticatedAccount(account) {
-                    $cookies.put('authenticatedAccount', JSON.stringify(account));
+                function logoutSuccess() {
+                    Authentication.unauthenticate();
+
+                    $state.go('gmp.home')
                 }
 
-                function isAuthenticated() {
-                    return !!$cookies.get('authenticatedAccount');
-                }
-
-                function unauthenticate() {
-                    delete $cookies.authenticatedAccount;
+                function logoutFailed() {
+                    console.log('Logut failed');
                 }
             }
         ])
@@ -139,10 +161,21 @@
                 function activate() {
                     if (Authentication.isAuthenticated()) {
                         console.log('User already authenticated');
-                        $state.go('account');
+                        console.log('Account is ' + Authentication.getAuthenticatedAccount());
+                        $state.go('gmp.account');
                     }
                 }
 
+            }
+        ])
+        .controller('ToolbarController', ['Authentication',
+            function(Authentication) {
+                var vm = this;
+
+                vm.logout = function() {
+                    console.log('logout');
+                    Authentication.logout();
+                }
             }
         ])
         .controller('RegisterController', ['$scope', 'Authentication', 'Department',
