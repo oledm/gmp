@@ -1,10 +1,12 @@
+<div ng-show="vm.error" ng-bind="vm.error"></div>
+
     <md-input-container class="md-block" flex-gt-sm>
       <label>E-mail</label>
       <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
       <div ng-messages="userForm.email.$error">
         <div ng-message="required">Обязательное поле</div>
         <div ng-message="email">Некорректно указан email</div>
-        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
       </div>
     </md-input-container>
 
@@ -13,9 +15,8 @@
       <input type="password" md-maxlength="50" required name="password" ng-model="vm.password" />
       <div ng-messages="userForm.password.$error">
         <div ng-message="required">Обязательное поле</div>
-        <div ng-message="email">Некорректно указан email</div>
-        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
       </div>
     </md-input-container>
 
-      <md-button class="md-raised" ng-click="vm.login();"> Войти </md-button>
+      <md-button type="submit" class="md-raised" ng-click="vm.login();"> Войти </md-button>

@@ -29,7 +29,7 @@
                     templateUrl: '/static/src/app/authentication/login.tpl.html'
                 })
                 .state('account', {
-                    template: 'Личная страница пользователя'
+                    template: 'Личная страница'
                 });
             $urlRouterProvider.otherwise('/');
         }])
@@ -47,13 +47,13 @@
             $locationProvider.html5Mode(true);
             $locationProvider.hashPrefix('!');
         }])
-        .run(['$http',
+        .run(['$http', 
              function($http) {
             $http.defaults.xsrfHeaderName = 'X-CSRFToken';
             $http.defaults.xsrfCookieName = 'csrftoken';
         }])
-        .factory('Authentication', ['$http', '$cookies', '$state',
-            function($http, $cookies, $state) {
+        .factory('Authentication', ['$http', '$cookies', '$state', '$mdDialog',
+            function($http, $cookies, $state, $mdDialog) {
                 var Authentication = {
                     register: register,
                     login: login,
@@ -83,16 +83,23 @@
                 }
 
                 function loginSuccess(response) {
+                    console.log('loginSuccess');
                     Authentication.setAuthenticatedAccount(response.data);
                     $state.go('account');
                 }
 
                 function loginFail(response) {
-                    console.log('Login failed')
+                    $mdDialog
+                        .show(
+                            $mdDialog.alert({
+                                title: 'Ошибка',
+                                textContent: 'Неверно указан email/пароль',
+                                ok: 'Закрыть'
+                    }));
                 }
 
                 function getAuthenticatedAccount() {
-                    if ($cookies.authenticatedAccount) {
+                    if ($cookies.get('authenticatedAccount')) {
                         return;
                     }
 
@@ -100,11 +107,11 @@
                 }
 
                 function setAuthenticatedAccount(account) {
-                    $cookies.authenticatedAccount = JSON.stringify(account);
+                    $cookies.put('authenticatedAccount', JSON.stringify(account));
                 }
 
                 function isAuthenticated() {
-                    return !!$cookies.authenticatedAccount;
+                    return !!$cookies.get('authenticatedAccount');
                 }
 
                 function unauthenticate() {
@@ -117,14 +124,25 @@
                 return $resource('/api/department/');
             }
         ])
-        .controller('LoginController', ['$scope', 'Authentication', '$state',
-            function($scope, Authentication, $state) {
+        .controller('LoginController', ['Authentication', '$state', 
+            function(Authentication, $state) {
                 var vm = this;
 
-                vm.login = function() {
+                vm.login = login;
+
+                activate();
+
+                function login () {
                     Authentication.login(vm.email, vm.password);
-                    $state.go('account');
                 }
+
+                function activate() {
+                    if (Authentication.isAuthenticated()) {
+                        console.log('User already authenticated');
+                        $state.go('account');
+                    }
+                }
+
             }
         ])
         .controller('RegisterController', ['$scope', 'Authentication', 'Department',
@@ -139,16 +157,17 @@
                 };
 
                 vm.register = function() {
-                    Authentication.register(vm.email, vm.name, 'ssss', vm.department)
+                    Authentication.register(vm.email, vm.name, vm.password, vm.department)
                         .then(registerSuccess, registerFail);
                 };
 
                 function registerSuccess() {
-                    Authentication.login(vm.email, 'ssss');
+                    console.log('registerSuccess');
+                    Authentication.login(vm.email, vm.password);
                 }
 
                 function registerFail() {
-                    console.log('Registration failed')
+                    console.log('Registration failed');
                 }
             }
         ]);

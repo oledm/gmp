@@ -25,29 +25,26 @@
 {% endif %}
 {% endblock %}
 
-
 {% block content %}
-     <md-toolbar class="md-whiteframe-z2 md-toolbar-tools md-scroll-shrink" layout-align="start center" flex>
-      <h1 class="md-title">Главная</h1>
+     <!-- 
+         <md-toolbar class="md-whiteframe-z2 md-toolbar-tools md-scroll-shrink" layout-align="start center" flex>
+          <h1 class="md-title">Главная</h1>
+         </md-toolbar>
+      -->
+     <md-toolbar>
+           <div class="md-toolbar-tools">
+        <md-button aria-label="Назад"> Назад </md-button>
+        <h2>
+          <span>Главная</span>
+        </h2>
+        <span flex></span>
+        <md-button class="md-raised" aria-label="Выход"> Выход </md-button>
+        <md-button class="md-fab md-mini" aria-label="Favorite">
+          <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+        </md-button>
+      </div>
      </md-toolbar>
 
-   <!-- 
-<md-card layout="column" layout-padding>
-      <md-content  class="md-padding">
-        <md-tabs  md-dynamic-height md-border-bottom>
-          <md-tab label="Заказы">
-              <div ui-view></div>
-          </md-tab>
-          <md-tab label="Клиенты">
-            <md-content class="md-padding">
-              <h1 class="md-display-2">Tab Two</h1>
-              <p>Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo lectus.</p>
-            </md-content>
-          </md-tab>
-        </md-tabs>
-      </md-content>
-  </md-card> -->
+      <div ui-view></div>
 
-
-              <div ui-view></div>
 {% endblock %}
