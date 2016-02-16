@@ -2,63 +2,73 @@
     'use strict';
 
     angular.module('gmp', [
-        'ui.router',
-	'ngMaterial',
-        'ngMessages',
-        'ngResource',
-        'ngCookies'
+            'ui.router',
+            'ngMaterial',
+            'ngMessages',
+            'ngResource',
+            'ngCookies'
     ])
         .config(['$stateProvider', '$urlRouterProvider',
                 function($stateProvider, $urlRouterProvider) {
-            $stateProvider
-                .state('gmp', {
-                    abstract: true,
-                    controller: 'ToolbarController',
-                    controllerAs: 'vm',
-                    templateUrl: '/static/src/app/authentication/toolbar.tpl.html'
-                })
-                .state('gmp.home', {
-                    url: '/',
-                    templateUrl: '/static/src/app/authentication/login_register.tpl.html',
-                    controller: function($state) {
-                        $state.transitionTo('gmp.home.login');
-                    }
-                })
-               .state('gmp.home.register', {
-                    controller: 'RegisterController',
-                    controllerAs: 'vm',
-                    templateUrl: '/static/src/app/authentication/register.tpl.html'
-                })
-                .state('gmp.home.login', {
-                    controller: 'LoginController',
-                    controllerAs: 'vm',
-                    templateUrl: '/static/src/app/authentication/login.tpl.html'
-                })
-                .state('gmp.account', {
-                    template: 'Личная страница'
-                });
-            $urlRouterProvider.otherwise('/');
-        }])
-        .config(['$mdThemingProvider',
-                function($mdThemingProvider) {
-            $mdThemingProvider.theme('default')
-                .primaryPalette('blue');
-        }])
-        .config(['$resourceProvider',
-                function($resourceProvider) {
-            $resourceProvider.defaults.stripTrailingSlashes = false;
-        }])
-        .config(['$locationProvider',
-                function($locationProvider) {
-            $locationProvider.html5Mode(true);
-            $locationProvider.hashPrefix('!');
-        }])
-        .run(['$http',
-             function($http) {
-            $http.defaults.xsrfHeaderName = 'X-CSRFToken';
-            $http.defaults.xsrfCookieName = 'csrftoken';
-        }])
-        .factory('Authentication', ['$http', '$cookies', '$state', '$mdDialog',
+                    $stateProvider
+                        .state('gmp', { 
+                            views: {
+                                '': {
+                                    abstract: true,
+                                    controller: 'ToolbarController',
+                                    controllerAs: 'vm',
+                                    templateUrl: '/static/src/app/authentication/toolbar.tpl.html'
+                                }
+                            }
+                        })
+                    .state('gmp.home', {
+                        url: '/',
+                        templateUrl: '/static/src/app/authentication/login_register.tpl.html',
+                        controller: function($state) {
+                            $state.transitionTo('gmp.home.login');
+                        }
+                    })
+                    .state('gmp.home.register', {
+                        controller: 'RegisterController',
+                        controllerAs: 'vm',
+                        templateUrl: '/static/src/app/authentication/register.tpl.html'
+                    })
+                    .state('gmp.home.login', {
+                        controller: 'LoginController',
+                        controllerAs: 'vm',
+                        templateUrl: '/static/src/app/authentication/login.tpl.html'
+                    })
+                    .state('gmp.account', {
+                        views: {
+                            'sidenav': {
+                                controller: 'SidenavController',
+                                controllerAs: 'vm',
+                                templateUrl: '/static/src/app/authentication/sidenav.tpl.html'
+                            }
+                        }
+                    });
+                    $urlRouterProvider.otherwise('/');
+                }])
+    .config(['$mdThemingProvider',
+            function($mdThemingProvider) {
+                $mdThemingProvider.theme('default')
+                    .primaryPalette('blue');
+            }])
+    .config(['$resourceProvider',
+            function($resourceProvider) {
+                $resourceProvider.defaults.stripTrailingSlashes = false;
+            }])
+    .config(['$locationProvider',
+            function($locationProvider) {
+                $locationProvider.html5Mode(true);
+                $locationProvider.hashPrefix('!');
+            }])
+    .run(['$http',
+            function($http) {
+                $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+                $http.defaults.xsrfCookieName = 'csrftoken';
+            }])
+    .factory('Authentication', ['$http', '$cookies', '$state', '$mdDialog',
             function($http, $cookies, $state, $mdDialog) {
                 var Authentication = {
                     register: register,
@@ -73,7 +83,7 @@
                 return Authentication;
 
                 function getAuthenticatedAccount() {
-                    if ($cookies.get('authenticatedAccount')) {
+                    if ($cookies.get('authenticatedAccount') === undefined) {
                         return undefined;
                     }
 
@@ -81,7 +91,9 @@
                 }
 
                 function setAuthenticatedAccount(account) {
+                    console.log('setAuthenticatedAccount ' + JSON.stringify(account));
                     $cookies.put('authenticatedAccount', JSON.stringify(account));
+                    console.log('in cookie: ' + JSON.stringify(Authentication.getAuthenticatedAccount()));
                 }
 
                 function isAuthenticated() {
@@ -117,11 +129,11 @@
                 function loginFail() {
                     $mdDialog
                         .show(
-                            $mdDialog.alert({
-                                title: 'Ошибка',
-                                textContent: 'Неверно указан email/пароль',
-                                ok: 'Закрыть'
-                    }));
+                                $mdDialog.alert({
+                                    title: 'Ошибка',
+                                    textContent: 'Неверно указан email/пароль',
+                                    ok: 'Закрыть'
+                                }));
                 }
 
                 function logout() {
@@ -139,30 +151,46 @@
                     console.log('Logout failed');
                 }
             }
-        ])
+    ])
         .factory('Department', ['$resource',
-            function($resource) {
-                return $resource('/api/department/');
-            }
+                function($resource) {
+                    return $resource('/api/department/');
+                }
         ])
         .controller('LoginController', ['Authentication', '$state',
-            function(Authentication, $state) {
+                function(Authentication, $state) {
+                    var vm = this;
+
+                    vm.login = login;
+
+                    activate();
+
+                    function login () {
+                        Authentication.login(vm.email, vm.password);
+                    }
+
+                    function activate() {
+                        if (Authentication.isAuthenticated()) {
+                            $state.go('gmp.account');
+                        }
+                    }
+
+                }
+        ])
+        .controller('SidenavController', ['Authentication',
+            function(Authentication) {
                 var vm = this;
 
-                vm.login = login;
+                vm.isAuthenticated = function() {
+                    return Authentication.isAuthenticated();
+                };
 
-                activate();
-
-                function login () {
-                    Authentication.login(vm.email, vm.password);
-                }
-
-                function activate() {
-                    if (Authentication.isAuthenticated()) {
-                        $state.go('gmp.account');
-                    }
-                }
-
+                var data = Authentication.getAuthenticatedAccount();
+                console.log('SidenavController cookie: ' + JSON.stringify(data));
+                vm.userdata = {
+                    email: data.email,
+                    username: data.username
+                };
             }
         ])
         .controller('ToolbarController', ['Authentication',
