@@ -26,20 +26,11 @@
 {% endblock %}
 
 {% block content %}
-  <!-- 
-      <md-sidenav class="md-whiteframe-z2" md-is-locked-open="true">
-          <md-toolbar class="md-theme-default">
-            <h1 class="md-toolbar-tools">Sidenav Left</h1>
-          </md-toolbar>
-      
-          <md-content layout-padding>
-            <h3>Статистика</h3>
-          </md-content>
-      </md-sidenav>
-   -->
 
-    <div flex layout="column">
-          <div ui-view></div>
-    </div>
+<div ui-view="sidenav" layout="column"></div>
+
+<div flex layout="column">
+      <div ui-view layout="column"></div>
+</div>
 
 {% endblock %}

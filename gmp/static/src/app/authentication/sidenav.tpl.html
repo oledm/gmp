@@ -1,10 +1,15 @@
-<md-sidenav class="md-whiteframe-z2" ng-show="vm.isAuthenticated()" md-is-locked-open="true">
-    <md-toolbar class="md-theme-default">
-        <h1 class="md-toolbar-tools">{{vm.userdata.email}}</h1>
-        <h1 class="md-toolbar-tools">{{vm.userdata.username}}</h1>
-    </md-toolbar>
-
-    <md-content layout-padding>
-        <h3>sss</h3>
-    </md-content>
-</md-sidenav>
+ <md-sidenav class="md-whiteframe-z2" ng-show="vm.isAuthenticated()" md-is-locked-open="true" layout="column" flex>
+        <md-toolbar class="md-theme-default">
+            <h1 class="md-toolbar-tools">{{vm.userdata.email}}</h1>
+            <h1 class="md-toolbar-tools">{{vm.userdata.username}}</h1>
+        </md-toolbar>
+    
+        <md-content layout-padding layout="column">
+           <div layout="column">
+            <h3>sss</h3>
+            <span flex></span>
+            <h3>sss</h3>
+    
+            </div>
+        </md-content>
+ </md-sidenav>

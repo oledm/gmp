@@ -40,7 +40,7 @@
                     })
                     .state('gmp.account', {
                         views: {
-                            'sidenav': {
+                            'sidenav@': {
                                 controller: 'SidenavController',
                                 controllerAs: 'vm',
                                 templateUrl: '/static/src/app/authentication/sidenav.tpl.html'
