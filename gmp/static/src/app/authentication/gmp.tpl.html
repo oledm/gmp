@@ -1,3 +1,5 @@
-<h1>Hello</h1>
-<div ui-view="view1"></div>
-<div ui-view="view2"></div>
+<div ui-view="sidenav" layout="column"></div>
+<div flex layout="column">
+      <div ui-view="toolbar" layout="column"></div>
+      <div ui-view="main" layout="column" flex></div>
+</div>

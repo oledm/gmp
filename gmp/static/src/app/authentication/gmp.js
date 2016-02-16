@@ -9,57 +9,65 @@
             'ngCookies'
     ])
         .config(['$stateProvider', '$urlRouterProvider',
-                function($stateProvider, $urlRouterProvider) {
-                    $stateProvider
-                        .state('gmp', { 
-                            abstract: true,
-                            url: '/',
-                            views: {
-                                'main': {
-                                    templateUrl: '/static/src/app/authentication/gmp.tpl.html'
-                                }
+            function($stateProvider, $urlRouterProvider) {
+                $stateProvider
+                    .state('gmp', { 
+                        abstract: true,
+                        url: '/',
+                        views: {
+                            'main': {
+                                templateUrl: '/static/src/app/authentication/gmp.tpl.html'
                             }
-                        })
+                        }
+                    })
                     .state('gmp.home', {
                         url: '',
                         views: {
-                            'view1@gmp': {
-                                template: 'View 1'
+                            'toolbar@gmp': {
+                                controller: 'ToolbarController',
+                                controllerAs: 'vm',
+                                templateUrl: '/static/src/app/authentication/toolbar.tpl.html'
                             },
-                            'view2@gmp': {
-                                template: 'View 2'
+                            'main@gmp': {
+                                templateUrl: '/static/src/app/authentication/login_register.tpl.html',
+                                controller: function($state) {
+                                    $state.transitionTo('gmp.home.login');
+                                }
+                            }
+                        }
+                    })
+                    .state('gmp.home.login', {
+                        url: '',
+                        views: {
+                            '': {
+                                controller: 'LoginController',
+                                controllerAs: 'vm',
+                                templateUrl: '/static/src/app/authentication/login.tpl.html'
+                            }
+                        }
+                    })
+                    .state('gmp.home.register', {
+                        url: '',
+                        views: {
+                            '': {
+                                controller: 'RegisterController',
+                                controllerAs: 'vm',
+                                templateUrl: '/static/src/app/authentication/register.tpl.html'
+                            }
+                        }
+                    })
+                    .state('gmp.home.account', {
+                        url: '',
+                        views: {
+                            'main@gmp': {
+                                controller: 'SidenavController',
+                                controllerAs: 'vm',
+                                templateUrl: '/static/src/app/authentication/sidenav.tpl.html'
                             }
                         }
                     });
-//                    .state('gmp.home.register', {
-//                        views: {
-//                            'main@': {
-//                                controller: 'RegisterController',
-//                                controllerAs: 'vm',
-//                                templateUrl: '/static/src/app/authentication/register.tpl.html'
-//                            }
-//                        }
-//                    })
-//                    .state('gmp.home.login', {
-//                        views: {
-//                            'main@': {
-//                                controller: 'LoginController',
-//                                controllerAs: 'vm',
-//                                templateUrl: '/static/src/app/authentication/login.tpl.html'
-//                            }
-//                        }
-//                    })
-//                    .state('gmp.account', {
-//                        views: {
-//                            'sidenav@': {
-//                                controller: 'SidenavController',
-//                                controllerAs: 'vm',
-//                                templateUrl: '/static/src/app/authentication/sidenav.tpl.html'
-//                            }
-//                        }
-//                    });
-                    $urlRouterProvider.otherwise('/');
-                }])
+                $urlRouterProvider.otherwise('/');
+            }])
     .config(['$mdThemingProvider',
             function($mdThemingProvider) {
                 $mdThemingProvider.theme('default')
@@ -134,7 +142,7 @@
                 function loginSuccess(response) {
                     console.log('loginSuccess');
                     Authentication.setAuthenticatedAccount(response.data);
-                    $state.go('gmp.account');
+                    $state.go('gmp.home.account');
                 }
 
                 function loginFail() {
@@ -155,7 +163,7 @@
                 function logoutSuccess() {
                     Authentication.unauthenticate();
 
-                    $state.go('gmp.home');
+                    $state.go('gmp.home.login');
                 }
 
                 function logoutFailed() {
@@ -182,7 +190,7 @@
 
                     function activate() {
                         if (Authentication.isAuthenticated()) {
-                            $state.go('gmp.account');
+                            $state.go('gmp.home.account');
                         }
                     }
 
