@@ -8,27 +8,27 @@
             'ngResource',
             'ngCookies'
     ])
-    .config(['$mdThemingProvider',
-            function($mdThemingProvider) {
-                $mdThemingProvider.theme('default')
-                    .primaryPalette('blue');
-            }])
-    .config(['$resourceProvider',
-            function($resourceProvider) {
-                $resourceProvider.defaults.stripTrailingSlashes = false;
-            }])
-    .config(['$locationProvider',
-            function($locationProvider) {
-                $locationProvider.html5Mode(true);
-                $locationProvider.hashPrefix('!');
-            }])
-    .run(['$http',
-            function($http) {
-                $http.defaults.xsrfHeaderName = 'X-CSRFToken';
-                $http.defaults.xsrfCookieName = 'csrftoken';
-            }])
-    .factory('Authentication', ['$http', '$cookies', '$state', '$mdDialog',
-            function($http, $cookies, $state, $mdDialog) {
+        .config(['$mdThemingProvider',
+                function($mdThemingProvider) {
+                    $mdThemingProvider.theme('default')
+                        .primaryPalette('blue');
+                }])
+        .config(['$resourceProvider',
+                function($resourceProvider) {
+                    $resourceProvider.defaults.stripTrailingSlashes = false;
+                }])
+        .config(['$locationProvider',
+                function($locationProvider) {
+                    $locationProvider.html5Mode(true);
+                    $locationProvider.hashPrefix('!');
+                }])
+        .run(['$http',
+                function($http) {
+                    $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+                    $http.defaults.xsrfCookieName = 'csrftoken';
+                }])
+        .factory('Authentication', ['$http', '$cookies', '$mdDialog',
+            function($http, $cookies, $mdDialog) {
                 var Authentication = {
                     register: register,
                     login: login,
@@ -82,7 +82,6 @@
                 function loginSuccess(response) {
                     console.log('loginSuccess');
                     Authentication.setAuthenticatedAccount(response.data);
-                    $state.go('gmp.account');
                 }
 
                 function loginFail() {
@@ -102,35 +101,33 @@
 
                 function logoutSuccess() {
                     Authentication.unauthenticate();
-
-                    $state.go('gmp.home');
                 }
 
                 function logoutFailed() {
                     console.log('Logout failed');
                 }
             }
-    ])
+        ])
         .factory('Department', ['$resource',
                 function($resource) {
                     return $resource('/api/department/');
                 }
         ])
-        .controller('LoginController', ['Authentication', '$state',
-                function(Authentication, $state) {
+        .controller('LoginController', ['Authentication', 
+                function(Authentication) {
                     var vm = this;
 
                     vm.login = login;
 
                     activate();
 
-                    function login () {
+                    function login() {
+                        console.log('login');
                         Authentication.login(vm.email, vm.password);
                     }
 
                     function activate() {
                         if (Authentication.isAuthenticated()) {
-                            $state.go('gmp.account');
                         }
                     }
 
@@ -140,16 +137,24 @@
             function(Authentication) {
                 var vm = this;
 
+                var data = Authentication.getAuthenticatedAccount();
+//                console.log('SidenavController cookie: ' + JSON.stringify(data));
+                if (data !== undefined) {
+                    vm.userdata = {
+                        email: data.email,
+                        username: data.username,
+                        department: data.department
+                    };
+                }
+                console.log('SidenavController vm.userdata is ' + JSON.stringify(vm.userdata));
+            }
+        ])
+        .controller('MainController', ['Authentication',
+            function(Authentication) {
+                var vm = this;
+
                 vm.isAuthenticated = function() {
                     return Authentication.isAuthenticated();
-                };
-
-                var data = Authentication.getAuthenticatedAccount();
-                console.log('SidenavController cookie: ' + JSON.stringify(data));
-                vm.userdata = {
-                    email: data.email,
-                    username: data.username,
-                    department: data.department
                 };
             }
         ])
@@ -161,9 +166,6 @@
                     Authentication.logout();
                 };
 
-                vm.isAuthenticated = function() {
-                    return Authentication.isAuthenticated();
-                };
             }
         ])
         .controller('RegisterController', ['$scope', 'Authentication', 'Department',
