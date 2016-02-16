@@ -27,18 +27,18 @@
 
 {% block content %}
  
-<md-sidenav class="md-whiteframe-z2"  ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex >
+<md-sidenav class="md-whiteframe-z2" ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex >
     <div layout="column" flex ng-controller="SidenavController as vm">
         <md-toolbar class="md-theme-default md-tall md-hue-2" md-whiteframe="3">
             <div layout="column" class="md-toolbar-tools-bottom inset">
-                <div ng-bind="vm.userdata.email"></div>
-                <div ng-bind="vm.userdata.department"></div>
+                <span ng-bind="vm.userdata.email"></span>
+                <span ng-bind="vm.userdata.department"></span>
             </div>
         </md-toolbar>
     
         <md-content layout-padding layout="column">
            <div layout="column">
-               <h3>sss</h3>
+               <h3></h3>
             </div>
         </md-content>
     </div>
@@ -48,10 +48,11 @@
      <md-toolbar layout="column" md-whiteframe="3">
            <div class="md-toolbar-tools">
             <h2>
-              <span>Главная</span>
+              <a ui-sref="home">Главная</a>
             </h2>
             <span flex></span>
-            <md-button ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход"> Выход </md-button>
+            <md-button ui-sref="profile" ng-show="main.isAuthenticated()" aria-label="Профиль"> Профиль </md-button>
+            <md-button ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход" class="md-raised md-warn"> Выход </md-button>
       </div>
      </md-toolbar>
      
@@ -96,7 +97,6 @@
                         </md-select>
                       <div ng-messages="userForm.department.$error">
                         <div ng-message="required">Обязательное поле</div>
-                        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
                       </div>
                     </md-input-container>
              
@@ -136,5 +136,10 @@
         </md-tabs>
       </md-card>
       </div>
+
+     <div class="md-padding" ng-if="main.isAuthenticated()" ng-cloak layout="row" layout-align="center center" ui-view>
+         MAIN CONTENT
+         </div>
+
  </div>
 {% endblock %}

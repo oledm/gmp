@@ -19,7 +19,6 @@ router.register('user', views.EmployeeViewset)
 
 
 urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name='home.html'), name="home"),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
     # Django Admin, use {% url 'admin:index' %}
@@ -34,6 +33,7 @@ urlpatterns = [
     url(r'^api/department', views.DepartmentList.as_view()),
     url(r'^api/login', views.LoginView.as_view(), name='login'),
     url(r'^api/logout', views.LogoutView.as_view(), name='logout'),
+    url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

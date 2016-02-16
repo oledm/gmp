@@ -8,6 +8,21 @@
             'ngResource',
             'ngCookies'
     ])
+    .config(['$stateProvider', '$urlRouterProvider',
+        function($stateProvider, $urlRouterProvider) {
+            $stateProvider
+                .state('home', {
+                    url: '/'
+                })
+                .state('profile', {
+                    url: '/profile',
+                    controller: 'EditProfileController',
+                    controllerAs: 'vm',
+                    templateUrl: '/static/src/app/authentication/profile.tpl.html'
+                });
+            $urlRouterProvider.otherwise('/');
+        }
+    ])
     .config(['$mdThemingProvider',
             function($mdThemingProvider) {
                 $mdThemingProvider.theme('default')
@@ -177,17 +192,35 @@
                 };
             }
         ])
-        .controller('ToolbarController', ['Authentication',
-            function(Authentication) {
+        .controller('ToolbarController', ['Authentication', '$state',
+            function(Authentication, $state) {
                 var vm = this;
 
                 vm.logout = function() {
                     Authentication.logout();
+                    $state.go('home');
                 };
             }
         ])
-        .controller('RegisterController', ['$scope', 'Authentication', 'Department',
-            function($scope, Authentication, Department) {
+        .controller('EditProfileController', ['Department',
+            function(Department) {
+                var vm = this;
+
+                console.log('EditProfileController');
+                vm.loadDeps = function() {
+                    Department.query(function(data) {
+                        console.log('loadDeps');
+                        vm.allDeps = data;
+                    });
+                };
+                
+                vm.updateProfile = function() {
+                    console.log('updateProfile ');
+                };
+            }
+        ])
+        .controller('RegisterController', ['Authentication', 'Department',
+            function(Authentication, Department) {
                 var vm = this;
 
                 vm.loadDeps = function() {
