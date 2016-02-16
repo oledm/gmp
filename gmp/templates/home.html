@@ -26,17 +26,115 @@
 {% endblock %}
 
 {% block content %}
-
-<!-- 
-    <div ui-view="sidenav" layout="column"></div>
+ 
+<md-sidenav class="md-whiteframe-z2"  ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex >
+    <div layout="column" flex ng-controller="SidenavController as vm">
+        <md-toolbar class="md-theme-default md-tall md-hue-2" md-whiteframe="3">
+            <div layout="column" class="md-toolbar-tools-bottom inset">
+                <div ng-bind="vm.userdata.email"></div>
+                <div ng-bind="vm.userdata.department"></div>
+            </div>
+        </md-toolbar>
     
-    <div flex layout="column">
-          <div ui-view="toolbar" layout="column"></div>
-          <div ui-view="main" layout="column"></div>
+        <md-content layout-padding layout="column">
+           <div layout="column">
+               <h3>sss</h3>
+            </div>
+        </md-content>
     </div>
-          <div ui-view layout="column"></div>
- -->
+</md-sidenav>
 
- <div ui-view="main" layout="column" flex></div>
-
+ <div layout="column" flex ng-controller="ToolbarController as vm">
+     <md-toolbar layout="column" md-whiteframe="3">
+           <div class="md-toolbar-tools">
+            <h2>
+              <span>Главная</span>
+            </h2>
+            <span flex></span>
+            <md-button ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход"> Выход </md-button>
+      </div>
+     </md-toolbar>
+     
+     <div class="md-padding" ng-hide="main.isAuthenticated()" ng-cloak layout="row" layout-align="center center">
+      <md-card flex-gt-xs="60" flex-gt-md="40">
+        <md-tabs md-dynamic-height md-border-bottom>
+          <md-tab label="Вход">
+            <md-content class="md-padding" ng-controller="LoginController as vm">
+                <form name="userForm" class="md-padding">
+                    <div ng-show="vm.error" ng-bind="vm.error"></div>
+                
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <label>E-mail</label>
+                      <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
+                      <div ng-messages="userForm.email.$error">
+                        <div ng-message="required">Обязательное поле</div>
+                        <div ng-message="email">Некорректно указан email</div>
+                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                      </div>
+                    </md-input-container>
+                
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <label>Пароль</label>
+                      <input type="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+                      <div ng-messages="userForm.password.$error">
+                        <div ng-message="required">Обязательное поле</div>
+                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                      </div>
+                    </md-input-container>
+                
+                    <md-button type="submit" class="md-raised" ng-click="vm.login();"> Войти </md-button>
+                </form>
+            </md-content>
+          </md-tab>
+          <md-tab label="Регистрация">
+            <md-content class="md-padding" ng-controller="RegisterController as vm">
+                <form name="userForm" class="md-padding">
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <label>Отдел</label>
+                        <md-select required name="department" placeholder="Отдел" md-on-open="vm.loadDeps()" ng-model="vm.department">
+                            <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'"></md-option>
+                        </md-select>
+                      <div ng-messages="userForm.department.$error">
+                        <div ng-message="required">Обязательное поле</div>
+                        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+                      </div>
+                    </md-input-container>
+             
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <label>Имя пользователя</label>
+                      <input md-maxlength="50" required name="name" ng-model="vm.name" />
+                      <div ng-messages="userForm.name.$error">
+                        <div ng-message="required">Обязательное поле</div>
+                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                      </div>
+                    </md-input-container>
+             
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <label>E-mail</label>
+                      <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
+                      <div ng-messages="userForm.email.$error">
+                        <div ng-message="required">Обязательное поле</div>
+                        <div ng-message="email">Некорректно указан email</div>
+                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                      </div>
+                    </md-input-container>
+             
+                    <md-input-container class="md-block" flex-gt-sm>
+                      <label>Пароль</label>
+                      <input type="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+                      <div ng-messages="userForm.password.$error">
+                        <div ng-message="required">Обязательное поле</div>
+                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                      </div>
+                    </md-input-container>
+         
+                    <md-button type="submit" class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.register();"> Отправить </md-button>
+                </form>
+            
+            </md-content>
+          </md-tab>
+        </md-tabs>
+      </md-card>
+      </div>
+ </div>
 {% endblock %}

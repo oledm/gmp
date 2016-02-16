@@ -8,66 +8,6 @@
             'ngResource',
             'ngCookies'
     ])
-        .config(['$stateProvider', '$urlRouterProvider',
-            function($stateProvider, $urlRouterProvider) {
-                $stateProvider
-                    .state('gmp', { 
-                        abstract: true,
-                        url: '/',
-                        views: {
-                            'main': {
-                                templateUrl: '/static/src/app/authentication/gmp.tpl.html'
-                            }
-                        }
-                    })
-                    .state('gmp.home', {
-                        url: '',
-                        views: {
-                            'toolbar@gmp': {
-                                controller: 'ToolbarController',
-                                controllerAs: 'vm',
-                                templateUrl: '/static/src/app/authentication/toolbar.tpl.html'
-                            },
-                            'main@gmp': {
-                                templateUrl: '/static/src/app/authentication/login_register.tpl.html',
-                                controller: function($state) {
-                                    $state.transitionTo('gmp.home.login');
-                                }
-                            }
-                        }
-                    })
-                    .state('gmp.home.login', {
-                        url: '',
-                        views: {
-                            '': {
-                                controller: 'LoginController',
-                                controllerAs: 'vm',
-                                templateUrl: '/static/src/app/authentication/login.tpl.html'
-                            }
-                        }
-                    })
-                    .state('gmp.home.register', {
-                        url: '',
-                        views: {
-                            '': {
-                                controller: 'RegisterController',
-                                controllerAs: 'vm',
-                                templateUrl: '/static/src/app/authentication/register.tpl.html'
-                            }
-                        }
-                    })
-                    .state('gmp.home.account', {
-                        url: '',
-                        views: {
-                            'main@gmp': {
-                                controller: 'SidenavController',
-                                controllerAs: 'vm',
-                                templateUrl: '/static/src/app/authentication/sidenav.tpl.html'
-                            }
-                        }
-                    });
-                $urlRouterProvider.otherwise('/');
-            }])
     .config(['$mdThemingProvider',
             function($mdThemingProvider) {
                 $mdThemingProvider.theme('default')
@@ -87,8 +27,27 @@
                 $http.defaults.xsrfHeaderName = 'X-CSRFToken';
                 $http.defaults.xsrfCookieName = 'csrftoken';
             }])
-    .factory('Authentication', ['$http', '$cookies', '$state', '$mdDialog',
-            function($http, $cookies, $state, $mdDialog) {
+        .config(['$mdThemingProvider',
+                function($mdThemingProvider) {
+                    $mdThemingProvider.theme('default')
+                        .primaryPalette('blue');
+                }])
+        .config(['$resourceProvider',
+                function($resourceProvider) {
+                    $resourceProvider.defaults.stripTrailingSlashes = false;
+                }])
+        .config(['$locationProvider',
+                function($locationProvider) {
+                    $locationProvider.html5Mode(true);
+                    $locationProvider.hashPrefix('!');
+                }])
+        .run(['$http',
+                function($http) {
+                    $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+                    $http.defaults.xsrfCookieName = 'csrftoken';
+                }])
+        .factory('Authentication', ['$http', '$cookies', '$mdDialog',
+            function($http, $cookies, $mdDialog) {
                 var Authentication = {
                     register: register,
                     login: login,
@@ -142,7 +101,6 @@
                 function loginSuccess(response) {
                     console.log('loginSuccess');
                     Authentication.setAuthenticatedAccount(response.data);
-                    $state.go('gmp.home.account');
                 }
 
                 function loginFail() {
@@ -162,35 +120,33 @@
 
                 function logoutSuccess() {
                     Authentication.unauthenticate();
-
-                    $state.go('gmp.home.login');
                 }
 
                 function logoutFailed() {
                     console.log('Logout failed');
                 }
             }
-    ])
+        ])
         .factory('Department', ['$resource',
                 function($resource) {
                     return $resource('/api/department/');
                 }
         ])
-        .controller('LoginController', ['Authentication', '$state',
-                function(Authentication, $state) {
+        .controller('LoginController', ['Authentication', 
+                function(Authentication) {
                     var vm = this;
 
                     vm.login = login;
 
                     activate();
 
-                    function login () {
+                    function login() {
+                        console.log('login');
                         Authentication.login(vm.email, vm.password);
                     }
 
                     function activate() {
                         if (Authentication.isAuthenticated()) {
-                            $state.go('gmp.home.account');
                         }
                     }
 
@@ -200,15 +156,24 @@
             function(Authentication) {
                 var vm = this;
 
+                var data = Authentication.getAuthenticatedAccount();
+//                console.log('SidenavController cookie: ' + JSON.stringify(data));
+                if (data !== undefined) {
+                    vm.userdata = {
+                        email: data.email,
+                        username: data.username,
+                        department: data.department
+                    };
+                }
+                console.log('SidenavController vm.userdata is ' + JSON.stringify(vm.userdata));
+            }
+        ])
+        .controller('MainController', ['Authentication',
+            function(Authentication) {
+                var vm = this;
+
                 vm.isAuthenticated = function() {
                     return Authentication.isAuthenticated();
-                };
-
-                var data = Authentication.getAuthenticatedAccount();
-                vm.userdata = {
-                    email: data.email,
-                    username: data.username,
-                    department: data.department
                 };
             }
         ])
@@ -218,10 +183,6 @@
 
                 vm.logout = function() {
                     Authentication.logout();
-                };
-
-                vm.isAuthenticated = function() {
-                    return Authentication.isAuthenticated();
                 };
             }
         ])
@@ -233,7 +194,6 @@
                     Department.query(function(data) {
                         vm.allDeps = data;
                     });
-
                 };
 
                 vm.register = function() {
