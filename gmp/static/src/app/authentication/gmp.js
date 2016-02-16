@@ -189,7 +189,8 @@
                 console.log('SidenavController cookie: ' + JSON.stringify(data));
                 vm.userdata = {
                     email: data.email,
-                    username: data.username
+                    username: data.username,
+                    department: data.department
                 };
             }
         ])
