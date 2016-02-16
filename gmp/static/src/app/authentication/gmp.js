@@ -12,41 +12,52 @@
                 function($stateProvider, $urlRouterProvider) {
                     $stateProvider
                         .state('gmp', { 
+                            abstract: true,
+                            url: '/',
                             views: {
-                                '': {
-                                    abstract: true,
-                                    controller: 'ToolbarController',
-                                    controllerAs: 'vm',
-                                    templateUrl: '/static/src/app/authentication/toolbar.tpl.html'
+                                'main': {
+                                    templateUrl: '/static/src/app/authentication/gmp.tpl.html'
                                 }
                             }
                         })
                     .state('gmp.home', {
-                        url: '/',
-                        templateUrl: '/static/src/app/authentication/login_register.tpl.html',
-                        controller: function($state) {
-                            $state.transitionTo('gmp.home.login');
-                        }
-                    })
-                    .state('gmp.home.register', {
-                        controller: 'RegisterController',
-                        controllerAs: 'vm',
-                        templateUrl: '/static/src/app/authentication/register.tpl.html'
-                    })
-                    .state('gmp.home.login', {
-                        controller: 'LoginController',
-                        controllerAs: 'vm',
-                        templateUrl: '/static/src/app/authentication/login.tpl.html'
-                    })
-                    .state('gmp.account', {
+                        url: '',
                         views: {
-                            'sidenav@': {
-                                controller: 'SidenavController',
-                                controllerAs: 'vm',
-                                templateUrl: '/static/src/app/authentication/sidenav.tpl.html'
+                            'view1@gmp': {
+                                template: 'View 1'
+                            },
+                            'view2@gmp': {
+                                template: 'View 2'
                             }
                         }
                     });
+//                    .state('gmp.home.register', {
+//                        views: {
+//                            'main@': {
+//                                controller: 'RegisterController',
+//                                controllerAs: 'vm',
+//                                templateUrl: '/static/src/app/authentication/register.tpl.html'
+//                            }
+//                        }
+//                    })
+//                    .state('gmp.home.login', {
+//                        views: {
+//                            'main@': {
+//                                controller: 'LoginController',
+//                                controllerAs: 'vm',
+//                                templateUrl: '/static/src/app/authentication/login.tpl.html'
+//                            }
+//                        }
+//                    })
+//                    .state('gmp.account', {
+//                        views: {
+//                            'sidenav@': {
+//                                controller: 'SidenavController',
+//                                controllerAs: 'vm',
+//                                templateUrl: '/static/src/app/authentication/sidenav.tpl.html'
+//                            }
+//                        }
+//                    });
                     $urlRouterProvider.otherwise('/');
                 }])
     .config(['$mdThemingProvider',
@@ -186,7 +197,6 @@
                 };
 
                 var data = Authentication.getAuthenticatedAccount();
-                console.log('SidenavController cookie: ' + JSON.stringify(data));
                 vm.userdata = {
                     email: data.email,
                     username: data.username,

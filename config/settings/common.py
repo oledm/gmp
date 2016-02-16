@@ -199,6 +199,7 @@ BOWER_INSTALLED_APPS = (
     'angular-cookies',
     'angular-material',
     'angular-cookies',
+    #'material-design-icons',
     #'angular-material-data-table',
 )
 

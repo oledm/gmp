@@ -27,10 +27,16 @@
 
 {% block content %}
 
-<div ui-view="sidenav" layout="column"></div>
+<!-- 
+    <div ui-view="sidenav" layout="column"></div>
+    
+    <div flex layout="column">
+          <div ui-view="toolbar" layout="column"></div>
+          <div ui-view="main" layout="column"></div>
+    </div>
+          <div ui-view layout="column"></div>
+ -->
 
-<div flex layout="column">
-      <div ui-view layout="column"></div>
-</div>
+ <div ui-view="main"></div>
 
 {% endblock %}

@@ -1,5 +1,5 @@
- <md-sidenav class="md-whiteframe-z2" ng-show="vm.isAuthenticated()" md-is-locked-open="true" layout="column" flex>
-        <md-toolbar class="md-theme-default md-tall md-hue-2">
+ <md-sidenav class="md-sidenav-left md-whiteframe-z2" ng-show="vm.isAuthenticated()" md-is-locked-open="true" layout="column" flex>
+        <md-toolbar class="md-tall md-hue-2" md-whiteframe="3">
             <div layout="column" class="md-toolbar-tools-bottom inset">
                 <div>{{vm.userdata.email}}</div>
                 <div>{{vm.userdata.department}}</div>
@@ -8,8 +8,7 @@
     
         <md-content layout-padding layout="column">
            <div layout="column">
-            <h3>sss</h3>
-    
+                <h3>sss</h3>
             </div>
         </md-content>
  </md-sidenav>
