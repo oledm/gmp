@@ -8,47 +8,6 @@
             'ngResource',
             'ngCookies'
     ])
-        .config(['$stateProvider', '$urlRouterProvider',
-                function($stateProvider, $urlRouterProvider) {
-                    $stateProvider
-                        .state('gmp', { 
-                            views: {
-                                '': {
-                                    abstract: true,
-                                    controller: 'ToolbarController',
-                                    controllerAs: 'vm',
-                                    templateUrl: '/static/src/app/authentication/toolbar.tpl.html'
-                                }
-                            }
-                        })
-                    .state('gmp.home', {
-                        url: '/',
-                        templateUrl: '/static/src/app/authentication/login_register.tpl.html',
-                        controller: function($state) {
-                            $state.transitionTo('gmp.home.login');
-                        }
-                    })
-                    .state('gmp.home.register', {
-                        controller: 'RegisterController',
-                        controllerAs: 'vm',
-                        templateUrl: '/static/src/app/authentication/register.tpl.html'
-                    })
-                    .state('gmp.home.login', {
-                        controller: 'LoginController',
-                        controllerAs: 'vm',
-                        templateUrl: '/static/src/app/authentication/login.tpl.html'
-                    })
-                    .state('gmp.account', {
-                        views: {
-                            'sidenav@': {
-                                controller: 'SidenavController',
-                                controllerAs: 'vm',
-                                templateUrl: '/static/src/app/authentication/sidenav.tpl.html'
-                            }
-                        }
-                    });
-                    $urlRouterProvider.otherwise('/');
-                }])
     .config(['$mdThemingProvider',
             function($mdThemingProvider) {
                 $mdThemingProvider.theme('default')
