@@ -26,12 +26,18 @@
 {% endblock %}
 
 {% block content %}
-     <!-- 
-         <md-toolbar class="md-whiteframe-z2 md-toolbar-tools md-scroll-shrink" layout-align="start center" flex>
-          <h1 class="md-title">Главная</h1>
-         </md-toolbar>
-      -->
+  <md-sidenav class="md-whiteframe-z2" md-is-locked-open="true">
+      <md-toolbar class="md-theme-default">
+        <h1 class="md-toolbar-tools">Sidenav Left</h1>
+      </md-toolbar>
 
-      <div ui-view></div>
+      <md-content layout-padding>
+        <h3>Статистика</h3>
+      </md-content>
+  </md-sidenav>
+
+    <div flex layout="column">
+          <div ui-view></div>
+    </div>
 
 {% endblock %}
