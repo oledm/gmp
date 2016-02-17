@@ -16,7 +16,28 @@
     <script src="{% static 'angular-cookies/angular-cookies.js' %}"></script>
     <script src="{% static 'angular-material/angular-material.min.js' %}"></script>
     <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
-    <script src="{% static 'src/app/authentication/gmp.js' %}"></script>
+    <!-- 
+        This app
+     -->
+    <script src="{% static 'src/app/authentication/app.authentication.service.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.authentication.service.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.department.service.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.department.service.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.main.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.main.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.profileditor.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.profileditor.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.sidenav.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.sidenav.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.toolbar.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.toolbar.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.login.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.login.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.register.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.register.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.routes.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.routes.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.js' %}"></script>
 {% endblock %}
 
 {% block javascript  %}
@@ -25,10 +46,10 @@
 {% endif %}
 {% endblock %}
 
-{% block content %}
- 
+{% block body %}
 <md-sidenav class="md-whiteframe-z2" ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex >
     <div layout="column" flex ng-controller="SidenavController as vm">
+    <div layout="column" flex >
         <md-toolbar class="md-theme-default md-tall md-hue-2" md-whiteframe="3">
             <div layout="column" class="md-toolbar-tools-bottom inset">
                 <span ng-bind="vm.userdata.email"></span>
@@ -88,7 +109,10 @@
             </md-content>
           </md-tab>
           <md-tab label="Регистрация">
-            <md-content class="md-padding" ng-controller="RegisterController as vm">
+            <!-- 
+                <md-content class="md-padding" ng-controller="RegisterController as vm">
+             -->
+            <md-content class="md-padding" >
                 <form name="userForm" class="md-padding">
                     <md-input-container class="md-block" flex-gt-sm>
                       <label>Отдел</label>
@@ -142,4 +166,6 @@
          </div>
 
  </div>
-{% endblock %}
+ 
+ 
+{% endblock body %}

@@ -1,5 +1,5 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
-<html lang="en" ng-app='gmp' ng-cloak>
+<html lang="en" ng-app='app' ng-cloak>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -28,11 +28,11 @@
 
   </head>
 
-  <body layout="row" ng-controller="MainController as main">
 
-      {% block content %}
-        <p>Use this document as a way to quick start any new project.</p>
-      {% endblock content %}
+<body layout="row" ng-controller="MainController as main">
+      {% block body %}
+      {% endblock body %}
+</body>
 
     <!-- Le javascript
     ================================================== -->
@@ -52,6 +52,5 @@
       <!-- place project specific Javascript in this file -->
       <script src="{% static 'js/project.js' %}"></script>
     {% endblock javascript %}
-  </body>
 </html>
  

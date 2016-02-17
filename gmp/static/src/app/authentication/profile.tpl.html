@@ -1,4 +1,4 @@
-<md-content class="md-padding" flex flex-gt-xs="60" flex-gt-md="40">
+<md-card class="md-padding" flex flex-gt-xs="60" flex-gt-md="40">
     <form name="userForm" class="md-padding">
         <md-input-container class="md-block" flex-gt-sm>
           <label>Отдел</label>
@@ -12,16 +12,16 @@
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>Имя</label>
-          <input md-maxlength="50" name="firstname" ng-model="vm.firstname" />
-          <div ng-messages="userForm.firstname.$error">
+          <input md-maxlength="50" name="first_name" ng-model="vm.first_name" />
+          <div ng-messages="userForm.first_name.$error">
             <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
           </div>
         </md-input-container>
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>Фамилия</label>
-          <input md-maxlength="50" name="lastname" ng-model="vm.lastname" />
-          <div ng-messages="userForm.lastname.$error">
+          <input md-maxlength="50" name="last_name" ng-model="vm.last_name" />
+          <div ng-messages="userForm.last_name.$error">
             <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
           </div>
         </md-input-container>
@@ -48,4 +48,4 @@
         <md-button type="submit" class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.updateProfile();"> Сохранить </md-button>
     </form>
 
-</md-content>
+</md-card>
