@@ -3,12 +3,12 @@
 
     angular
         .module('app.authentication')
-        .factory('Authentication', Authentication);
+        .factory('Authentication', Authentication_);
 
-    Authentication.$inject = ['$http', '$cookies', '$mdDialog'];
+    Authentication_.$inject = ['$http', '$cookies', '$mdDialog'];
 
-    function Authentication($http, $cookies, $mdDialog) {
-        return {
+    function Authentication_($http, $cookies, $mdDialog) {
+        var Authentication = {
             register: register,
             login: login,
             logout: logout,
@@ -17,6 +17,7 @@
             isAuthenticated: isAuthenticated,
             unauthenticate: unauthenticate
         };
+        return Authentication;
 
         function getAuthenticatedAccount() {
             if ($cookies.get('authenticatedAccount') === undefined) {
@@ -81,6 +82,7 @@
         }
 
         function logoutFailed() {
+            console.log('cookies: ' + JSON.stringify(Authentication.getAuthenticatedAccount()));
             console.log('Logout failed');
         }
     }

@@ -46,10 +46,10 @@
 {% endif %}
 {% endblock %}
 
-{% block body %}
+{% block content %}
+ 
 <md-sidenav class="md-whiteframe-z2" ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex >
     <div layout="column" flex ng-controller="SidenavController as vm">
-    <div layout="column" flex >
         <md-toolbar class="md-theme-default md-tall md-hue-2" md-whiteframe="3">
             <div layout="column" class="md-toolbar-tools-bottom inset">
                 <span ng-bind="vm.userdata.email"></span>
@@ -109,10 +109,7 @@
             </md-content>
           </md-tab>
           <md-tab label="Регистрация">
-            <!-- 
-                <md-content class="md-padding" ng-controller="RegisterController as vm">
-             -->
-            <md-content class="md-padding" >
+            <md-content class="md-padding" ng-controller="RegisterController as vm">
                 <form name="userForm" class="md-padding">
                     <md-input-container class="md-block" flex-gt-sm>
                       <label>Отдел</label>
@@ -166,6 +163,4 @@
          </div>
 
  </div>
- 
- 
-{% endblock body %}
+{% endblock %}

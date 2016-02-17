@@ -28,11 +28,11 @@
 
   </head>
 
+  <body layout="row" ng-controller="MainController as main">
 
-<body layout="row" ng-controller="MainController as main">
-      {% block body %}
-      {% endblock body %}
-</body>
+      {% block content %}
+        <p>Use this document as a way to quick start any new project.</p>
+      {% endblock content %}
 
     <!-- Le javascript
     ================================================== -->
@@ -52,5 +52,6 @@
       <!-- place project specific Javascript in this file -->
       <script src="{% static 'js/project.js' %}"></script>
     {% endblock javascript %}
+  </body>
 </html>
  
