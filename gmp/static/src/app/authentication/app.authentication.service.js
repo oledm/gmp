@@ -3,12 +3,13 @@
 
     angular
         .module('app.authentication')
-        .factory('Authentication', Authentication_);
+        .factory('Authentication', Authentication);
 
-    Authentication_.$inject = ['$http', '$cookies', '$mdDialog'];
+    Authentication.$inject = ['$http', '$cookies', '$mdDialog'];
 
-    function Authentication_($http, $cookies, $mdDialog) {
-        var Authentication = {
+    function Authentication($http, $cookies, $mdDialog) {
+        console.log('Authentication service started');
+        var authentication = {
             register: register,
             login: login,
             logout: logout,
@@ -17,7 +18,7 @@
             isAuthenticated: isAuthenticated,
             unauthenticate: unauthenticate
         };
-        return Authentication;
+        return authentication;
 
         function getAuthenticatedAccount() {
             if ($cookies.get('authenticatedAccount') === undefined) {
@@ -30,7 +31,7 @@
         function setAuthenticatedAccount(account) {
             console.log('setAuthenticatedAccount ' + JSON.stringify(account));
             $cookies.put('authenticatedAccount', JSON.stringify(account));
-            console.log('in cookie: ' + JSON.stringify(Authentication.getAuthenticatedAccount()));
+            console.log('in cookie: ' + JSON.stringify(authentication.getAuthenticatedAccount()));
         }
 
         function isAuthenticated() {
@@ -59,7 +60,7 @@
 
         function loginSuccess(response) {
             console.log('loginSuccess');
-            Authentication.setAuthenticatedAccount(response.data);
+            authentication.setAuthenticatedAccount(response.data);
         }
 
         function loginFail() {
@@ -78,11 +79,11 @@
         }
 
         function logoutSuccess() {
-            Authentication.unauthenticate();
+            authentication.unauthenticate();
         }
 
         function logoutFailed() {
-            console.log('cookies: ' + JSON.stringify(Authentication.getAuthenticatedAccount()));
+            console.log('cookies: ' + JSON.stringify(authentication.getAuthenticatedAccount()));
             console.log('Logout failed');
         }
     }

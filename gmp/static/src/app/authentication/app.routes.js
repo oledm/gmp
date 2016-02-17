@@ -20,7 +20,7 @@
             })
             .state('profile', {
                 url: '/profile',
-                controller: 'EditProfileController',
+                controller: 'UserDataController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/authentication/profile.tpl.html'
             });

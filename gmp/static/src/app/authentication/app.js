@@ -8,9 +8,9 @@
         'app.main',
         'app.login',
         'app.register',
-        'app.toolbar',
-        'app.sidenav',
-        'app.profileditor'
+        'app.userdata.service',
+        'app.userdata.controller',
+        'app.toolbar'
     ]);
 
     angular

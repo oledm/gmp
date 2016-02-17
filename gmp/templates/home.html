@@ -19,14 +19,16 @@
     <!-- 
         This app
      -->
+    <script src="{% static 'src/app/user/app.userdata.service.module.js' %}"></script>
+    <script src="{% static 'src/app/user/app.userdata.service.js' %}"></script>
+    <script src="{% static 'src/app/user/app.userdata.controller.module.js' %}"></script>
+    <script src="{% static 'src/app/user/app.userdata.controller.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.authentication.service.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.authentication.service.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.department.service.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.department.service.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.main.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.main.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.profileditor.module.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.profileditor.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.sidenav.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.sidenav.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.toolbar.module.js' %}"></script>
@@ -48,10 +50,12 @@
 
 {% block content %}
  
-<md-sidenav class="md-whiteframe-z2" ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex >
-    <div layout="column" flex ng-controller="SidenavController as vm">
+{% verbatim %}
+<md-sidenav class="md-whiteframe-z2" ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex>
+    <div layout="column" flex ng-controller="UserDataController as vm">
         <md-toolbar class="md-theme-default md-tall md-hue-2" md-whiteframe="3">
             <div layout="column" class="md-toolbar-tools-bottom inset">
+                <span ng-bind-template="{{vm.userdata.last_name}} {{vm.userdata.first_name}}"></span>
                 <span ng-bind="vm.userdata.email"></span>
                 <span ng-bind="vm.userdata.department"></span>
             </div>
@@ -158,9 +162,11 @@
       </md-card>
       </div>
 
-     <div class="md-padding" ng-if="main.isAuthenticated()" ng-cloak layout="row" layout-align="center center" ui-view>
-         MAIN CONTENT
-         </div>
+      <!-- 
+          Main workspace content
+       -->
+     <div class="md-padding" ng-if="main.isAuthenticated()" ng-cloak layout="row" layout-align="center center" ui-view></div>
 
  </div>
+{% endverbatim %}
 {% endblock %}

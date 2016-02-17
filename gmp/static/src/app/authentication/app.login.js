@@ -15,13 +15,13 @@
         activate();
 
         function login() {
-            console.log('login');
             Authentication.login(vm.email, vm.password);
         }
 
         function activate() {
             if (Authentication.isAuthenticated()) {
-                console.log('activate');
+                console.log('TODO goto home state');
+//                $state.go('profile');
             }
         }
     }

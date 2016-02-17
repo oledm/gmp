@@ -43,7 +43,6 @@
         "no-unused-expressions": 2,
         "no-use-before-define": 0,
         "no-with": 2,
-        "camelcase": 2,
         "comma-spacing": 2,
         "no-console": 0,
         "consistent-return": 2,

@@ -2,7 +2,7 @@
     <form name="userForm" class="md-padding">
         <md-input-container class="md-block" flex-gt-sm>
           <label>Отдел</label>
-            <md-select required name="department" placeholder="Отдел" md-on-open="vm.loadDeps()" ng-model="vm.department">
+            <md-select required name="department" placeholder="Отдел" md-on-open="vm.loadDeps()" ng-model="vm.userdata.department">
                 <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'"></md-option>
             </md-select>
           <div ng-messages="userForm.department.$error">
@@ -12,7 +12,7 @@
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>Имя</label>
-          <input md-maxlength="50" name="first_name" ng-model="vm.first_name" />
+          <input md-maxlength="50" name="first_name" ng-model="vm.userdata.first_name" />
           <div ng-messages="userForm.first_name.$error">
             <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
           </div>
@@ -20,7 +20,7 @@
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>Фамилия</label>
-          <input md-maxlength="50" name="last_name" ng-model="vm.last_name" />
+          <input md-maxlength="50" name="last_name" ng-model="vm.userdata.last_name" />
           <div ng-messages="userForm.last_name.$error">
             <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
           </div>
@@ -28,7 +28,7 @@
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>E-mail</label>
-          <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
+          <input type="email" md-maxlength="50" required name="email" ng-model="vm.userdata.email" />
           <div ng-messages="userForm.email.$error">
             <div ng-message="required">Обязательное поле</div>
             <div ng-message="email">Некорректно указан email</div>
@@ -47,5 +47,4 @@
 
         <md-button type="submit" class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.updateProfile();"> Сохранить </md-button>
     </form>
-
 </md-card>
