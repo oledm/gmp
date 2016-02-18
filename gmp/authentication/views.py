@@ -68,7 +68,6 @@ class EmployeeViewset(viewsets.ModelViewSet):
         serializer = self.serializer_class(data=data)
 
         if serializer.is_valid(raise_exception=True):
-            #print('Valid data:', serializer.validated_data)
             Employee.objects.create_user(**serializer.validated_data, 
                 department=Department.objects.get(name=dep_name)
             )
@@ -79,3 +78,12 @@ class EmployeeViewset(viewsets.ModelViewSet):
             'status': 'Bad request',
             'message': 'Невозможно создать пользователя с указанными данными'
             }, status=status.HTTP_400_BAD_REQUEST)
+
+    #def update(self, request, username, pk=None):
+    #    data = request.data
+    #    print('updated object is', self.get_object())
+    #    serializer = self.serializer_class(data=data)
+    #    print('Is data valid?', serializer.is_valid())
+    #    serializer.update(self.get_object())
+    #    return Response(dict(serializer.validated_data),
+    #        status=status.HTTP_200_OK)

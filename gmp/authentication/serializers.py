@@ -46,3 +46,5 @@ class EmployeeSerializer(serializers.ModelSerializer):
             instance.save()
 
         update_session_auth_hash(self.context.get('request'), instance)
+
+        return instance

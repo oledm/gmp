@@ -43,10 +43,9 @@
         }
 
         function loginSuccess(response) {
-            console.log('loginSuccess');
-            console.log('Cookies before: ' + Cookies.get());
+//            console.log('Cookies before: ' + Cookies.get());
             Cookies.set(response.data);
-            console.log('Cookies after: ' + JSON.stringify(Cookies.get()));
+//            console.log('Cookies after: ' + JSON.stringify(Cookies.get()));
         }
 
         function loginFail() {

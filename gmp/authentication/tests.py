@@ -131,3 +131,23 @@ class EmployeeCreateTest(APITestCase):
         response = self.client.post('/api/user/', self.required_user_data)
         self.assertEqual(dict(response.data), self.required_user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+class EmployeeUpdateTest(APITestCase):
+    def setUp(self):
+        self.department = Department.objects.create(name='Тестовый отдел')
+        self.required_user_data = dict(
+            email='test@mail.ru', username='TestAdmin',
+            department=self.department.name, password='123',
+            is_admin=False
+        )
+
+    def test_update_user_data(self):
+        self.client.post('/api/user/', self.required_user_data)
+        user_url = '/api/user/{}/'.format(self.required_user_data['username'])
+        response = self.client.get(user_url)
+        self.assertEquals(response.data['first_name'], '')
+
+        self.client.login(username='test@mail.ru', password='123')
+        self.required_user_data['first_name'] = 'Tester'
+        response = self.client.put(user_url, self.required_user_data)
+        self.assertEquals(response.data['first_name'], 'Tester')

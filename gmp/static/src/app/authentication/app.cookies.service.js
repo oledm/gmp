@@ -23,7 +23,6 @@
                 return JSON.parse($cookies.get(cookieName));
             }
             catch(e) {
-                $log.error('Exception: ' + e);
                 return undefined;
             }
         }
@@ -33,7 +32,7 @@
         }
 
         function set(data) {
-            $log.log('cookie set ' + JSON.stringify(data));
+            $log.log('cookie to be set ' + JSON.stringify(data));
             $cookies.put(cookieName, JSON.stringify(data));
             $log.log('in cookie: ' + JSON.stringify(cookies.get()));
         }
