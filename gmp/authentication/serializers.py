@@ -13,7 +13,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     department = serializers.SlugRelatedField(read_only=True, slug_field='name')
     #department = DepartmentSerializer(read_only=True)
-    username = serializers.CharField(write_only=True, required=False)
+    #username = serializers.CharField(write_only=True, required=False)
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
 
@@ -24,7 +24,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'is_admin', 'password', 'confirm_password',
         )
 
-        read_only_fields = ('created_at', 'modified_at',)
+        read_only_fields = ('created_at', 'modified_at', 'username')
 
 
     def create(self, validated_data):

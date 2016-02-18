@@ -102,11 +102,13 @@ class EmployeeTest(APITestCase):
 class EmployeeCreateTest(APITestCase):
     def setUp(self):
         self.department = Department.objects.create(name='Тестовый отдел')
+        self.email = 'test@mail.ru'
+        self.username = self.email.split('@')[0]
         now = timezone.now()
         self.full_user_data = dict(
-            email='test@mail.ru', username='TestAdmin',
-            first_name='Имя', last_name='Фамилия', department=self.department.name,
-            phone='79101234567', birth_date=now.date(), is_admin=False
+            email=self.email, first_name='Имя', last_name='Фамилия',
+            department=self.department.name, phone='79101234567',
+            birth_date=now.date(), is_admin=False
         )
         self.required_user_data = dict(
             email='test@mail.ru', department=self.department.name,
@@ -125,6 +127,13 @@ class EmployeeCreateTest(APITestCase):
         self.assertEqual(dict(response.data), self.required_user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_auto_generate_username(self):
+        self.client.post('/api/user/', self.required_user_data)
+        user_url = '/api/user/{}/'.format(self.username)
+        response = self.client.get(user_url)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.data.get('username'), self.username)
+
     def test_post_admin_data(self):
         self.required_user_data.update({'is_admin': True})
         response = self.client.post('/api/user/', self.required_user_data)
@@ -134,15 +143,16 @@ class EmployeeCreateTest(APITestCase):
 class EmployeeUpdateTest(APITestCase):
     def setUp(self):
         self.department = Department.objects.create(name='Тестовый отдел')
+        self.email = 'test@mail.ru'
+        self.username = self.email.split('@')[0]
         self.required_user_data = dict(
-            email='test@mail.ru', username='TestAdmin',
-            department=self.department.name, password='123',
-            is_admin=False
+            email=self.email, department=self.department.name,
+            password='123', is_admin=False
         )
 
     def test_update_user_data(self):
         self.client.post('/api/user/', self.required_user_data)
-        user_url = '/api/user/{}/'.format(self.required_user_data['username'])
+        user_url = '/api/user/{}/'.format(self.username)
         response = self.client.get(user_url)
         self.assertEquals(response.data['first_name'], '')
 
