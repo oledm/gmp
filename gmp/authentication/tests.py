@@ -109,8 +109,7 @@ class EmployeeCreateTest(APITestCase):
             phone='79101234567', birth_date=now.date(), is_admin=False
         )
         self.required_user_data = dict(
-            email='test@mail.ru', username='TestAdmin',
-            department=self.department.name,
+            email='test@mail.ru', department=self.department.name,
             is_admin=False # это необязательно. Но т.к. у is_admin есть
             # default-значение, то, пропустив данный ключ, словари с
             # исходными данными и с ответом не совпадут.

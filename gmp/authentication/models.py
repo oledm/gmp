@@ -8,7 +8,7 @@ class EmployeeManager(BaseUserManager):
         if not email:
             raise ValueError('Введите корректный email.')
         if not kwargs.get('username'):
-            raise ValueError('Введите корректное имя пользователя')
+            kwargs['username'] = email.split('@')[0]
         if not kwargs.get('department'):
             raise ValueError('Введите название отдела')
 
