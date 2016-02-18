@@ -8,6 +8,7 @@
         'app.main',
         'app.login',
         'app.register',
+        'app.cookies',
         'app.userdata.service',
         'app.userdata.controller',
         'app.toolbar'

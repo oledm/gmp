@@ -1,9 +1,6 @@
 (function() {
     'use strict';
 
-    angular.module('app.authentication', [
-        'ngMaterial',
-        'ngCookies'
-    ]);
+    angular.module('app.authentication', ['ngMaterial']);
 
 })();

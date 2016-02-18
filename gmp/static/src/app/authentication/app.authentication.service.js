@@ -5,41 +5,32 @@
         .module('app.authentication')
         .factory('Authentication', Authentication);
 
-    Authentication.$inject = ['$http', '$cookies', '$mdDialog'];
+    Authentication.$inject = ['$http', '$mdDialog', 'Cookies'];
 
-    function Authentication($http, $cookies, $mdDialog) {
-        console.log('Authentication service started');
+    function Authentication($http, $mdDialog, Cookies) {
         var authentication = {
-            register: register,
+            isAuthenticated: isAuthenticated,
             login: login,
             logout: logout,
-            getAuthenticatedAccount: getAuthenticatedAccount,
-            setAuthenticatedAccount: setAuthenticatedAccount,
-            isAuthenticated: isAuthenticated,
-            unauthenticate: unauthenticate
+            register: register
         };
+
         return authentication;
 
-        function getAuthenticatedAccount() {
-            if ($cookies.get('authenticatedAccount') === undefined) {
-                return undefined;
-            }
-
-            return JSON.parse($cookies.get('authenticatedAccount'));
-        }
-
-        function setAuthenticatedAccount(account) {
-            console.log('setAuthenticatedAccount ' + JSON.stringify(account));
-            $cookies.put('authenticatedAccount', JSON.stringify(account));
-            console.log('in cookie: ' + JSON.stringify(authentication.getAuthenticatedAccount()));
-        }
-
         function isAuthenticated() {
-            return !!$cookies.get('authenticatedAccount');
+            return Cookies.isSet();
         }
 
-        function unauthenticate() {
-            $cookies.remove('authenticatedAccount');
+        function login(email, password) {
+            return $http.post('/api/login/', {
+                email: email,
+                password: password
+            }).then(loginSuccess, loginFail);
+        }
+
+        function logout() {
+            return $http.post('/api/logout/', {})
+                .then(logoutSuccess);
         }
 
         function register(email, username, password, department) {
@@ -51,40 +42,25 @@
             });
         }
 
-        function login(email, password) {
-            return $http.post('/api/login/', {
-                email: email,
-                password: password
-            }).then(loginSuccess, loginFail);
-        }
-
         function loginSuccess(response) {
             console.log('loginSuccess');
-            authentication.setAuthenticatedAccount(response.data);
+            console.log('Cookies before: ' + Cookies.get());
+            Cookies.set(response.data);
+            console.log('Cookies after: ' + JSON.stringify(Cookies.get()));
         }
 
         function loginFail() {
             $mdDialog
                 .show(
-                        $mdDialog.alert({
-                            title: 'Ошибка',
-                            textContent: 'Неверно указан email/пароль',
-                            ok: 'Закрыть'
-                        }));
-        }
-
-        function logout() {
-            return $http.post('/api/logout/', {})
-                .then(logoutSuccess, logoutFailed);
+                    $mdDialog.alert({
+                        title: 'Ошибка',
+                        textContent: 'Неверно указан email/пароль',
+                        ok: 'Закрыть'
+                    }));
         }
 
         function logoutSuccess() {
-            authentication.unauthenticate();
-        }
-
-        function logoutFailed() {
-            console.log('cookies: ' + JSON.stringify(authentication.getAuthenticatedAccount()));
-            console.log('Logout failed');
+            Cookies.remove();
         }
     }
 })();
