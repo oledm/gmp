@@ -5,9 +5,9 @@
         .module('app.userdata.service')
         .factory('UserData', UserData);
 
-    UserData.$inject = ['Cookies', '$http'];
+    UserData.$inject = ['Cookies', '$http', '$q', '$timeout'];
 
-    function UserData(Cookies, $http) {
+    function UserData(Cookies, $http, $q, $timeout) {
         var data = {
             email: '',
             first_name: '',
@@ -15,25 +15,24 @@
             department: ''
         };
         var userdata = {
-            data: data,
             clean: clean,
+            data: data,
+            get: get,
+            isLoading: false,
             update: update,
-            get: get
+            updateSuccessfull: false
         };
 
         return userdata;
 
         function clean() {
             angular.forEach(userdata.data, function(v, k) {
-//                console.log('clean value ' + v + ' of key ' + k);
                 data[k] = '';
             });
         }
 
         function get() {
             var cookiedata = Cookies.get();
-            console.log('cookie data: ' + JSON.stringify(cookiedata));
-            console.log('user data: ' + JSON.stringify(userdata.data));
             if (cookiedata !== undefined) {
                 data.email = cookiedata.email;
                 data.first_name = cookiedata.first_name;
@@ -47,22 +46,44 @@
         function update() {
             var cookiedata = Cookies.get();
 
+            userdata.isLoading = true;
+            console.log('Loading indicator start ' + userdata.isLoading);
+
             angular.forEach(data, function(v, k) {
-                console.log('updating cookie key ' + k + ' with value ' + data[k]);
                 cookiedata[k] = data[k];
             });
             Cookies.set(cookiedata);
-//            console.log('updated cookie: ' + JSON.stringify(Cookies.get()));
-            update_db(cookiedata);
+            return updateDB(cookiedata);
         }
 
-        function update_db(cookiedata) {
-            $http.put('/api/user/' + cookiedata.username + '/', {
+        function updateDB(cookiedata) {
+            return $http.put('/api/user/' + cookiedata.username + '/', {
                 first_name: data.first_name,
                 last_name: data.last_name,
                 email: data.email,
                 department: data.department
-            });
+            })
+            .then(updateSuccess)
+            .catch(updateFailed);
+
+            function updateSuccess(data, status, headers, config) {
+                // TODO for demo purpose only updating DB is delayed for 700ms. Remove this later!
+                return $timeout(function() {
+                    userdata.isLoading = false;
+                    userdata.updateSuccessfull = true;
+
+                    // OK-indicator will be shown for 3 seconds
+                    $timeout(function() {
+                        userdata.updateSuccessfull = false;
+                    }, 3000);
+
+                    return data.data;
+                }, 700);
+            }
+
+            function updateFailed(e) {
+                return $q.reject(e);
+            }
         }
     }
 })();

@@ -60,9 +60,9 @@
     <div layout="column" flex ng-controller="UserDataController as vm">
         <md-toolbar class="md-theme-default md-tall md-hue-2" md-whiteframe="3">
             <div layout="column" class="md-toolbar-tools-bottom inset">
-                <span ng-bind-template="{{vm.userdata.last_name}} {{vm.userdata.first_name}}"></span>
-                <span ng-bind="vm.userdata.email"></span>
-                <span ng-bind="vm.userdata.department"></span>
+                <span ng-bind-template="{{vm.userdata.data.last_name}} {{vm.userdata.data.first_name}}"></span>
+                <span ng-bind="vm.userdata.data.email"></span>
+                <span ng-bind="vm.userdata.data.department"></span>
             </div>
         </md-toolbar>
     
@@ -80,7 +80,7 @@
             <h2>
                 <a ui-sref="home">
                         <!-- 
-                            <md-icon layout-align="center center" style="font-size:2em" md-font-icon="icon ion-home"></md-icon>
+                            <md-icon style="font-size:2em" md-font-icon="icon ion-home"></md-icon>
                          -->
                     Главная</a>
             </h2>
@@ -117,7 +117,12 @@
                       </div>
                     </md-input-container>
                 
-                    <md-button type="submit" class="md-raised" ng-click="vm.login();"> Войти </md-button>
+                        <md-button type="submit" class="md-raised" ng-click="vm.login();"> Войти </md-button>
+                      <!-- 
+                          <div layout="row" layout-align="space-around">
+                            <md-button type="submit" class="md-raised" ng-click="vm.login();"> Войти </md-button>
+                          div>
+                       -->
                 </form>
             </md-content>
           </md-tab>

@@ -10,8 +10,8 @@
     function UserDataController(Department, UserData) {
         var vm = this;
 
-        vm.userdata = UserData.data;
         vm.loadDepartments = loadDepartments;
+        vm.userdata = UserData;
 
         activate();
 

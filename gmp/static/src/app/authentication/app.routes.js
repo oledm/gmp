@@ -13,7 +13,8 @@
         '$locationProvider'
     ];
 
-    function config($stateProvider, $urlRouterProvider, $resourceProvider, $mdThemingProvider, $locationProvider) {
+    function config($stateProvider, $urlRouterProvider, $resourceProvider,
+            $mdThemingProvider, $locationProvider) {
         $stateProvider
             .state('home', {
                 url: '/'
@@ -22,7 +23,7 @@
                 url: '/profile',
                 controller: 'UserDataController',
                 controllerAs: 'vm',
-                templateUrl: '/static/src/app/authentication/profile.tpl.html'
+                templateUrl: '/static/src/app/user/profile.tpl.html'
             });
 
         $urlRouterProvider.otherwise('/');

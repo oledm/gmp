@@ -2,14 +2,14 @@
     <form name="userForm" class="md-padding">
         <md-input-container class="md-block" flex-gt-sm>
           <label>Отдел</label>
-            <md-select name="department" placeholder="Отдел" md-on-open="vm.loadDeps()" ng-model="vm.userdata.department">
+            <md-select name="department" placeholder="Отдел" md-on-open="vm.loadDepartments()" ng-model="vm.userdata.data.department">
                 <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'"></md-option>
             </md-select>
         </md-input-container>
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>Имя</label>
-          <input md-maxlength="50" name="first_name" ng-model="vm.userdata.first_name" />
+          <input md-maxlength="50" name="first_name" ng-model="vm.userdata.data.first_name" />
           <div ng-messages="userForm.first_name.$error">
             <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
           </div>
@@ -17,7 +17,7 @@
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>Фамилия</label>
-          <input md-maxlength="50" name="last_name" ng-model="vm.userdata.last_name" />
+          <input md-maxlength="50" name="last_name" ng-model="vm.userdata.data.last_name" />
           <div ng-messages="userForm.last_name.$error">
             <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
           </div>
@@ -25,7 +25,7 @@
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>E-mail</label>
-          <input type="email" md-maxlength="50" name="email" ng-model="vm.userdata.email" />
+          <input type="email" md-maxlength="50" name="email" ng-model="vm.userdata.data.email" />
           <div ng-messages="userForm.email.$error">
             <div ng-message="email">Некорректно указан email</div>
             <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
@@ -40,6 +40,19 @@
           </div>
         </md-input-container>
 
-        <md-button type="submit" class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.updateProfile();"> Сохранить </md-button>
+        
+
+
+
+          <div layout="row" layout-align="start center">
+        <md-button type="submit" class="md-raised" ng-click="vm.updateProfile()" ng-disabled="vm.userdata.isLoading || userForm.$invalid"> Сохранить 
+            <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.userdata.updateSuccessfull"></i>
+        </md-button>    
+            <div>
+            <md-progress-circular ng-show="vm.userdata.isLoading" md-mode="indeterminate"></md-progress-circular>
+            </div>
+          </div>
+
+
     </form>
 </md-card>
