@@ -11,12 +11,14 @@
         var vm = this;
 
         vm.loadDepartments = loadDepartments;
+        vm.updateProfile = updateProfile;
         vm.userdata = UserData;
 
         activate();
 
         function activate() {
             UserData.get();
+            loadDepartments();
         }
 
 	function loadDepartments() {
@@ -25,8 +27,8 @@
             });
         }
 
-        vm.updateProfile = function() {
+        function updateProfile() {
             UserData.update();
-        };
+        }
     }
 })();

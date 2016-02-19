@@ -82,6 +82,8 @@ class EmployeeViewset(viewsets.ModelViewSet):
     #def update(self, request, username, pk=None):
     #    data = request.data
     #    print('updated object is', self.get_object())
+    #    data['department'] = 2
+    #    print('data is ', data)
     #    serializer = self.serializer_class(data=data)
     #    print('Is data valid?', serializer.is_valid())
     #    serializer.update(self.get_object())

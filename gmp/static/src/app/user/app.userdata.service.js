@@ -32,32 +32,33 @@
         }
 
         function get() {
-            var cookiedata = Cookies.get();
-            if (cookiedata !== undefined) {
-                data.email = cookiedata.email;
-                data.first_name = cookiedata.first_name;
-                data.last_name = cookiedata.last_name;
-                data.department = cookiedata.department;
+            var cookie = Cookies.get();
+            if (cookie !== undefined) {
+                data.email = cookie.email;
+                data.first_name = cookie.first_name;
+                data.last_name = cookie.last_name;
+                data.department = cookie.department;
                 userdata.data = data;
             }
             console.log('updated user data: ' + JSON.stringify(userdata.data));
         }
 
         function update() {
-            var cookiedata = Cookies.get();
+            var cookie = Cookies.get();
 
             userdata.isLoading = true;
-            console.log('Loading indicator start ' + userdata.isLoading);
+            userdata.updateSuccessfull = false;
 
             angular.forEach(data, function(v, k) {
-                cookiedata[k] = data[k];
+                cookie[k] = data[k];
             });
-            Cookies.set(cookiedata);
-            return updateDB(cookiedata);
+
+            Cookies.set(cookie);
+            return updateDB(cookie);
         }
 
-        function updateDB(cookiedata) {
-            return $http.put('/api/user/' + cookiedata.username + '/', {
+        function updateDB(cookie) {
+            return $http.put('/api/user/' + cookie.username + '/', {
                 first_name: data.first_name,
                 last_name: data.last_name,
                 email: data.email,
@@ -65,25 +66,28 @@
             })
             .then(updateSuccess)
             .catch(updateFailed);
+        }
 
-            function updateSuccess(data, status, headers, config) {
-                // TODO for demo purpose only updating DB is delayed for 700ms. Remove this later!
-                return $timeout(function() {
-                    userdata.isLoading = false;
-                    userdata.updateSuccessfull = true;
+        function updateSuccess(response) {
+            // TODO Only for demo purpose updating DB is delayed for 700ms.
+            // Remove this later!
+            return $timeout(function() {
+                userdata.isLoading = false;
+                userdata.updateSuccessfull = true;
 
-                    // OK-indicator will be shown for 3 seconds
-                    $timeout(function() {
-                        userdata.updateSuccessfull = false;
-                    }, 3000);
+                // OK-indicator will be shown for 3 seconds
+                $timeout(function() {
+                    userdata.updateSuccessfull = false;
+                }, 3000);
 
-                    return data.data;
-                }, 700);
-            }
+                console.log('Data from update: %s', JSON.stringify(response.data));
+                console.log('Status from update: %s', response.status);
+                return response.data;
+            }, 700);
+        }
 
-            function updateFailed(e) {
-                return $q.reject(e);
-            }
+        function updateFailed(e) {
+            return $q.reject(e);
         }
     }
 })();

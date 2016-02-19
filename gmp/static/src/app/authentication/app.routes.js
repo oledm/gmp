@@ -24,6 +24,12 @@
                 controller: 'UserDataController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/user/profile.tpl.html'
+            })
+            .state('upload', {
+                url: '/upload',
+                controller: 'UploadController',
+                controllerAs: 'vm',
+                templateUrl: '/static/src/app/filestorage/upload.tpl.html'
             });
 
         $urlRouterProvider.otherwise('/');
