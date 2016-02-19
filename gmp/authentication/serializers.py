@@ -32,6 +32,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.username)
         instance.username = validated_data.get('username', instance.username)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
         instance.first_name = validated_data.get('first_name', instance.first_name)

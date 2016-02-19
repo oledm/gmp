@@ -132,6 +132,7 @@ class EmployeeCreateTest(APITestCase):
         user_url = '/api/user/{}/'.format(self.username)
         response = self.client.get(user_url)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.data.get('email'), self.email)
         self.assertEquals(response.data.get('username'), self.username)
 
     def test_post_admin_data(self):

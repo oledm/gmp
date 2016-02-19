@@ -4,6 +4,7 @@
 {% block css %}
 <base href="/">
 <link rel="stylesheet" href="{% static 'angular-material/angular-material.css' %}">
+<link rel="stylesheet" href="{% static 'Ionicons/css/ionicons.min.css' %}">
 <link rel="stylesheet" href="{% static 'src/assets/app.css' %}">
 {% endblock %}
 
@@ -77,7 +78,11 @@
      <md-toolbar layout="column" md-whiteframe="3">
            <div class="md-toolbar-tools">
             <h2>
-              <a ui-sref="home">Главная</a>
+                <a ui-sref="home">
+                        <!-- 
+                            <md-icon layout-align="center center" style="font-size:2em" md-font-icon="icon ion-home"></md-icon>
+                         -->
+                    Главная</a>
             </h2>
             <span flex></span>
             <md-button ui-sref="profile" ng-show="main.isAuthenticated()" aria-label="Профиль"> Профиль </md-button>
@@ -121,20 +126,11 @@
                 <form name="userForm" class="md-padding">
                     <md-input-container class="md-block" flex-gt-sm>
                       <label>Отдел</label>
-                        <md-select required name="department" placeholder="Отдел" md-on-open="vm.loadDeps()" ng-model="vm.department">
+                        <md-select required name="department" placeholder="Отдел" md-on-open="vm.loadDepartments()" ng-model="vm.department">
                             <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'"></md-option>
                         </md-select>
                       <div ng-messages="userForm.department.$error">
                         <div ng-message="required">Обязательное поле</div>
-                      </div>
-                    </md-input-container>
-             
-                    <md-input-container class="md-block" flex-gt-sm>
-                      <label>Имя пользователя</label>
-                      <input md-maxlength="50" required name="name" ng-model="vm.name" />
-                      <div ng-messages="userForm.name.$error">
-                        <div ng-message="required">Обязательное поле</div>
-                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
                       </div>
                     </md-input-container>
              

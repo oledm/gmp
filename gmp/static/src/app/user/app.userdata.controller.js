@@ -11,9 +11,15 @@
         var vm = this;
 
         vm.userdata = UserData.data;
-        vm.loadDeps = loadDeps;
+        vm.loadDepartments = loadDepartments;
 
-	function loadDeps() {
+        activate();
+
+        function activate() {
+            UserData.get();
+        }
+
+	function loadDepartments() {
             Department.query(function(data) {
                 vm.allDeps = data;
             });

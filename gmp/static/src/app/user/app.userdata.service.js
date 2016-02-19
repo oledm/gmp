@@ -5,9 +5,9 @@
         .module('app.userdata.service')
         .factory('UserData', UserData);
 
-    UserData.$inject = ['Cookies'];
+    UserData.$inject = ['Cookies', '$http'];
 
-    function UserData(Cookies) {
+    function UserData(Cookies, $http) {
         var data = {
             email: '',
             first_name: '',
@@ -17,31 +17,31 @@
         var userdata = {
             data: data,
             clean: clean,
-            update: update
+            update: update,
+            get: get
         };
 
-	activate();
-
         return userdata;
-
-        function activate() {
-//            console.log('userdata from UserDataService: ' + JSON.stringify(userdata));
-            var cookiedata = Cookies.get();
-            console.log('cookie data: ' + JSON.stringify(cookiedata));
-            if (cookiedata !== undefined) {
-                data.email = cookiedata.email || data.email;
-                data.first_name = cookiedata.first_name || data.first_name;
-                data.last_name = cookiedata.last_name || data.last_name;
-                data.department = cookiedata.department || data.department;
-            }
-//            console.log('userdata after cookie ' + JSON.stringify(userdata));
-        }
 
         function clean() {
             angular.forEach(userdata.data, function(v, k) {
 //                console.log('clean value ' + v + ' of key ' + k);
                 data[k] = '';
             });
+        }
+
+        function get() {
+            var cookiedata = Cookies.get();
+            console.log('cookie data: ' + JSON.stringify(cookiedata));
+            console.log('user data: ' + JSON.stringify(userdata.data));
+            if (cookiedata !== undefined) {
+                data.email = cookiedata.email;
+                data.first_name = cookiedata.first_name;
+                data.last_name = cookiedata.last_name;
+                data.department = cookiedata.department;
+                userdata.data = data;
+            }
+            console.log('updated user data: ' + JSON.stringify(userdata.data));
         }
 
         function update() {
@@ -52,7 +52,17 @@
                 cookiedata[k] = data[k];
             });
             Cookies.set(cookiedata);
-            console.log('updated cookie: ' + JSON.stringify(Cookies.get()));
+//            console.log('updated cookie: ' + JSON.stringify(Cookies.get()));
+            update_db(cookiedata);
+        }
+
+        function update_db(cookiedata) {
+            $http.put('/api/user/' + cookiedata.username + '/', {
+                first_name: data.first_name,
+                last_name: data.last_name,
+                email: data.email,
+                department: data.department
+            });
         }
     }
 })();

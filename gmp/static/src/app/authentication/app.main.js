@@ -8,7 +8,6 @@
     MainController.$inject = ['Authentication'];
 
     function MainController(Authentication) {
-        console.log('MainController');
         var vm = this;
 
         vm.isAuthenticated = function() {
