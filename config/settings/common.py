@@ -48,6 +48,7 @@ LOCAL_APPS = (
     'gmp.users',  # custom users app
     # Your stuff: custom apps go here
     'gmp.authentication',
+    'gmp.filestorage',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

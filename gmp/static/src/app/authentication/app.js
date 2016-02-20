@@ -11,7 +11,9 @@
         'app.cookies',
         'app.userdata.service',
         'app.userdata.controller',
-        'app.toolbar'
+        'app.toolbar',
+        'app.upload',
+        'app.upload.service'
     ]);
 
     angular

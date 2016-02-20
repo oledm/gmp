@@ -10,12 +10,13 @@ from django.views import defaults as default_views
 
 from rest_framework import routers
 
-from gmp.authentication import views
+from gmp.authentication import views as users_views
+from gmp.filestorage import views as filestorage_views
 
 
 router = routers.SimpleRouter()
-router.register('user', views.EmployeeViewset)
-#router.register('department', views.)
+router.register('user', users_views.EmployeeViewset)
+#router.register('department', users_views.)
 
 
 urlpatterns = [
@@ -30,9 +31,11 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
     url(r'^api/', include(router.urls)),
-    url(r'^api/department', views.DepartmentList.as_view()),
-    url(r'^api/login', views.LoginView.as_view(), name='login'),
-    url(r'^api/logout', views.LogoutView.as_view(), name='logout'),
+    url(r'^api/department', users_views.DepartmentList.as_view()),
+    url(r'^api/login', users_views.LoginView.as_view(), name='login'),
+    url(r'^api/logout', users_views.LogoutView.as_view(), name='logout'),
+    # File upload views
+    url(r'^api/storage', filestorage_views.FileUploadView.as_view(), name='upload'),
     url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
 
 

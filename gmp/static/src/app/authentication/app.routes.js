@@ -32,7 +32,7 @@
                 templateUrl: '/static/src/app/filestorage/upload.tpl.html'
             });
 
-        $urlRouterProvider.otherwise('/');
+        $urlRouterProvider.otherwise('/upload');
 
         $resourceProvider.defaults.stripTrailingSlashes = false;
 

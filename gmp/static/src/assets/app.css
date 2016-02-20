@@ -11,6 +11,48 @@ body {
 }
 
 .icon {
-    vertical-align: middle;
     font-size: 2em;
+    width: 100%;
+    height: 100%;
+}
+
+.fileUploader {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    display: block;
+}
+
+.fileUploader + label {
+    color: white;
+    cursor: pointer;
+}
+
+.fileUploader:focus + label,
+.fileUploader + label:hover {
+    background-color: #ad1457;
+}
+
+/*
+.fileUploader:focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+*/
+
+.uploadForm_buttonContainer {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    background-color: #e91e63;
+    display: block;
+}
+
+.uploadForm_button {
+    text-align: center;
+    margin: auto 0;
 }
