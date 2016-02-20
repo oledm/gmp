@@ -14,7 +14,10 @@ class FileUploadView(APIView):
         up_file = request.FILES['fileupload']
         print('Received file', up_file)
         self.procFile(up_file)
-        return Response(status=201)
+        return Response({
+            'status': 'CREATED!', 
+            'message': 'File upload success'
+            }, status=201)
 
     def procFile(self, fname):
         saved_file = os.path.join(settings.MEDIA_ROOT, fname.name)

@@ -6,7 +6,7 @@
         .factory('UploadService', UploadService);
 
     UploadService.$inject = ['$http'];
-    function UploadService($http) {
+    function UploadService($http, Upload) {
         var service = {
             upload: upload
         };

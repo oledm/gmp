@@ -200,7 +200,9 @@ BOWER_INSTALLED_APPS = (
     'angular-cookies',
     'angular-material',
     'angular-cookies',
-    'ionicons'
+    'ionicons',
+    'ng-file-upload-shim',
+    'ng-file-upload'
     #'material-design-icons',
     #'angular-material-data-table',
 )

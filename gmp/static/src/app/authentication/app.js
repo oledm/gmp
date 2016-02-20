@@ -13,7 +13,6 @@
         'app.userdata.controller',
         'app.toolbar',
         'app.upload',
-        'app.upload.service'
     ]);
 
     angular

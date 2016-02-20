@@ -5,15 +5,16 @@
         .module('app.upload')
         .controller('UploadController', UploadController);
 
-    UploadController.$inject = ['$scope', 'UploadService'];
+    UploadController.$inject = ['$scope', 'Upload'];
 
-    function UploadController($scope, UploadService) {
+    function UploadController($scope, Upload) {
         var vm = this;
 
         vm.files = [];
         vm.upload = upload;
 
         $scope.fileSelected = fileSelected;
+
 
         function fileSelected(element) {
             $scope.$apply(function() {
@@ -24,9 +25,11 @@
         function upload() {
             angular.forEach(vm.files, function(file) {
                 console.log('file: ' + file.name);
-                UploadService.upload(file);
-                console.dir(file);
-            });
+                Upload.upload({
+                    url: '/api/storage/',
+                    data: {fileupload: file},
+                });
+	    });
         }
     }
 })();
