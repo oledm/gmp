@@ -75,7 +75,19 @@
     
         <md-content layout-padding layout="column">
            <div layout="column">
-               <h3></h3>
+               <md-list>
+                    <!-- 
+                      <md-button ui-sref="upload">Файлы</mb-button>
+                     -->
+                        <a ui-sref="upload" >
+                          <md-item-content md-ink-ripple layout="row" layout-align="start center">
+                            <div class="inset">
+                                <i class="icon ion-plus"></i>
+                            </div>
+                            <div class="inset" ng-bind="main.menu.name"></div>
+                          </md-item-content>
+                        </a>
+               </md-list>
             </div>
         </md-content>
     </div>

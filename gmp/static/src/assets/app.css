@@ -1,6 +1,16 @@
 body {
     background-color: #f0f0f0;
 }
+
+a {
+    outline: 0;
+    text-decoration: none;
+}
+
+a:hover, a:active {
+    font-size: 1.2em;
+}
+a:focus {}
 .md-toolbar-tools-bottom {
     font-size: 0.8em;
 }
