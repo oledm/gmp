@@ -77,3 +77,8 @@ a:focus {}
     opacity: 0;
     filter: alpha(opacity=0);
 }
+
+.mainContent {
+    position: relative;
+    overflow-x: hidden;
+}

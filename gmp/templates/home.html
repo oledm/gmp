@@ -97,91 +97,92 @@
             <h2><a ui-sref="home">Главная</a></h2>
             <span flex></span>
             <md-button ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход" class="md-raised md-warn"> Выход </md-button>
-      </div>
+          </div>
      </md-toolbar>
      
      <div class="md-padding" ng-hide="main.isAuthenticated()" ng-cloak layout="row" layout-align="center center">
-      <md-card flex-gt-xs="60" flex-gt-md="40">
-        <md-tabs md-dynamic-height md-border-bottom>
-          <md-tab label="Вход">
-            <md-content class="md-padding" ng-controller="LoginController as vm">
-                <form name="userForm" class="md-padding">
-                    <div ng-show="vm.error" ng-bind="vm.error"></div>
-                
-                    <md-input-container class="md-block" flex-gt-sm>
-                      <label>E-mail</label>
-                      <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
-                      <div ng-messages="userForm.email.$error">
-                        <div ng-message="required">Обязательное поле</div>
-                        <div ng-message="email">Некорректно указан email</div>
-                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-                      </div>
-                    </md-input-container>
-                
-                    <md-input-container class="md-block" flex-gt-sm>
-                      <label>Пароль</label>
-                      <input type="password" md-maxlength="50" required name="password" ng-model="vm.password" />
-                      <div ng-messages="userForm.password.$error">
-                        <div ng-message="required">Обязательное поле</div>
-                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-                      </div>
-                    </md-input-container>
-                
-                        <md-button type="submit" class="md-raised" ng-click="vm.login();"> Войти </md-button>
-                      <!-- 
-                          <div layout="row" layout-align="space-around">
+         <md-card flex-gt-xs="60" flex-gt-md="40">
+            <md-tabs md-dynamic-height md-border-bottom>
+              <md-tab label="Вход">
+                <md-content class="md-padding" ng-controller="LoginController as vm">
+                    <form name="userForm" class="md-padding">
+                        <div ng-show="vm.error" ng-bind="vm.error"></div>
+                    
+                        <md-input-container class="md-block" flex-gt-sm>
+                          <label>E-mail</label>
+                          <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
+                          <div ng-messages="userForm.email.$error">
+                            <div ng-message="required">Обязательное поле</div>
+                            <div ng-message="email">Некорректно указан email</div>
+                            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                          </div>
+                        </md-input-container>
+                    
+                        <md-input-container class="md-block" flex-gt-sm>
+                          <label>Пароль</label>
+                          <input type="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+                          <div ng-messages="userForm.password.$error">
+                            <div ng-message="required">Обязательное поле</div>
+                            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                          </div>
+                        </md-input-container>
+                    
                             <md-button type="submit" class="md-raised" ng-click="vm.login();"> Войти </md-button>
-                          div>
-                       -->
-                </form>
-            </md-content>
-          </md-tab>
-          <md-tab label="Регистрация">
-            <md-content class="md-padding" ng-controller="RegisterController as vm">
-                <form name="userForm" class="md-padding">
-                    <md-input-container class="md-block" flex-gt-sm>
-                      <label>Отдел</label>
-                        <md-select required name="department" placeholder="Отдел" md-on-open="vm.loadDepartments()" ng-model="vm.department">
-                            <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'"></md-option>
-                        </md-select>
-                      <div ng-messages="userForm.department.$error">
-                        <div ng-message="required">Обязательное поле</div>
-                      </div>
-                    </md-input-container>
+                          <!-- 
+                              <div layout="row" layout-align="space-around">
+                                <md-button type="submit" class="md-raised" ng-click="vm.login();"> Войти </md-button>
+                              div>
+                           -->
+                    </form>
+                </md-content>
+              </md-tab>
+              <md-tab label="Регистрация">
+                <md-content class="md-padding" ng-controller="RegisterController as vm">
+                    <form name="userForm" class="md-padding">
+                        <md-input-container class="md-block" flex-gt-sm>
+                          <label>Отдел</label>
+                            <md-select required name="department" placeholder="Отдел" md-on-open="vm.loadDepartments()" ng-model="vm.department">
+                                <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'"></md-option>
+                            </md-select>
+                          <div ng-messages="userForm.department.$error">
+                            <div ng-message="required">Обязательное поле</div>
+                          </div>
+                        </md-input-container>
+                 
+                        <md-input-container class="md-block" flex-gt-sm>
+                          <label>E-mail</label>
+                          <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
+                          <div ng-messages="userForm.email.$error">
+                            <div ng-message="required">Обязательное поле</div>
+                            <div ng-message="email">Некорректно указан email</div>
+                            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                          </div>
+                        </md-input-container>
+                 
+                        <md-input-container class="md-block" flex-gt-sm>
+                          <label>Пароль</label>
+                          <input type="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+                          <div ng-messages="userForm.password.$error">
+                            <div ng-message="required">Обязательное поле</div>
+                            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+                          </div>
+                        </md-input-container>
              
-                    <md-input-container class="md-block" flex-gt-sm>
-                      <label>E-mail</label>
-                      <input type="email" md-maxlength="50" required name="email" ng-model="vm.email" />
-                      <div ng-messages="userForm.email.$error">
-                        <div ng-message="required">Обязательное поле</div>
-                        <div ng-message="email">Некорректно указан email</div>
-                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-                      </div>
-                    </md-input-container>
-             
-                    <md-input-container class="md-block" flex-gt-sm>
-                      <label>Пароль</label>
-                      <input type="password" md-maxlength="50" required name="password" ng-model="vm.password" />
-                      <div ng-messages="userForm.password.$error">
-                        <div ng-message="required">Обязательное поле</div>
-                        <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-                      </div>
-                    </md-input-container>
-         
-                    <md-button type="submit" class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.register();"> Отправить </md-button>
-                </form>
-            
-            </md-content>
-          </md-tab>
-        </md-tabs>
-      </md-card>
+                        <md-button type="submit" class="md-raised" ng-disabled="userForm.$invalid" ng-click="vm.register();"> Отправить </md-button>
+                    </form>
+                
+                </md-content>
+              </md-tab>
+            </md-tabs>
+          </md-card>
       </div>
 
       <!-- 
           Main workspace content
        -->
-     <div class="md-padding" ng-if="main.isAuthenticated()" ng-cloak layout="row" layout-align="center center" ui-view></div>
+     <div class="md-padding mainContent" ng-if="main.isAuthenticated()" ng-cloak layout="row" layout-align="center end" ui-view></div>
 
+     </div>
  </div>
 {% endverbatim %}
 {% endblock %}
