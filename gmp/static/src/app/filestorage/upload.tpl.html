@@ -3,10 +3,18 @@
       <md-card-title-text>
         <span class="md-headline">Ваши файлы</span>
       </md-card-title-text>
-      <md-card-title-media>
-        <div class="md-media-lg card-media"></div>
-      </md-card-title-media>
     </md-card-title>
+    <md-content class="md-padding">
+        <md-list>
+            <md-subheader class="md-no-sticky">Последние загруженные файлы</md-subheader>
+            <md-list-item class="md-3-line" ng-repeat="file in vm.uploadedFiles">
+                <div class="md-list-item-text" layout="column">
+                    <h3>{{ file.name }}</h3>
+                    <p>{{ file.uploaded_at | date }}</p>
+                </div>
+            </md-list-item>
+        </md-list>
+    </md-content>
     <md-card-actions layout="row" layout-align="end center">
       <md-button>Action 1</md-button>
       <md-button>Action 2</md-button>

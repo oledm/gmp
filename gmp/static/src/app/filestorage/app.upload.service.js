@@ -6,16 +6,18 @@
         .factory('UploadService', UploadService);
 
     UploadService.$inject = ['$http'];
-    function UploadService($http, Upload) {
+    function UploadService($http) {
         var service = {
-            upload: upload
+            getFiles: getFiles
         };
 
         return service;
 
-        function upload(file) {
-            console.log('Отправка файла ' + file);
-            return $http.post('/api/storage/', {fileupload: file});
+        function getFiles() {
+            return $http.get('/api/file/').
+                then(function(resp) {
+                    return resp.data;
+                });
         }
     }
 })();

@@ -16,7 +16,9 @@ from gmp.filestorage import views as filestorage_views
 
 router = routers.SimpleRouter()
 router.register('user', users_views.EmployeeViewset)
-#router.register('department', users_views.)
+
+router_files = routers.SimpleRouter()
+router_files.register('file', filestorage_views.FileViewset)
 
 
 urlpatterns = [
@@ -34,8 +36,9 @@ urlpatterns = [
     url(r'^api/department', users_views.DepartmentList.as_view()),
     url(r'^api/login', users_views.LoginView.as_view(), name='login'),
     url(r'^api/logout', users_views.LogoutView.as_view(), name='logout'),
-    # File upload views
-    url(r'^api/storage', filestorage_views.FileUploadView.as_view(), name='upload'),
+    # Files manage views
+    url(r'^api/', include(router_files.urls)),
+    url(r'^api/upload', filestorage_views.FileUploadView.as_view(), name='files'),
     url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
 
 

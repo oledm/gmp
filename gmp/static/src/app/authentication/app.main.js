@@ -9,7 +9,7 @@
 
     function MainController(Authentication) {
         var vm = this;
-        vm.menu = {name: "Загрузка файлов"};
+        vm.menu = {name: 'Загрузка файлов'};
 
         vm.isAuthenticated = function() {
             return Authentication.isAuthenticated();
