@@ -1,43 +1,54 @@
- <md-card>
-    <md-card-title>
-      <md-card-title-text>
-        <span class="md-headline">Ваши файлы</span>
-      </md-card-title-text>
-    </md-card-title>
+ <md-card flex layout-fill layout="column">
     <md-content class="md-padding">
+        <md-card-actions layout="row" layout-align="begin center">
+            <div class="fileUpload">
+                <md-button class="md-primary md-raised">Добавить</md-button>
+                <input id="file" onchange="angular.element(this).scope().fileSelected(this)" class="upload" type="file" name="file" aria-label="fileupload" data-multiple-caption="{count} files selected" multiple></input>
+            </div>
+            <md-button>Удалить</md-button>
+        </md-card-actions>
         <md-list>
             <md-subheader class="md-no-sticky">Последние загруженные файлы</md-subheader>
-            <md-list-item class="md-3-line" ng-repeat="file in vm.uploadedFiles">
-                <div class="md-list-item-text" layout="column">
-                    <h3>{{ file.name }}</h3>
-                    <p>{{ file.uploaded_at | date }}</p>
-                </div>
-            </md-list-item>
         </md-list>
-    </md-content>
-    <md-card-actions layout="row" layout-align="end center">
-      <md-button>Action 1</md-button>
-      <md-button>Action 2</md-button>
-    </md-card-actions>
-  </md-card>
 
+    <md-table-container>
+      <table md-table md-row-select ng-model="vm.selected" md-progress="promise">
+        <thead md-head md-order="vm.sortOrder">
+          <tr md-row>
+            <th md-column md-order-by="name"><span>Имя файла</span></th>
+            <th md-column md-order-by="uploaded_at">Дата загрузки</th>
+          </tr>
+        </thead>
+        <tbody md-body>
+            <tr md-row md-select="file" md-select-id="{{vm.uploadedFiles.name}}" md-auto-select ng-repeat="file in vm.uploadedFiles | orderBy: vm.sortOrder">
+            <td md-cell>{{file.name}}</td>
+            <td md-cell>{{file.uploaded_at |date:'yyyy-MM-dd HH:mm:ss'}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </md-table-container>
+</md-content>
+</md-card>
+
+<!-- 
 <md-card class="md-padding" flex-gt-xs="60" flex-gt-md="40" layout="column">
     <form name="uploadForm">
-        <input id="file" onchange="angular.element(this).scope().fileSelected(this)" class="fileUploader" type="file" name="file" aria-label="fileupload" data-multiple-caption="{count} files selected" multiple></input>
+        <input id="file" onchange="angular.element(this).scope().fileSelected(this)" type="file" name="file" aria-label="fileupload" data-multiple-caption="{count} files selected" multiple></input>
             <label class="uploadForm_buttonContainer" for="file">
-                <figure class="uploadForm_button">
-                    <i class="icon ion-plus" style="color: #fce4ec"></i>
-                </figure>
+                <md-button class="md-primary">Добавить</md-button>
+                    <figure class="uploadForm_button">
+                        <i class="icon ion-plus" style="color: #fce4ec"></i>
+                    </figure>
             </label>
 
             <div ng-show="vm.files.length">
                 <div ng-repeat="file in vm.files">{{file.name}}</div>
             </div>
 
-      <div layout="row" layout-align="start center">
+<div layout="row" layout-align="start center">
         <md-button type="submit" ng-click="vm.upload()" class="md-raised"> Отправить 
             <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.userdata.updateSuccessfull"></i>
         </md-button>    
-      </div>
+      </div> 
 </form>
-</md-card>
+</md-card> -->
