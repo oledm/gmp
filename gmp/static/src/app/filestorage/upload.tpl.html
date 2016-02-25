@@ -13,7 +13,7 @@
 
         <md-subheader class="md-warn" ng-show="vm.selected.length">
           <div>
-              <span>{{vm.selected.length > 1 ? 'Выбрано' : 'Выбран'}} {{vm.selected.length}} {{vm.selected.length > 1 ? 'файла' : 'файл'}}</span>
+              <span>{{vm.selected.length > 1 ? 'Выбрано' : 'Выбран'}} {{vm.selected.length}} {{vm.selected.length > 1 ? vm.selected.length >= 5 ? 'файлов' : 'файла' : 'файл'}}</span>
           </div>
         </md-subheader>
         

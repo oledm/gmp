@@ -2,20 +2,27 @@ body {
     background-color: #f0f0f0;
 }
 
-a {
+md-sidenav a {
     outline: 0;
     text-decoration: none;
     color: #aebfc1;
-    background-color: #2e3a4a !important;
-    border-left: 3px solid #2e3a4a;
+    background-color: #2e3a4a;
+    border-left: 5px solid #2e3a4a;
     display:block;
 }
 
-md-list a:hover, a:active {
+md-list a:hover, md-list a:active {
     display:block;
-    border-left: 3px solid #02c0e6;
-    background-color: #293440 !important;
+    border-left: 5px solid #02c0e6;
+    background-color: #293440;
 }
+md-list a:active {
+    font-weight: bold;
+}
+
+.activeLink {
+}
+
 a:focus {}
 .md-toolbar-tools-bottom {
     font-size: 0.8em;
@@ -26,8 +33,22 @@ a:focus {}
     padding-top: .5em;
 }
 
-md-sidenav.md-hue-2 {
-    background-color: #2e3a4a;
+md-item-content {
+    padding: 10px;
+}
+
+md-list {
+    padding: 0;
+}
+
+.md-hue-2 {
+    background-color: #2e3a4a !important;
+}
+md-sidenav span {
+    color: #aebfc1;
+}
+md-sidenav span.md-subhead {
+    color: #d3e6ed;
 }
 
 .icon {
