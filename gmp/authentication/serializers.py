@@ -37,7 +37,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
-        print('validated data from update:', validated_data)
+        #print('validated data from update:', validated_data)
         instance.department = validated_data.get('department', instance.department)
         instance.phone = validated_data.get('phone', instance.phone)
 

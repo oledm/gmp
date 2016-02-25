@@ -52,16 +52,22 @@
         }
 
         function remove(item) {
-            console.log('До удаления было %s элементов.', vm.uploadedFiles.length);
-            angular.forEach(vm.selected, function(file) {
+//            console.log('До удаления было %s элементов.', vm.uploadedFiles.length);
+            angular.forEach(vm.selected, function(file, index) {
                 UploadService.remove(file.id);
-                angular.forEach(vm.uploadedFiles, function(v, k) {
-                    if (vm.uploadedFiles[k].id === file.id) {
-                        vm.uploadedFiles.splice(k, 1);
-                    }
-                });
+                removeFileEntry(file.id)
             });
-            console.log('После удаления осталось %s элементов.', vm.uploadedFiles.length);
+
+            vm.selected = [];
+//            console.log('После удаления осталось %s элементов.', vm.uploadedFiles.length);
+        }
+
+        function removeFileEntry(id) {
+            angular.forEach(vm.uploadedFiles, function(v, k) {
+                if (vm.uploadedFiles[k].id === id) {
+                    vm.uploadedFiles.splice(k, 1);
+                }
+            });
         }
     }
 })();
