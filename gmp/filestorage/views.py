@@ -37,6 +37,21 @@ class FileViewset(viewsets.ModelViewSet):
 
     queryset = UploadedFile.objects.all()
     serializer_class = FileSerializer
+    
     # TODO make helper function common for entire project to follow DRY
     # and used it here instead of permission_classes (and test it)
     #def get_permissions(self):
+
+    def destroy(self, request, pk=None):
+        f = UploadedFile.objects.get(pk=pk)
+        f.delete()
+
+        msg = 'File successfully removed'
+        full_path = os.path.join(settings.MEDIA_ROOT, f.name)
+        try:
+            os.remove(full_path)
+        except FileNotFoundError:
+            msg = 'File already removed'
+        return Response({
+            'message': msg
+            }, 204)

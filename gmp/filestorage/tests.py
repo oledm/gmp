@@ -1,3 +1,8 @@
+import os
+from shutil import copyfile
+
+from django.conf import settings
+
 from rest_framework.test import APITestCase
 from rest_framework import status
 
@@ -6,7 +11,8 @@ from gmp.authentication.models import Employee, Department
 
 class FileAPI(APITestCase):
     def setUp(self):
-        self.testfile = 'mail.txt'
+        self.testfile = os.path.join(settings.MEDIA_ROOT, 'mail.txt')
+        copyfile('mail.txt', self.testfile)
         self.api_endpoint = '/api/file/'
         self.user = Employee.objects.create_user(
             email='test@mail.ru',
@@ -19,7 +25,7 @@ class FileAPI(APITestCase):
             response = self.client.post(self.api_endpoint, {
                 'fileupload': f, 
                 'uploader': self.user.id,
-                'name': 'name'
+                'name': self.testfile
             })
         return response
 
@@ -52,8 +58,14 @@ class FileAPI(APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.create_file()
         fileid = response.data['id']
+        self.assertEqual(UploadedFile.objects.count(), 1)
+
         response = self.client.delete('{}{}/'.format(self.api_endpoint, fileid))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(UploadedFile.objects.count(), 0)
+
+        with self.assertRaises(FileNotFoundError):
+            os.stat(self.testfile)
 
     def test_file_delete_failed_API(self):
         self.client.force_authenticate(user=self.user)
