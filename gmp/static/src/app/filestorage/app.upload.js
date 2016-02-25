@@ -36,7 +36,7 @@
                     url: '/api/upload/',
                     data: {fileupload: file}
                 }).
-                then(function(resp) {
+                then(function() {
                     getUploadedFiles();
                 }, function(resp) {
                     console.log('Error status: ' + resp.status);
@@ -51,15 +51,13 @@
                 });
         }
 
-        function remove(item) {
-//            console.log('До удаления было %s элементов.', vm.uploadedFiles.length);
-            angular.forEach(vm.selected, function(file, index) {
+        function remove() {
+            angular.forEach(vm.selected, function(file) {
                 UploadService.remove(file.id);
-                removeFileEntry(file.id)
+                removeFileEntry(file.id);
             });
 
             vm.selected = [];
-//            console.log('После удаления осталось %s элементов.', vm.uploadedFiles.length);
         }
 
         function removeFileEntry(id) {

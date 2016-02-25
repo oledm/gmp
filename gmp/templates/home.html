@@ -63,9 +63,9 @@
 {% block content %}
  
 {% verbatim %}
-<md-sidenav class="md-whiteframe-z2" ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex>
+<md-sidenav class="md-whiteframe-z2 md-hue-2" ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex>
     <div layout="column" flex ng-controller="UserDataController as vm">
-        <md-toolbar class="md-theme-default md-tall md-hue-2" md-whiteframe="3">
+        <md-toolbar class="md-theme-default md-tall" md-whiteframe="3">
             <div layout="column" class="md-toolbar-tools-bottom inset">
                 <span ng-bind-template="{{vm.userdata.data.last_name}} {{vm.userdata.data.first_name}}"></span>
                 <span ng-bind="vm.userdata.data.email"></span>
@@ -73,20 +73,16 @@
             </div>
         </md-toolbar>
     
-        <md-content layout-padding layout="column">
-           <div layout="column">
-               <md-list ng-repeat="entry in main.menu">
+           <div layout-padding layout="column">
+               <md-list class="md-primary" ng-repeat="entry in main.menu">
                    <a ui-sref="{{entry.ref}}"  aria-label="{{entry.link}}">
-                          <md-item-content md-ink-ripple layout="row" layout-align="start center">
-                            <div class="inset">
+                            <div class="inset" layout-align="begin center">
                                 <i class="icon ion-{{entry.icon}}"></i>
+                                <span class="inset" ng-bind="entry.name"></span>
                             </div>
-                            <div class="inset" ng-bind="entry.name"></div>
-                          </md-item-content>
                         </a>
                </md-list>
             </div>
-        </md-content>
     </div>
 </md-sidenav>
 

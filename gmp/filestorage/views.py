@@ -51,7 +51,7 @@ class FileViewset(viewsets.ModelViewSet):
         try:
             os.remove(full_path)
         except FileNotFoundError:
-            msg = 'File already removed'
+            msg = 'File is not found or already removed'
         return Response({
             'message': msg
             }, 204)
