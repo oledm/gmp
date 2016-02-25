@@ -122,7 +122,7 @@ module.exports = function (grunt) {
         cmd: 'python <%= paths.manageScript %> runserver'
       },
       runTests: {
-        cmd: 'python <%= paths.manageScript %> test gmp.authentication',
+        cmd: 'python <%= paths.manageScript %> test gmp.authentication gmp.filestorage',
         bg: false
       }
       
