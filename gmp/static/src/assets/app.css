@@ -5,8 +5,12 @@ body {
 .logo {
     color: #fff;
 }
+
+a {
+    outline: none;
+}
+
 md-sidenav a {
-    outline: 0;
     text-decoration: none;
     color: #aebfc1;
     background-color: #2e3a4a;

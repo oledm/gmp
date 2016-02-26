@@ -74,3 +74,18 @@ class FileAPI(APITestCase):
         self.client.logout()
         response = self.client.delete('{}{}/'.format(self.api_endpoint, fileid))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_read_file_list_access_denied_API(self):
+        response = self.client.get(self.api_endpoint)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_read_file_list_success_API(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.api_endpoint)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+        self.create_file()
+        self.create_file()
+        response = self.client.get(self.api_endpoint)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)

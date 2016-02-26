@@ -21,7 +21,7 @@ class FileUploadView(views.APIView):
         return Response({
             'status': 'Created', 
             'message': 'File upload success'
-            }, status=201)
+            }, status=status.HTTP_201_CREATED)
 
     def proc_file(self, fname):
         saved_file = os.path.join(settings.MEDIA_ROOT, fname.name)
@@ -33,7 +33,7 @@ class FileUploadView(views.APIView):
         UploadedFile.objects.create(name=fname, uploader=self.request.user)
 
 class FileViewset(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     queryset = UploadedFile.objects.all()
     serializer_class = FileSerializer
@@ -60,4 +60,4 @@ class FileViewset(viewsets.ModelViewSet):
             msg = 'File is not found or already removed'
         return Response({
             'message': msg
-            }, 204)
+            }, status.HTTP_204_NO_CONTENT)
