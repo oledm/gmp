@@ -11,9 +11,9 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = ('name',)
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    department = serializers.SlugRelatedField(read_only=True, slug_field='name')
-    #department = DepartmentSerializer(read_only=True)
-    #username = serializers.CharField(write_only=True, required=False)
+    #department = serializers.SlugRelatedField(read_only=True, slug_field='name')
+    email = serializers.EmailField(read_only=False)
+    department = DepartmentSerializer()
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
 
@@ -28,17 +28,25 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
+        print('create serializer method')
         return Employee.objects.create(**validated_data)
 
+    def validate_last_name(self, value):
+        print('validate_lastname', value)
+        return value
 
     def update(self, instance, validated_data):
+        #print('UPDATE serializer method')
+        dep_name = validated_data.get('department', instance.department)['name']
+        department = Department.objects.get(name=dep_name)
+        #print('NEW DEP:', department)
         instance.email = validated_data.get('email', instance.username)
         instance.username = validated_data.get('username', instance.username)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
         #print('validated data from update:', validated_data)
-        instance.department = validated_data.get('department', instance.department)
+        instance.department = department
         instance.phone = validated_data.get('phone', instance.phone)
 
         instance.save()
@@ -50,6 +58,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             instance.save()
 
-        update_session_auth_hash(self.context.get('request'), instance)
+        #update_session_auth_hash(self.context.get('request'), instance)
 
         return instance

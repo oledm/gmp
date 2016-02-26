@@ -38,7 +38,9 @@
                 email: email,
                 username: username,
                 password: password,
-                department: department
+                department: {
+                    name: department
+                }
             });
         }
 

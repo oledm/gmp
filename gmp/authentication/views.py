@@ -79,13 +79,12 @@ class EmployeeViewset(viewsets.ModelViewSet):
             'message': 'Невозможно создать пользователя с указанными данными'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-    #def update(self, request, username, pk=None):
-    #    data = request.data
-    #    print('updated object is', self.get_object())
-    #    data['department'] = 2
-    #    print('data is ', data)
-    #    serializer = self.serializer_class(data=data)
-    #    print('Is data valid?', serializer.is_valid())
-    #    serializer.update(self.get_object())
-    #    return Response(dict(serializer.validated_data),
-    #        status=status.HTTP_200_OK)
+    def update(self, request, username, pk=None):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid()
+        #print('Serializer errors', serializer.errors)
+        #print('valideted data:', serializer.validated_data)
+        serializer.update(self.get_object(), serializer.validated_data)
+        return Response(dict(serializer.validated_data),
+            status=status.HTTP_200_OK)

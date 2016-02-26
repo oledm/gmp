@@ -33,11 +33,12 @@
 
         function get() {
             var cookie = Cookies.get();
+            console.log('cookies: ' + JSON.stringify(cookie));
             if (cookie !== undefined) {
                 data.email = cookie.email;
                 data.first_name = cookie.first_name;
                 data.last_name = cookie.last_name;
-                data.department = cookie.department;
+                data.department = cookie.department.name;
                 userdata.data = data;
             }
             console.log('updated user data: ' + JSON.stringify(userdata.data));
@@ -51,6 +52,7 @@
 
             angular.forEach(data, function(v, k) {
                 cookie[k] = data[k];
+                console.log('updating with value ' + data[k]);
             });
 
             Cookies.set(cookie);
@@ -62,7 +64,9 @@
                 first_name: data.first_name,
                 last_name: data.last_name,
                 email: data.email,
-                department: data.department
+                department: {
+                    name: data.department
+                }
             })
             .then(updateSuccess)
             .catch(updateFailed);
