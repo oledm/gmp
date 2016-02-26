@@ -2,7 +2,7 @@ import os
 
 from django.conf import settings
 
-from rest_framework import views, viewsets, permissions
+from rest_framework import views, viewsets, permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -41,6 +41,12 @@ class FileViewset(viewsets.ModelViewSet):
     # TODO make helper function common for entire project to follow DRY
     # and used it here instead of permission_classes (and test it)
     #def get_permissions(self):
+
+    def list(self, request):
+        user = Employee.objects.get(email=self.request.user)
+        files = UploadedFile.objects.filter(uploader=user)
+        files_serialized = FileSerializer(files, many=True)
+        return Response(files_serialized.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):
         f = UploadedFile.objects.get(pk=pk)

@@ -99,7 +99,7 @@
 </md-sidenav>
 
  <div layout="column" flex ng-controller="ToolbarController as vm">
-     <md-toolbar class="md-theme-default" layout="column" md-whiteframe="1">
+     <md-toolbar class="md-theme-default" layout="column" ng-if="main.isAuthenticated()" md-whiteframe="1">
            <div class="md-toolbar-tools">
                 
             <h2><a ui-sref="home">
