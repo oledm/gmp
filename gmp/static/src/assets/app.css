@@ -1,7 +1,10 @@
 body {
-    background-color: #f0f0f0;
+    background-color: #ebeef0;
 }
 
+.logo {
+    color: #fff;
+}
 md-sidenav a {
     outline: 0;
     text-decoration: none;
@@ -26,6 +29,10 @@ md-list a:active {
 a:focus {}
 .md-toolbar-tools-bottom {
     font-size: 0.8em;
+}
+.md-toolbar-tools {
+    background-color: #fff;
+    color:#afbfc7;
 }
 
 .md-toolbar-tools-bottom :last-child {

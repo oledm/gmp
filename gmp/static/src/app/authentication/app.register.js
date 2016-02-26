@@ -10,7 +10,7 @@
     function RegisterController(Authentication, Department) {
         var vm = this;
 
-        vm.loadDeps = function() {
+        vm.loadDepartments = function() {
             Department.query(function(data) {
                 vm.allDeps = data;
             });

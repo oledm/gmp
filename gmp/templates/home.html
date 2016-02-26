@@ -65,11 +65,16 @@
 {% verbatim %}
 <md-sidenav class="md-hue-2" ng-if="main.isAuthenticated()" ng-cloak md-is-locked-open="true" layout="column" flex>
     <div layout="column" flex ng-controller="UserDataController as vm">
-        <md-toolbar >
-            <div layout="column" class="md-toolbar-tools-bottom inset">
-                <h1 class="md-headline">ГМП</h1>
+
+        <md-toolbar layout="row" class="md-primary" layout-align="center center">
+            <div layout="column">
+                <h1 class="md-headline">
+                      <i class="logo icon ion-earth"></i>
+                </h1>
             </div>
         </md-toolbar>
+
+
         <md-content class="md-primary md-hue-2" layout="column" layout-align="end">
             <div layout="column" class="md-toolbar-tools-bottom inset">
                 <span class="md-subhead" ng-bind-template="{{vm.userdata.data.last_name}} {{vm.userdata.data.first_name}}"></span>
@@ -94,12 +99,18 @@
 </md-sidenav>
 
  <div layout="column" flex ng-controller="ToolbarController as vm">
-     <md-toolbar class="md-theme-default" layout="column" md-whiteframe="2">
+     <md-toolbar class="md-theme-default" layout="column" md-whiteframe="1">
            <div class="md-toolbar-tools">
                 
-            <h2><a ui-sref="home">Главная</a></h2>
+            <h2><a ui-sref="home">
+                      <i class="icon ion-home"></i>
+            </a></h2>
             <span flex></span>
-            <md-button ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход" class="md-raised md-warn"> Выход </md-button>
+            <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                      <a  href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
+                          <i class="icon ion-android-exit"></i>
+                      </a>
+                </section>
           </div>
      </md-toolbar>
      
