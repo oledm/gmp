@@ -50,8 +50,8 @@ class FileAPI(APITestCase):
         response = self.client.post(self.api_endpoint, {})
         self.assertEqual(len(response.data), 2)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['uploader'], ['This field is required.'])
-        self.assertEqual(response.data['name'], ['This field is required.'])
+        self.assertEqual(response.data['uploader'], ['Это поле обязательно.'])
+        self.assertEqual(response.data['name'], ['Это поле обязательно.'])
         self.assertEqual(UploadedFile.objects.count(), 0)
 
     def test_file_delete_success_API(self):

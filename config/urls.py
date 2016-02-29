@@ -8,18 +8,25 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
-from rest_framework import routers
+#from rest_framework import routers
+from rest_framework_nested import routers
 
 from gmp.authentication import views as users_views
 from gmp.filestorage import views as filestorage_views
+from gmp.certificate import views as certificate_views
 
 
 router = routers.SimpleRouter()
-router.register('user', users_views.EmployeeViewset)
+router.register(r'user', users_views.EmployeeViewset)
+
+certificates_router = routers.NestedSimpleRouter(router, r'user', lookup='user')
+certificates_router.register(r'certificates', certificate_views.CertificateViewset)
 
 router_files = routers.SimpleRouter()
 router_files.register('file', filestorage_views.FileViewset)
 
+#router_certificates = routers.SimpleRouter()
+#router_certificates.register('certificates', certificate_views.CertificateViewset)
 
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
@@ -33,6 +40,7 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
     url(r'^api/', include(router.urls)),
+    url(r'^api/', include(certificates_router.urls)),
     url(r'^api/department', users_views.DepartmentList.as_view()),
     url(r'^api/login', users_views.LoginView.as_view(), name='login'),
     url(r'^api/logout', users_views.LogoutView.as_view(), name='logout'),

@@ -121,7 +121,7 @@ class EmployeeCreateTest(APITestCase):
 
     def test_post_all_user_data(self):
         response = self.client.post('/api/user/', self.full_user_data, format='json')
-        print('response', dict(response.data))
+        #print('response', dict(response.data))
         self.assertEqual(dict(response.data), self.full_user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -155,7 +155,7 @@ class EmployeeUpdateTest(APITestCase):
         )
 
     def test_update_user_data(self):
-        print(self.required_user_data)
+        #print(self.required_user_data)
         self.client.post('/api/user/', self.required_user_data, format='json')
         user_url = '/api/user/{}/'.format(self.username)
         response = self.client.get(user_url)

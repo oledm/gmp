@@ -83,8 +83,8 @@ class EmployeeViewset(viewsets.ModelViewSet):
         data = request.data
         serializer = self.serializer_class(data=data, context={'request': request})
         serializer.is_valid()
-        print('Serializer errors', serializer.errors)
-        print('valideted data:', serializer.validated_data)
+        #print('Serializer errors', serializer.errors)
+        #print('valideted data:', serializer.validated_data)
         serializer.update(self.get_object(), serializer.validated_data)
         return Response(dict(serializer.validated_data),
             status=status.HTTP_200_OK)
