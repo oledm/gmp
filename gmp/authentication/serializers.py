@@ -28,12 +28,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        print('create serializer method')
         return Employee.objects.create(**validated_data)
-
-    def validate_last_name(self, value):
-        print('validate_lastname', value)
-        return value
 
     def update(self, instance, validated_data):
         #print('UPDATE serializer method')
@@ -58,6 +53,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             instance.save()
 
-        #update_session_auth_hash(self.context.get('request'), instance)
+        update_session_auth_hash(self.context.get('request'), instance)
 
         return instance

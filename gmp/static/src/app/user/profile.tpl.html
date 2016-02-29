@@ -2,8 +2,8 @@
     <form name="userForm" class="md-padding">
         <md-input-container class="md-block" flex-gt-sm>
           <label>Отдел</label>
-            <md-select name="department" placeholder="Отдел" ng-model="vm.userdata.data.department">
-                <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'" ng-selected="d.name === vm.userdata.data.department"></md-option>
+            <md-select name="department" placeholder="Отдел" ng-model="vm.userdata.data.department.name">
+                <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'" ng-selected="d.name === vm.userdata.data.department.name"></md-option>
             </md-select>
         </md-input-container>
  
