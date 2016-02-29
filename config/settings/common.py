@@ -49,6 +49,7 @@ LOCAL_APPS = (
     # Your stuff: custom apps go here
     'gmp.authentication',
     'gmp.filestorage',
+    'gmp.certificate'
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
