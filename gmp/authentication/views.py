@@ -63,15 +63,15 @@ class EmployeeViewset(viewsets.ModelViewSet):
 
     def create(self, request):
         data = request.data
-        dep_name = data['department']
-
         serializer = self.serializer_class(data=data)
 
         if serializer.is_valid(raise_exception=True):
-            Employee.objects.create_user(**serializer.validated_data, 
-                department=Department.objects.get(name=dep_name)
-            )
-            return Response(dict(serializer.validated_data, department=dep_name),
+            dep_name = serializer.validated_data.pop('department')['name']
+            department = Department.objects.get(name=dep_name)
+            #created_user = serializer.create(serializer.validated_data)
+            #print('created_user:', created_user)
+            Employee.objects.create_user(**serializer.validated_data, department=department)
+            return Response(dict(serializer.validated_data, department=dict(name=dep_name)),
                 status=status.HTTP_201_CREATED)
 
         return Response({

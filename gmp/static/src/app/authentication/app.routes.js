@@ -30,6 +30,12 @@
                 controller: 'UploadController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/filestorage/upload.tpl.html'
+            })
+            .state('passport', {
+                url: '/passport',
+                controller: 'PassportController',
+                controllerAs: 'vm',
+                templateUrl: '/static/src/app/report/passport.tpl.html'
             });
 
         $urlRouterProvider.otherwise('/');

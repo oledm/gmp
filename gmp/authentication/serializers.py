@@ -26,9 +26,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
         read_only_fields = ('created_at', 'modified_at', 'username')
 
-
     def create(self, validated_data):
-        return Employee.objects.create(**validated_data)
+        print('Serializer create run')
+        dep_name = validated_data.pop('department')['name']
+        department = Department.objects.get(name=dep_name)
+        return Employee.objects.create(**validated_data, department=department)
 
     def update(self, instance, validated_data):
         #print('UPDATE serializer method')

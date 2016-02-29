@@ -1,3 +1,5 @@
+import json
+
 from django.db.utils import IntegrityError
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -43,7 +45,7 @@ class EmployeeTest(APITestCase):
 
     def test_create_one_employee_omitting_department(self):
         with self.assertRaisesRegex(IntegrityError,
-                    'нулевое значение в колонке "department_id"'):
+                    'нулевое значение в столбце "department_id"'):
             employee = Employee.objects.create(
                 email=self.email,
                 username=self.username,
@@ -107,28 +109,29 @@ class EmployeeCreateTest(APITestCase):
         now = timezone.now()
         self.full_user_data = dict(
             email=self.email, first_name='Имя', last_name='Фамилия',
-            department=self.department.name, phone='79101234567',
+            department={'name': self.department.name}, phone='79101234567',
             birth_date=now.date(), is_admin=False
         )
         self.required_user_data = dict(
-            email='test@mail.ru', department=self.department.name,
+            email='test@mail.ru', department={'name': self.department.name},
             is_admin=False # это необязательно. Но т.к. у is_admin есть
             # default-значение, то, пропустив данный ключ, словари с
             # исходными данными и с ответом не совпадут.
         )
 
     def test_post_all_user_data(self):
-        response = self.client.post('/api/user/', self.full_user_data)
+        response = self.client.post('/api/user/', self.full_user_data, format='json')
+        print('response', dict(response.data))
         self.assertEqual(dict(response.data), self.full_user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_post_required_user_data(self):
-        response = self.client.post('/api/user/', self.required_user_data)
+        response = self.client.post('/api/user/', self.required_user_data, format='json')
         self.assertEqual(dict(response.data), self.required_user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_auto_generate_username(self):
-        self.client.post('/api/user/', self.required_user_data)
+        self.client.post('/api/user/', self.required_user_data, format='json')
         user_url = '/api/user/{}/'.format(self.username)
         response = self.client.get(user_url)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
@@ -137,7 +140,7 @@ class EmployeeCreateTest(APITestCase):
 
     def test_post_admin_data(self):
         self.required_user_data.update({'is_admin': True})
-        response = self.client.post('/api/user/', self.required_user_data)
+        response = self.client.post('/api/user/', self.required_user_data, format='json')
         self.assertEqual(dict(response.data), self.required_user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -147,17 +150,18 @@ class EmployeeUpdateTest(APITestCase):
         self.email = 'test@mail.ru'
         self.username = self.email.split('@')[0]
         self.required_user_data = dict(
-            email=self.email, department=self.department.name,
+            email=self.email, department={'name': self.department.name},
             password='123', is_admin=False
         )
 
     def test_update_user_data(self):
-        self.client.post('/api/user/', self.required_user_data)
+        print(self.required_user_data)
+        self.client.post('/api/user/', self.required_user_data, format='json')
         user_url = '/api/user/{}/'.format(self.username)
         response = self.client.get(user_url)
         self.assertEquals(response.data['first_name'], '')
 
         self.client.login(username='test@mail.ru', password='123')
         self.required_user_data['first_name'] = 'Tester'
-        response = self.client.put(user_url, self.required_user_data)
+        response = self.client.put(user_url, self.required_user_data, format='json')
         self.assertEquals(response.data['first_name'], 'Tester')

@@ -12,7 +12,8 @@
         console.log('menu: ' + vm.menu);
         vm.menu = [
             {name: 'Мои файлы', link: 'Файлы', icon: 'upload', ref: 'upload'},
-            {name: 'Профиль', link: 'Профиль', icon: 'person', ref: 'profile'}
+            {name: 'Профиль', link: 'Профиль', icon: 'person', ref: 'profile'},
+            {name: 'Паспорт', link: 'Паспорт', icon: 'document-text', ref: 'passport'}
         ];
 
         vm.isAuthenticated = function() {
