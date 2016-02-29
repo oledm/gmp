@@ -18,6 +18,7 @@
             clean: clean,
             data: data,
             get: get,
+            getAllUsers: getAllUsers,
             isLoading: false,
             update: update,
             updateSuccessfull: false
@@ -40,6 +41,18 @@
                 }
             });
             console.log('updated user data: ' + JSON.stringify(userdata.data));
+        }
+
+        function getAllUsers() {
+            return $http.get('/api/user/').then(
+                getAllUsersSuccess
+            );
+        }
+
+        function getAllUsersSuccess(response) {
+            return response.data.map(function(user) {
+                return user.last_name + ' ' + user.first_name;
+            });
         }
 
         function update() {

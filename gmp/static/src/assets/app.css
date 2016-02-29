@@ -10,6 +10,10 @@ a {
     outline: none;
 }
 
+md-card .md-headline {
+    font-size: 18px;
+}
+
 md-sidenav a {
     text-decoration: none;
     color: #aebfc1;
