@@ -26,15 +26,6 @@ class EmployeeManager(BaseUserManager):
 
         return employee
 
-
-class Department(models.Model):
-
-    name = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Employee(AbstractBaseUser):
 
     email = models.EmailField(blank=True, unique=True)
@@ -43,7 +34,8 @@ class Employee(AbstractBaseUser):
     first_name = models.CharField(max_length=40, blank=True)
     last_name = models.CharField(max_length=40, blank=True)
 
-    department = models.ForeignKey('Department', 
+    department = models.ForeignKey(
+        'departments.Department', 
         on_delete=models.CASCADE)
     phone = models.CharField(max_length=11, blank=True)
     birth_date = models.DateField(null=True)

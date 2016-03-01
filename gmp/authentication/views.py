@@ -5,9 +5,10 @@ from rest_framework import permissions, viewsets, generics, views
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import EmployeeSerializer, DepartmentSerializer
+from .serializers import EmployeeSerializer
 from .permissions import IsEmployeeMatch
-from .models import Employee, Department
+from .models import Employee
+from gmp.departments.models import Department
 
 
 class LoginView(views.APIView):
@@ -42,10 +43,6 @@ class LogoutView(views.APIView):
         logout(request)
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
-
-class DepartmentList(generics.ListAPIView):
-    queryset = Department.objects.all()
-    serializer_class = DepartmentSerializer
 
 class EmployeeViewset(viewsets.ModelViewSet):
     lookup_field = 'username'

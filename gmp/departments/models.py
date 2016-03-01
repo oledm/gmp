@@ -1,8 +1,16 @@
 from django.db import models
 
+class Department(models.Model):
+
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Instrument(models.Model):
     department = models.ForeignKey(
-        'authentication.Department', 
+        'Department', 
 	verbose_name='Отдел',
         on_delete=models.CASCADE
     )

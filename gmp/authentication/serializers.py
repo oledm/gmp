@@ -1,17 +1,11 @@
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
 
-from .models import Employee, Department
-
-class DepartmentSerializer(serializers.ModelSerializer):
-    name = serializers.CharField()
-
-    class Meta:
-        model = Department
-        fields = ('name',)
+from .models import Employee
+from gmp.departments.models import Department
+from gmp.departments.serializers import DepartmentSerializer
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    #department = serializers.SlugRelatedField(read_only=True, slug_field='name')
     email = serializers.EmailField(read_only=False)
     department = DepartmentSerializer()
     password = serializers.CharField(write_only=True, required=False)
@@ -28,8 +22,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         print('Serializer create run')
-        dep_name = validated_data.pop('department')['name']
-        department = Department.objects.get(name=dep_name)
+        #dep_name = validated_data.pop('department')['name']
+        #department = Department.objects.get(name=dep_name)
         return Employee.objects.create(**validated_data, department=department)
 
     def update(self, instance, validated_data):

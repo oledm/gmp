@@ -8,8 +8,9 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-from gmp.authentication.models import Employee, Department
+from gmp.authentication.models import Employee
 from gmp.authentication.serializers import EmployeeSerializer
+from gmp.departments.models import Department
 
 class EmployeeTest(APITestCase):
     def setUp(self):

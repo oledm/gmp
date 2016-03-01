@@ -2,7 +2,8 @@ from datetime import date
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-from gmp.authentication.models import Employee, Department
+from gmp.authentication.models import Employee
+from gmp.departments.models import Department
 from .models import Certificate
 
 class CertificateSerializerTest(APITestCase):

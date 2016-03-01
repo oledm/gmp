@@ -7,7 +7,8 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from .models import UploadedFile
-from gmp.authentication.models import Employee, Department
+from gmp.authentication.models import Employee
+from gmp.departments.models import Department
 
 class FileAPI(APITestCase):
     def setUp(self):
