@@ -1,9 +1,13 @@
-from rest_framework import viewsets, generics
+from rest_framework import viewsets
 
-from .serializers import DepartmentSerializer, InstrumentSerializer
-from .models import Department, Instrument
+from .serializers import DepartmentSerializer, MeasurerSerializer
+from .models import Department, Measurer
 
-class DepartmentList(generics.ListAPIView):
+class DepartmentViewset(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
+
+class MeasurerViewset(viewsets.ModelViewSet):
+    queryset = Measurer.objects.all()
+    serializer_class = MeasurerSerializer
 

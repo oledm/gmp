@@ -8,7 +8,6 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
-#from rest_framework import routers
 from rest_framework_nested import routers
 
 from gmp.authentication import views as users_views
@@ -17,17 +16,20 @@ from gmp.certificate import views as certificate_views
 from gmp.departments import views as departments_views
 
 
-user_router = routers.SimpleRouter()
-user_router.register(r'user', users_views.EmployeeViewset)
+users = routers.SimpleRouter()
+users.register(r'user', users_views.EmployeeViewset)
 
-certificates_router = routers.NestedSimpleRouter(user_router, r'user', lookup='user')
-certificates_router.register(r'certificates', certificate_views.CertificateViewset)
+certificates = routers.NestedSimpleRouter(users, r'user', lookup='user')
+certificates.register(r'certificates', certificate_views.CertificateViewset)
 
-files_router = routers.SimpleRouter()
-files_router.register('file', filestorage_views.FileViewset)
+departments = routers.SimpleRouter()
+departments.register(r'department', departments_views.DepartmentViewset)
 
-#router_certificates = routers.SimpleRouter()
-#router_certificates.register('certificates', certificate_views.CertificateViewset)
+measurers = routers.NestedSimpleRouter(departments, r'department', lookup='department')
+measurers.register(r'measurer', departments_views.MeasurerViewset)
+
+files = routers.SimpleRouter()
+files.register('file', filestorage_views.FileViewset)
 
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
@@ -39,15 +41,25 @@ urlpatterns = [
     url(r'^users/', include("gmp.users.urls", namespace="users")),
     url(r'^accounts/', include('allauth.urls')),
 
-    # Your stuff: custom urls includes go here
-    url(r'^api/', include(user_router.urls)),
-    url(r'^api/', include(certificates_router.urls)),
-    url(r'^api/department', departments_views.DepartmentList.as_view()),
+    # /api/user/
+    url(r'^api/', include(users.urls)), 
+
+    # /api/user/<username>/certificate/
+    url(r'^api/', include(certificates.urls)),
+
+    # /api/department/
+    url(r'^api/', include(departments.urls)),
+
+    # /api/department/<id>/measurer/
+    url(r'^api/', include(measurers.urls)),
+
+    url(r'^api/', include(files.urls)),
+
+    # Additional routes
     url(r'^api/login', users_views.LoginView.as_view(), name='login'),
     url(r'^api/logout', users_views.LogoutView.as_view(), name='logout'),
-    # Files manage routes
-    url(r'^api/', include(files_router.urls)),
     url(r'^api/upload', filestorage_views.FileUploadView.as_view(), name='files'),
+
     # Pass-through route
     url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
 

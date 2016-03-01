@@ -8,7 +8,7 @@ class Department(models.Model):
         return self.name
 
 
-class Instrument(models.Model):
+class Measurer(models.Model):
     department = models.ForeignKey(
         'Department', 
 	verbose_name='Отдел',

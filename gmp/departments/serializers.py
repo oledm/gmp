@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Instrument, Department
+from .models import Measurer, Department
 
 class DepartmentSerializer(serializers.ModelSerializer):
     name = serializers.CharField()
@@ -9,8 +9,8 @@ class DepartmentSerializer(serializers.ModelSerializer):
         model = Department
         fields = ('name',)
 
-class InstrumentSerializer(serializers.ModelSerializer):
+class MeasurerSerializer(serializers.ModelSerializer):
     
     class Meta:
 
-        model = Instrument
+        model = Measurer

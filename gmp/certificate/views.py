@@ -16,7 +16,3 @@ class CertificateViewset(viewsets.ViewSet):
         serializer = CertificateSerializer(certificates, many=True)
         #print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    #def retrieve(self, request, pk=None, user_pk=None):
-    #    nameservers = self.queryset.get(pk=pk, user=user_pk)
-    #    return Response(serializer.data)
