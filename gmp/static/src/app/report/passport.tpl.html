@@ -1,32 +1,8 @@
-<md-card class="md-padding" flex>
-    <md-card-title>
-      <md-card-title-text>
-            <span class="md-headline">Выберите членов бригады</span>
-      </md-card-title-text>
-    </md-card-title>
-    <form name="employeesForm" class="md-padding">
-        <div class="md-block" flex-gt-sm ng-repeat="emp in vm.team">
-            <md-input-container>
-              <label>Работник</label>
-                <md-select name="employee" placeholder="Работник" ng-model="emp.name">
-                    <md-option ng-bind="e" ng-repeat="e in vm.allEmployees"></md-option>
-                </md-select>
-            </md-input-container>
-        </div>
-        <md-button class="md-raised" ng-click="vm.addEmployee()">Добавить</md-button>
- 
+<div ng-include="'/static/src/app/report/team.tpl.html'"
+    class="md-padding" flex>
+</div>
 
-          <!-- 
-              <div layout="row" layout-align="start center">
-              d-button type="submit" class="md-raised" ng-click="vm.updateProfile()" ng-disabled="vm.userdata.isLoading || userForm.$invalid"> Сохранить 
-                <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.userdata.updateSuccessfull"></i>
-              md-button>    
-                <div>
-                <md-progress-circular ng-show="vm.userdata.isLoading" md-mode="indeterminate"></md-progress-circular>
-                </div>
-              </div>
-           -->
-
-
-    </form>
-</md-card>
+<div ng-include="'/static/src/app/report/instruments.tpl.html'"
+     ng-hide="vm.teamForm.$invalid"
+     class="md-padding" flex>
+</div>

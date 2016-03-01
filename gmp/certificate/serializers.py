@@ -4,5 +4,6 @@ from .models import Certificate
 class CertificateSerializer(serializers.ModelSerializer):
 
     class Meta:
+
         model = Certificate
 

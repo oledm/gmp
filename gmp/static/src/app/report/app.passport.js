@@ -7,11 +7,17 @@
 
     PassportController.$inject = ['UserData'];
     function PassportController(UserData) {
-        var vm = this;
+        var vm = this,
+            ranks = [
+                'руководитель бригады',
+                'зам. руководителя бригады',
+                'член бригады'
+            ];
 
         vm.addEmployee = addEmployee;
         vm.allEmployees = [];
-        vm.team = [{'name': ''}];
+        vm.ranks = ranks;
+        vm.team = [{'name': '', 'required': 'required'}];
 
         activate();
 
@@ -22,6 +28,7 @@
         }
 
         function addEmployee() {
+//            console.log('team: ' + JSON.stringify(vm.team));
             vm.team.push({
                 'name': ''
             });

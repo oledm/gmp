@@ -14,12 +14,13 @@ from rest_framework_nested import routers
 from gmp.authentication import views as users_views
 from gmp.filestorage import views as filestorage_views
 from gmp.certificate import views as certificate_views
+#from gmp.departments import views as departments_views
 
 
-router = routers.SimpleRouter()
-router.register(r'user', users_views.EmployeeViewset)
+user_router = routers.SimpleRouter()
+user_router.register(r'user', users_views.EmployeeViewset)
 
-certificates_router = routers.NestedSimpleRouter(router, r'user', lookup='user')
+certificates_router = routers.NestedSimpleRouter(user_router, r'user', lookup='user')
 certificates_router.register(r'certificates', certificate_views.CertificateViewset)
 
 router_files = routers.SimpleRouter()
@@ -39,7 +40,7 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
-    url(r'^api/', include(router.urls)),
+    url(r'^api/', include(user_router.urls)),
     url(r'^api/', include(certificates_router.urls)),
     url(r'^api/department', users_views.DepartmentList.as_view()),
     url(r'^api/login', users_views.LoginView.as_view(), name='login'),
