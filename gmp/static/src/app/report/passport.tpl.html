@@ -1,8 +1,8 @@
-<div ng-include="'/static/src/app/report/team.tpl.html'"
-    class="md-padding" flex>
-</div>
+<div ng-cloak layout="column" layout-align="center center">
+    <div ng-include="'/static/src/app/report/team.tpl.html'">
+    </div>
 
-<div ng-include="'/static/src/app/report/instruments.tpl.html'"
-     ng-hide="vm.teamForm.$invalid"
-     class="md-padding" flex>
+    <div ng-include="'/static/src/app/report/measurers.tpl.html'"
+	 ng-hide="vm.teamForm.$invalid">
+    </div>
 </div>

@@ -1,5 +1,5 @@
 (function() {
     'use strict';
 
-    angular.module('app.passport', []);
+    angular.module('app.passport', ['md.data.table']);
 })();

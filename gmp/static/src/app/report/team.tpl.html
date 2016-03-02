@@ -1,4 +1,4 @@
-<md-card>
+<md-card flex="100">
 
     <md-card-title>
             <span class="md-headline">Выберите членов бригады&nbsp;
@@ -18,8 +18,8 @@
 
             <md-input-container>
               <label>Должность</label>
-              <md-select name="rank" placeholder="Должность" ng-model="emp.rank">
-                    <md-option ng-bind="rank" ng-repeat="rank in vm.ranks"></md-option>
+              <md-select name="rank" placeholder="Должность" ng-attr-required="{{emp.required}}" ng-model="emp.rank">
+                  <md-option ng-bind="rank" ng-repeat="rank in vm.ranks"></md-option>
                 </md-select>
             </md-input-container>
 

@@ -8,6 +8,13 @@
     Department.$inject = ['$resource'];
 
     function Department($resource) {
-        return $resource('/api/department/');
+        return $resource('/api/department/', {}, {
+            measurers: {
+                method: 'get',
+                isArray: true,
+                params: {depId: 1},
+                url: '/api/department/:depId/measurer/'
+            }
+        });
     }
 })();
