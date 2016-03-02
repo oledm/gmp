@@ -36,7 +36,12 @@ class Engine(models.Model):
         verbose_name='Соединение'
     )
 
-    kpd = models.SmallIntegerField('Коэффициент полезного действия, %')
+    power = models.FloatField('Номинальная мощность, кВт')
+    voltage = models.SmallIntegerField('Номинальное напряжение, В')
+    current = models.FloatField('Номинальный ток статора, А')
+    freq = models.SmallIntegerField('Номинальная частота вращения, об/мин')
+
+    kpd = models.FloatField('Коэффициент полезного действия, %')
 
     coef_power = models.FloatField('Коэффициент мощности, cosφ')
 
@@ -52,12 +57,12 @@ class Engine(models.Model):
     def __str__(self):
         return self.name
 
-    def clean(self):
-        if self.kpd > 100 or self.kpd < 0:
-            raise ValidationError('Коэффициент полезного действия не может быть более 100%')
+    #def clean(self):
+    #    if self.kpd > 100 or self.kpd < 0:
+    #        raise ValidationError('Коэффициент полезного действия не может быть более 100%')
 
-        if self.coef_power > 1 or self.coef_power < 0:
-            raise ValidationError('Коэффициент мощности должен быть в диапазоне [0...1]')
+    #    if self.coef_power > 1 or self.coef_power < 0:
+    #        raise ValidationError('Коэффициент мощности должен быть в диапазоне [0...1]')
 
 class Connection(models.Model):
     CONNECTION_TYPES = (

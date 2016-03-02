@@ -5,6 +5,7 @@
         'app.config',
         'app.authentication',
         'app.department',
+        'app.engine.service',
         'app.main',
         'app.login',
         'app.register',

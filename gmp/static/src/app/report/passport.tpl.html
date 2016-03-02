@@ -1,8 +1,12 @@
 <div ng-cloak layout="column" layout-align="center center">
-    <div ng-include="'/static/src/app/report/team.tpl.html'">
+    <div class="animate-repeat" ng-include="'/static/src/app/report/team.tpl.html'">
     </div>
 
-    <div ng-include="'/static/src/app/report/measurers.tpl.html'"
-	 ng-hide="vm.teamForm.$invalid">
+    <div class="animate-repeat" ng-include="'/static/src/app/report/measurers.tpl.html'"
+	 ng-if="!vm.teamForm.$invalid">
+    </div>
+
+    <div class="animate-repeat" ng-include="'/static/src/app/report/engines.tpl.html'"
+        ng-if="vm.measurers.selected.length > 0">
     </div>
 </div>
