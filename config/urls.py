@@ -10,26 +10,30 @@ from django.views import defaults as default_views
 
 from rest_framework_nested import routers
 
-from gmp.authentication import views as users_views
+from gmp.authentication import views as user_views
 from gmp.filestorage import views as filestorage_views
 from gmp.certificate import views as certificate_views
-from gmp.departments import views as departments_views
+from gmp.departments import views as department_views
+from gmp.engines import views as engine_views
 
 
 users = routers.SimpleRouter()
-users.register(r'user', users_views.EmployeeViewset)
+users.register(r'user', user_views.EmployeeViewset)
 
 certificates = routers.NestedSimpleRouter(users, r'user', lookup='user')
 certificates.register(r'certificates', certificate_views.CertificateViewset)
 
 departments = routers.SimpleRouter()
-departments.register(r'department', departments_views.DepartmentViewset)
+departments.register(r'department', department_views.DepartmentViewset)
 
 measurers = routers.NestedSimpleRouter(departments, r'department', lookup='department')
-measurers.register(r'measurer', departments_views.MeasurerViewset)
+measurers.register(r'measurer', department_views.MeasurerViewset)
 
 files = routers.SimpleRouter()
 files.register('file', filestorage_views.FileViewset)
+
+engines = routers.SimpleRouter()
+engines.register('engine', engine_views.EngineViewset)
 
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
@@ -53,11 +57,15 @@ urlpatterns = [
     # /api/department/<id>/measurer/
     url(r'^api/', include(measurers.urls)),
 
+    # /api/engine/
+    url(r'^api/', include(engines.urls)),
+
+    # /api/file/
     url(r'^api/', include(files.urls)),
 
     # Additional routes
-    url(r'^api/login', users_views.LoginView.as_view(), name='login'),
-    url(r'^api/logout', users_views.LogoutView.as_view(), name='logout'),
+    url(r'^api/login', user_views.LoginView.as_view(), name='login'),
+    url(r'^api/logout', user_views.LogoutView.as_view(), name='logout'),
     url(r'^api/upload', filestorage_views.FileUploadView.as_view(), name='files'),
 
     # Pass-through route

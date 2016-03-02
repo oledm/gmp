@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework import viewsets
 
-# Create your views here.
+from .models import Engine
+from .serializers import EngineSerializer
+
+class EngineViewset(viewsets.ModelViewSet):
+    queryset = Engine.objects.all()
+    serializer_class = EngineSerializer
