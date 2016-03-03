@@ -49,3 +49,4 @@ redis>=2.10.0
 djangorestframework==3.3.2
 django-bower
 drf-nested-routers
+reportlab

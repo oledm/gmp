@@ -15,6 +15,7 @@ from gmp.filestorage import views as filestorage_views
 from gmp.certificate import views as certificate_views
 from gmp.departments import views as department_views
 from gmp.engines import views as engine_views
+from gmp.reports import views as report_views
 
 
 users = routers.SimpleRouter()
@@ -68,6 +69,8 @@ urlpatterns = [
     url(r'^api/logout', user_views.LogoutView.as_view(), name='logout'),
     url(r'^api/upload', filestorage_views.FileUploadView.as_view(), name='files'),
 
+    # Reporr route
+    url(r'^report/$', report_views.create_report, name="report"),
     # Pass-through route
     url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
 
