@@ -1,12 +1,17 @@
-<div ng-cloak layout="column" layout-align="center center">
-    <div class="animate-repeat" ng-include="'/static/src/app/report/team.tpl.html'">
+<form name="passportForm" action="/report/" method="get" novalidate>
+    <div layout="column" layout-align="center center">
+        <div class="animate-repeat" ng-include="'/static/src/app/report/team.tpl.html'">
+        </div>
+    
+        <div class="animate-repeat" ng-include="'/static/src/app/report/measurers.tpl.html'"
+    	 ng-if="!vm.teamForm.$invalid">
+        </div>
+    
+        <div class="animate-repeat" ng-include="'/static/src/app/report/engines.tpl.html'"
+            ng-if="vm.measurers.selected.length > 0">
+        </div>
+    
+        <md-button type="submit" class="animate-repeat md-raised md-primary" ng-disabled="vm.userdata.isLoading || userForm.$invalid"> Создать паспорт 
+        </md-button>    
     </div>
-
-    <div class="animate-repeat" ng-include="'/static/src/app/report/measurers.tpl.html'"
-	 ng-if="!vm.teamForm.$invalid">
-    </div>
-
-    <div class="animate-repeat" ng-include="'/static/src/app/report/engines.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
-</div>
+</form>

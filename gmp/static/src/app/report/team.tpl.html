@@ -1,12 +1,10 @@
 <md-card flex="100">
-
+    <ng-form name="vm.teamForm" class="md-padding">
     <md-card-title>
             <span class="md-headline">Выберите членов бригады&nbsp;
                 <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.teamForm.$valid"></i>
             </span>
     </md-card-title>
-
-    <form name="vm.teamForm" class="md-padding">
         <div class="md-block" flex-gt-sm ng-repeat="emp in vm.team">
 
             <md-input-container>
@@ -26,6 +24,6 @@
         </div>
 
         <md-button class="md-raised" ng-click="vm.addEmployee()">Добавить</md-button>
-    </form>
+    </ng-form>
 
 </md-card>

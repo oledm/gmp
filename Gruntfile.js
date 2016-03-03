@@ -31,6 +31,7 @@ module.exports = function (grunt) {
     pkg: appConfig,
 
     // see: https://github.com/gruntjs/grunt-contrib-watch
+
     watch: {
       gruntfile: {
         files: ['Gruntfile.js']
@@ -45,7 +46,10 @@ module.exports = function (grunt) {
       python: {
         files: ['<%= paths.app %>/**/*.py'],
         tasks: ['bgShell:runTests'],
-
+      },
+      pythonForReport: {
+        files: ['<%= paths.app %>/**/*.py'],
+        tasks: ['wait', 'bgShell:makeReport'],
       },
       js: {
         files: ['<%= paths.js %>/**/*.js'],
@@ -113,6 +117,23 @@ module.exports = function (grunt) {
       }
     },
 
+    // https://www.npmjs.com/package/grunt-wait
+    wait: {
+        options: {
+            delay: 1500
+        },
+        pause: {      
+            options: {
+                before: function(options) {
+                    console.log('pausing %dms', options.delay);
+                },
+                after: function() {
+                    console.log('pause end');
+                }
+            }
+        },
+    },
+
     // see: https://npmjs.org/package/grunt-bg-shell
     bgShell: {
       _defaults: {
@@ -123,6 +144,10 @@ module.exports = function (grunt) {
       },
       runTests: {
         cmd: 'python <%= paths.manageScript %> test gmp.authentication gmp.filestorage gmp.certificate',
+        bg: false
+      },
+      makeReport: {
+        cmd: 'curl "http://127.0.0.1:8000/report/" && chromium form_letter.pdf',
         bg: false
       }
       
@@ -141,6 +166,13 @@ module.exports = function (grunt) {
   ]);
 
 
+  grunt.registerTask('report', [
+    'bgShell:runDjango',
+    'wait',
+    'bgShell:makeReport',
+    'watch:pythonForReport',
+  ]);
+
   grunt.registerTask('build', [
     'sass:dist',
     'eslint',
@@ -148,7 +180,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'serve'
+    'serve',
   ]);
 
 };
