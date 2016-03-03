@@ -1,11 +1,18 @@
+from random import randrange
+
 from django.db import models
 
 #from django.core.validators import MaxValueValidator
 from django.core.exceptions import ValidationError
 
+from . import utils
+
 #from django.contrib.postgres.fields import IntegerRangeField
 
 #from psycopg2.extras import NumericRange
+#class EngineRandomDataManager(models.Manager):
+#    def get_queryset(self):
+#        return
 
 class Engine(models.Model):
     name = models.CharField('Тип', max_length=40)
@@ -51,11 +58,24 @@ class Engine(models.Model):
     )
     
     weight = models.SmallIntegerField('Масса двигателя, кг')
-    resistance_wire = models.SmallIntegerField('Сопротивление обмотки, Ом')
+    #resistance_wire = models.SmallIntegerField('Сопротивление обмотки, Ом')
     resistance_isolation = models.SmallIntegerField('Сопротивление изоляции, Мом')
 
     def __str__(self):
         return self.name
+
+    @property
+    def random_data(self):
+        return {
+            # Сопротивление обмотки, Ом
+            'resistance_wire': '{:.2f}'.format(
+                (self.voltage ** 2) /
+                (self.power * 1000 * self.coef_power) *
+                0.03 * randrange(1000, 1050)/1000
+            ),
+            'moments': utils.moments(),
+            'moveable_Ex_connections': utils.moveable_Ex_connections(),
+        }
 
     #def clean(self):
     #    if self.kpd > 100 or self.kpd < 0:
@@ -63,6 +83,7 @@ class Engine(models.Model):
 
     #    if self.coef_power > 1 or self.coef_power < 0:
     #        raise ValidationError('Коэффициент мощности должен быть в диапазоне [0...1]')
+
 
 class Connection(models.Model):
     CONNECTION_TYPES = (
@@ -88,6 +109,7 @@ class Factory(models.Model):
     class Meta:
         verbose_name_plural = 'Factories'
 
+
 class ExClass(models.Model):
     name = models.CharField('Наименование исполнения по взрывозащите',
             unique=True,
@@ -99,6 +121,7 @@ class ExClass(models.Model):
 
     class Meta:
         verbose_name_plural = 'Ex classes'
+
 
 class WarmingClass(models.Model):
     warming_class_codes = ('Y', 'A', 'E', 'B', 'F', 'H', 'C')
