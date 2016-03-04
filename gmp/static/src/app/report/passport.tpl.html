@@ -1,4 +1,3 @@
-<form name="passportForm" action="/report/" method="get" novalidate>
     <div layout="column" layout-align="center center">
         <div class="animate-repeat" ng-include="'/static/src/app/report/team.tpl.html'">
         </div>
@@ -11,7 +10,14 @@
             ng-if="vm.measurers.selected.length > 0">
         </div>
     
-        <md-button type="submit" class="animate-repeat md-raised md-primary" ng-disabled="vm.userdata.isLoading || userForm.$invalid"> Создать паспорт 
+        <md-button ng-click="vm.createPassport()" class="animate-repeat md-raised md-primary"> Создать паспорт 
         </md-button>    
+    <!-- 
+        <a target="_self" ng-href="/report/">
+        </a>
+     -->
+        <!-- 
+            <md-button type="submit" class="animate-repeat md-raised md-primary" ng-if="vm.engines.selected.length !== 0"> Создать паспорт 
+            </md-button>    
+         -->
     </div>
-</form>

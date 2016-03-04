@@ -26,7 +26,7 @@
 
         vm.addEmployee = addEmployee;
         vm.allEmployees = [];
-//        vm.createPassport = createPassport;
+        vm.createPassport = createPassport;
         vm.measurers = measurers;
         vm.engines = engines;
         vm.ranks = ranks;
@@ -37,7 +37,7 @@
         //////////////////////////
 
         function activate() {
-            createPassport();
+//            createPassport();
             getEmployees();
             getEngines();
         }
@@ -49,10 +49,14 @@
             });
         }
         function createPassport() {
-            return Passport.createPassport().
-                then(function(response) {
-                    return response;
-                });
+            Passport.createPassport(
+                {
+                    'team': vm.team,
+                    'measurers': vm.measurers.selected,
+                    'engines': vm.engines.selected,
+
+                }
+            );
         }
 
         function getEmployees() {

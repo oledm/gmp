@@ -13,10 +13,16 @@
         };
 
         return passport;
-        function createPassport() {
-            return $http.get('/passport/')
-                .then(function(response) {
-                    return response;
+        function createPassport(report_data) {
+            $http.post('/report/',
+                    {'report_data': report_data},
+                    { responseType: 'arraybuffer',
+                      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                    })
+                .success(function(data, status, headers, config) {
+                    var file = new Blob([data], { type: 'application/pdf' });
+                    saveAs(file, 'report.pdf');
+                    return headers;
                 });
         }
     }
