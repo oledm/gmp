@@ -17,7 +17,7 @@
             $http.post('/report/',
                     {'report_data': report_data},
                     { responseType: 'arraybuffer',
-                      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                      headers: {'Content-Type': 'application/json'}
                     })
                 .success(function(data, status, headers, config) {
                     var file = new Blob([data], { type: 'application/pdf' });

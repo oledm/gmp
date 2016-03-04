@@ -147,7 +147,7 @@ module.exports = function (grunt) {
         bg: false
       },
       makeReport: {
-        cmd: 'curl "http://127.0.0.1:8000/report/" && chromium form_letter.pdf',
+        cmd: 'curl "http://127.0.0.1:8000/report/" > form_letter.pdf && chromium form_letter.pdf',
         bg: false
       }
       

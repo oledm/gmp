@@ -15,30 +15,4 @@
     </md-input-container>
     </div>
     </ng-form>
-
-    <!-- 
-        <md-table-container>
-          <table md-table md-row-select ng-model="vm.measurers.selected">
-            <thead md-head md-order="vm.measurers.sortOrder">
-              <tr md-row>
-                <th md-column md-order-by="name"><span>Наименование прибора</span></th>
-                <th md-column md-order-by="model"><span>Тип (марка)</span></th>
-                <th md-column md-order-by="serial_number"><span>Заводской номер</span></th>
-                <th md-column md-order-by="verification"><span>Свидетельство о поверке</span></th>
-                <th md-column md-order-by="expired_at">Дата следующей поверки</th>
-              </tr>
-            </thead>
-            <tbody md-body>
-                <tr md-row md-select="measurer" md-select-id="{{vm.uploadedFiles.name}}" md-auto-select ng-repeat="measurer in vm.measurers.all | orderBy: vm.measurers.sortOrder">
-                <td md-cell>{{measurer.name}}</td>
-                <td md-cell>{{measurer.model}}</td>
-                <td md-cell>{{measurer.serial_number}}</td>
-                <td md-cell>{{measurer.verification}}</td>
-                <td md-cell>{{measurer.expired_at | date:'yyyy-MM-dd'}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </md-table-container>
-     -->
-
 </md-card>
