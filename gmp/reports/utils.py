@@ -1,12 +1,14 @@
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.lib import colors
 
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
+
+from gmp.authentication.models import Employee
 
 class Report():
     def __init__(self):
@@ -17,7 +19,7 @@ class Report():
         doc = SimpleDocTemplate(report, pagesize=A4,
                                 rightMargin=12,leftMargin=12,
                                 topMargin=12,bottomMargin=12,
-                                title='Новый отчет',
+                                title='Паспорт двигателя ' + data['engine']['type'],
                                 #showBoundary=1,
         )
          
@@ -70,10 +72,19 @@ class Report():
             'ВЗРЫВОЗАЩИЩЁННОГО ЭЛЕКТРОДВИГАТЕЛЯ',
         ], 'MainTitle', 1)
 
+        engine = data.get('engine')
         self.mput([
             'ОБЪЕКТ:',
-            'ТИП: ' + data.get('engines'),
+            'ТИП: {type} зав.№ {serial_number}'.format(**engine),
         ], 'MainTitle', 1)
+
+        self.Story.append(PageBreak())
+        self.put('Дата обследования: ХХ.ХХ.ХХХХ', 'Heading 1', 1)
+
+        for person in data.get('team'):
+            print('name {name}, rank {rank}'.format(**person))
+            print(Employee.objects.full_name_is(person['name']))
+            self.put(person['name'], 'Heading 1')
             
         doc.build(self.Story)
 
@@ -84,8 +95,11 @@ class Report():
         if spacer:
             self.Story.append(Spacer(1, spacer * cm))
 
-    def put(self, content, style_name):
+    def put(self, content, style_name, spacer=None):
         self.Story.append(Paragraph(content, self.styles[style_name]))
+
+        if spacer:
+            self.Story.append(Spacer(1, spacer * cm))
 
     def setup_fonts(self):
         fonts = (

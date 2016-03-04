@@ -20,7 +20,7 @@
                       headers: {'Content-Type': 'application/json'}
                     })
                 .success(function(data, status, headers, config) {
-                    var file = new Blob([data], { type: 'application/pdf' });
+                    var file = new Blob([data], {type: 'application/pdf'});
                     saveAs(file, 'report.pdf');
                     return headers;
                 });

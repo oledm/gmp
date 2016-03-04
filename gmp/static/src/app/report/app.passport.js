@@ -18,9 +18,12 @@
                 selected: [],
                 sortOrder: 'name'
             },
-            engines = {
+            engine = {
                 all: [],
-                selected: '',
+                selected: {
+                    'type': '',
+                    'serial_number': 0
+                },
                 sortOrder: 'name'
             };
 
@@ -28,9 +31,12 @@
         vm.allEmployees = [];
         vm.createPassport = createPassport;
         vm.measurers = measurers;
-        vm.engines = engines;
+        vm.engine = engine;
         vm.ranks = ranks;
-        vm.team = [{'name': '', 'required': 'required'}];
+        vm.report = {
+            team: [{'name': '', 'required': 'required'}]
+        };
+        
 
         activate();
 
@@ -44,19 +50,13 @@
 
         function addEmployee() {
 //            console.log('team: ' + JSON.stringify(vm.team));
-            vm.team.push({
+            vm.report.team.push({
                 'name': ''
             });
         }
         function createPassport() {
-            Passport.createPassport(
-                {
-                    'team': vm.team,
-                    'measurers': vm.measurers.selected,
-                    'engines': vm.engines.selected,
-
-                }
-            );
+            delete vm.report.team[0].required;
+            Passport.createPassport(vm.report);
         }
 
         function getEmployees() {
@@ -69,7 +69,7 @@
         function getEngines() {
             Engine.getAllEngines()
                 .then(function(data) {
-                    vm.engines.all = data;
+                    vm.engine.all = data;
                 });
         }
     }

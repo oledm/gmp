@@ -6,13 +6,21 @@
       </md-card-title-text>
     </md-card-title>
 
-    <div class="md-padding">
+    <div class="md-padding" layout="row">
     <md-input-container>
       <label>Двигатель</label>
-      <md-select name="engine" placeholder="Двигатель" required ng-model="vm.engines.selected">
-            <md-option ng-bind="engine.name" ng-repeat="engine in vm.engines.all"></md-option>
+      <md-select name="engine" placeholder="Двигатель" required ng-model="vm.report.engine.type">
+            <md-option ng-bind="engine.name" ng-repeat="engine in vm.engine.all"></md-option>
         </md-select>
+
     </md-input-container>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Заводской номер</label>
+          <input md-maxlength="30" name="serial_number" ng-model="vm.report.engine.serial_number" />
+          <div ng-messages="vm.engineForm.serial_number.$error">
+            <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+          </div>
+        </md-input-container>
     </div>
     </ng-form>
 </md-card>

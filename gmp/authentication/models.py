@@ -26,6 +26,13 @@ class EmployeeManager(BaseUserManager):
 
         return employee
 
+    def full_name_is(self, full_name):
+        last_name, first_name = full_name.split()
+        return super(EmployeeManager, self).get(
+            first_name=first_name,
+            last_name=last_name
+        )
+
 class Employee(AbstractBaseUser):
 
     email = models.EmailField(blank=True, unique=True)

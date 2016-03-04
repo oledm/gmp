@@ -9,7 +9,9 @@
         <div class="animate-repeat" ng-include="'/static/src/app/report/engines.tpl.html'"
             ng-if="vm.measurers.selected.length > 0">
         </div>
+            <md-datepicker ng-model="vm.report.investigationDate" md-placeholder="Выберите дату"></md-datepicker>
     
+    </md-input-container>
         <md-button ng-click="vm.createPassport()" class="animate-repeat md-raised md-primary"> Создать паспорт 
         </md-button>    
     <!-- 
