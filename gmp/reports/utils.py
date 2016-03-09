@@ -9,17 +9,19 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
 
 from gmp.authentication.models import Employee
+from gmp.certificate.models import Certificate
 
 class Report():
-    def __init__(self):
+    def __init__(self, data):
+        self.data = data
         self.Story = []
         self.styles = getSampleStyleSheet()
 
-    def make_report(self, report, data):
+    def make_report(self, report):
         doc = SimpleDocTemplate(report, pagesize=A4,
                                 rightMargin=12,leftMargin=12,
                                 topMargin=12,bottomMargin=12,
-                                title='Паспорт двигателя ' + data['engine']['type'],
+                                title='Паспорт двигателя ' + self.data['engine']['type'],
                                 #showBoundary=1,
         )
          
@@ -72,22 +74,50 @@ class Report():
             'ВЗРЫВОЗАЩИЩЁННОГО ЭЛЕКТРОДВИГАТЕЛЯ',
         ], 'MainTitle', 1)
 
-        engine = data.get('engine')
+        engine = self.data.get('engine')
         self.mput([
             'ОБЪЕКТ:',
             'ТИП: {type} зав.№ {serial_number}'.format(**engine),
         ], 'MainTitle', 1)
 
-        self.Story.append(PageBreak())
-        self.put('Дата обследования: ХХ.ХХ.ХХХХ', 'Heading 1', 1)
-
-        for person in data.get('team'):
-            print('name {name}, rank {rank}'.format(**person))
-            print(Employee.objects.full_name_is(person['name']))
-            self.put(person['name'], 'Heading 1')
+        self.page2()
             
         doc.build(self.Story)
 
+    def page2(self):
+        self.Story.append(PageBreak())
+        self.put('Дата обследования: ХХ.ХХ.ХХХХ', 'Heading 1', 1)
+
+        table_data = [
+            ['Список сертифицированных членов бригады'],
+            [
+                '№\nп/п', 'Фамилия И.О.', '№ квалифика-\nционного\nудостоверения',
+                'Дата\nвыдачи', 'Срок действия', 'Виды\nконтроля', 'Уровень', 'Группа\nЭБ'
+            ]
+        ]
+
+        for num, person in enumerate(self.data.get('team'), start=1):
+            emp = Employee.objects.get_by_full_name(person['name'])
+            cert = Certificate.objects.get(employee=emp)
+            row_data = [num, emp.fio()]
+            row_data.extend(cert.details())
+            table_data.append(row_data)
+
+        table = Table(table_data)
+        table.setStyle(TableStyle([
+            ('FONTNAME', (0,0), (-1,-1), 'Times'),
+            ('FONTSIZE', (0,0), (-1,-1), 12),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+
+            ('SPAN', (0,0), (-1,0)),
+            ('FONTNAME', (0,0), (-1,0), 'Times Bold'),
+            #('RIGHTPADDING', (0,0), (0,-1), 1.5*cm),
+            #('LEFTPADDING', (-1,0), (-1,-1), 1.5*cm),
+        ]))
+        self.Story.append(table)
 
     def mput(self, content_list, style_name, spacer=None):
         list(map(lambda x: self.put(x, style_name), content_list))

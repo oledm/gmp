@@ -1,24 +1,26 @@
 from django.db import models
 from django.contrib.postgres.fields import IntegerRangeField, ArrayField
 
-class Engine(models.Model):
-    CONNECTION_TYPES = (
-        ('s', 'Звезда'),
-        ('t', 'Треугольник')
-    )
-    name = models.CharField('Тип', max_length=40)
-    exp = models.CharField('Исполнение по взрывозащите', max_length=30)
-    temp = IntegerRangeField('Допустимый диапазон температур окружающей среды')
+class Organization(models.Model):
+    name = models.CharField('Наименование ТГ', max_length=100)
+    address = models.CharField('Почтовый адрес', max_length=400)
+    phone = models.CharField('Телефон', max_length=100)
+    fax = models.CharField('Факс', max_length=20)
+    director = models.CharField('Генеральный директор', max_length=50)
 
-    #temp_low = models.SmallIntegerField('Нижняя граница допустимого ' + 
-    #    'диапазона температур окружающей среды', max_length=30)
-    #temp_high = models.SmallIntegerField('Верхняя граница допустимого ' + 
-    #    'диапазона температур окружающей среды', max_length=30)
-    factory = models.CharField('Завод изготовитель', max_length=50)
-    connection = ArrayField(
-        models.CharField(
-            'Соединение фаз',
-            choices=CONNECTION_TYPES,
-            max_length=50
-        )
+    def __str__(self):
+        return self.name
+
+
+class LPU(models.Model):
+    name = models.CharField('Наименование ЛПУ MГ', max_length=100)
+    organization = models.ForeignKey(
+        'Organization',
+        verbose_name='Наименование ТГ'
     )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'LPU'

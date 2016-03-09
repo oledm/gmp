@@ -23,9 +23,6 @@ sftp-config.json
 *.py[cod]
 __pycache__
 
-# Django
-**/migrations/*
-
 # Logs
 *.log
 pip-log.txt

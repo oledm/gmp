@@ -26,7 +26,7 @@ class EmployeeManager(BaseUserManager):
 
         return employee
 
-    def full_name_is(self, full_name):
+    def get_by_full_name(self, full_name):
         last_name, first_name = full_name.split()
         return super(EmployeeManager, self).get(
             first_name=first_name,
@@ -62,6 +62,9 @@ class Employee(AbstractBaseUser):
 
     def get_full_name(self):
         return ' '.join([self.last_name, self.first_name])
+
+    def fio(self):
+        return '{} {}.'.format(self.last_name, self.first_name[0])
 
     def get_short_name(self):
         return self.first_name

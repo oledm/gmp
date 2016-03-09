@@ -1,5 +1,6 @@
 from django.contrib import admin
 
-from .models import Engine
+from .models import Organization, LPU
 
-admin.site.register(Engine)
+admin.site.register(Organization)
+admin.site.register(LPU)

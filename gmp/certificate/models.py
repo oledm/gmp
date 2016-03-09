@@ -23,3 +23,14 @@ class Certificate(models.Model):
     control = models.CharField('Вид контроля', max_length=10)
     degree = models.PositiveSmallIntegerField('Уровень')
     group = models.PositiveSmallIntegerField('Группа ЭБ', choices=EB_GROUPS)   
+
+
+    def details(self):
+        return [
+            self.serial_number,
+            self.received_at.strftime('%m.%Y'),
+            self.expired_at.strftime('%m.%Y'),
+            self.control,
+            self.degree,
+            self.get_group_display()
+        ]
