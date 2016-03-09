@@ -26,7 +26,12 @@ def create_report_debug(request):
             {'name': 'Алексеев Илья', 'rank': 'руководитель бригады'},
             {'name': 'Олейник Дмитрий', 'rank': 'член бригады'}
         ],
-        'engine': {'type': 'ВАСО 16-14-24', 'serial_number': '565465'}
+        'engine': {
+            'type': 'ВАСО 16-14-24',
+            'serial_number': '565465',
+            'manufactured_at': '1986',
+            'started_at': '1987',
+        }
     }
     
     data = fake

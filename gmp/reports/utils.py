@@ -14,6 +14,7 @@ from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
+from gmp.engines.models import Engine
 
 class Report():
     def __init__(self, data):
@@ -43,8 +44,14 @@ class Report():
 
 
         self.page1()
-        self.page2()
         self.page3()
+        self.page2()
+        self.page8()
+            
+        doc.build(self.Story)
+
+    def page1(self):
+        ptext = 'ПАО "ГАЗПРОМ"<br/>РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»'
             
         doc.build(self.Story)
 
@@ -277,11 +284,59 @@ class Report():
         self.Story.append(table)
         self.Story.append(Spacer(1, 1 * cm))
 
+    def page8(self):
+
+        self.Story.append(PageBreak())
+        self.page_header()
+        self.formular('3 Паспортные данные')
+
+        data = self.data.get('engine')
+        serial = data.get('serial_number')
+        manufactured = data.get('manufactured_at')
+        started = data.get('started_at')
+        engine = Engine.objects.get(name=data.get('type'))
+        moments = engine
+
+        table_data = [
+            ['Тип', engine.name],
+            ['Исполнение по взрывозащите', str(engine.ex)],
+            ['Допустимый диапазон температуры окружающей среды, °С', '{}ºС...+{}ºС'.format(engine.temp_low, engine.temp_high)],
+            ['Заводской номер', serial],
+            ['Завод – изготовитель', str(engine.factory)],
+            ['Год изготовления', manufactured],
+            ['Год ввода в эксплуатацию', started],
+            ['Соединение фаз', str(engine.connection.get())],
+            ['Номинальная мощность, кВт', '{0:g}'.format(engine.power)],
+            ['Номинальное напряжение, В', str(engine.voltage)],
+            ['Номинальный ток статора, А', '{0:g}'.format(engine.current)],
+            ['Номинальная частота вращения, об/мин', str(engine.freq)],
+            ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(engine.freq)],
+        ]
+
+        table = Table(
+            self.preetify(table_data, 'Regular', 'Regular Center'),
+            colWidths=self.columnize(5,5)
+        )
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 1 * cm))
 
     '''
         Helper functions
     '''
 
+    def preetify(self, lst, *style):
+        return list(map(
+            lambda a, b: [
+                Paragraph(a, self.styles[style[0]]),
+                Paragraph(b, self.styles[style[1]])
+            ], *zip(*lst)
+            )
+        )
     def page_header(self):
         self.put('{org} {lpu}'.format(**self.obj_data), 'Page Header', 0.5)
 
@@ -392,5 +447,10 @@ class Report():
         self.styles.add(ParagraphStyle(
             name='Regular Bold Center',
             fontName='Times Bold',
+            fontSize=12,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Regular Center',
+            fontName='Times',
             fontSize=12,
             alignment=TA_CENTER))
