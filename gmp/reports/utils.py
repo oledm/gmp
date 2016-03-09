@@ -17,7 +17,9 @@ from gmp.departments.models import Measurer
 
 class Report():
     def __init__(self, data):
+        self.full_width = 18.7
         self.data = data
+        self.date = self.data.get('investigationDate').split(',')[0]
         self.Story = []
 
         lpu = LPU.objects.get(name=self.data.get('lpu'))
@@ -42,6 +44,7 @@ class Report():
 
         self.page1()
         self.page2()
+        self.page3()
             
         doc.build(self.Story)
 
@@ -100,9 +103,7 @@ class Report():
         ], 'MainTitle', 1)
 
         self.Story.append(Spacer(1, 1.5 * cm))
-        date = self.data.get('investigationDate').split(',')[0]
-        #date = datetime.strptime(date, '%Y-%m-%d').strftime('%d.%m.%Y')
-        self.put('Дата обследования: ' + date, 'Heading 1', 1)
+        self.put('Дата обследования: ' + self.date, 'Heading 1', 1)
         self.Story.append(Spacer(1, 1.5 * cm))
 
         ptext = '''Заместитель начальника отдела ДОЭ<br/>
@@ -176,7 +177,7 @@ class Report():
             ('BOTTOMPADDING', (0,0), (-1,0), 8),
         ]))
         self.Story.append(table)
-        self.Story.append(Spacer(1, 1 * cm))
+        self.Story.append(Spacer(1, 0.5 * cm))
 
         table_data = [
             ['Перечень приборов'],
@@ -210,6 +211,97 @@ class Report():
         ]))
         self.Story.append(table)
 
+    def page3(self):
+        self.Story.append(PageBreak())
+        self.page_header()
+        self.formular('1 Регистрация работ')
+
+        ptext = '<b>Фамилия И.О.</b><br/>' + '<br/>'.join(
+                [x.get('name') for x in self.data.get('team')]
+        )
+        left = Paragraph(ptext, self.styles['Regular']) 
+        ptext = '<b>Должность</b><br/>' + '<br/>'.join(
+                [x.get('rank') for x in self.data.get('team')]
+        )
+        right = Paragraph(ptext, self.styles['Regular']) 
+        team_table = Table([[left, right]])
+        style = TableStyle([
+            ('FONTNAME', (0,0), (-1,-1), 'Times'),
+            ('FONTSIZE', (0,0), (-1,-1), 13),
+            ('TOPPADDING', (0,0), (-1,-1), 12),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+            ('LEADING', (0,0), (-1,-1), 16),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ])
+        team_table.setStyle(style)
+
+        text = '\n'.join(['____________________' + x.get('name') for x in self.data.get('team')])
+        table2 = Table([[Paragraph(text, self.styles['Regular'])]])
+        table2.setStyle(style)
+
+        table_data = [
+            ['ВИД РАБОТ', 'Техническое диагностирование'],
+            ['ДАТА НАЧАЛА', self.date],
+            ['ДАТА ОКОНЧАНИЯ', self.date],
+            [Paragraph('СОСТАВ БРИГАДЫ СПЕЦИАЛИСТОВ', self.styles['Regular Bold Center']), team_table],
+            ['ОРГАНИЗАЦИЯ', 'ООО "ГАЗМАШПРОЕКТ"'],
+            ['РАЗРЕШЕНИЕ', '''Свидетельство об аккредитации 766-Э/ТД выдано Управлением\nэнергетики ОАО "Газпром" 11 февраля 2015 г.\nСрок действия до 11 февраля 2018 г.'''],
+            ['СУБПОДРЯДНАЯ\nОРГАНИЗАЦИЯ', ''],
+            ['РАЗРЕШЕНИЕ\nСУБПОДРЯДНОЙ\nОРГАНИЗАЦИИ', ''],
+            ['ПОДПИСИ\nЧЛЕНОВ\nБРИГАДЫ', table2],
+        ]
+
+        #for num, person in enumerate(self.data.get('team'), start=1):
+        #    emp = Employee.objects.get_by_full_name(person['name'])
+        #    cert = Certificate.objects.get(employee=emp)
+        #    row_data = [num, emp.fio()]
+        #    row_data.extend(cert.details())
+        #    table_data.append(row_data)
+
+        table = Table(table_data, colWidths=self.columnize(3,7))
+        table.setStyle(TableStyle([
+            ('FONTNAME', (0,0), (-1,-1), 'Times'),
+            ('FONTSIZE', (0,0), (-1,-1), 13),
+            ('TOPPADDING', (0,0), (-1,-1), 12),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+            ('LEADING', (0,0), (-1,-1), 16),
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('FONTNAME', (0,0), (0,-1), 'Times Bold'),
+            ('LINEABOVE', (0,1), (-1,1), 0.5, colors.black),
+            ('LINEABOVE', (0,3), (-1,-1), 0.5, colors.black),
+            ('BOX', (0,0), (0,-1), 0.5, colors.black),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 1 * cm))
+
+
+    '''
+        Helper functions
+    '''
+
+    def page_header(self):
+        self.put('{org} {lpu}'.format(**self.obj_data), 'Page Header', 0.5)
+
+    def formular(self, text):
+        table = Table([['Формуляр № ' + text]], colWidths=[self.full_width * cm])
+        table.setStyle(TableStyle([
+            ('FONTNAME', (0,0), (-1,-1), 'Times Bold'),
+            ('FONTSIZE', (0,0), (-1,-1), 12),
+            ('LEADING', (0,0), (-1,-1), 16),
+            ('INNERGRID', (0,0), (-1,-1), 2, colors.black),
+            ('BOX', (0,0), (-1,-1), 2, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 0.5 * cm))
+
+    def columnize(self, *widths):
+        return [self.full_width * width * 0.1 * cm for width in widths]
+
     def mput(self, content_list, style_name, spacer=None):
         list(map(lambda x: self.put(x, style_name), content_list))
 
@@ -233,10 +325,6 @@ class Report():
         pdfmetrics.registerFontFamily(
             'Times', normal='Times', bold='Times Bold',
             italic='Times Bold Italic', boldItalic='Times Bold Italic')
-
-    def page_header(self):
-        self.put('{org} {lpu}'.format(**self.obj_data), 'Page Header', 1)
-        #self.Story.append(Spacer(1, 0.5 * cm))
 
     def register_font(self, font_name, font_file):
         MyFontObject = ttfonts.TTFont(font_name, font_file)
@@ -294,5 +382,15 @@ class Report():
         self.styles.add(ParagraphStyle(
             name='Normal Center',
             fontName='Times',
+            fontSize=12,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Regular',
+            fontName='Times',
+            fontSize=12,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Regular Bold Center',
+            fontName='Times Bold',
             fontSize=12,
             alignment=TA_CENTER))

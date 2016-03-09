@@ -15,7 +15,6 @@ def create_report(request):
     return response
 
 def create_report_debug(request):
-    #if request.method == "POST":
     fake = {
         'investigationDate': '11.02.2016, 0:00:00',
         'measurers': [
@@ -30,13 +29,9 @@ def create_report_debug(request):
         'engine': {'type': 'ВАСО 16-14-24', 'serial_number': '565465'}
     }
     
-    #data = json.loads(request.body.decode('utf-8'))
     data = fake
-    #print('Получены данные для формирования паспорта: ', data['report_data'])
     response = HttpResponse(content_type='application/pdf')
-    #report = Report(data['report_data'])
     report = Report(fake)
-    #report.make_report(response, data['report_data'])
     report.make_report(response)
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
     return response
