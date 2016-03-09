@@ -30,11 +30,14 @@
         vm.addEmployee = addEmployee;
         vm.allEmployees = [];
         vm.createPassport = createPassport;
-        vm.measurers = measurers;
         vm.engine = engine;
+        vm.investigationDate = undefined;
+        vm.lpus = {};
+        vm.measurers = measurers;
         vm.ranks = ranks;
         vm.report = {
-            team: [{'name': '', 'required': 'required'}]
+            team: [{'name': '', 'required': 'required'}],
+            measurers: measurers.selected
         };
         
 
@@ -46,6 +49,7 @@
 //            createPassport();
             getEmployees();
             getEngines();
+            getLPUs();
         }
 
         function addEmployee() {
@@ -56,6 +60,7 @@
         }
         function createPassport() {
             delete vm.report.team[0].required;
+            vm.report.investigationDate = vm.investigationDate.toLocaleString();
             Passport.createPassport(vm.report);
         }
 
@@ -66,11 +71,20 @@
                 });
         }
 
+
         function getEngines() {
             Engine.getAllEngines()
                 .then(function(data) {
                     vm.engine.all = data;
                 });
         }
+
+        function getLPUs() {
+            Passport.getLPUs()
+                .then(function(data) {
+                    vm.lpus = data;
+                });
+        }
+
     }
 })();

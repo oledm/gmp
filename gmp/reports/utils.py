@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak, XPreformatted
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.lib import colors
@@ -10,11 +12,20 @@ from reportlab.pdfbase import ttfonts
 
 from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
+from gmp.inspections.models import Organization, LPU
+from gmp.departments.models import Measurer
 
 class Report():
     def __init__(self, data):
         self.data = data
         self.Story = []
+
+        lpu = LPU.objects.get(name=self.data.get('lpu'))
+        self.obj_data = {
+            'lpu': lpu.name,
+            'org': str(lpu.organization)
+        }
+
         self.styles = getSampleStyleSheet()
 
     def make_report(self, report):
@@ -29,6 +40,12 @@ class Report():
         self.setup_styles()
 
 
+        self.page1()
+        self.page2()
+            
+        doc.build(self.Story)
+
+    def page1(self):
         ptext = 'ПАО "ГАЗПРОМ"<br/>РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»'
         self.Story.append(Paragraph(ptext, self.styles["Heading 1 Bold"]))
         self.Story.append(Spacer(1, 0.5 * cm))
@@ -47,14 +64,14 @@ class Report():
         right_column = Paragraph(ptext, self.styles["Heading 1"]) 
         table_data = [[left_column, right_column]]
         
-        ptext = '''_____________________Ю.В. Иванов
-        "_____"____________________201    г.
+        ptext = '''___________________Ю.В. Иванов
+"____"_________________201     г.
         '''
-        left_column = Paragraph(ptext, self.styles["Signature"]) 
-        ptext = '''________________А.Н. Бондаренко
-        "_____"__________________201<pre>      </pre> г.
+        left_column = XPreformatted(ptext, self.styles["Signature Handwrite"]) 
+        ptext = '''_______________А.Н. Бондаренко
+"____"_________________201     г.
         '''
-        right_column = Paragraph(ptext, self.styles["Signature"]) 
+        right_column = XPreformatted(ptext, self.styles["Signature Handwrite"]) 
         table_data.extend([[left_column, right_column]])
         table = Table(table_data)
         table.setStyle(TableStyle([
@@ -66,7 +83,7 @@ class Report():
             ('LEFTPADDING', (-1,0), (-1,-1), 1.5*cm),
         ]))
         self.Story.append(table)
-        self.Story.append(Spacer(1, 1 * cm))
+        self.Story.append(Spacer(1, 1.3 * cm))
 
         self.mput([
             'ПАСПОРТ 1-2/1715-10-14',
@@ -74,25 +91,62 @@ class Report():
             'ВЗРЫВОЗАЩИЩЁННОГО ЭЛЕКТРОДВИГАТЕЛЯ',
         ], 'MainTitle', 1)
 
+        self.Story.append(Spacer(1, 1.3 * cm))
         engine = self.data.get('engine')
         self.mput([
-            'ОБЪЕКТ:',
+            'ОБЪЕКТ: ' + self.obj_data.get('org'),
+            self.obj_data.get('lpu'),
             'ТИП: {type} зав.№ {serial_number}'.format(**engine),
         ], 'MainTitle', 1)
 
-        self.page2()
-            
-        doc.build(self.Story)
+        self.Story.append(Spacer(1, 1.5 * cm))
+        date = self.data.get('investigationDate').split(',')[0]
+        #date = datetime.strptime(date, '%Y-%m-%d').strftime('%d.%m.%Y')
+        self.put('Дата обследования: ' + date, 'Heading 1', 1)
+        self.Story.append(Spacer(1, 1.5 * cm))
+
+        ptext = '''Заместитель начальника отдела ДОЭ<br/>
+        Шеморданского ЛПУ МГ<br/>
+        ООО"Газпром трансгаз Ставрополь"
+        '''
+        left_column = Paragraph(ptext, self.styles["Heading 1"]) 
+        ptext = '''Начальник проектно-<br/>
+        диагностического отдела<br/>
+        ООО «ГАЗМАШПРОЕКТ»<br/>
+        «НАГАТИНСКИЙ»
+        '''
+        right_column = Paragraph(ptext, self.styles["Heading 1"]) 
+        table_data = [[left_column, right_column]]
+        
+        ptext = '''___________________П.Д. Петров
+"____"_________________201     г.
+        '''
+        left_column = XPreformatted(ptext, self.styles["Signature Handwrite"]) 
+        ptext = '''________________И.Ю. Медведев
+"____"_________________201     г.
+        '''
+        right_column = XPreformatted(ptext, self.styles["Signature Handwrite"]) 
+        table_data.extend([[left_column, right_column]])
+        table = Table(table_data)
+        table.setStyle(TableStyle([
+            #('INNERGRID', (0,0), (-1,-1), 0.1, colors.black),
+            #('BOX', (0,0), (-1,-1), 1.0, colors.black),
+
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('RIGHTPADDING', (0,0), (0,-1), 1.5*cm),
+            ('LEFTPADDING', (-1,0), (-1,-1), 1.5*cm),
+        ]))
+        self.Story.append(table)
 
     def page2(self):
         self.Story.append(PageBreak())
-        self.put('Дата обследования: ХХ.ХХ.ХХХХ', 'Heading 1', 1)
+        self.page_header()
 
         table_data = [
             ['Список сертифицированных членов бригады'],
             [
                 '№\nп/п', 'Фамилия И.О.', '№ квалифика-\nционного\nудостоверения',
-                'Дата\nвыдачи', 'Срок действия', 'Виды\nконтроля', 'Уровень', 'Группа\nЭБ'
+                'Дата\nвыдачи', 'Срок\nдейст-\nвия', 'Виды\nконтроля', 'Уровень', 'Группа\nЭБ'
             ]
         ]
 
@@ -103,10 +157,14 @@ class Report():
             row_data.extend(cert.details())
             table_data.append(row_data)
 
-        table = Table(table_data)
+        table = Table(table_data, colWidths=[1.7 * cm, 3.8 * cm, 3.8 * cm,
+            1.85 * cm, 1.85 * cm, 1.85 * cm, 1.85 * cm, 1.85 * cm])
         table.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Times'),
             ('FONTSIZE', (0,0), (-1,-1), 12),
+            ('TOPPADDING', (0,0), (-1,-1), 6),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+            ('LEADING', (0,0), (-1,-1), 16),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -114,8 +172,41 @@ class Report():
 
             ('SPAN', (0,0), (-1,0)),
             ('FONTNAME', (0,0), (-1,0), 'Times Bold'),
-            #('RIGHTPADDING', (0,0), (0,-1), 1.5*cm),
-            #('LEFTPADDING', (-1,0), (-1,-1), 1.5*cm),
+            ('TOPPADDING', (0,0), (-1,0), 8),
+            ('BOTTOMPADDING', (0,0), (-1,0), 8),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 1 * cm))
+
+        table_data = [
+            ['Перечень приборов'],
+            [
+                '№\nп/п', 'Тип прибора', 'Заводской номер\nприбора',
+                'Свидетельство о\nповерке', 'Дата следующей\nповерки' 
+            ]
+        ]
+
+        for num, measurer in enumerate(self.data.get('measurers'), start=1):
+            meas = Measurer.objects.get(id=measurer['id'])
+            row_data = [num, *map(lambda p: Paragraph(p, self.styles['Normal Center']), meas.details())]
+            table_data.append(row_data)
+
+        table = Table(table_data, colWidths=[1.7 * cm, 5.7 * cm, 3.75 * cm, 3.85 * cm, 3.65 * cm])
+        table.setStyle(TableStyle([
+            ('FONTNAME', (0,0), (-1,-1), 'Times'),
+            ('FONTSIZE', (0,0), (-1,-1), 12),
+            ('TOPPADDING', (0,0), (-1,-1), 6),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+            ('LEADING', (0,0), (-1,-1), 16),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+
+            ('SPAN', (0,0), (-1,0)),
+            ('FONTNAME', (0,0), (-1,0), 'Times Bold'),
+            ('TOPPADDING', (0,0), (-1,0), 8),
+            ('BOTTOMPADDING', (0,0), (-1,0), 8),
         ]))
         self.Story.append(table)
 
@@ -143,6 +234,10 @@ class Report():
             'Times', normal='Times', bold='Times Bold',
             italic='Times Bold Italic', boldItalic='Times Bold Italic')
 
+    def page_header(self):
+        self.put('{org} {lpu}'.format(**self.obj_data), 'Page Header', 1)
+        #self.Story.append(Spacer(1, 0.5 * cm))
+
     def register_font(self, font_name, font_file):
         MyFontObject = ttfonts.TTFont(font_name, font_file)
         pdfmetrics.registerFont(MyFontObject)
@@ -162,6 +257,7 @@ class Report():
             #borderColor=colors.black,
             fontSize=13,
             leading=18,
+            leftIndent=1*cm,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Signature',
@@ -172,10 +268,31 @@ class Report():
             leading=30,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
+            name='Signature Handwrite',
+            fontName='Times',
+            #borderWidth=0.3,
+            #borderColor=colors.black,
+            fontSize=13,
+            leftIndent=1*cm,
+            leading=30,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
             name='MainTitle',
             fontName='Times Bold',
             #borderWidth=0.3,
             #borderColor=colors.black,
             fontSize=16,
             leading=20,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Page Header',
+            fontName='Times Bold',
+            #borderWidth=0.3,
+            #borderColor=colors.black,
+            fontSize=13,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Normal Center',
+            fontName='Times',
+            fontSize=12,
             alignment=TA_CENTER))

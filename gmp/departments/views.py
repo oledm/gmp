@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .serializers import DepartmentSerializer, MeasurerSerializer
 from .models import Department, Measurer
+from .serializers import DepartmentSerializer, MeasurerSerializer
 
 class DepartmentViewset(viewsets.ModelViewSet):
     queryset = Department.objects.all()

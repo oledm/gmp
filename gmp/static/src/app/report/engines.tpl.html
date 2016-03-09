@@ -6,12 +6,13 @@
       </md-card-title-text>
     </md-card-title>
 
-    <div class="md-padding" layout="row">
+    <div class="md-padding" layout="column">
     <md-input-container>
       <label>Двигатель</label>
       <md-select name="engine" placeholder="Двигатель" required ng-model="vm.report.engine.type">
             <md-option ng-bind="engine.name" ng-repeat="engine in vm.engine.all"></md-option>
         </md-select>
+        </md-input-container>
 
     </md-input-container>
         <md-input-container class="md-block" flex-gt-sm>

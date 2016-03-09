@@ -9,10 +9,12 @@
 
     function Passport($http) {
         var passport = {
-            createPassport: createPassport
+            createPassport: createPassport,
+            getLPUs: getLPUs,
         };
 
         return passport;
+
         function createPassport(report_data) {
             $http.post('/report/',
                     {'report_data': report_data},
@@ -23,6 +25,15 @@
                     var file = new Blob([data], {type: 'application/pdf'});
                     saveAs(file, 'report.pdf');
                     return headers;
+                });
+        }
+
+        function getLPUs() {
+            console.log('getLPUs');
+            return $http.get('/api/organization/1/lpu/')
+                .then(function(data) {
+                    console.log('LPU list: ' + data.data);
+                    return data.data;
                 });
         }
     }

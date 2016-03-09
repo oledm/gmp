@@ -1,0 +1,22 @@
+<md-card>
+    <ng-form name="vm.LPUForm" class="md-padding">
+        <md-card-title>
+          <md-card-title-text>
+                <span class="md-headline">Выберите ЛПУ МГ</span>
+          </md-card-title-text>
+        </md-card-title>
+
+        <div class="md-block">
+        <md-input-container>
+          <label>ЛПУ МГ</label>
+          <md-select name="lpu" placeholder="ЛПУ МГ" required ng-model="vm.report.lpu">
+                <md-option ng-bind="lpu.name" ng-repeat="lpu in vm.lpus"></md-option>
+          </md-select>
+        </div>
+
+          <p>Укажите дату обследования</p>
+            <md-datepicker ng-model="vm.investigationDate" md-placeholder="Дата"></md-datepicker>
+        </div>
+
+    </ng-form>
+</md-card>

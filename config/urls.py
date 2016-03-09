@@ -16,6 +16,7 @@ from gmp.certificate import views as certificate_views
 from gmp.departments import views as department_views
 from gmp.engines import views as engine_views
 from gmp.reports import views as report_views
+from gmp.inspections import views as inspections_views
 
 
 users = routers.SimpleRouter()
@@ -27,6 +28,7 @@ certificates.register(r'certificates', certificate_views.CertificateViewset)
 departments = routers.SimpleRouter()
 departments.register(r'department', department_views.DepartmentViewset)
 
+# TODO filter child router base on parent's PK
 measurers = routers.NestedSimpleRouter(departments, r'department', lookup='department')
 measurers.register(r'measurer', department_views.MeasurerViewset)
 
@@ -35,6 +37,13 @@ files.register('file', filestorage_views.FileViewset)
 
 engines = routers.SimpleRouter()
 engines.register('engine', engine_views.EngineViewset)
+
+organizations = routers.SimpleRouter()
+organizations.register('organization', inspections_views.OrganizationViewset)
+
+# TODO filter child router base on parent's PK
+lpus = routers.NestedSimpleRouter(organizations, r'organization', lookup='organization')
+lpus.register(r'lpu', inspections_views.LPUViewset)
 
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
@@ -64,6 +73,12 @@ urlpatterns = [
     # /api/file/
     url(r'^api/', include(files.urls)),
 
+    # /api/organization/
+    url(r'^api/', include(organizations.urls)),
+
+    # /api/organization/<id>/lpu/
+    url(r'^api/', include(lpus.urls)),
+
     # Additional routes
     url(r'^api/login', user_views.LoginView.as_view(), name='login'),
     url(r'^api/logout', user_views.LogoutView.as_view(), name='logout'),
@@ -71,6 +86,7 @@ urlpatterns = [
 
     # Reporr route
     url(r'^report/$', report_views.create_report, name="report"),
+    #url(r'^report/$', report_views.create_report_debug, name="report"),
     # Pass-through route
     url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
 
