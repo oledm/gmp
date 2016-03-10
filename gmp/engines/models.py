@@ -134,7 +134,7 @@ class WarmingClass(models.Model):
     )
 
     def __str__(self):
-        return 'Класс {}'.format(self.get_name_display())
+        return '{}'.format(self.get_name_display())
 
     class Meta:
         verbose_name_plural = 'Warming classes'

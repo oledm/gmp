@@ -1,4 +1,4 @@
-    <div layout="column" layout-align="center center">
+    <div layout="column" flex>
         <div class="animate-repeat" ng-include="'/static/src/app/report/team.tpl.html'">
         </div>
     
@@ -6,8 +6,8 @@
     	 ng-if="!vm.teamForm.$invalid">
         </div>
     
-        <div layout="row" layout-align="center top">
-            <div class="animate-repeat" ng-include="'/static/src/app/report/engines.tpl.html'"
+        <div layout="row" layout-align="begin begin">
+            <div layout="row" class="animate-repeat md-block" ng-include="'/static/src/app/report/engines.tpl.html'"
                 ng-if="vm.measurers.selected.length > 0">
             </div>
             
@@ -16,9 +16,10 @@
             </div>
         </div>
     
-    </md-input-container>
-        <md-button ng-click="vm.createPassport()" class="animate-repeat md-raised md-primary"> Создать паспорт 
-        </md-button>    
+        <div>
+            <md-button ng-if="vm.LPUForm.$valid && vm.engineForm.$valid" ng-click="vm.createPassport()" class="md-raised md-primary"> Создать паспорт 
+            </md-button>    
+        </div>
     <!-- 
         <a target="_self" ng-href="/report/">
         </a>

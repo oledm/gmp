@@ -259,13 +259,6 @@ class Report():
             ['ПОДПИСИ\nЧЛЕНОВ\nБРИГАДЫ', table2],
         ]
 
-        #for num, person in enumerate(self.data.get('team'), start=1):
-        #    emp = Employee.objects.get_by_full_name(person['name'])
-        #    cert = Certificate.objects.get(employee=emp)
-        #    row_data = [num, emp.fio()]
-        #    row_data.extend(cert.details())
-        #    table_data.append(row_data)
-
         table = Table(table_data, colWidths=self.columnize(3,7))
         table.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Times'),
@@ -295,7 +288,8 @@ class Report():
         manufactured = data.get('manufactured_at')
         started = data.get('started_at')
         engine = Engine.objects.get(name=data.get('type'))
-        moments = engine
+        moments = engine.random_data.get('moments')
+        print('Moments:', moments)
 
         table_data = [
             ['Тип', engine.name],
@@ -311,6 +305,12 @@ class Report():
             ['Номинальный ток статора, А', '{0:g}'.format(engine.current)],
             ['Номинальная частота вращения, об/мин', str(engine.freq)],
             ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(engine.freq)],
+            ['Отношение начального пускового тока к номинальному току', str(moments.get('fraction_initial_current'))],
+            ['Отношение максимального вращающего момента к номинальному вращающему моменту', str(moments.get('fraction_max_spin_moment'))],
+            ['Коэффициент полезного действия, %', '{0:g}'.format(engine.kpd)],
+            ['Коэффициент мощности, cosφ', '{0:g}'.format(engine.coef_power)],
+            ['Класс нагревостойкости изоляции', str(engine.warming_class)],
+            ['Масса двигателя, кг', str(engine.weight)],
         ]
 
         table = Table(

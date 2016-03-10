@@ -1,29 +1,26 @@
-<md-card flex="100">
-    <ng-form name="vm.teamForm" class="md-padding">
-    <md-card-title>
-            <span class="md-headline">Выберите членов бригады&nbsp;
-                <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.teamForm.$valid"></i>
-            </span>
-    </md-card-title>
-        <div class="md-block" flex-gt-sm ng-repeat="emp in vm.report.team">
-
-            <md-input-container>
-              <label>Работник</label>
-              <md-select name="employee" placeholder="Работник" ng-attr-required="{{emp.required}}" ng-model="emp.name">
-                    <md-option ng-bind="employee" ng-repeat="employee in vm.allEmployees"></md-option>
-                </md-select>
-            </md-input-container>
-
-            <md-input-container>
-              <label>Должность</label>
-              <md-select name="rank" placeholder="Должность" ng-attr-required="{{emp.required}}" ng-model="emp.rank">
-                  <md-option ng-bind="rank" ng-repeat="rank in vm.ranks"></md-option>
-                </md-select>
-            </md-input-container>
-
-        </div>
-
+<ng-form name="vm.teamForm" class="md-padding">
+<h4>Выберите членов бригады&nbsp;
+            <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.teamForm.$valid"></i>
+</h4>
+<div layout="column">
+    <div class="md-block" flex-gt-sm ng-repeat="emp in vm.report.team">
+        <md-input-container>
+          <label>Работник</label>
+          <md-select name="employee" placeholder="Работник" ng-attr-required="{{emp.required}}" ng-model="emp.name">
+                <md-option ng-bind="employee" ng-repeat="employee in vm.allEmployees"></md-option>
+            </md-select>
+        </md-input-container>
+    
+        <md-input-container>
+          <label>Должность</label>
+          <md-select name="rank" placeholder="Должность" ng-attr-required="{{emp.required}}" ng-model="emp.rank">
+              <md-option ng-bind="rank" ng-repeat="rank in vm.ranks"></md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+    <div>
         <md-button class="md-raised" ng-click="vm.addEmployee()">Добавить</md-button>
-    </ng-form>
+    </div>
+</div>
 
-</md-card>
+</ng-form>

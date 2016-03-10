@@ -1,50 +1,38 @@
-<md-card>
-    <ng-form name="vm.engineForm" class="md-padding">
-    <md-card-title>
-      <md-card-title-text>
-            <span class="md-headline">Выберите двигатель</span>
-      </md-card-title-text>
-    </md-card-title>
+<ng-form name="vm.engineForm">
+  <h4>Выберите двигатель</h4>
 
-    <div class="md-padding" layout="row">
-        <div class="md-padding" layout="column">
-        <md-input-container>
-          <label>Двигатель</label>
-          <md-select name="engine" placeholder="Двигатель" required ng-model="vm.report.engine.type">
-                <md-option ng-bind="engine.name" ng-repeat="engine in vm.engine.all"></md-option>
-            </md-select>
-            </md-input-container>
-        
-        </md-input-container>
-            <md-input-container class="md-block" flex-gt-sm>
-              <label>Заводской номер</label>
-              <input md-maxlength="30" name="serial_number" ng-model="vm.report.engine.serial_number" />
-              <div ng-messages="vm.engineForm.serial_number.$error">
-                <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
-              </div>
-            </md-input-container>
-        </md-input-container>
-        </div>
-        
-        <div class="md-padding" layout="column">
-            <md-input-container class="md-block" flex-gt-sm>
-              <label>Год изготовления</label>
-              <input ng-pattern="/^[0-9]{4}$/" md-maxlength="4" name="manufactured" ng-model="vm.report.engine.manufactured_at" />
-              <div ng-messages="vm.engineForm.manufactured_at.$error">
-                <div ng-message="md-maxlength">Длина поля не более 4 символов</div>
-                <div ng-message="pattern">Неверно указан год изготовления</div>
-              </div>
-            </md-input-container>
-        
-            <md-input-container class="md-block" flex-gt-sm>
-              <label>Год ввода в эксплуатацию</label>
-              <input ng-pattern="/^[0-9]{4}$/" md-maxlength="4" name="started" ng-model="vm.report.engine.started_at" />
-              <div ng-messages="vm.engineForm.started_at.$error">
-                <div ng-message="md-maxlength">Длина поля не более 4 символов</div>
-                <div ng-message="pattern">Неверно указан год изготовления</div>
-              </div>
-            </md-input-container>
-        </div>
-    </div>
-    </ng-form>
-</md-card>
+    <md-input-container>
+      <label>Двигатель</label>
+      <md-select name="engine" placeholder="Двигатель" required ng-model="vm.report.engine.type">
+            <md-option ng-bind="engine.name" ng-repeat="engine in vm.engine.all"></md-option>
+      </md-select>
+      </md-input-container>
+    
+<div class="md-block">
+    <md-input-container>
+      <label>Заводской номер</label>
+      <input md-maxlength="30" required name="serial_number" ng-model="vm.report.engine.serial_number" />
+      <div ng-messages="vm.engineForm.serial_number.$error">
+        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+      </div>
+    </md-input-container>
+
+    <md-input-container>
+      <label>Год изготовления</label>
+      <input ng-pattern="/^[0-9]{4}$/" required md-maxlength="4" name="manufactured" ng-model="vm.report.engine.manufactured_at" />
+      <div ng-messages="vm.engineForm.manufactured_at.$error">
+        <div ng-message="md-maxlength">Длина поля не более 4 символов</div>
+        <div ng-message="pattern">Неверно указан год изготовления</div>
+      </div>
+    </md-input-container>
+
+    <md-input-container>
+      <label>Год ввода в эксплуатацию</label>
+      <input ng-pattern="/^[0-9]{4}$/" required md-maxlength="4" name="started" ng-model="vm.report.engine.started_at" />
+      <div ng-messages="vm.engineForm.started_at.$error">
+        <div ng-message="md-maxlength">Длина поля не более 4 символов</div>
+        <div ng-message="pattern">Неверно указан год изготовления</div>
+      </div>
+    </md-input-container>
+</div>
+</ng-form>
