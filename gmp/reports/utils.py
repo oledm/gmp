@@ -20,7 +20,9 @@ class Report():
     def __init__(self, data):
         self.full_width = 18.7
         self.data = data
-        self.date = self.data.get('investigationDate').split(',')[0]
+        self.investigation_date = self.data.get('investigationDate').split(',')[0]
+        self.date_begin = self.data.get('workBegin').split(',')[0]
+        self.date_end = self.data.get('workEnd').split(',')[0]
         self.Story = []
 
         lpu = LPU.objects.get(name=self.data.get('lpu'))
@@ -46,6 +48,7 @@ class Report():
         self.page1()
         self.page3()
         self.page2()
+        self.page7()
         self.page8()
             
         doc.build(self.Story)
@@ -110,7 +113,7 @@ class Report():
         ], 'MainTitle', 1)
 
         self.Story.append(Spacer(1, 1.5 * cm))
-        self.put('Дата обследования: ' + self.date, 'Heading 1', 1)
+        self.put('Дата обследования: ' + self.investigation_date, 'Heading 1', 1)
         self.Story.append(Spacer(1, 1.5 * cm))
 
         ptext = '''Заместитель начальника отдела ДОЭ<br/>
@@ -249,8 +252,8 @@ class Report():
 
         table_data = [
             ['ВИД РАБОТ', 'Техническое диагностирование'],
-            ['ДАТА НАЧАЛА', self.date],
-            ['ДАТА ОКОНЧАНИЯ', self.date],
+            ['ДАТА НАЧАЛА', self.date_begin],
+            ['ДАТА ОКОНЧАНИЯ', self.date_end],
             [Paragraph('СОСТАВ БРИГАДЫ СПЕЦИАЛИСТОВ', self.styles['Regular Bold Center']), team_table],
             ['ОРГАНИЗАЦИЯ', 'ООО "ГАЗМАШПРОЕКТ"'],
             ['РАЗРЕШЕНИЕ', '''Свидетельство об аккредитации 766-Э/ТД выдано Управлением\nэнергетики ОАО "Газпром" 11 февраля 2015 г.\nСрок действия до 11 февраля 2018 г.'''],
@@ -278,7 +281,6 @@ class Report():
         self.Story.append(Spacer(1, 1 * cm))
 
     def page8(self):
-
         self.Story.append(PageBreak())
         self.page_header()
         self.formular('3 Паспортные данные')
@@ -289,7 +291,6 @@ class Report():
         started = data.get('started_at')
         engine = Engine.objects.get(name=data.get('type'))
         moments = engine.random_data.get('moments')
-        print('Moments:', moments)
 
         table_data = [
             ['Тип', engine.name],
@@ -325,6 +326,27 @@ class Report():
         self.Story.append(table)
         self.Story.append(Spacer(1, 1 * cm))
 
+    def page7(self):
+        self.Story.append(PageBreak())
+        self.page_header()
+        self.formular('2 Документация, предоставленная заказчиком при выполнении работ')
+
+        data = self.data.get('docs')
+        table_data = list(map(lambda x: [x['name'], 'ДА' if x['value'] else 'НЕТ'], data))
+
+        table = Table(
+            self.preetify(table_data, 'Regular', 'Regular Center'),
+            colWidths=self.columnize(8,2)
+        )
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1,-1), 0.3*cm),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0.4*cm),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 1 * cm))
     '''
         Helper functions
     '''

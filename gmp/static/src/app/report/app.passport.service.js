@@ -11,6 +11,7 @@
         var passport = {
             createPassport: createPassport,
             getLPUs: getLPUs,
+            getOrgs: getOrgs,
         };
 
         return passport;
@@ -28,11 +29,16 @@
                 });
         }
 
-        function getLPUs() {
-            console.log('getLPUs');
-            return $http.get('/api/organization/1/lpu/')
+        function getLPUs(orgId) {
+            return $http.get('/api/organization/' + orgId + '/lpu/')
                 .then(function(data) {
-                    console.log('LPU list: ' + data.data);
+                    return data.data;
+                });
+        }
+
+        function getOrgs() {
+            return $http.get('/api/organization/')
+                .then(function(data) {
                     return data.data;
                 });
         }

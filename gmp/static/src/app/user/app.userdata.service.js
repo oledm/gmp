@@ -34,13 +34,11 @@
 
         function get() {
             var cookie = Cookies.get();
-            console.log('cookies: ' + JSON.stringify(cookie));
             angular.forEach(cookie, function(v, k) {
                 if (k in data) {
                     data[k] = cookie[k];
                 }
             });
-            console.log('updated user data: ' + JSON.stringify(userdata.data));
         }
 
         function getAllUsers() {
@@ -63,7 +61,6 @@
 
             angular.forEach(data, function(v, k) {
                 cookie[k] = data[k];
-                console.log('updating with value ' + data[k]);
             });
 
             Cookies.set(cookie);
@@ -75,7 +72,6 @@
                 first_name: data.first_name,
                 last_name: data.last_name,
                 email: data.email,
-                department: data.department
             })
             .then(updateSuccess)
             .catch(updateFailed);
@@ -93,8 +89,8 @@
                     userdata.updateSuccessfull = false;
                 }, 3000);
 
-                console.log('Data from update: %s', JSON.stringify(response.data));
-                console.log('Status from update: %s', response.status);
+//                console.log('Data from update: %s', JSON.stringify(response.data));
+//                console.log('Status from update: %s', response.status);
                 return response.data;
             }, 700);
         }

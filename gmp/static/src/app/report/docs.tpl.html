@@ -1,0 +1,6 @@
+<ng-form name="vm.docsForm" class="md-padding">
+    <h4>Предоставленая документация</h4>
+        <div class="md-block">
+            <md-switch ng-repeat="doc in vm.report.docs" ng-model="doc.value" aria-label="{{doc.name}}">{{doc.name}}</md-switch>
+        </div>
+</ng-form>

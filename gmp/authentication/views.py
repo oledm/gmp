@@ -78,7 +78,7 @@ class EmployeeViewset(viewsets.ModelViewSet):
 
     def update(self, request, username, pk=None):
         data = request.data
-        serializer = self.serializer_class(data=data, context={'request': request})
+        serializer = self.serializer_class(data=data, context={'request': request}, partial=True)
         serializer.is_valid()
         #print('Serializer errors', serializer.errors)
         #print('valideted data:', serializer.validated_data)

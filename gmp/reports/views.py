@@ -16,7 +16,9 @@ def create_report(request):
 
 def create_report_debug(request):
     fake = {
-        'investigationDate': '11.02.2016, 0:00:00',
+        'investigationDate': '12.02.2016, 0:00:00',
+        'workBegin': '12.02.2016, 0:00:00',
+        'workEnd': '13.02.2016, 0:00:00',
         'measurers': [
             {'id': 5, 'name': 'Измеритель сопротивления, увлажненности и степени старения электроизоляции', 'verification': 'ПРВ-253156 от 02.04.2015', 'model': 'MIC-2500', 'department': 1, 'serial_number': '253156', 'expired_at': '2016-04-02'},
             {'id': 4, 'name': 'Измеритель сопротивления изоляции', 'verification': '0869567 от 23.04.2015', 'model': 'Metrel MI 3121H', 'department': 1, 'serial_number': '13341057', 'expired_at': '2016-04-23'}
@@ -31,7 +33,15 @@ def create_report_debug(request):
             'serial_number': '565465',
             'manufactured_at': '1986',
             'started_at': '1987',
-        }
+        },
+        'docs': [
+            {'value': True, 'name': 'Журнал ремонта электродвигателя'},
+            {'value': True, 'name': 'Журнал эксплуатации электродвигателя'},
+            {'value': True, 'name': 'Инструкция по эксплуатации завода-изготовителя'},
+            {'value': True, 'name': 'Протоколы штатных измерений и испытаний'},
+            {'value': True, 'name': 'Паспорт завода-изготовителя на взрывозащищенный электродвигатель'},
+            {'value': True, 'name': 'Схема электроснабжения электродвигателя'}
+        ]
     }
     
     data = fake

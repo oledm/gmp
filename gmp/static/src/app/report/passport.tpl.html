@@ -5,7 +5,6 @@
  ng-if="!vm.teamForm.$invalid">
 </div>
 
-<div layout="row" layout-align="begin begin">
     <div layout="row" class="animate-repeat md-block" ng-include="'/static/src/app/report/engines.tpl.html'"
         ng-if="vm.measurers.selected.length > 0">
     </div>
@@ -13,6 +12,9 @@
     <div class="animate-repeat" ng-include="'/static/src/app/report/lpu.tpl.html'"
         ng-if="vm.measurers.selected.length > 0">
     </div>
+
+<div class="animate-repeat" ng-include="'/static/src/app/report/docs.tpl.html'"
+    ng-if="vm.measurers.selected.length > 0">
 </div>
 
 <div>

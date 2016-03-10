@@ -6,7 +6,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Organization
-        fields = ('name',)
+        fields = ('id', 'name',)
 
 
 class LPUSerializer(serializers.ModelSerializer):

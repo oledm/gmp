@@ -1,7 +1,13 @@
 <ng-form name="vm.LPUForm" class="md-padding">
-    <h4>Выберите ЛПУ МГ</h4>
-
         <div class="md-block">
+        <h4>Выберите объект обследования</h4>
+        <md-input-container>
+          <label>Организация</label>
+          <md-select name="org" ng-change="vm.getLPUs(vm.report.org)" placeholder="Организация" required ng-model="vm.report.org">
+                <md-option ng-bind="org.name" ng-repeat="org in vm.orgs"></md-option>
+          </md-select>
+        </md-input-container>
+
         <md-input-container>
           <label>ЛПУ МГ</label>
           <md-select name="lpu" placeholder="ЛПУ МГ" required ng-model="vm.report.lpu">
@@ -12,7 +18,9 @@
         
 
         <div class="md-block">
-            <h4>Укажите дату обследования</h4>
-            <md-datepicker required ng-model="vm.investigationDate" md-placeholder="Дата"></md-datepicker>
+            <h4>Укажите даты выполнения работ</h4>
+            <md-datepicker required ng-model="vm.investigationDate" md-placeholder="Обследование"></md-datepicker>
+            <md-datepicker required ng-model="vm.workBegin" md-placeholder="Начало работ"></md-datepicker>
+            <md-datepicker required ng-model="vm.workEnd" md-placeholder="Окончание работ"></md-datepicker>
         </div>
 </ng-form>

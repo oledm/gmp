@@ -28,16 +28,16 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         #print('UPDATE serializer method')
-        dep_name = validated_data.get('department', instance.department)['name']
-        department = Department.objects.get(name=dep_name)
+        #dep_name = validated_data.get('department', instance.department)['name']
+        #department = Department.objects.get(name=dep_name)
         #print('NEW DEP:', department)
-        instance.email = validated_data.get('email', instance.username)
+        instance.email = validated_data.get('email', instance.email)
         instance.username = validated_data.get('username', instance.username)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
-        #print('validated data from update:', validated_data)
-        instance.department = department
+        print('validated data from update:', validated_data)
+        #instance.department = department
         instance.phone = validated_data.get('phone', instance.phone)
 
         instance.save()

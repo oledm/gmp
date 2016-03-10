@@ -1,11 +1,13 @@
 <md-card class="md-padding" flex flex-gt-md="70" flex-gt-lg="40" flex-lg="50" >
     <form name="userForm" class="md-padding">
-        <md-input-container class="md-block" flex-gt-sm>
-          <label>Отдел</label>
-            <md-select name="department" placeholder="Отдел" ng-model="vm.userdata.data.department.name">
-                <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'" ng-selected="d.name === vm.userdata.data.department.name"></md-option>
-            </md-select>
-        </md-input-container>
+        <!-- 
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Отдел</label>
+                <md-select name="department" placeholder="Отдел" ng-model="vm.userdata.data.department.name">
+                    <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'" ng-selected="d.name === vm.userdata.data.department.name"></md-option>
+                </md-select>
+            </md-input-container>
+         -->
  
         <md-input-container class="md-block" flex-gt-sm>
           <label>Имя</label>

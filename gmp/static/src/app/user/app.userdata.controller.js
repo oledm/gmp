@@ -5,12 +5,11 @@
         .module('app.userdata.controller')
         .controller('UserDataController', UserDataController);
 
-    UserDataController.$inject = ['Department', 'UserData'];
+    UserDataController.$inject = ['UserData'];
 
-    function UserDataController(Department, UserData) {
+    function UserDataController(UserData) {
         var vm = this;
 
-        vm.loadDepartments = loadDepartments;
         vm.updateProfile = updateProfile;
         vm.userdata = UserData;
 
@@ -18,13 +17,6 @@
 
         function activate() {
             UserData.get();
-            loadDepartments();
-        }
-
-	function loadDepartments() {
-            Department.query(function(data) {
-                vm.allDeps = data;
-            });
         }
 
         function updateProfile() {

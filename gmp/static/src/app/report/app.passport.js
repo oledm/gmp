@@ -8,6 +8,14 @@
     PassportController.$inject = ['UserData', 'Department', 'Engine', 'Passport'];
     function PassportController(UserData, Department, Engine, Passport) {
         var vm = this,
+            docs = [
+                {name: 'Журнал ремонта электродвигателя', value: true},
+                {name: 'Журнал эксплуатации электродвигателя', value: true},
+                {name: 'Инструкция по эксплуатации завода-изготовителя', value: true},
+                {name: 'Протоколы штатных измерений и испытаний', value: true},
+                {name: 'Паспорт завода-изготовителя на взрывозащищенный электродвигатель', value: true},
+                {name: 'Схема электроснабжения электродвигателя', value: true}
+            ],
             ranks = [
                 'руководитель бригады',
                 'зам. руководителя бригады',
@@ -31,15 +39,19 @@
         vm.allEmployees = [];
         vm.createPassport = createPassport;
         vm.engine = engine;
+        vm.workBegin = undefined;
+        vm.workEnd = undefined;
         vm.investigationDate = undefined;
         vm.lpus = {};
+        vm.orgs = {};
+        vm.getLPUs = getLPUs;
         vm.measurers = measurers;
         vm.ranks = ranks;
         vm.report = {
             team: [{'name': '', 'required': 'required'}],
-            measurers: measurers.selected
+            measurers: measurers.selected,
+            docs: docs
         };
-        
 
         activate();
 
@@ -49,7 +61,7 @@
 //            createPassport();
             getEmployees();
             getEngines();
-            getLPUs();
+            getOrgs();
         }
 
         function addEmployee() {
@@ -61,6 +73,8 @@
         function createPassport() {
             delete vm.report.team[0].required;
             vm.report.investigationDate = vm.investigationDate.toLocaleString();
+            vm.report.workBegin = vm.workBegin.toLocaleString();
+            vm.report.workEnd = vm.workEnd.toLocaleString();
             Passport.createPassport(vm.report);
         }
 
@@ -79,12 +93,22 @@
                 });
         }
 
-        function getLPUs() {
-            Passport.getLPUs()
+        function getOrgs() {
+            Passport.getOrgs()
+                .then(function(data) {
+                    vm.orgs = data;
+                });
+        }
+
+        function getLPUs(orgName) {
+            var organ = vm.orgs.filter(function(el) {
+                return el.name === orgName;
+            });
+
+            Passport.getLPUs(organ[0].id)
                 .then(function(data) {
                     vm.lpus = data;
                 });
         }
-
     }
 })();
