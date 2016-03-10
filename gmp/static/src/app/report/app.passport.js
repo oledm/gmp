@@ -58,14 +58,12 @@
         //////////////////////////
 
         function activate() {
-//            createPassport();
             getEmployees();
             getEngines();
             getOrgs();
         }
 
         function addEmployee() {
-//            console.log('team: ' + JSON.stringify(vm.team));
             vm.report.team.push({
                 'name': ''
             });

@@ -18,6 +18,24 @@
     </md-input-container>
 
     <md-input-container>
+      <label>Станционный номер</label>
+      <input md-maxlength="30" required name="station_number" ng-model="vm.report.engine.station_number" />
+      <div ng-messages="vm.engineForm.station_number.$error">
+        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+      </div>
+    </md-input-container>
+
+    <md-input-container>
+      <label>Место установки</label>
+      <input md-maxlength="70" required name="location" ng-model="vm.report.engine.location" />
+      <div ng-messages="vm.engineForm.location.$error">
+        <div ng-message="md-maxlength">Длина поля не более 30 символов</div>
+      </div>
+    </md-input-container>
+    </div>
+
+<div class="md-block">
+    <md-input-container>
       <label>Год изготовления</label>
       <input ng-pattern="/^[0-9]{4}$/" required md-maxlength="4" name="manufactured" ng-model="vm.report.engine.manufactured_at" />
       <div ng-messages="vm.engineForm.manufactured_at.$error">

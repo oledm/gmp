@@ -4,12 +4,12 @@
 <div class="animate-repeat" ng-include="'/static/src/app/report/measurers.tpl.html'"
  ng-if="!vm.teamForm.$invalid">
 </div>
-
-    <div layout="row" class="animate-repeat md-block" ng-include="'/static/src/app/report/engines.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
     
     <div class="animate-repeat" ng-include="'/static/src/app/report/lpu.tpl.html'"
+        ng-if="vm.measurers.selected.length > 0">
+    </div>
+
+    <div layout="row" class="animate-repeat md-block" ng-include="'/static/src/app/report/engines.tpl.html'"
         ng-if="vm.measurers.selected.length > 0">
     </div>
 
