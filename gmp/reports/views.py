@@ -62,7 +62,10 @@ def create_report_debug(request):
  'team': [{'name': 'Плахов Виталий', 'rank': 'руководитель бригады'},
           {'name': 'Алексеев Илья', 'rank': 'член бригады'}],
  'workBegin': '01.03.2016, 0:00:00',
- 'workEnd': '05.03.2016, 0:00:00'}
+ 'workEnd': '05.03.2016, 0:00:00',
+ 'values': {'factory_values': {'resistance_isolation': '1273',
+                               'resistance_phase': '0.123'}},
+ }
 
 
     

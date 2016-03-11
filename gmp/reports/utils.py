@@ -67,31 +67,19 @@ class Report():
         self.setup_styles()
         self.setup_page_templates(doc)
 
-         
-
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
-        self.page2()
+        #self.page2()
         self.page3()
         self.page4()
+        self.page5_6()
         self.page7()
         self.page8()
+        self.page9()
+        self.page11()
             
         doc.build(self.Story)
-
-    def page2(self):
-        self.Story.append(PageBreak())
-
-        self.put('Нормативное и методическое обеспечение работ', 'Regular Bold Center', 0.5)
-        table = Table(
-            self.preetify(Normatives().get(), 'Regular', 'Regular'),
-            colWidths=self.columnize(1,9)
-        )
-        table.setStyle(TableStyle([
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ]))
-        self.Story.append(table)
 
     def page1(self):
         ptext = 'ПАО "ГАЗПРОМ"<br/>РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»'
@@ -139,7 +127,7 @@ class Report():
             'ВЗРЫВОЗАЩИЩЁННОГО ЭЛЕКТРОДВИГАТЕЛЯ',
         ], 'MainTitle', 1)
 
-        text = '''ОБЪЕКТ: {org}<br/>{lpu}<br/>{ks}<br/>{plant}<br/>
+        text = '''ОБЪЕКТ: {org}<br/>{lpu}<br/>{ks}<br/>{plant}<br/>{location}<br/>
             станционный № {station_number}<br/>
             ТИП: {type} зав.№ {serial_number}'''.format(
                 **self.obj_data, **self.data.get('engine')
@@ -311,6 +299,39 @@ class Report():
         ]))
         self.Story.append(table)
 
+    def page5_6(self):
+        self.Story.append(PageBreak())
+
+        self.put('Нормативное и методическое обеспечение работ', 'Regular Bold Center', 0.5)
+        table = Table(
+            self.preetify(Normatives().get(), 'Regular', 'Regular'),
+            colWidths=self.columnize(1,9)
+        )
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ]))
+        self.Story.append(table)
+
+    def page7(self):
+        self.Story.append(PageBreak())
+        self.formular('2 Документация, предоставленная заказчиком при выполнении работ')
+
+        data = self.data.get('docs')
+        table_data = list(map(lambda x: [x['name'], 'ДА' if x['value'] else 'НЕТ'], data))
+
+        table = Table(
+            self.preetify(table_data, 'Regular', 'Regular Center'),
+            colWidths=self.columnize(8,2)
+        )
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1,-1), 0.3*cm),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0.4*cm),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 1 * cm))
 
     def page8(self):
         self.Story.append(PageBreak())
@@ -357,26 +378,44 @@ class Report():
         self.Story.append(table)
         self.Story.append(Spacer(1, 1 * cm))
 
-    def page7(self):
+    def page9(self):
         self.Story.append(PageBreak())
-        self.formular('2 Документация, предоставленная заказчиком при выполнении работ')
 
-        data = self.data.get('docs')
-        table_data = list(map(lambda x: [x['name'], 'ДА' if x['value'] else 'НЕТ'], data))
-
+        self.formular('4 Данные заводских замеров и приёмо-сдаточных испытаний')
+        print(self.data['values'])
+        table_data = [[
+            'Показатели', 'Заводские замеры',
+            'Приемо-сдаточные испытания', 'Установленная норма'
+        ]]
         table = Table(
-            self.preetify(table_data, 'Regular', 'Regular Center'),
-            colWidths=self.columnize(8,2)
+            self.preetify(table_data, 'Regular Center','Regular Center','Regular Center','Regular Center'),
+            colWidths=self.columnize(2, 3, 3, 2)
         )
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('TOPPADDING', (0,0), (-1,-1), 0.3*cm),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 0.4*cm),
         ]))
-        self.Story.append(table)
+
+    def page11(self):
+        self.Story.append(PageBreak())
+
+        self.formular('6 Конструктивная схема электродвигателя')
+        engine = Engine.objects.get(name=self.data['engine']['type'])
+        self.put_image(engine.scheme, size=12.5)
         self.Story.append(Spacer(1, 1 * cm))
+
+        # Until paste into report only the first connection type's picture
+        self.formular('6-1 Электрическая схема подключения электродвигателя')
+        self.put_image(engine.connection.all()[0].scheme)
+
+    def put_image(self, image, size=10):
+        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
+        ratio = float(image.width/image.height)
+        image = Image(str(MEDIA_ROOT.path(str(image))),
+            width=size * cm * ratio, height=size * cm)
+        self.Story.append(image)
+
     '''
         Helper functions
     '''
@@ -391,12 +430,12 @@ class Report():
         )
 
     def formular(self, text):
-        table = Table([['Формуляр № ' + text]], colWidths=[self.full_width * cm])
+        table = Table([['ФОРМУЛЯР № ' + text]], colWidths=[self.full_width * cm])
         table.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Times Bold'),
-            ('FONTSIZE', (0,0), (-1,-1), 12),
+            ('FONTSIZE', (0,0), (-1,-1), 13),
             ('LEADING', (0,0), (-1,-1), 16),
-            ('INNERGRID', (0,0), (-1,-1), 2, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 1, colors.black),
             ('BOX', (0,0), (-1,-1), 2, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
@@ -440,9 +479,13 @@ class Report():
         template_title = PageTemplate(id='Title', frames=frame_full)
 
         frame_with_header = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height-2*cm, id='with_header')
-        
-        header_content = Paragraph('''{org} {lpu} {ks} {location} {plant} станционный №{station_number} зав.№{serial_number}'''.format(**self.obj_data, **self.data['engine']), self.styles["Page Header"])
+        header_content = Paragraph('''{org} {lpu} {ks} {location} {plant}
+            станционный №{station_number} зав.№{serial_number}'''.format(
+                **self.obj_data, **self.data['engine']
+            ), self.styles["Page Header"]
+        )
         template_with_header = PageTemplate(id='Content', frames=frame_with_header, onPage=partial(header, content=header_content))
+
         doc.addPageTemplates([template_title, template_with_header])
 
     def setup_styles(self):

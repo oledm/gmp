@@ -1,0 +1,25 @@
+<ng-form name="vm.valuesForm">
+  <h4>Данные произведенных замеров</h4>
+
+<div layout="row" layout-align="begin center">
+    <span>Сопротивление изоляции обмотки статора относительно корпуса двигателя:&nbsp;&nbsp;&nbsp;</span>
+    <md-input-container>
+      <label>Значение, МОм</label>
+      <input ng-pattern="/^[0-9]*$/" required name="resistance_isolation" ng-model="vm.report.values.factory_values.resistance_isolation" />
+      <div ng-messages="vm.valuesForm.resistance_isolation.$error">
+        <div ng-message="pattern">Неверное значение</div>
+      </div>
+    </md-input-container>
+</div>
+
+<div layout="row" layout-align="begin center">
+    <span>Сопротивление фазы обмотки статора постоянному току в холодном состоянии при 20°C:&nbsp;&nbsp;&nbsp;</span>
+    <md-input-container>
+      <label>Значение, Ом</label>
+      <input ng-pattern="/^[0-9.,]*$/" required name="resistance_phase" ng-model="vm.report.values.factory_values.resistance_phase" />
+      <div ng-messages="vm.valuesForm.resistance_phase.$error">
+        <div ng-message="pattern">Неверное значение</div>
+      </div>
+    </md-input-container>
+</div>
+</ng-form>
