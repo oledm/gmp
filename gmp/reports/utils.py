@@ -1,12 +1,16 @@
-from datetime import datetime
+from functools import partial
+
+from django.conf import settings
+import environ
 
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak, XPreformatted
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak, XPreformatted, NextPageTemplate
+from reportlab.platypus.doctemplate import BaseDocTemplate, PageTemplate
+from reportlab.platypus.frames import Frame
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.lib import colors
-
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
 
@@ -15,6 +19,29 @@ from gmp.certificate.models import Certificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
 from gmp.engines.models import Engine
+
+
+class Normatives():
+    @staticmethod
+    def get():
+        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'normatives.txt'))
+        res = []
+        with open(file_) as f:
+            for n, line in enumerate(f, start=1):
+                res.append([str(n), line])
+        return res
+
+#class MyDocTemplate(BaseDocTemplate):
+#    def __init__(self, filename, **kw):
+#        BaseDocTemplate.__init__(self, filename, **kw)
+#        template = PageTemplate('normal', [Frame(0, 0, 15*cm, 25*cm, id='F1')])
+#        self.addPageTemplates(template)
+
+def header(canvas, doc, content):
+    canvas.saveState()
+    w, h = content.wrap(doc.width, doc.topMargin)
+    content.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
+    canvas.restoreState()
 
 class Report():
     def __init__(self, data):
@@ -25,34 +52,46 @@ class Report():
         self.date_end = self.data.get('workEnd').split(',')[0]
         self.Story = []
 
-        #lpu = LPU.objects.get(name=self.data.get('lpu'))
         self.obj_data = self.data['obj_data']
         self.styles = getSampleStyleSheet()
 
     def make_report(self, report):
-        doc = SimpleDocTemplate(report, pagesize=A4,
+        doc = BaseDocTemplate(report, pagesize=A4,
                                 rightMargin=12,leftMargin=12,
                                 topMargin=12,bottomMargin=12,
                                 title='Паспорт двигателя ' + self.data['engine']['type'],
                                 #showBoundary=1,
         )
-         
+
         self.setup_fonts()
         self.setup_styles()
+        self.setup_page_templates(doc)
 
+         
 
+        self.Story.append(NextPageTemplate('Title'))
         self.page1()
-        self.page3()
+        self.Story.append(NextPageTemplate('Content'))
         self.page2()
+        self.page3()
+        self.page4()
         self.page7()
         self.page8()
             
         doc.build(self.Story)
 
-    def page1(self):
-        ptext = 'ПАО "ГАЗПРОМ"<br/>РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»'
-            
-        doc.build(self.Story)
+    def page2(self):
+        self.Story.append(PageBreak())
+
+        self.put('Нормативное и методическое обеспечение работ', 'Regular Bold Center', 0.5)
+        table = Table(
+            self.preetify(Normatives().get(), 'Regular', 'Regular'),
+            colWidths=self.columnize(1,9)
+        )
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ]))
+        self.Story.append(table)
 
     def page1(self):
         ptext = 'ПАО "ГАЗПРОМ"<br/>РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»'
@@ -143,9 +182,66 @@ class Report():
         ]))
         self.Story.append(table)
 
-    def page2(self):
+    def page3(self):
         self.Story.append(PageBreak())
-        self.page_header()
+        self.formular('1 Регистрация работ')
+
+        ptext = '<b>Фамилия И.О.</b><br/>' + '<br/>'.join(
+                [x.get('name') for x in self.data.get('team')]
+        )
+        left = Paragraph(ptext, self.styles['Table Content']) 
+        ptext = '<b>Должность</b><br/>' + '<br/>'.join(
+                [x.get('rank') for x in self.data.get('team')]
+        )
+        right = Paragraph(ptext, self.styles['Table Content']) 
+        team_table = Table([[left, right]])
+        style = TableStyle([
+            ('FONTNAME', (0,0), (-1,-1), 'Times'),
+            ('FONTSIZE', (0,0), (-1,-1), 13),
+            ('TOPPADDING', (0,0), (-1,-1), 12),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+            ('LEADING', (0,0), (-1,-1), 16),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ])
+        team_table.setStyle(style)
+
+        text = '\n'.join(['____________________' + x.get('name') for x in self.data.get('team')])
+        table2 = Table([[Paragraph(text, self.styles['Signature Left'])]])
+        table2.setStyle(style)
+
+        table_data = [
+            ['ВИД РАБОТ', 'Техническое диагностирование'],
+            ['ДАТА НАЧАЛА', self.date_begin],
+            ['ДАТА ОКОНЧАНИЯ', self.date_end],
+            [Paragraph('СОСТАВ БРИГАДЫ СПЕЦИАЛИСТОВ', self.styles['Regular Bold Center']), team_table],
+            ['ОРГАНИЗАЦИЯ', 'ООО "ГАЗМАШПРОЕКТ"'],
+            ['РАЗРЕШЕНИЕ', '''Свидетельство об аккредитации 766-Э/ТД выдано Управлением\nэнергетики ОАО "Газпром" 11 февраля 2015 г.\nСрок действия до 11 февраля 2018 г.'''],
+            ['СУБПОДРЯДНАЯ\nОРГАНИЗАЦИЯ', ''],
+            ['РАЗРЕШЕНИЕ\nСУБПОДРЯДНОЙ\nОРГАНИЗАЦИИ', ''],
+            ['ПОДПИСИ\nЧЛЕНОВ\nБРИГАДЫ', table2],
+        ]
+
+        table = Table(table_data, colWidths=self.columnize(3,7))
+        table.setStyle(TableStyle([
+            ('FONTNAME', (0,0), (-1,-1), 'Times'),
+            ('FONTSIZE', (0,0), (-1,-1), 13),
+            ('TOPPADDING', (0,0), (-1,-1), 12),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+            ('LEADING', (0,0), (-1,-1), 16),
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('FONTNAME', (0,0), (0,-1), 'Times Bold'),
+            ('LINEABOVE', (0,1), (-1,1), 0.5, colors.black),
+            ('LINEABOVE', (0,3), (-1,-1), 0.5, colors.black),
+            ('BOX', (0,0), (0,-1), 0.5, colors.black),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 1 * cm))
+
+    def page4(self):
+        self.Story.append(PageBreak())
 
         table_data = [
             ['Список сертифицированных членов бригады'],
@@ -215,68 +311,9 @@ class Report():
         ]))
         self.Story.append(table)
 
-    def page3(self):
-        self.Story.append(PageBreak())
-        self.page_header()
-        self.formular('1 Регистрация работ')
-
-        ptext = '<b>Фамилия И.О.</b><br/>' + '<br/>'.join(
-                [x.get('name') for x in self.data.get('team')]
-        )
-        left = Paragraph(ptext, self.styles['Table Content']) 
-        ptext = '<b>Должность</b><br/>' + '<br/>'.join(
-                [x.get('rank') for x in self.data.get('team')]
-        )
-        right = Paragraph(ptext, self.styles['Table Content']) 
-        team_table = Table([[left, right]])
-        style = TableStyle([
-            ('FONTNAME', (0,0), (-1,-1), 'Times'),
-            ('FONTSIZE', (0,0), (-1,-1), 13),
-            ('TOPPADDING', (0,0), (-1,-1), 12),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
-            ('LEADING', (0,0), (-1,-1), 16),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-        ])
-        team_table.setStyle(style)
-
-        text = '\n'.join(['____________________' + x.get('name') for x in self.data.get('team')])
-        table2 = Table([[Paragraph(text, self.styles['Signature Left'])]])
-        table2.setStyle(style)
-
-        table_data = [
-            ['ВИД РАБОТ', 'Техническое диагностирование'],
-            ['ДАТА НАЧАЛА', self.date_begin],
-            ['ДАТА ОКОНЧАНИЯ', self.date_end],
-            [Paragraph('СОСТАВ БРИГАДЫ СПЕЦИАЛИСТОВ', self.styles['Regular Bold Center']), team_table],
-            ['ОРГАНИЗАЦИЯ', 'ООО "ГАЗМАШПРОЕКТ"'],
-            ['РАЗРЕШЕНИЕ', '''Свидетельство об аккредитации 766-Э/ТД выдано Управлением\nэнергетики ОАО "Газпром" 11 февраля 2015 г.\nСрок действия до 11 февраля 2018 г.'''],
-            ['СУБПОДРЯДНАЯ\nОРГАНИЗАЦИЯ', ''],
-            ['РАЗРЕШЕНИЕ\nСУБПОДРЯДНОЙ\nОРГАНИЗАЦИИ', ''],
-            ['ПОДПИСИ\nЧЛЕНОВ\nБРИГАДЫ', table2],
-        ]
-
-        table = Table(table_data, colWidths=self.columnize(3,7))
-        table.setStyle(TableStyle([
-            ('FONTNAME', (0,0), (-1,-1), 'Times'),
-            ('FONTSIZE', (0,0), (-1,-1), 13),
-            ('TOPPADDING', (0,0), (-1,-1), 12),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
-            ('LEADING', (0,0), (-1,-1), 16),
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-            ('FONTNAME', (0,0), (0,-1), 'Times Bold'),
-            ('LINEABOVE', (0,1), (-1,1), 0.5, colors.black),
-            ('LINEABOVE', (0,3), (-1,-1), 0.5, colors.black),
-            ('BOX', (0,0), (0,-1), 0.5, colors.black),
-        ]))
-        self.Story.append(table)
-        self.Story.append(Spacer(1, 1 * cm))
 
     def page8(self):
         self.Story.append(PageBreak())
-        self.page_header()
         self.formular('3 Паспортные данные')
 
         data = self.data.get('engine')
@@ -322,7 +359,6 @@ class Report():
 
     def page7(self):
         self.Story.append(PageBreak())
-        self.page_header()
         self.formular('2 Документация, предоставленная заказчиком при выполнении работ')
 
         data = self.data.get('docs')
@@ -353,8 +389,6 @@ class Report():
             ], *zip(*lst)
             )
         )
-    def page_header(self):
-        self.put('{org} {lpu}'.format(**self.obj_data), 'Page Header', 0.5)
 
     def formular(self, text):
         table = Table([['Формуляр № ' + text]], colWidths=[self.full_width * cm])
@@ -401,6 +435,16 @@ class Report():
         MyFontObject = ttfonts.TTFont(font_name, font_file)
         pdfmetrics.registerFont(MyFontObject)
      
+    def setup_page_templates(self, doc):
+        frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='no_header')
+        template_title = PageTemplate(id='Title', frames=frame_full)
+
+        frame_with_header = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height-2*cm, id='with_header')
+        
+        header_content = Paragraph('''{org} {lpu} {ks} {location} {plant} станционный №{station_number} зав.№{serial_number}'''.format(**self.obj_data, **self.data['engine']), self.styles["Page Header"])
+        template_with_header = PageTemplate(id='Content', frames=frame_with_header, onPage=partial(header, content=header_content))
+        doc.addPageTemplates([template_title, template_with_header])
+
     def setup_styles(self):
         self.styles.add(ParagraphStyle(name='Justify', alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
@@ -449,6 +493,7 @@ class Report():
             #borderWidth=0.3,
             #borderColor=colors.black,
             fontSize=13,
+            leading=16,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Normal Center',
@@ -459,6 +504,7 @@ class Report():
             name='Regular',
             fontName='Times',
             fontSize=13,
+            leading=13,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Regular Bold Center',
@@ -469,6 +515,7 @@ class Report():
             name='Regular Center',
             fontName='Times',
             fontSize=13,
+            leading=16,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Signature Left',
