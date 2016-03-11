@@ -3,14 +3,15 @@
     <h4>Выберите объект обследования</h4>
     <md-input-container>
       <label>Организация</label>
-      <md-select name="org" ng-change="vm.getLPUs(vm.report.org)" placeholder="Организация" required ng-model="vm.report.org">
+      <md-select name="org" ng-change="vm.getLPUs(vm.report.obj_data.org)"
+          placeholder="Организация" required ng-model="vm.report.obj_data.org">
             <md-option ng-bind="org.name" ng-repeat="org in vm.orgs"></md-option>
       </md-select>
     </md-input-container>
 
     <md-input-container>
       <label>ЛПУ МГ</label>
-      <md-select name="lpu" placeholder="ЛПУ МГ" required ng-model="vm.report.lpu">
+      <md-select name="lpu" placeholder="ЛПУ МГ" required ng-model="vm.report.obj_data.lpu">
             <md-option ng-bind="lpu.name" ng-repeat="lpu in vm.lpus"></md-option>
       </md-select>
     </md-input-container>
@@ -18,7 +19,7 @@
 
     <md-input-container>
       <label>Наименование КС или установки</label>
-      <input md-maxlength="70" required name="ks" ng-model="vm.report.ks" />
+      <input md-maxlength="70" required name="ks" ng-model="vm.report.obj_data.ks" />
       <div ng-messages="vm.LPUForm.ks.$error">
         <div ng-message="md-maxlength">Длина поля не более 70 символов</div>
       </div>
@@ -26,7 +27,7 @@
 
     <md-input-container>
       <label>Название цеха</label>
-      <input md-maxlength="70" required name="plant" ng-model="vm.report.plant" />
+      <input md-maxlength="70" required name="plant" ng-model="vm.report.obj_data.plant" />
       <div ng-messages="vm.LPUForm.plant.$error">
         <div ng-message="md-maxlength">Длина поля не более 70 символов</div>
       </div>

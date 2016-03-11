@@ -25,12 +25,8 @@ class Report():
         self.date_end = self.data.get('workEnd').split(',')[0]
         self.Story = []
 
-        lpu = LPU.objects.get(name=self.data.get('lpu'))
-        self.obj_data = {
-            'lpu': lpu.name,
-            'org': str(lpu.organization)
-        }
-
+        #lpu = LPU.objects.get(name=self.data.get('lpu'))
+        self.obj_data = self.data['obj_data']
         self.styles = getSampleStyleSheet()
 
     def make_report(self, report):
@@ -104,17 +100,15 @@ class Report():
             'ВЗРЫВОЗАЩИЩЁННОГО ЭЛЕКТРОДВИГАТЕЛЯ',
         ], 'MainTitle', 1)
 
-        self.Story.append(Spacer(1, 1.3 * cm))
-        engine = self.data.get('engine')
-        self.mput([
-            'ОБЪЕКТ: ' + self.obj_data.get('org'),
-            self.obj_data.get('lpu'),
-            'ТИП: {type} зав.№ {serial_number}'.format(**engine),
-        ], 'MainTitle', 1)
+        text = '''ОБЪЕКТ: {org}<br/>{lpu}<br/>{ks}<br/>{plant}<br/>
+            станционный № {station_number}<br/>
+            ТИП: {type} зав.№ {serial_number}'''.format(
+                **self.obj_data, **self.data.get('engine')
+        )
+        self.put(text, 'MainTitle', 1)
 
-        self.Story.append(Spacer(1, 1.5 * cm))
         self.put('Дата обследования: ' + self.investigation_date, 'Heading 1', 1)
-        self.Story.append(Spacer(1, 1.5 * cm))
+        self.Story.append(Spacer(1, 1 * cm))
 
         ptext = '''Заместитель начальника отдела ДОЭ<br/>
         Шеморданского ЛПУ МГ<br/>
@@ -229,11 +223,11 @@ class Report():
         ptext = '<b>Фамилия И.О.</b><br/>' + '<br/>'.join(
                 [x.get('name') for x in self.data.get('team')]
         )
-        left = Paragraph(ptext, self.styles['Regular']) 
+        left = Paragraph(ptext, self.styles['Table Content']) 
         ptext = '<b>Должность</b><br/>' + '<br/>'.join(
                 [x.get('rank') for x in self.data.get('team')]
         )
-        right = Paragraph(ptext, self.styles['Regular']) 
+        right = Paragraph(ptext, self.styles['Table Content']) 
         team_table = Table([[left, right]])
         style = TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Times'),
@@ -247,7 +241,7 @@ class Report():
         team_table.setStyle(style)
 
         text = '\n'.join(['____________________' + x.get('name') for x in self.data.get('team')])
-        table2 = Table([[Paragraph(text, self.styles['Regular'])]])
+        table2 = Table([[Paragraph(text, self.styles['Signature Left'])]])
         table2.setStyle(style)
 
         table_data = [
@@ -459,20 +453,32 @@ class Report():
         self.styles.add(ParagraphStyle(
             name='Normal Center',
             fontName='Times',
-            fontSize=12,
+            fontSize=13,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Regular',
             fontName='Times',
-            fontSize=12,
+            fontSize=13,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Regular Bold Center',
             fontName='Times Bold',
-            fontSize=12,
+            fontSize=13,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Regular Center',
             fontName='Times',
-            fontSize=12,
+            fontSize=13,
             alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Signature Left',
+            fontName='Times',
+            leading=30,
+            fontSize=13,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Table Content',
+            fontName='Times',
+            leading=16,
+            fontSize=13,
+            alignment=TA_LEFT))
