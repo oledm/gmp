@@ -5,8 +5,11 @@
         .module('app.passport')
         .controller('PassportController', PassportController);
 
-    PassportController.$inject = ['UserData', 'Department', 'Engine', 'Passport'];
-    function PassportController(UserData, Department, Engine, Passport) {
+    PassportController.$inject = ['$scope', 'UserData', 'Department', 'Engine', 'Passport', 'Upload'];
+    function PassportController($scope, UserData, Department, Engine, Passport, Upload) {
+
+        $scope.upload = upload;
+
         var vm = this,
             docs = [
                 {name: 'Журнал ремонта электродвигателя', value: true},
@@ -50,12 +53,29 @@
         vm.report = {
             team: [{'name': '', 'required': 'required'}],
             measurers: measurers.selected,
-            docs: docs
+            docs: docs,
+            files: {}
         };
 
         activate();
 
         //////////////////////////
+
+        function upload(element) {
+            var fieldname = element.name;
+            angular.forEach(element.files, function(file) {
+                Upload.upload({
+                    url: '/api/upload/',
+                    data: {fileupload: file}
+                }).
+                then(function(response) {
+                    vm.report.files[fieldname] = response.data.id;
+                    console.log(JSON.stringify(vm.report.files));
+                }, function(response) {
+                    console.log('Error status: ' + response.status);
+                });
+            });
+        }
 
         function activate() {
             getEmployees();
@@ -94,8 +114,7 @@
         function getOrgs() {
             Passport.getOrgs()
                 .then(function(data) {
-                    vm.orgs = data;
-                });
+                    vm.orgs = data; });
         }
 
         function getLPUs(orgName) {

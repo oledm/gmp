@@ -11,7 +11,7 @@
         var passport = {
             createPassport: createPassport,
             getLPUs: getLPUs,
-            getOrgs: getOrgs,
+            getOrgs: getOrgs
         };
 
         return passport;
@@ -22,7 +22,7 @@
                     { responseType: 'arraybuffer',
                       headers: {'Content-Type': 'application/json'}
                     })
-                .success(function(data, status, headers, config) {
+                .success(function(data, status, headers) {
                     var file = new Blob([data], {type: 'application/pdf'});
                     saveAs(file, 'report.pdf');
                     return headers;

@@ -17,10 +17,11 @@ class FileUploadView(views.APIView):
         file_obj = request.data
         up_file = request.FILES['fileupload']
         self.proc_file(up_file)
-        self.save_to_db(up_file)
+        fname = self.save_to_db(up_file)
         return Response({
             'status': 'Created', 
-            'message': 'File upload success'
+            'message': 'File upload success',
+            'id': fname
             }, status=status.HTTP_201_CREATED)
 
     def proc_file(self, fname):
@@ -30,7 +31,8 @@ class FileUploadView(views.APIView):
                 dest.write(chunk)
 
     def save_to_db(self, fname):
-        UploadedFile.objects.create(name=fname, uploader=self.request.user)
+        f = UploadedFile.objects.create(name=fname, uploader=self.request.user)
+        return str(f.id)
 
 class FileViewset(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

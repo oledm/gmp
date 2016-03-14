@@ -19,6 +19,7 @@ from gmp.certificate.models import Certificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
 from gmp.engines.models import Engine
+from gmp.filestorage.models import UploadedFile
 
 
 class Normatives():
@@ -77,6 +78,7 @@ class Report():
         self.page7()
         self.page8()
         self.page9()
+        self.page10()
         self.page11()
             
         doc.build(self.Story)
@@ -380,22 +382,60 @@ class Report():
 
     def page9(self):
         self.Story.append(PageBreak())
-
         self.formular('4 Данные заводских замеров и приёмо-сдаточных испытаний')
-        print(self.data['values'])
-        table_data = [[
-            'Показатели', 'Заводские замеры',
-            'Приемо-сдаточные испытания', 'Установленная норма'
-        ]]
+    
+        resistance_isolation = self.data['values']['factory_values']['resistance_isolation']
+        resistance_phase = self.data['values']['factory_values']['resistance_phase']
+
+        table_data = [
+            ['Показатели', 'Заводские замеры', '', '',
+                'Приемо-сдаточные испытания', '', '', 'Установленная норма'],
+            ['',           'Фаза A', 'Фаза B', 'Фаза C', 'Фаза A', 'Фаза B', 'Фаза C', ''],
+            ['Сопротивление изоляции обмотки статора относительно корпуса двигателя, МОм',
+             *([resistance_isolation] * 6), 'не менее 1,0'],
+            ['Сопротивление фазы обмотки статора постоянному току в холодном состоянии при 20°C, Ом',
+             *([resistance_phase] * 6), 'Разница не более  2% от заводских данных'],
+            ['Средняя величина воздушного зазора (односторонняя), мм', '-', '', '', '-', '', '', 
+                'Разница не более  10% от среднего значения'],
+            ['Эффективное значение виброскорости подшипниковых опор, мм/с', '1,2', '', '', '-',
+                '', '', 'Не более 4,5 мм/с']
+        ]
+
         table = Table(
-            self.preetify(table_data, 'Regular Center','Regular Center','Regular Center','Regular Center'),
-            colWidths=self.columnize(2, 3, 3, 2)
+            self.tabelize(table_data),
+            colWidths=self.columnize(2, 1, 1, 1, 1, 1, 1, 2)
         )
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('SPAN', (1,0), (3,0)),
+            ('SPAN', (4,0), (6,0)),
+            ('SPAN', (0,0), (0,1)),
+            ('SPAN', (7,0), (7,1)),
+            ('SPAN', (1,4), (3,4)),
+            ('SPAN', (4,4), (6,4)),
+            ('SPAN', (1,5), (3,5)),
+            ('SPAN', (4,5), (6,5)),
         ]))
+        self.Story.append(table)
+        text = 'Примечание: нормы согласно РД 34.45-51.300-97 «Объем и нормы испытаний электрооборудования». Издание шестое, М., «ЭНАС», 1997.'
+        self.Story.append(Spacer(1, 0.5 * cm))
+        self.put(text, 'Regular Justified', 1)
+
+    def page10(self):
+        self.Story.append(PageBreak())
+
+        self.formular('5 Общий вид электродвигателя')
+        print(self.data['files']['main'])
+        image = UploadedFile.objects.get(pk=self.data['files']['main'])
+        print(image.uploaded_at)
+        self.put_image(image, size=12.5)
+        self.Story.append(Spacer(1, 1 * cm))
+
+        ## Until paste into report only the first connection type's picture
+        #self.formular('6-1 Электрическая схема подключения электродвигателя')
+        #self.put_image(engine.connection.all()[0].scheme)
 
     def page11(self):
         self.Story.append(PageBreak())
@@ -419,6 +459,13 @@ class Report():
     '''
         Helper functions
     '''
+
+
+    def tabelize(self, lst):
+        return list(map(lambda x: self.table_row(x), lst))
+
+    def table_row(self, lst):
+        return list(map(lambda x: Paragraph(x, self.styles['Regular Center']), lst))
 
     def preetify(self, lst, *style):
         return list(map(
@@ -549,6 +596,12 @@ class Report():
             fontSize=13,
             leading=13,
             alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Regular Justified',
+            fontName='Times',
+            fontSize=13,
+            leading=16,
+            alignment=TA_JUSTIFY))
         self.styles.add(ParagraphStyle(
             name='Regular Bold Center',
             fontName='Times Bold',

@@ -37,7 +37,7 @@
 <div class="md-block">
     <md-input-container>
       <label>Год изготовления</label>
-      <input ng-pattern="/^[0-9]{4}$/" required md-maxlength="4" name="manufactured" ng-model="vm.report.engine.manufactured_at" />
+      <input ng-pattern="/^[0-9]{4}$/" required md-maxlength="4" name="manufactured_at" ng-model="vm.report.engine.manufactured_at" />
       <div ng-messages="vm.engineForm.manufactured_at.$error">
         <div ng-message="md-maxlength">Длина поля не более 4 символов</div>
         <div ng-message="pattern">Неверно указан год изготовления</div>
@@ -46,7 +46,7 @@
 
     <md-input-container>
       <label>Год ввода в эксплуатацию</label>
-      <input ng-pattern="/^[0-9]{4}$/" required md-maxlength="4" name="started" ng-model="vm.report.engine.started_at" />
+      <input ng-pattern="/^[0-9]{4}$/" required md-maxlength="4" name="started_at" ng-model="vm.report.engine.started_at" />
       <div ng-messages="vm.engineForm.started_at.$error">
         <div ng-message="md-maxlength">Длина поля не более 4 символов</div>
         <div ng-message="pattern">Неверно указан год изготовления</div>

@@ -21,9 +21,12 @@
     ng-if="vm.measurers.selected.length > 0">
 </div>
 
+<div class="animate-repeat" ng-include="'/static/src/app/report/photos.tpl.html'"
+    ng-if="vm.measurers.selected.length > 0">
+</div>
 
 <div>
-    <md-button ng-if="vm.LPUForm.$valid && vm.engineForm.$valid && vm.valuesForm.$valid" ng-click="vm.createPassport()" class="md-raised md-primary"> Создать паспорт 
+    <md-button ng-if="vm.LPUForm.$valid && vm.engineForm.$valid && vm.valuesForm.$valid && vm.imagesForm.$valid" ng-click="vm.createPassport()" class="md-raised md-primary"> Создать паспорт 
     </md-button>    
 </div>
  
