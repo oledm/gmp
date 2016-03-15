@@ -45,6 +45,9 @@ organizations.register('organization', inspections_views.OrganizationViewset)
 lpus = routers.NestedSimpleRouter(organizations, r'organization', lookup='organization')
 lpus.register(r'lpu', inspections_views.LPUViewset)
 
+tclasses = routers.SimpleRouter()
+tclasses.register('tclass', engine_views.TClassViewset)
+
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
@@ -78,6 +81,9 @@ urlpatterns = [
 
     # /api/organization/<id>/lpu/
     url(r'^api/', include(lpus.urls)),
+
+    # /api/tclass/
+    url(r'^api/', include(tclasses.urls)),
 
     # Additional routes
     url(r'^api/login', user_views.LoginView.as_view(), name='login'),

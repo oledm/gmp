@@ -47,6 +47,7 @@
         vm.investigationDate = undefined;
         vm.lpus = {};
         vm.orgs = {};
+        vm.tclasses = {all: [], selected: ''};
         vm.getLPUs = getLPUs;
         vm.measurers = measurers;
         vm.ranks = ranks;
@@ -54,7 +55,8 @@
             team: [{'name': '', 'required': 'required'}],
             measurers: measurers.selected,
             docs: docs,
-            files: {}
+            files: {},
+            therm: {}
         };
 
         activate();
@@ -81,6 +83,7 @@
             getEmployees();
             getEngines();
             getOrgs();
+            getTClasses();
         }
 
         function addEmployee() {
@@ -90,9 +93,14 @@
         }
         function createPassport() {
             delete vm.report.team[0].required;
+            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
+                return el.name === vm.tclasses.selected;
+            })[0].id;
+            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
             vm.report.investigationDate = vm.investigationDate.toLocaleString();
             vm.report.workBegin = vm.workBegin.toLocaleString();
             vm.report.workEnd = vm.workEnd.toLocaleString();
+
             Passport.createPassport(vm.report);
         }
 
@@ -114,7 +122,8 @@
         function getOrgs() {
             Passport.getOrgs()
                 .then(function(data) {
-                    vm.orgs = data; });
+                    vm.orgs = data;
+                });
         }
 
         function getLPUs(orgName) {
@@ -125,6 +134,13 @@
             Passport.getLPUs(organ[0].id)
                 .then(function(data) {
                     vm.lpus = data;
+                });
+        }
+
+        function getTClasses() {
+            Passport.getTClasses()
+                .then(function(data) {
+                    vm.tclasses.all = data;
                 });
         }
     }

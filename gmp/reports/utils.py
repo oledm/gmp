@@ -18,7 +18,7 @@ from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
-from gmp.engines.models import Engine
+from gmp.engines.models import Engine, ThermClass
 from gmp.filestorage.models import UploadedFile
 
 
@@ -37,6 +37,9 @@ class Normatives():
 #        BaseDocTemplate.__init__(self, filename, **kw)
 #        template = PageTemplate('normal', [Frame(0, 0, 15*cm, 25*cm, id='F1')])
 #        self.addPageTemplates(template)
+
+def values(template, data):
+    return [*(map(lambda x: [x[0], x[1].format(**data)], template))]
 
 def header(canvas, doc, content):
     canvas.saveState()
@@ -80,6 +83,7 @@ class Report():
         self.page9()
         self.page10()
         self.page11()
+        self.page12()
             
         doc.build(self.Story)
 
@@ -427,15 +431,11 @@ class Report():
         self.Story.append(PageBreak())
 
         self.formular('5 Общий вид электродвигателя')
-        print(self.data['files']['main'])
-        image = UploadedFile.objects.get(pk=self.data['files']['main'])
-        print(image.uploaded_at)
-        self.put_image(image, size=12.5)
-        self.Story.append(Spacer(1, 1 * cm))
+        self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
 
-        ## Until paste into report only the first connection type's picture
-        #self.formular('6-1 Электрическая схема подключения электродвигателя')
-        #self.put_image(engine.connection.all()[0].scheme)
+        image = UploadedFile.objects.get(pk=self.data['files']['main'])
+        self.put_photo(image, size=18)
+        self.Story.append(Spacer(1, 1 * cm))
 
     def page11(self):
         self.Story.append(PageBreak())
@@ -449,6 +449,56 @@ class Report():
         self.formular('6-1 Электрическая схема подключения электродвигателя')
         self.put_image(engine.connection.all()[0].scheme)
 
+    def page10(self):
+        self.Story.append(PageBreak())
+
+        self.formular('5 Общий вид электродвигателя')
+        self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
+
+        image = UploadedFile.objects.get(pk=self.data['files']['main'])
+        self.put_photo(image, size=18)
+        self.Story.append(Spacer(1, 1 * cm))
+
+    def page12(self):
+        self.Story.append(PageBreak())
+
+        self.formular('7 Тепловизионный контроль. Определение соответствия электродвигателя температурному классу')
+
+        image = self.fetch_image(
+            UploadedFile.objects.get(pk=self.data['files']['therm1']),
+            size=9
+        )
+        table_data = [[image, image]]
+        table = Table(table_data,colWidths=self.columnize(5, 5))
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ]))
+        self.Story.append(table)
+
+        therm_data = self.data['therm']
+        tc = ThermClass.objects.get(pk=therm_data['tclass'])
+        therm_data.update(dict(tclass=tc.get_name_display(), tclass_t_max=str(tc.t_max)))
+
+        data = [
+            ['Температурный класс', '{tclass}'],
+            ['Максимально допустимая температура поверхности оболочки, °C', '{tclass_t_max}'],
+            ['Расстояние до объекта, м', '{distance}'],
+            ['Температура окружающей среды, °С', '{temp_env}'],
+            ['Максимальная температура, °С', '{temp_max}'],
+            ['Минимальная температура, °С', '{temp_min}'],
+            ['Средняя температура, °С', '{temp_avg}'],
+            ['Соответствие норме', '{correct}'],
+        ]
+        table_data = values(data, therm_data)
+        table = Table(self.tabelize(table_data, 'Regular'), colWidths=self.columnize(8, 2))
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ]))
+        self.Story.append(table)
+
     def put_image(self, image, size=10):
         MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
         ratio = float(image.width/image.height)
@@ -456,16 +506,23 @@ class Report():
             width=size * cm * ratio, height=size * cm)
         self.Story.append(image)
 
+    def put_photo(self, image, size=10):
+        self.Story.append(self.fetch_image(image, size))
+
+    def fetch_image(self, image, size):
+        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
+        return Image(str(MEDIA_ROOT.path(str(image.name))), width=size * cm, height=size * cm)
+
     '''
         Helper functions
     '''
 
 
-    def tabelize(self, lst):
-        return list(map(lambda x: self.table_row(x), lst))
+    def tabelize(self, lst, style='Regular Center'):
+        return list(map(lambda x: self.table_row(x, style), lst))
 
-    def table_row(self, lst):
-        return list(map(lambda x: Paragraph(x, self.styles['Regular Center']), lst))
+    def table_row(self, lst, style='Regular Center'):
+        return list(map(lambda x: Paragraph(x, self.styles[style]), lst))
 
     def preetify(self, lst, *style):
         return list(map(
@@ -477,11 +534,11 @@ class Report():
         )
 
     def formular(self, text):
-        table = Table([['ФОРМУЛЯР № ' + text]], colWidths=[self.full_width * cm])
+        table = Table(self.tabelize([['ФОРМУЛЯР № ' + text]], 'Page Header'), colWidths=[self.full_width * cm])
         table.setStyle(TableStyle([
-            ('FONTNAME', (0,0), (-1,-1), 'Times Bold'),
-            ('FONTSIZE', (0,0), (-1,-1), 13),
-            ('LEADING', (0,0), (-1,-1), 16),
+            #('FONTNAME', (0,0), (-1,-1), 'Times Bold'),
+            #('FONTSIZE', (0,0), (-1,-1), 13),
+            #('LEADING', (0,0), (-1,-1), 16),
             ('INNERGRID', (0,0), (-1,-1), 1, colors.black),
             ('BOX', (0,0), (-1,-1), 2, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),

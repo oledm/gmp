@@ -138,3 +138,20 @@ class WarmingClass(models.Model):
 
     class Meta:
         verbose_name_plural = 'Warming classes'
+
+class ThermClass(models.Model):
+    therm_class_codes = tuple(map(lambda x: 'T' + str(x), range(1,7)))
+    CLASSES = tuple(zip(range(0, len(therm_class_codes)), therm_class_codes))
+
+    name = models.SmallIntegerField(
+        'Обозначение температурного класса',
+        unique=True,
+        choices=CLASSES
+    )
+    t_max = models.PositiveSmallIntegerField('Максимально допустимая температура поверхности оболочки, °C')
+
+    def __str__(self):
+        return '{}'.format(self.get_name_display())
+
+    class Meta:
+        verbose_name_plural = 'Therm classes'

@@ -11,7 +11,8 @@
         var passport = {
             createPassport: createPassport,
             getLPUs: getLPUs,
-            getOrgs: getOrgs
+            getOrgs: getOrgs,
+            getTClasses: getTClasses
         };
 
         return passport;
@@ -38,6 +39,13 @@
 
         function getOrgs() {
             return $http.get('/api/organization/')
+                .then(function(data) {
+                    return data.data;
+                });
+        }
+
+        function getTClasses() {
+            return $http.get('/api/tclass/')
                 .then(function(data) {
                     return data.data;
                 });

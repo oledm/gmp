@@ -1,0 +1,76 @@
+<ng-form name="vm.thermForm">
+  <h4>Данные тепловизионного контроля</h4>
+
+    <md-input-container>
+      <label>Температурный класс</label>
+      <md-select name="tclass" placeholder="Температурный класс" required ng-model="vm.tclasses.selected">
+            <md-option ng-bind="cls.name" ng-repeat="cls in vm.tclasses.all"></md-option>
+      </md-select>
+      </md-input-container>
+
+    <div layout="row" layout-align="begin center">
+        <span>Расстояние до объекта, м &nbsp;</span>
+        <md-input-container>
+          <label>Значение</label>
+          <input ng-pattern="/^[0-9]*$/" required name="distance" ng-model="vm.report.therm.distance" />
+          <div ng-messages="vm.thermForm.distance.$error">
+            <div ng-message="pattern">Неверно указано значение</div>
+          </div>
+        </md-input-container>
+    </div>
+    
+    <div layout="row" layout-align="begin center">
+        <span>Температура окружающей среды, °С &nbsp;</span>
+        <md-input-container>
+          <label>Значение</label>
+          <input ng-pattern="/^[0-9]*$/" required name="temp_env" ng-model="vm.report.therm.temp_env" />
+          <div ng-messages="vm.thermForm.temp_env.$error">
+            <div ng-message="pattern">Неверно указано значение</div>
+          </div>
+        </md-input-container>
+    </div>
+    
+    <div layout="row" layout-align="begin center">
+        <span>Максимальная температура, °С &nbsp;</span>
+        <md-input-container>
+          <label>Значение</label>
+          <input ng-pattern="/^[0-9]*$/" required name="temp_max" ng-model="vm.report.therm.temp_max" />
+          <div ng-messages="vm.thermForm.temp_max.$error">
+            <div ng-message="pattern">Неверно указано значение</div>
+          </div>
+        </md-input-container>
+    </div>
+    
+    <div layout="row" layout-align="begin center">
+        <span>Минимальная температура, °С &nbsp;</span>
+        <md-input-container>
+          <label>Значение</label>
+          <input ng-pattern="/^[0-9]*$/" required name="temp_min" ng-model="vm.report.therm.temp_min" />
+          <div ng-messages="vm.thermForm.temp_min.$error">
+            <div ng-message="pattern">Неверно указано значение</div>
+          </div>
+        </md-input-container>
+    </div>
+    
+    <div layout="row" layout-align="begin center">
+        <span>Средняя температура, °С &nbsp;</span>
+        <md-input-container>
+          <label>Значение</label>
+          <input ng-pattern="/^[0-9]*$/" required name="temp_avg" ng-model="vm.report.therm.temp_avg" />
+          <div ng-messages="vm.thermForm.temp_avg.$error">
+            <div ng-message="pattern">Неверно указано значение</div>
+          </div>
+        </md-input-container>
+    </div>
+
+    <md-input-container>
+      <label>Соответствие норме</label>
+      <md-select name="correct" placeholder="Соответствие норме" required ng-model="vm.report.therm.correct">
+            <md-option>Соответствует</md-option>
+            <md-option>Не соответствует</md-option>
+      </md-select>
+      </md-input-container>
+    
+    <div layout="row" layout-align="begin center">
+    </div>
+</ng-form>
