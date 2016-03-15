@@ -39,7 +39,7 @@ class Normatives():
 #        self.addPageTemplates(template)
 
 def values(template, data):
-    return [*(map(lambda x: [x[0], x[1].format(**data)], template))]
+    return list(map(lambda row: list(map(lambda cell: cell.format(**data), row)), template))
 
 def header(canvas, doc, content):
     canvas.saveState()
@@ -49,7 +49,7 @@ def header(canvas, doc, content):
 
 class Report():
     def __init__(self, data):
-        self.full_width = 18.7
+        self.full_width = 19.2
         self.data = data
         self.investigation_date = self.data.get('investigationDate').split(',')[0]
         self.date_begin = self.data.get('workBegin').split(',')[0]
@@ -84,6 +84,7 @@ class Report():
         self.page10()
         self.page11()
         self.page12()
+        self.page13()
             
         doc.build(self.Story)
 
@@ -405,8 +406,10 @@ class Report():
                 '', '', 'Не более 4,5 мм/с']
         ]
 
+        rows = len(table_data)
+        cols = len(table_data[0])
         table = Table(
-            self.tabelize(table_data),
+            self.tabelize(table_data, [['Regular Center'] * cols] * rows),
             colWidths=self.columnize(2, 1, 1, 1, 1, 1, 1, 2)
         )
         table.setStyle(TableStyle([
@@ -490,8 +493,52 @@ class Report():
             ['Средняя температура, °С', '{temp_avg}'],
             ['Соответствие норме', '{correct}'],
         ]
+        rows = len(data)
         table_data = values(data, therm_data)
-        table = Table(self.tabelize(table_data, 'Regular'), colWidths=self.columnize(8, 2))
+        table = self.table(table_data, [['Regular', 'Regular Center']] * rows, [8, 2])
+        self.Story.append(table)
+
+    def page13(self):
+        self.Story.append(PageBreak())
+
+        self.formular('8 Вибрационный контроль электродвигателя')
+        text = 'Среднеквадратичные значения виброскоростей  ротора в собственных опорах, мм/с'
+        self.put(text, 'Regular Bold Center', 0.5)
+
+        vibro = self.data['vibro']
+        data = [
+            ['Зона контроля', 'Вертикальная', 'Горизонтальная', 'Осевая'],
+            ['Подшипниковый узел со стороны привода', '{vert}', '{horiz}', '{axis}'],
+            ['Подшипниковый узел с противоположной приводу стороны', '{reverse_vert}', '{reverse_horiz}', '{reverse_axis}'],
+            ['Норма', '{norm}', '', ''],
+        ]
+        styles = [
+            ['Regular Bold Center'] * 4,
+            *[['Regular'] + ['Regular Center'] * 3] * 3
+        ]
+        table_data = values(data, vibro)
+        table = self.table(table_data, styles, [4, 2, 2, 2])
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('SPAN', (1,3), (3,3))
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 0.5 * cm))
+
+        data = [
+            ['Зона контроля', 'Соответствие норме'],
+            ['Подшипники', 'соответствует'],
+            ['Установка электродвигателя на раму агрегата', 'соответствует'],
+            ['Дисбаланс ротора', 'соответствует'],
+        ]
+        styles = [
+            ['Regular Bold Center'] * 2,
+            *[['Regular', 'Regular Center']] * 3
+        ]
+        table_data = values(data, {})
+        table = self.table(table_data, styles, [5, 5])
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
@@ -499,30 +546,31 @@ class Report():
         ]))
         self.Story.append(table)
 
-    def put_image(self, image, size=10):
-        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
-        ratio = float(image.width/image.height)
-        image = Image(str(MEDIA_ROOT.path(str(image))),
-            width=size * cm * ratio, height=size * cm)
-        self.Story.append(image)
-
-    def put_photo(self, image, size=10):
-        self.Story.append(self.fetch_image(image, size))
-
-    def fetch_image(self, image, size):
-        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
-        return Image(str(MEDIA_ROOT.path(str(image.name))), width=size * cm, height=size * cm)
 
     '''
         Helper functions
     '''
 
+    def table(self, data, styles, colWidths=(10, )):
+        table = Table(
+            self.tabelize(data, styles),
+            colWidths=self.columnize(*colWidths)
+        )
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ]))
+        return table
 
-    def tabelize(self, lst, style='Regular Center'):
-        return list(map(lambda x: self.table_row(x, style), lst))
+    def tabelize(self, lst, styles=None):
+        styles.reverse()
+        return list(map(lambda x: self.table_row(x, styles.pop()), lst))
 
-    def table_row(self, lst, style='Regular Center'):
-        return list(map(lambda x: Paragraph(x, self.styles[style]), lst))
+    def table_row(self, lst, styles):
+        styles = styles or ['Regular']
+        styles = styles * len(lst)
+        return [Paragraph(item, self.styles[styles[n]]) for n, item in enumerate(lst)]
 
     def preetify(self, lst, *style):
         return list(map(
@@ -534,11 +582,8 @@ class Report():
         )
 
     def formular(self, text):
-        table = Table(self.tabelize([['ФОРМУЛЯР № ' + text]], 'Page Header'), colWidths=[self.full_width * cm])
+        table = self.table([['ФОРМУЛЯР № ' + text]], [['Page Header']])
         table.setStyle(TableStyle([
-            #('FONTNAME', (0,0), (-1,-1), 'Times Bold'),
-            #('FONTSIZE', (0,0), (-1,-1), 13),
-            #('LEADING', (0,0), (-1,-1), 16),
             ('INNERGRID', (0,0), (-1,-1), 1, colors.black),
             ('BOX', (0,0), (-1,-1), 2, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -562,6 +607,26 @@ class Report():
         if spacer:
             self.Story.append(Spacer(1, spacer * cm))
 
+    ''' 
+        Working with images
+    '''
+    def put_image(self, image, size=10):
+        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
+        ratio = float(image.width/image.height)
+        image = Image(str(MEDIA_ROOT.path(str(image))),
+            width=size * cm * ratio, height=size * cm)
+        self.Story.append(image)
+
+    def put_photo(self, image, size=10):
+        self.Story.append(self.fetch_image(image, size))
+
+    def fetch_image(self, image, size):
+        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
+        return Image(str(MEDIA_ROOT.path(str(image.name))), width=size * cm, height=size * cm)
+
+    '''
+        Other setup utils
+    '''
     def setup_fonts(self):
         fonts = (
             ('Times', 'times.ttf'), 

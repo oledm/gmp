@@ -5,10 +5,11 @@
         .module('app.passport')
         .controller('PassportController', PassportController);
 
-    PassportController.$inject = ['$scope', 'UserData', 'Department', 'Engine', 'Passport', 'Upload'];
-    function PassportController($scope, UserData, Department, Engine, Passport, Upload) {
+    PassportController.$inject = ['$scope', 'UserData', 'Department', 'Engine', 'Passport', 'Upload', '$mdEditDialog'];
+    function PassportController($scope, UserData, Department, Engine, Passport, Upload, $mdEditDialog) {
 
         $scope.upload = upload;
+
 
         var vm = this,
             docs = [
@@ -42,6 +43,7 @@
         vm.allEmployees = [];
         vm.createPassport = createPassport;
         vm.engine = engine;
+        vm.enterValue = enterValue;
         vm.workBegin = undefined;
         vm.workEnd = undefined;
         vm.investigationDate = undefined;
@@ -56,7 +58,8 @@
             measurers: measurers.selected,
             docs: docs,
             files: {},
-            therm: {}
+            therm: {},
+            vibro: {}
         };
 
         activate();
@@ -143,5 +146,30 @@
                     vm.tclasses.all = data;
                 });
         }
+
+	function enterValue(event, param, prop) {
+	    event.stopPropagation();
+
+	    var promise = $mdEditDialog.small({
+	        modelValue: param[prop],
+	        placeholder: 'Введите значение',
+	        save: function (input) {
+                    param[prop] = input.$modelValue;
+	        },
+	        targetEvent: event,
+	        validators: {
+                    'md-maxlength': 30,
+                    'ng-pattern': "/^[0-9.,]*$/"
+	        }
+	    });
+
+	    promise.then(function (ctrl) {
+	        var input = ctrl.getInput();
+
+	        input.$viewChangeListeners.push(function () {
+                    input.$setValidity('test', input.$modelValue !== 'test');
+	        });
+	    });
+	}
     }
 })();
