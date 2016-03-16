@@ -75,6 +75,7 @@ class Engine(models.Model):
             ),
             'moments': utils.moments(),
             'moveable_Ex_connections': utils.moveable_Ex_connections(),
+            'unmoveable_Ex_connections': utils.unmoveable_Ex_connections(),
         }
 
     #def clean(self):

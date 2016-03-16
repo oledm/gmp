@@ -1,5 +1,6 @@
 from functools import partial
 
+from PIL import Image as PILImage
 from django.conf import settings
 import environ
 
@@ -40,6 +41,12 @@ class Normatives():
 
 def values(template, data):
     return list(map(lambda row: list(map(lambda cell: cell.format(**data), row)), template))
+
+def fetch_static_image(img, size):
+    file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'images', img))
+    image = PILImage.open(file_)
+    ratio = float(image.width/image.height)
+    return Image(file_, width=size * cm * ratio, height=size * cm)
 
 def header(canvas, doc, content):
     canvas.saveState()
@@ -85,6 +92,7 @@ class Report():
         self.page11()
         self.page12()
         self.page13()
+        self.page14()
             
         doc.build(self.Story)
 
@@ -190,6 +198,7 @@ class Report():
         )
         right = Paragraph(ptext, self.styles['Table Content']) 
         team_table = Table([[left, right]])
+        team_table.hAlign = 'LEFT'
         style = TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Times'),
             ('FONTSIZE', (0,0), (-1,-1), 13),
@@ -203,6 +212,7 @@ class Report():
 
         text = '\n'.join(['____________________' + x.get('name') for x in self.data.get('team')])
         table2 = Table([[Paragraph(text, self.styles['Signature Left'])]])
+        table2.hAlign = 'LEFT'
         table2.setStyle(style)
 
         table_data = [
@@ -218,6 +228,7 @@ class Report():
         ]
 
         table = Table(table_data, colWidths=self.columnize(3,7))
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Times'),
             ('FONTSIZE', (0,0), (-1,-1), 13),
@@ -255,6 +266,7 @@ class Report():
 
         table = Table(table_data, colWidths=[1.7 * cm, 3.8 * cm, 3.8 * cm,
             1.85 * cm, 1.85 * cm, 1.85 * cm, 1.85 * cm, 1.85 * cm])
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Times'),
             ('FONTSIZE', (0,0), (-1,-1), 12),
@@ -288,6 +300,7 @@ class Report():
             table_data.append(row_data)
 
         table = Table(table_data, colWidths=[1.7 * cm, 5.7 * cm, 3.75 * cm, 3.85 * cm, 3.65 * cm])
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Times'),
             ('FONTSIZE', (0,0), (-1,-1), 12),
@@ -314,6 +327,7 @@ class Report():
             self.preetify(Normatives().get(), 'Regular', 'Regular'),
             colWidths=self.columnize(1,9)
         )
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         ]))
@@ -330,6 +344,7 @@ class Report():
             self.preetify(table_data, 'Regular', 'Regular Center'),
             colWidths=self.columnize(8,2)
         )
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
@@ -377,6 +392,7 @@ class Report():
             self.preetify(table_data, 'Regular', 'Regular Center'),
             colWidths=self.columnize(5,5)
         )
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
@@ -412,6 +428,7 @@ class Report():
             self.tabelize(table_data, [['Regular Center'] * cols] * rows),
             colWidths=self.columnize(2, 1, 1, 1, 1, 1, 1, 2)
         )
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
@@ -473,6 +490,7 @@ class Report():
         )
         table_data = [[image, image]]
         table = Table(table_data,colWidths=self.columnize(5, 5))
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
             ('ALIGN', (0,0), (-1,-1), 'CENTER'),
@@ -522,6 +540,7 @@ class Report():
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
             ('SPAN', (1,3), (3,3))
         ]))
         self.Story.append(table)
@@ -543,9 +562,99 @@ class Report():
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
         ]))
         self.Story.append(table)
 
+        self.Story.append(Spacer(1, 0.5 * cm))
+        self.put('Замеры проводились на подшипниковых узлах в трёх направлениях.', 'Regular')
+        text = '''
+Вибродиагностический контроль электродвигателя проводился в соответствии с требованиями ГОСТ Р ИСО 10816-3-99 "Вибрация. Контроль состояния машин по результатам измерения вибрации на невращающихся частях. Часть 3. Промышленные машины номинальной мощностью более 15 кВт и номинальной скоростью от 120 до 15000 мин -1".
+        '''
+        self.Story.append(Spacer(1, 0.5 * cm))
+        self.put(text, 'Paragraph')
+
+    def page14(self):
+        self.Story.append(PageBreak())
+        self.formular('9-1 Визуальный и измерительный контроль электродвигателя')
+
+        table_data = [[
+            fetch_static_image('engine_details_scheme_1.jpg', 5.3),
+            fetch_static_image('engine_details_scheme_2.jpg', 5.3),
+            fetch_static_image('engine_details_scheme_3.jpg', 5.3),
+        ]]
+        table = Table(table_data) 
+        table.hAlign = 'LEFT'
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 0.5 * cm))
+
+        engine = Engine.objects.get(name=self.data['engine']['type'])
+        data = engine.random_data.get('moveable_Ex_connections')
+        template = [
+            ['№ п/п', 'Подвижное взрывонепроницаемое соединение', 'L1, мм', 'D, мм', 'd, мм', 'W1, мм', 'S, Ra'],
+            ['1', 'Узел взрывозащиты подшипникового узла со стороны привода', '{top_point[L1]}', '{top_point[D]}', '{top_point[d]}', '{top_point[W1]}', '{top_point[S]}'],
+            ['2', 'Узел взрывозащиты подшипникового узла с противоположной приводу стороны', '{bottom_point[L1]}', '{bottom_point[D]}', '{bottom_point[d]}', '{bottom_point[W1]}', '{bottom_point[S]}'],
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            ['Regular Bold Center'] * cols,
+            *[['Regular Center'] * cols] * (rows - 1)
+        ]
+        table_data = values(template, data)
+        table = self.table(table_data, styles, [1, 4, 1, 1, 1, 1, 1])
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1,-1), 0)
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 0.5 * cm))
+
+        data = engine.random_data.get('unmoveable_Ex_connections')
+        template = [
+            ['№ п/п', 'Неподвижное взрывонепроницаемое соединение', 'L1, мм', 'L2, мм', 'W1, мм', 'b, мм', 'a, мм', 'f, мм', 'S, Ra'],
+            ['1', 'Выводное устройство &ndash; крышка', '{out_krishka[L1]}', '{out_krishka[L2]}', '{out_krishka[W1]}', '{out_krishka[b]}', '{out_krishka[a]}', '{out_krishka[f]}', '{out_krishka[S]}'],
+            ['2', 'Выводное устройство &ndash; станина', '{out_stanina[L1]}', '{out_stanina[L2]}', '{out_stanina[W1]}', '{out_stanina[b]}', '{out_stanina[a]}', '{out_stanina[f]}', '{out_stanina[S]}'],
+            ['3', 'Крышка узла взрывозащиты &ndash; подшипниковый щит со стороны привода', '{cap_shield[L1]}', '{cap_shield[L2]}', '{cap_shield[W1]}', '{cap_shield[b]}', '{cap_shield[a]}', '{cap_shield[f]}', '{cap_shield[S]}'],
+            ['4', 'Крышка узла взрывозащиты &ndash; подшипниковый щит с противоположной приводу стороны', '{cap_shield_reverse[L1]}', '{cap_shield_reverse[L2]}', '{cap_shield_reverse[W1]}', '{cap_shield_reverse[b]}', '{cap_shield_reverse[a]}', '{cap_shield_reverse[f]}', '{cap_shield_reverse[S]}'],
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            ['Regular Bold Center'] * cols,
+            *[['Regular Center'] * cols] * (rows - 1)
+        ]
+        table_data = values(template, data)
+        table = self.table(table_data, styles, [1, 2, 1, 1, 1, 1, 1, 1, 1])
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1,-1), 0)
+        ]))
+        self.Story.append(table)
+
+        template = [
+            ['Зазор между лопастями вентилятора и защитным кожухом',
+            'Не менее 1/100 максимального диаметра вентилятора согласно п.17.3 ГОСТ Р 51330.0'],
+            ['Наружные и внутренние контактные зажимы заземляющих проводников',
+            'Обеспечивают подсоединение проводника сечением не менее 4 мм² согласно п. 15.4 ГОСТ Р 51330.0']
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [['Regular'] * cols] * rows
+        print(styles)
+        table_data = values(template, {})
+        table = self.table(table_data, styles, [4, 6])
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1,-1), 0)
+        ]))
+        self.Story.append(table)
 
     '''
         Helper functions
@@ -556,6 +665,7 @@ class Report():
             self.tabelize(data, styles),
             colWidths=self.columnize(*colWidths)
         )
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
@@ -588,7 +698,9 @@ class Report():
             ('BOX', (0,0), (-1,-1), 2, colors.black),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
         ]))
+        table.hAlign = 'LEFT'
         self.Story.append(table)
         self.Story.append(Spacer(1, 0.5 * cm))
 
@@ -647,15 +759,17 @@ class Report():
         frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='no_header')
         template_title = PageTemplate(id='Title', frames=frame_full)
 
-        frame_with_header = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height-2*cm, id='with_header')
+        frame_with_header = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height-2*cm,
+                bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=0,
+                id='with_header')
         header_content = Paragraph('''{org} {lpu} {ks} {location} {plant}
             станционный №{station_number} зав.№{serial_number}'''.format(
                 **self.obj_data, **self.data['engine']
             ), self.styles["Page Header"]
         )
-        template_with_header = PageTemplate(id='Content', frames=frame_with_header, onPage=partial(header, content=header_content))
+        template_content = PageTemplate(id='Content', frames=frame_with_header, onPage=partial(header, content=header_content))
 
-        doc.addPageTemplates([template_title, template_with_header])
+        doc.addPageTemplates([template_title, template_content])
 
     def setup_styles(self):
         self.styles.add(ParagraphStyle(name='Justify', alignment=TA_CENTER))
@@ -746,4 +860,11 @@ class Report():
             fontName='Times',
             leading=16,
             fontSize=13,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Paragraph',
+            fontName='Times',
+            fontSize=13,
+            leading=18,
+            firstLineIndent=0.7 * cm,
             alignment=TA_LEFT))
