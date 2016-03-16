@@ -1,7 +1,9 @@
 from functools import partial
 
-from PIL import Image as PILImage
 from django.conf import settings
+
+from PIL import Image as PILImage
+from babel.numbers import format_decimal
 import environ
 
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT
@@ -22,6 +24,7 @@ from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass
 from gmp.filestorage.models import UploadedFile
 
+loc = partial(format_decimal, locale='ru_RU')
 
 class Normatives():
     @staticmethod
@@ -93,6 +96,9 @@ class Report():
         self.page12()
         self.page13()
         self.page14()
+        self.page15()
+        self.page16()
+        self.page17()
             
         doc.build(self.Story)
 
@@ -377,13 +383,13 @@ class Report():
             ['Соединение фаз', str(engine.connection.get())],
             ['Номинальная мощность, кВт', '{0:g}'.format(engine.power)],
             ['Номинальное напряжение, В', str(engine.voltage)],
-            ['Номинальный ток статора, А', '{0:g}'.format(engine.current)],
+            ['Номинальный ток статора, А', loc('{0:g}'.format(engine.current))],
             ['Номинальная частота вращения, об/мин', str(engine.freq)],
-            ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(engine.freq)],
-            ['Отношение начального пускового тока к номинальному току', str(moments.get('fraction_initial_current'))],
-            ['Отношение максимального вращающего момента к номинальному вращающему моменту', str(moments.get('fraction_max_spin_moment'))],
-            ['Коэффициент полезного действия, %', '{0:g}'.format(engine.kpd)],
-            ['Коэффициент мощности, cosφ', '{0:g}'.format(engine.coef_power)],
+            ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', loc(str(engine.freq))],
+            ['Отношение начального пускового тока к номинальному току', loc(str(moments.get('fraction_initial_current')))],
+            ['Отношение максимального вращающего момента к номинальному вращающему моменту', loc(str(moments.get('fraction_max_spin_moment')))],
+            ['Коэффициент полезного действия, %', loc('{0:g}'.format(engine.kpd))],
+            ['Коэффициент мощности, cosφ', loc('{0:g}'.format(engine.coef_power))],
             ['Класс нагревостойкости изоляции', str(engine.warming_class)],
             ['Масса двигателя, кг', str(engine.weight)],
         ]
@@ -589,6 +595,7 @@ class Report():
         self.Story.append(Spacer(1, 0.5 * cm))
 
         engine = Engine.objects.get(name=self.data['engine']['type'])
+        print('coef:', engine.coef_power)
         data = engine.random_data.get('moveable_Ex_connections')
         template = [
             ['№ п/п', 'Подвижное взрывонепроницаемое соединение', 'L1, мм', 'D, мм', 'd, мм', 'W1, мм', 'S, Ra'],
@@ -645,7 +652,6 @@ class Report():
         cols = len(template[0])
         rows = len(template)
         styles = [['Regular'] * cols] * rows
-        print(styles)
         table_data = values(template, {})
         table = self.table(table_data, styles, [4, 6])
         table.setStyle(TableStyle([
@@ -656,6 +662,140 @@ class Report():
         ]))
         self.Story.append(table)
 
+    def page15(self):
+        self.Story.append(PageBreak())
+
+        template = [
+            ['Статор', ''],
+            ['Наличие истирания изоляции обмотки и токоподводов', 'нет'],
+            ['Признаки перегрева изоляции обмотки и токоподводов', 'нет'],
+            ['Наличие повреждений активной стали', 'нет'],
+            ['Наличие пыли, масла, механических повреждений на лобовых частях обмотки статора и токоподводах', 'нет'],
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            ['Regular Bold Center'],
+            *[['Regular'] * cols] * (rows - 1)
+        ]
+        table_data = values(template, {})
+        table = self.table(table_data, styles, [7, 3])
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+            ('TOPPADDING', (0,0), (-1,-1), 5),
+            ('SPAN', (0,0), (1,0))
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 0.5 * cm))
+
+        template = [
+            ['Ротор', ''],
+            ['Наличие коррозии и механических повреждений на наружной поверхности вала бочки ротора и крыльчатки', 'нет'],
+            ['Наличие коррозии и механических повреждений на наружных поверхностях деталей подшипников качения', 'нет'],
+            ['Отсутствие свободного вращения ротора в собранном двигателе от руки', 'нет'],
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            ['Regular Bold Center'],
+            *[['Regular'] * cols] * (rows - 1)
+        ]
+        table_data = values(template, {})
+        table = self.table(table_data, styles, [7, 3])
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+            ('TOPPADDING', (0,0), (-1,-1), 5),
+            ('SPAN', (0,0), (1,0))
+        ]))
+        self.Story.append(table)
+
+    def page16(self):
+        self.Story.append(PageBreak())
+        self.formular('9-2 Контроль параметров взрывозащиты')
+
+        self.put('Взрывонепроницаемая оболочка', 'Regular Bold Center', 0.4)
+        template = [
+            ['Отсутствие маркировки и предупреждающих знаков', 'нет'],
+            ['Наличие коррозии и механических повреждений на взрывонепроницаемых поверхностях взрывонепроницаемой оболочки', 'нет'],
+            ['Наличие механических повреждений (сколы, трещины, вмятины) на деталях взрывонепроницаемой оболочки', 'нет'],
+            ['Отсутствие крепёжных элементов', 'нет'],
+            ['Среднее число полных неповрежденных непрерывных ниток резьбы', '8'],
+            ['Качество резьбы', 'хорошее'],
+            ['Затяжка крепёжных болтов', 'хорошее'],
+            ['Наличие следов эрозии и коррозии на резьбовых соединениях', 'нет'],
+            ['Наличие коррозии и механических повреждений на крышке и корпусе выводного устройства', 'нет'],
+            ['Наличие повреждений прокладок', 'нет'],
+            ['Отсутствие антикоррозионной смазки  на взрывонепроницаемых поверхностях', 'нет'],
+            ['Наличие повреждений уплотнительного кольца кабельного ввода', 'нет']
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            *[['Regular', 'Regular Center']] * rows
+        ]
+        table_data = values(template, {})
+        table = self.table(table_data, styles, [8, 2])
+        table.setStyle(TableStyle([
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+            ('TOPPADDING', (0,0), (-1,-1), 5),
+        ]))
+        self.Story.append(table)
+
+
+    def page17(self):
+        self.Story.append(PageBreak())
+        self.formular('10 Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя')
+
+        engine = Engine.objects.get(name=self.data['engine']['type'])
+        self.put_image(engine.meters, size=12.5)
+        self.Story.append(Spacer(1, 1 * cm))
+
+        #template = [
+        #    [''],
+        #]
+        #cols = len(template[0])
+        #rows = len(template)
+        #styles = [
+        #    *[['Regular', 'Regular Center']] * rows
+        #]
+        #print(styles)
+        #table_data = values(template, {})
+        #table = self.table(table_data, styles, [8, 2])
+        #table.setStyle(TableStyle([
+        #    ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+        #    ('TOPPADDING', (0,0), (-1,-1), 5),
+        #]))
+        #self.Story.append(table)
+        #
+        #template = [
+        #    ['№ п/п', 'Подвижное взрывонепроницаемое соединение', 'L1, мм', 'D, мм', 'd, мм', 'W1, мм', 'S, Ra'],
+        #    ['1', 'Узел взрывозащиты подшипникового узла со стороны привода', '{top_point[L1]}', '{top_point[D]}', '{top_point[d]}', '{top_point[W1]}', '{top_point[S]}'],
+        #    ['2', 'Узел взрывозащиты подшипникового узла с противоположной приводу стороны', '{bottom_point[L1]}', '{bottom_point[D]}', '{bottom_point[d]}', '{bottom_point[W1]}', '{bottom_point[S]}'],
+        #]
+        #cols = len(template[0])
+        #rows = len(template)
+        #styles = [
+        #    ['Regular Bold Center'] * cols,
+        #    *[['Regular Center'] * cols] * (rows - 1)
+        #]
+        #table_data = values(template, data)
+        #table = self.table(table_data, styles, [1, 4, 1, 1, 1, 1, 1])
+        #table.setStyle(TableStyle([
+        #    ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+        #    ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+        #    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        #    ('TOPPADDING', (0,0), (-1,-1), 0)
+        #]))
+        #self.Story.append(table)
+        #self.Story.append(Spacer(1, 0.5 * cm))
+
+        #data = engine.random_data.get('unmoveable_Ex_connections')
     '''
         Helper functions
     '''

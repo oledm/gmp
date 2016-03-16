@@ -10,9 +10,6 @@ from . import utils
 #from django.contrib.postgres.fields import IntegerRangeField
 
 #from psycopg2.extras import NumericRange
-#class EngineRandomDataManager(models.Manager):
-#    def get_queryset(self):
-#        return
 
 class Engine(models.Model):
     name = models.CharField('Тип', max_length=40)
@@ -77,14 +74,6 @@ class Engine(models.Model):
             'moveable_Ex_connections': utils.moveable_Ex_connections(),
             'unmoveable_Ex_connections': utils.unmoveable_Ex_connections(),
         }
-
-    #def clean(self):
-    #    if self.kpd > 100 or self.kpd < 0:
-    #        raise ValidationError('Коэффициент полезного действия не может быть более 100%')
-
-    #    if self.coef_power > 1 or self.coef_power < 0:
-    #        raise ValidationError('Коэффициент мощности должен быть в диапазоне [0...1]')
-
 
 class Connection(models.Model):
     CONNECTION_TYPES = (

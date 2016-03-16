@@ -133,7 +133,7 @@ USE_I18N = True
 USE_L10N = True
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
-USE_TZ = True
+USE_TZ = False
 
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -256,3 +256,4 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
+DECIMAL_SEPARATOR=','
