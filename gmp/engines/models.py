@@ -1,4 +1,6 @@
 from random import randrange
+from functools import partial
+import locale
 
 from django.db import models
 
@@ -6,6 +8,9 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 from . import utils
+
+locale.setlocale(locale.LC_ALL, "")
+loc = partial(locale.format, "%.2f")
 
 #from django.contrib.postgres.fields import IntegerRangeField
 
@@ -55,8 +60,99 @@ class Engine(models.Model):
     )
     
     weight = models.SmallIntegerField('Масса двигателя, кг')
-    #resistance_wire = models.SmallIntegerField('Сопротивление обмотки, Ом')
     resistance_isolation = models.SmallIntegerField('Сопротивление изоляции, Мом')
+
+    ###########################################################################
+    moveable_Ex_connections_top_point_L1_low = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты верхнего подшипникового узла / L1 (нижний предел)', blank=True, null=True)
+    moveable_Ex_connections_top_point_L1_high = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты верхнего подшипникового узла / L1 (верхний предел)', blank=True, null=True)
+    moveable_Ex_connections_top_point_D_low = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты верхнего подшипникового узла / D (нижний предел)', blank=True, null=True)
+    moveable_Ex_connections_top_point_D_high = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты верхнего подшипникового узла / D (верхний предел)', blank=True, null=True)
+    moveable_Ex_connections_top_point_d_low = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты верхнего подшипникового узла / d (нижний предел)', blank=True, null=True)
+    moveable_Ex_connections_top_point_d_high = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты верхнего подшипникового узла / d (верхний предел)', blank=True, null=True)
+    moveable_Ex_connections_top_point_S = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты верхнего подшипникового узла / S', default=6.3, blank=True, null=True)
+
+    ###########################################################################
+    moveable_Ex_connections_bottom_point_L1_low = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты нижнего подшипникового узла / L1 (нижний предел)', blank=True, null=True)
+    moveable_Ex_connections_bottom_point_L1_high = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты нижнего подшипникового узла / L1 (верхний предел)', blank=True, null=True)
+    moveable_Ex_connections_bottom_point_D_low = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты нижнего подшипникового узла / D (нижний предел)', blank=True, null=True)
+    moveable_Ex_connections_bottom_point_D_high = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты нижнего подшипникового узла / D (верхний предел)', blank=True, null=True)
+    moveable_Ex_connections_bottom_point_d_low = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты нижнего подшипникового узла / d (нижний предел)', blank=True, null=True)
+    moveable_Ex_connections_bottom_point_d_high = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты нижнего подшипникового узла / d (верхний предел)', blank=True, null=True)
+    moveable_Ex_connections_bottom_point_S = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты нижнего подшипникового узла / S', default=6.3, blank=True, null=True)
+
+    ###########################################################################
+    unmoveable_Ex_connections_out_krishka_L1_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / L1 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_L1_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / L1 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_L2_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / L2 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_L2_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / L2 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_W1_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / W1 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_W1_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / W1 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_b_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / b (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_b_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / b (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_a_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / a (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_a_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / a (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_f = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / f', default=1.5, blank=True, null=True)
+    unmoveable_Ex_connections_out_krishka_S = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - крышка / S', default=6.3, blank=True, null=True)
+
+    ###########################################################################
+    unmoveable_Ex_connections_out_stanina_L1_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / L1 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_L1_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / L1 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_L2_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / L2 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_L2_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / L2 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_W1_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / W1 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_W1_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / W1 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_b_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / b (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_b_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / b (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_a_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / a (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_a_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / a (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_f = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / f', default=1.5, blank=True, null=True)
+    unmoveable_Ex_connections_out_stanina_S = models.FloatField('Неподвижное взрывонепроницаемое соединение / Выводное устройство - станина / S', default=6.3, blank=True, null=True)
+
+    ###########################################################################
+    unmoveable_Ex_connections_cap_shield_L1_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / L1 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_L1_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / L1 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_L2_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / L2 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_L2_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / L2 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_W1_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / W1 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_W1_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / W1 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_b_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / b (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_b_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / b (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_a_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / a (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_a_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / a (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_f = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / f', default=1.5, blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_S = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит со стороны привода / S', default=6.3, blank=True, null=True)
+
+    ###########################################################################
+    unmoveable_Ex_connections_cap_shield_reverse_L1_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / L1 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_L1_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / L1 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_L2_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / L2 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_L2_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / L2 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_W1_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / W1 (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_W1_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / W1 (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_b_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / b (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_b_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / b (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_a_low = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / a (нижний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_a_high = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / a (верхний предел)', blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_f = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / f', default=1.5, blank=True, null=True)
+    unmoveable_Ex_connections_cap_shield_reverse_S = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / S', default=6.3, blank=True, null=True)
+
+    ###########################################################################
+    elements_condition_width_real_shield_low = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Подшипниковый щит со стороны привода (нижний предел)')
+    elements_condition_width_real_shield_high = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Подшипниковый щит со стороны привода (верхний предел)')
+    elements_condition_width_real_cap_low = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Крышка коробки выводов (нижний предел)')
+    elements_condition_width_real_cap_high = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Крышка коробки выводов (верхний предел)')
+    elements_condition_width_real_external_low = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Наружная оболочка корпуса статора (нижний предел)')
+    elements_condition_width_real_external_high = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Наружная оболочка корпуса статора (верхний предел)')
+    elements_condition_width_real_shield_reverse_low = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Подшипниковый щит с противоположной приводу стороны (нижний предел)')
+    elements_condition_width_real_shield_reverse_high = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Подшипниковый щит с противоположной приводу стороны (верхний предел)')
+
+
+    ###########################################################################
+    elements_condition_width_norm_shield = models.FloatField('Техническое состояние элементов / Допустимые толщины норма (не менее) / Подшипниковый щит со стороны привода')
+    elements_condition_width_norm_cap = models.FloatField('Техническое состояние элементов / Допустимые толщины норма (не менее) / Крышка коробки выводов')
+    elements_condition_width_norm_external = models.FloatField('Техническое состояние элементов / Допустимые толщины норма (не менее) / Наружная оболочка корпуса статора')
+    elements_condition_width_norm_shield_reverse = models.FloatField('Техническое состояние элементов / Допустимые толщины норма (не менее) / Подшипниковый щит с противоположной приводу стороны')
+
 
     def __str__(self):
         return self.name

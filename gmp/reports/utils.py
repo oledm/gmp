@@ -1,9 +1,10 @@
 from functools import partial
+import locale
 
 from django.conf import settings
 
 from PIL import Image as PILImage
-from babel.numbers import format_decimal
+#from babel.numbers import format_decimal
 import environ
 
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT
@@ -24,7 +25,10 @@ from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass
 from gmp.filestorage.models import UploadedFile
 
-loc = partial(format_decimal, locale='ru_RU')
+#loc = partial(format_decimal, locale='ru_RU')
+locale.setlocale(locale.LC_ALL, "")
+#loc = partial(format_decimal, locale='ru_RU')
+loc = partial(locale.format, "%.2f")
 
 class Normatives():
     @staticmethod
@@ -377,19 +381,19 @@ class Report():
             ['Исполнение по взрывозащите', str(engine.ex)],
             ['Допустимый диапазон температуры окружающей среды, °С', '{}ºС...+{}ºС'.format(engine.temp_low, engine.temp_high)],
             ['Заводской номер', serial],
-            ['Завод – изготовитель', str(engine.factory)],
+            ['Завод &ndash; изготовитель', str(engine.factory)],
             ['Год изготовления', manufactured],
             ['Год ввода в эксплуатацию', started],
             ['Соединение фаз', str(engine.connection.get())],
             ['Номинальная мощность, кВт', '{0:g}'.format(engine.power)],
             ['Номинальное напряжение, В', str(engine.voltage)],
-            ['Номинальный ток статора, А', loc('{0:g}'.format(engine.current))],
+            ['Номинальный ток статора, А', loc(engine.current)],
             ['Номинальная частота вращения, об/мин', str(engine.freq)],
-            ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', loc(str(engine.freq))],
-            ['Отношение начального пускового тока к номинальному току', loc(str(moments.get('fraction_initial_current')))],
-            ['Отношение максимального вращающего момента к номинальному вращающему моменту', loc(str(moments.get('fraction_max_spin_moment')))],
-            ['Коэффициент полезного действия, %', loc('{0:g}'.format(engine.kpd))],
-            ['Коэффициент мощности, cosφ', loc('{0:g}'.format(engine.coef_power))],
+            ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(engine.freq)],
+            ['Отношение начального пускового тока к номинальному току', str(moments.get('fraction_initial_current'))],
+            ['Отношение максимального вращающего момента к номинальному вращающему моменту', str(moments.get('fraction_max_spin_moment'))],
+            ['Коэффициент полезного действия, %', loc(engine.kpd)],
+            ['Коэффициент мощности, cosφ', loc(engine.coef_power)],
             ['Класс нагревостойкости изоляции', str(engine.warming_class)],
             ['Масса двигателя, кг', str(engine.weight)],
         ]
@@ -422,9 +426,9 @@ class Report():
              *([resistance_isolation] * 6), 'не менее 1,0'],
             ['Сопротивление фазы обмотки статора постоянному току в холодном состоянии при 20°C, Ом',
              *([resistance_phase] * 6), 'Разница не более  2% от заводских данных'],
-            ['Средняя величина воздушного зазора (односторонняя), мм', '-', '', '', '-', '', '', 
+            ['Средняя величина воздушного зазора (односторонняя), мм', '&ndash;', '', '', '&ndash;', '', '', 
                 'Разница не более  10% от среднего значения'],
-            ['Эффективное значение виброскорости подшипниковых опор, мм/с', '1,2', '', '', '-',
+            ['Эффективное значение виброскорости подшипниковых опор, мм/с', '1,2', '', '', '&ndash;',
                 '', '', 'Не более 4,5 мм/с']
         ]
 
