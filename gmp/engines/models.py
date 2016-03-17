@@ -10,6 +10,15 @@ from .utils import EngineDataGenerator
 #from psycopg2.extras import NumericRange
 
 class Engine(EngineDataGenerator, models.Model):
+    zones = (
+        'Подшипниковый щит со стороны привода',
+        'Крышка коробки выводов',
+        'Наружная оболочка корпуса статора',
+        'Подшипниковый щит с противоположной стороны привода'
+    )
+    ZONES_CHOICES = tuple(zip(range(0, len(zones)), zones))
+    print(ZONES_CHOICES)
+
     name = models.CharField('Тип', max_length=40)
     #temp = IntegerRangeField(
     #    verbose_name='Допустимый диапазон температур окружающей среды',
@@ -31,6 +40,26 @@ class Engine(EngineDataGenerator, models.Model):
     factory = models.ForeignKey(
         'Factory',
         verbose_name='Завод изготовитель'
+    )
+    control_zone_1 = models.SmallIntegerField(
+        'Зона контроля 1',
+        choices=ZONES_CHOICES,
+        default=0
+    )
+    control_zone_2 = models.SmallIntegerField(
+        'Зона контроля 2',
+        choices=ZONES_CHOICES,
+        default=1
+    )
+    control_zone_3 = models.SmallIntegerField(
+        'Зона контроля 3',
+        choices=ZONES_CHOICES,
+        default=2
+    )
+    control_zone_4 = models.SmallIntegerField(
+        'Зона контроля 4',
+        choices=ZONES_CHOICES,
+        default=3
     )
 
     connection = models.ManyToManyField(
@@ -159,6 +188,9 @@ class Engine(EngineDataGenerator, models.Model):
             'resistance_wire': self.resistance_wire(),
             'unmoveable_Ex_connections': self.unmoveable_Ex_connections(),
         }
+    #class Meta:
+
+    #    unique_together = ('control_zone_1', 'control_zone_2', 'control_zone_3', 'control_zone_4',)
 
 class Connection(models.Model):
     CONNECTION_TYPES = (

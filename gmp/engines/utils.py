@@ -67,6 +67,9 @@ class EngineDataGenerator(models.Model):
             'width_norm': dict(zip(('shield', 'cap', 'external', 'shield_reverse'), self.width_norm())),
         }
 
+    '''
+        Helper functions
+    '''
     def width_real(self):
         data = (
             rnd(self.elements_condition_width_real_shield_low,

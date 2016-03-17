@@ -25,9 +25,7 @@ from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass
 from gmp.filestorage.models import UploadedFile
 
-#loc = partial(format_decimal, locale='ru_RU')
 locale.setlocale(locale.LC_ALL, "")
-#loc = partial(format_decimal, locale='ru_RU')
 loc = partial(locale.format, "%.2f")
 
 class Normatives():
