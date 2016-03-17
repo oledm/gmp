@@ -1,22 +1,15 @@
 from random import randrange
-from functools import partial
-import locale
 
 from django.db import models
-
-#from django.core.validators import MaxValueValidator
 from django.core.exceptions import ValidationError
 
-from . import utils
+from .utils import EngineDataGenerator
 
-locale.setlocale(locale.LC_ALL, "")
-loc = partial(locale.format, "%.2f")
-
+#from django.core.validators import MaxValueValidator
 #from django.contrib.postgres.fields import IntegerRangeField
-
 #from psycopg2.extras import NumericRange
 
-class Engine(models.Model):
+class Engine(EngineDataGenerator, models.Model):
     name = models.CharField('Тип', max_length=40)
     #temp = IntegerRangeField(
     #    verbose_name='Допустимый диапазон температур окружающей среды',
@@ -160,15 +153,11 @@ class Engine(models.Model):
     @property
     def random_data(self):
         return {
-            # Сопротивление обмотки, Ом
-            'resistance_wire': '{:.2f}'.format(
-                (self.voltage ** 2) /
-                (self.power * 1000 * self.coef_power) *
-                0.03 * randrange(1000, 1050)/1000
-            ),
-            'moments': utils.moments(),
-            'moveable_Ex_connections': utils.moveable_Ex_connections(),
-            'unmoveable_Ex_connections': utils.unmoveable_Ex_connections(),
+            'elements_condition': self.elements_condition(),
+            'moments': self.moments(),
+            'moveable_Ex_connections': self.moveable_Ex_connections(),
+            'resistance_wire': self.resistance_wire(),
+            'unmoveable_Ex_connections': self.unmoveable_Ex_connections(),
         }
 
 class Connection(models.Model):
