@@ -1,64 +1,65 @@
 <ng-form name="vm.vibroForm">
   <h4>Данные вибрационного контроля</h4>
-
-
-    <md-table-container>
-      <table md-table>
-        <thead md-head>
-          <tr md-row>
-            <th md-column><span>Зона контроля</span></th>
-            <th md-column><span>Вертикальная</span></th>
-            <th md-column><span>Горизонтальная</span></th>
-            <th md-column><span>Осевая</span></th>
-          </tr>
-        </thead>
-        <tbody md-body>
-            <tr md-row>
-                <td md-cell>Подшипниковый узел со стороны привода</td>
-                <td md-cell
-                    ng-click="vm.enterValue($event, vm.report.vibro, 'vert')"
-                    ng-class="{'md-placeholder': !vm.report.vibro.vert}">
-                    {{vm.report.vibro.vert || 'Введите значение'}}
-               </td>
-                <td md-cell
-                    ng-click="vm.enterValue($event, vm.report.vibro, 'horiz')"
-                    ng-class="{'md-placeholder': !vm.report.vibro.horiz}">
-                    {{vm.report.vibro.horiz || 'Введите значение'}}
-               </td>
-                <td md-cell
-                    ng-click="vm.enterValue($event, vm.report.vibro, 'axis')"
-                    ng-class="{'md-placeholder': !vm.report.vibro.axis}">
-                    {{vm.report.vibro.axis || 'Введите значение'}}
-               </td>
-          </tr>
-          <tr md-row>
-                <td md-cell>Подшипниковый узел с противоположной приводу стороны</td>
-                <td md-cell
-                    ng-click="vm.enterValue($event, vm.report.vibro, 'reverse_vert')"
-                    ng-class="{'md-placeholder': !vm.report.vibro.reverse_vert}">
-                    {{vm.report.vibro.reverse_vert || 'Введите значение'}}
-               </td>
-                <td md-cell
-                    ng-click="vm.enterValue($event, vm.report.vibro, 'reverse_horiz')"
-                    ng-class="{'md-placeholder': !vm.report.vibro.reverse_horiz}">
-                    {{vm.report.vibro.reverse_horiz || 'Введите значение'}}
-               </td>
-                <td md-cell
-                    ng-click="vm.enterValue($event, vm.report.vibro, 'reverse_axis')"
-                    ng-class="{'md-placeholder': !vm.report.vibro.reverse_axis}">
-                    {{vm.report.vibro.reverse_axis || 'Введите значение'}}
-               </td>
-          </tr>
-          <tr md-row>
-                <td md-cell>Норма</td>
-                <td md-cell colspan="3" style="text-align: center"
-                    ng-click="vm.enterValue($event, vm.report.vibro, 'norm')"
-                    ng-class="{'md-placeholder': !vm.report.vibro.norm}">
-                    {{vm.report.vibro.norm || 'Введите значение'}}
-               </td>
-          </tr>
-        </tbody>
-      </table>
-    </md-table-container>
+    <div layout="row">
+        <md-table-container>
+          <table md-table>
+            <thead md-head>
+              <tr md-row>
+                <th md-column><span>Зона контроля</span></th>
+                <th md-column><span>Вертикальная</span></th>
+                <th md-column><span>Горизонтальная</span></th>
+                <th md-column><span>Осевая</span></th>
+              </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row>
+                    <td md-cell>Подшипниковый узел со стороны привода</td>
+                    <td md-cell ng-required="required"
+                        ng-click="vm.enterValue($event, vm.report.vibro, 'vert')"
+                        ng-class="{'md-placeholder': !vm.report.vibro.vert}">
+                        {{vm.report.vibro.vert || 'Введите значение'}}
+                   </td>
+                    <td md-cell ng-required="required"
+                        ng-click="vm.enterValue($event, vm.report.vibro, 'horiz')"
+                        ng-class="{'md-placeholder': !vm.report.vibro.horiz}">
+                        {{vm.report.vibro.horiz || 'Введите значение'}}
+                   </td>
+                    <td md-cell ng-required="required"
+                        ng-click="vm.enterValue($event, vm.report.vibro, 'axis')"
+                        ng-class="{'md-placeholder': !vm.report.vibro.axis}">
+                        {{vm.report.vibro.axis || 'Введите значение'}}
+                   </td>
+              </tr>
+              <tr md-row>
+                    <td md-cell>Подшипниковый узел с противоположной приводу стороны</td>
+                    <td md-cell ng-required="required"
+                        ng-click="vm.enterValue($event, vm.report.vibro, 'reverse_vert')"
+                        ng-class="{'md-placeholder': !vm.report.vibro.reverse_vert}">
+                        {{vm.report.vibro.reverse_vert || 'Введите значение'}}
+                   </td>
+                    <td md-cell ng-required="required"
+                        ng-click="vm.enterValue($event, vm.report.vibro, 'reverse_horiz')"
+                        ng-class="{'md-placeholder': !vm.report.vibro.reverse_horiz}">
+                        {{vm.report.vibro.reverse_horiz || 'Введите значение'}}
+                   </td>
+                    <td md-cell ng-required="required"
+                        ng-click="vm.enterValue($event, vm.report.vibro, 'reverse_axis')"
+                        ng-class="{'md-placeholder': !vm.report.vibro.reverse_axis}">
+                        {{vm.report.vibro.reverse_axis || 'Введите значение'}}
+                   </td>
+              </tr>
+              <tr md-row>
+                    <td md-cell>Норма</td>
+                    <td md-cell colspan="3" style="text-align: center"
+                        ng-required="required"
+                        ng-click="vm.enterValue($event, vm.report.vibro, 'norm')"
+                        ng-class="{'md-placeholder': !vm.report.vibro.norm}">
+                        {{vm.report.vibro.norm || 'Введите значение'}}
+                   </td>
+              </tr>
+            </tbody>
+          </table>
+        </md-table-container>
+    </div>
 
 </ng-form>

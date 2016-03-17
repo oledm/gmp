@@ -1,76 +1,75 @@
 <ng-form name="vm.thermForm">
   <h4>Данные тепловизионного контроля</h4>
-
-    <md-input-container>
-      <label>Температурный класс</label>
-      <md-select name="tclass" placeholder="Температурный класс" required ng-model="vm.tclasses.selected">
-            <md-option ng-bind="cls.name" ng-repeat="cls in vm.tclasses.all"></md-option>
-      </md-select>
-      </md-input-container>
-
-    <div layout="row" layout-align="begin center">
-        <span>Расстояние до объекта, м &nbsp;</span>
-        <md-input-container>
-          <label>Значение</label>
-          <input ng-pattern="/^[0-9]*$/" required name="distance" ng-model="vm.report.therm.distance" />
-          <div ng-messages="vm.thermForm.distance.$error">
-            <div ng-message="pattern">Неверно указано значение</div>
-          </div>
-        </md-input-container>
-    </div>
-    
-    <div layout="row" layout-align="begin center">
-        <span>Температура окружающей среды, °С &nbsp;</span>
-        <md-input-container>
-          <label>Значение</label>
-          <input ng-pattern="/^[0-9]*$/" required name="temp_env" ng-model="vm.report.therm.temp_env" />
-          <div ng-messages="vm.thermForm.temp_env.$error">
-            <div ng-message="pattern">Неверно указано значение</div>
-          </div>
-        </md-input-container>
-    </div>
-    
-    <div layout="row" layout-align="begin center">
-        <span>Максимальная температура, °С &nbsp;</span>
-        <md-input-container>
-          <label>Значение</label>
-          <input ng-pattern="/^[0-9]*$/" required name="temp_max" ng-model="vm.report.therm.temp_max" />
-          <div ng-messages="vm.thermForm.temp_max.$error">
-            <div ng-message="pattern">Неверно указано значение</div>
-          </div>
-        </md-input-container>
-    </div>
-    
-    <div layout="row" layout-align="begin center">
-        <span>Минимальная температура, °С &nbsp;</span>
-        <md-input-container>
-          <label>Значение</label>
-          <input ng-pattern="/^[0-9]*$/" required name="temp_min" ng-model="vm.report.therm.temp_min" />
-          <div ng-messages="vm.thermForm.temp_min.$error">
-            <div ng-message="pattern">Неверно указано значение</div>
-          </div>
-        </md-input-container>
-    </div>
-    
-    <div layout="row" layout-align="begin center">
-        <span>Средняя температура, °С &nbsp;</span>
-        <md-input-container>
-          <label>Значение</label>
-          <input ng-pattern="/^[0-9]*$/" required name="temp_avg" ng-model="vm.report.therm.temp_avg" />
-          <div ng-messages="vm.thermForm.temp_avg.$error">
-            <div ng-message="pattern">Неверно указано значение</div>
-          </div>
-        </md-input-container>
-    </div>
-
-    <md-input-container>
-      <label>Соответствие норме</label>
-      <md-select name="correct" placeholder="Соответствие норме" required ng-model="vm.report.therm.correct">
-            <md-option>Соответствует</md-option>
-            <md-option>Не соответствует</md-option>
-      </md-select>
-      </md-input-container>
-    
-    <div layout="row" layout-align="begin center">
+   
+    <div layout="row">
+        <md-table-container>
+          <table md-table>
+            <thead md-head>
+              <tr md-row>
+                <th md-column><span>Параметр</span></th>
+                <th md-column><span>Значение</span></th>
+              </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row>
+                      <td md-cell>Температурный класс</td>
+                      <td md-cell>
+                        <md-select name="tclass" placeholder='Выберите значение' ng-model="vm.tclasses.selected">
+                              <md-option ng-bind="cls.name" ng-repeat="cls in vm.tclasses.all"></md-option>
+                        </md-select>
+                      </td>
+                </tr>
+                <tr md-row>
+                      <td md-cell>Расстояние до объекта, м</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.therm, 'distance')"
+                          ng-class="{'md-placeholder': !vm.report.therm.distance}">
+                          {{vm.report.therm.distance || 'Введите значение'}}
+                      </td>
+                </tr>
+                <tr md-row>
+                      <td md-cell>Температура окружающей среды, °С</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.therm, 'temp_env')"
+                          ng-class="{'md-placeholder': !vm.report.therm.temp_env}">
+                          {{vm.report.therm.temp_env || 'Введите значение'}}
+                      </td>
+                </tr>
+                <tr md-row>
+                      <td md-cell>Максимальная температура, °С</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.therm, 'temp_max')"
+                          ng-class="{'md-placeholder': !vm.report.therm.temp_max}">
+                          {{vm.report.therm.temp_max || 'Введите значение'}}
+                      </td>
+                </tr>
+                <tr md-row>
+                      <td md-cell>Минимальная температура, °С</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.therm, 'temp_min')"
+                          ng-class="{'md-placeholder': !vm.report.therm.temp_min}">
+                          {{vm.report.therm.temp_min || 'Введите значение'}}
+                      </td>
+                </tr>
+                <tr md-row>
+                      <td md-cell>Средняя температура, °С</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.therm, 'temp_avg')"
+                          ng-class="{'md-placeholder': !vm.report.therm.temp_avg}">
+                          {{vm.report.therm.temp_avg || 'Введите значение'}}
+                      </td>
+                </tr>
+                <tr md-row>
+                    <td md-cell>Соответствие норме</td>
+                    <td md-cell>
+                      <md-select name="correct" placeholder='Выберите значение' required ng-model="vm.report.therm.correct">
+                            <md-option>Соответствует</md-option>
+                            <md-option>Не соответствует</md-option>
+                      </md-select>
+                    </td>
+              </tr>
+            </tbody>
+          </table>
+        </md-table-container>
     </div>
 </ng-form>

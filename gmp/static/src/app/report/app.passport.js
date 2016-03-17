@@ -159,8 +159,12 @@
 	        targetEvent: event,
 	        validators: {
                     'md-maxlength': 30,
-                    'ng-pattern': "/^[0-9.,]*$/"
-	        }
+                    'ng-pattern': "/^[0-9.,]*$/",
+	        },
+                messages: {
+                    'md-maxlength': 'Слишком большое значение',
+                    'required': 'Обязательное значение',
+                }
 	    });
 
 	    promise.then(function (ctrl) {
