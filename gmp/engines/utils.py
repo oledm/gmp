@@ -18,6 +18,34 @@ class EngineDataGenerator(models.Model):
     class Meta:
         abstract = True
 
+    # Техническое состояние элементов
+    def control_zones(self):
+        return {
+            'control_zone_1': self.get_control_zone_1_display(),
+            'control_zone_1_cap': self.get_control_zone_1_display().capitalize(),
+            'control_zone_1_real':
+                loc(rnd(self.control_zone_1_low, self.control_zone_1_high)),
+            'control_zone_1_norm': loc(self.control_zone_1_norm),
+
+            'control_zone_2': self.get_control_zone_2_display(),
+            'control_zone_2_cap': self.get_control_zone_2_display().capitalize(),
+            'control_zone_2_real':
+                loc(rnd(self.control_zone_2_low, self.control_zone_2_high)),
+            'control_zone_2_norm': loc(self.control_zone_2_norm),
+
+            'control_zone_3': self.get_control_zone_3_display(),
+            'control_zone_3_cap': self.get_control_zone_3_display().capitalize(),
+            'control_zone_3_real':
+                loc(rnd(self.control_zone_3_low, self.control_zone_3_high)),
+            'control_zone_3_norm': loc(self.control_zone_3_norm),
+
+            'control_zone_4': self.get_control_zone_4_display(),
+            'control_zone_4_cap': self.get_control_zone_4_display().capitalize(),
+            'control_zone_4_real':
+                loc(rnd(self.control_zone_4_low, self.control_zone_4_high)),
+            'control_zone_4_norm': loc(self.control_zone_4_norm),
+        }
+
     def moments(self):
         return {
             # Отношение номинального значения начального пускового момента
@@ -60,38 +88,10 @@ class EngineDataGenerator(models.Model):
             'cap_shield_reverse':dict(zip(('L1', 'L2', 'W1', 'b', 'a', 'f', 'S'), self.values_cap_shield_reverse())) 
         }
 
-    # Техническое состояние элементов
-    def elements_condition(self):
-        return {
-            'width_real': dict(zip(('shield', 'cap', 'external', 'shield_reverse'), self.width_real())),
-            'width_norm': dict(zip(('shield', 'cap', 'external', 'shield_reverse'), self.width_norm())),
-        }
 
     '''
         Helper functions
     '''
-    def width_real(self):
-        data = (
-            rnd(self.elements_condition_width_real_shield_low,
-                self.elements_condition_width_real_shield_high),
-            rnd(self.elements_condition_width_real_cap_low,
-                self.elements_condition_width_real_cap_high),
-            rnd(self.elements_condition_width_real_external_low,
-                self.elements_condition_width_real_external_high),
-            rnd(self.elements_condition_width_real_shield_reverse_low,
-                self.elements_condition_width_real_shield_reverse_high),
-        )
-        return localize(data)
-
-    def width_norm(self):
-        data = (
-            self.elements_condition_width_norm_shield,
-            self.elements_condition_width_norm_cap,
-            self.elements_condition_width_norm_external,
-            self.elements_condition_width_norm_shield_reverse,
-        )
-        return localize(data)
-
 
     def values_top_point(self):
         data = [

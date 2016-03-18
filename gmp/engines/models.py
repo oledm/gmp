@@ -11,13 +11,12 @@ from .utils import EngineDataGenerator
 
 class Engine(EngineDataGenerator, models.Model):
     zones = (
-        'Подшипниковый щит со стороны привода',
-        'Крышка коробки выводов',
-        'Наружная оболочка корпуса статора',
-        'Подшипниковый щит с противоположной стороны привода'
+        'подшипниковый щит со стороны привода',
+        'крышка коробки выводов',
+        'наружная оболочка корпуса статора',
+        'подшипниковый щит с противоположной стороны привода'
     )
     ZONES_CHOICES = tuple(zip(range(0, len(zones)), zones))
-    print(ZONES_CHOICES)
 
     name = models.CharField('Тип', max_length=40)
     #temp = IntegerRangeField(
@@ -41,31 +40,6 @@ class Engine(EngineDataGenerator, models.Model):
         'Factory',
         verbose_name='Завод изготовитель'
     )
-    control_zone_1 = models.SmallIntegerField(
-        'Зона контроля 1',
-        choices=ZONES_CHOICES,
-        default=0
-    )
-    control_zone_2 = models.SmallIntegerField(
-        'Зона контроля 2',
-        choices=ZONES_CHOICES,
-        default=1
-    )
-    control_zone_3 = models.SmallIntegerField(
-        'Зона контроля 3',
-        choices=ZONES_CHOICES,
-        default=2
-    )
-    control_zone_4 = models.SmallIntegerField(
-        'Зона контроля 4',
-        choices=ZONES_CHOICES,
-        default=3
-    )
-
-    connection = models.ManyToManyField(
-        'Connection', 
-        verbose_name='Соединение'
-    )
 
     power = models.FloatField('Номинальная мощность, кВт')
     voltage = models.SmallIntegerField('Номинальное напряжение, В')
@@ -83,6 +57,49 @@ class Engine(EngineDataGenerator, models.Model):
     
     weight = models.SmallIntegerField('Масса двигателя, кг')
     resistance_isolation = models.SmallIntegerField('Сопротивление изоляции, Мом')
+
+    connection = models.ManyToManyField(
+        'Connection', 
+        verbose_name='Соединение'
+    )
+
+    ###########################################################################
+
+    control_zone_1 = models.SmallIntegerField(
+        'Зона контроля 1',
+        choices=ZONES_CHOICES,
+        default=0
+    )
+    control_zone_1_low = models.FloatField('Зона контроля 1 / Толщина основного металла, мм (фактическая) / Нижний предел')
+    control_zone_1_high = models.FloatField('Зона контроля 1 / Толщина основного металла, мм (фактическая) / Верхний предел')
+    control_zone_1_norm = models.FloatField('Зона контроля 1 / Допустимые толщины норма (не менее)')
+
+    control_zone_2 = models.SmallIntegerField(
+        'Зона контроля 2',
+        choices=ZONES_CHOICES,
+        default=1
+    )
+    control_zone_2_low = models.FloatField('Зона контроля 2 / Толщина основного металла, мм (фактическая) / Нижний предел')
+    control_zone_2_high = models.FloatField('Зона контроля 2 / Толщина основного металла, мм (фактическая) / Верхний предел')
+    control_zone_2_norm = models.FloatField('Зона контроля 2 / Допустимые толщины норма (не менее)')
+
+    control_zone_3 = models.SmallIntegerField(
+        'Зона контроля 3',
+        choices=ZONES_CHOICES,
+        default=2
+    )
+    control_zone_3_low = models.FloatField('Зона контроля 3 / Толщина основного металла, мм (фактическая) / Нижний предел')
+    control_zone_3_high = models.FloatField('Зона контроля 3 / Толщина основного металла, мм (фактическая) / Верхний предел')
+    control_zone_3_norm = models.FloatField('Зона контроля 3 / Допустимые толщины норма (не менее)')
+
+    control_zone_4 = models.SmallIntegerField(
+        'Зона контроля 4',
+        choices=ZONES_CHOICES,
+        default=3
+    )
+    control_zone_4_low = models.FloatField('Зона контроля 4 / Толщина основного металла, мм (фактическая) / Нижний предел')
+    control_zone_4_high = models.FloatField('Зона контроля 4 / Толщина основного металла, мм (фактическая) / Верхний предел')
+    control_zone_4_norm = models.FloatField('Зона контроля 4 / Допустимые толщины норма (не менее)')
 
     ###########################################################################
     moveable_Ex_connections_top_point_L1_low = models.FloatField('Подвижное взрывонепроницаемое соединение / Узел взрывозащиты верхнего подшипникового узла / L1 (нижний предел)', blank=True, null=True)
@@ -158,22 +175,6 @@ class Engine(EngineDataGenerator, models.Model):
     unmoveable_Ex_connections_cap_shield_reverse_f = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / f', default=1.5, blank=True, null=True)
     unmoveable_Ex_connections_cap_shield_reverse_S = models.FloatField('Неподвижное взрывонепроницаемое соединение / Крышка узла взрывозащиты - подшипниковый щит с противоположной приводу стороны / S', default=6.3, blank=True, null=True)
 
-    ###########################################################################
-    elements_condition_width_real_shield_low = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Подшипниковый щит со стороны привода (нижний предел)')
-    elements_condition_width_real_shield_high = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Подшипниковый щит со стороны привода (верхний предел)')
-    elements_condition_width_real_cap_low = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Крышка коробки выводов (нижний предел)')
-    elements_condition_width_real_cap_high = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Крышка коробки выводов (верхний предел)')
-    elements_condition_width_real_external_low = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Наружная оболочка корпуса статора (нижний предел)')
-    elements_condition_width_real_external_high = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Наружная оболочка корпуса статора (верхний предел)')
-    elements_condition_width_real_shield_reverse_low = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Подшипниковый щит с противоположной приводу стороны (нижний предел)')
-    elements_condition_width_real_shield_reverse_high = models.FloatField('Техническое состояние элементов / Толщина основного металла, мм (фактическая) / Подшипниковый щит с противоположной приводу стороны (верхний предел)')
-
-
-    ###########################################################################
-    elements_condition_width_norm_shield = models.FloatField('Техническое состояние элементов / Допустимые толщины норма (не менее) / Подшипниковый щит со стороны привода')
-    elements_condition_width_norm_cap = models.FloatField('Техническое состояние элементов / Допустимые толщины норма (не менее) / Крышка коробки выводов')
-    elements_condition_width_norm_external = models.FloatField('Техническое состояние элементов / Допустимые толщины норма (не менее) / Наружная оболочка корпуса статора')
-    elements_condition_width_norm_shield_reverse = models.FloatField('Техническое состояние элементов / Допустимые толщины норма (не менее) / Подшипниковый щит с противоположной приводу стороны')
 
 
     def __str__(self):
@@ -182,15 +183,12 @@ class Engine(EngineDataGenerator, models.Model):
     @property
     def random_data(self):
         return {
-            'elements_condition': self.elements_condition(),
+            #'elements_condition': self.elements_condition(),
             'moments': self.moments(),
             'moveable_Ex_connections': self.moveable_Ex_connections(),
             'resistance_wire': self.resistance_wire(),
             'unmoveable_Ex_connections': self.unmoveable_Ex_connections(),
         }
-    #class Meta:
-
-    #    unique_together = ('control_zone_1', 'control_zone_2', 'control_zone_3', 'control_zone_4',)
 
 class Connection(models.Model):
     CONNECTION_TYPES = (

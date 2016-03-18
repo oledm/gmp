@@ -521,7 +521,7 @@ class Report():
         ]
         rows = len(data)
         table_data = values(data, therm_data)
-        table = self.table(table_data, [['Regular', 'Regular Center']] * rows, [8, 2])
+        table = self.table(table_data, [['Regular', 'Regular Center']] * rows, [8, 2], styleTable=True)
         self.Story.append(table)
 
     def page13(self):
@@ -742,7 +742,7 @@ class Report():
             *[['Regular', 'Regular Center']] * rows
         ]
         table_data = values(template, {})
-        table = self.table(table_data, styles, [8, 2])
+        table = self.table(table_data, styles, [8, 2], styleTable=True)
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 10),
             ('TOPPADDING', (0,0), (-1,-1), 5),
@@ -756,63 +756,72 @@ class Report():
 
         engine = Engine.objects.get(name=self.data['engine']['type'])
         self.put_image(engine.meters, size=12.5)
-        self.Story.append(Spacer(1, 1 * cm))
+        #self.Story.append(Spacer(1, 1 * cm))
 
-        #template = [
-        #    [''],
-        #]
-        #cols = len(template[0])
-        #rows = len(template)
-        #styles = [
-        #    *[['Regular', 'Regular Center']] * rows
-        #]
-        #print(styles)
-        #table_data = values(template, {})
-        #table = self.table(table_data, styles, [8, 2])
-        #table.setStyle(TableStyle([
-        #    ('BOTTOMPADDING', (0,0), (-1,-1), 10),
-        #    ('TOPPADDING', (0,0), (-1,-1), 5),
-        #]))
-        #self.Story.append(table)
-        #
-        #template = [
-        #    ['№ п/п', 'Подвижное взрывонепроницаемое соединение', 'L1, мм', 'D, мм', 'd, мм', 'W1, мм', 'S, Ra'],
-        #    ['1', 'Узел взрывозащиты подшипникового узла со стороны привода', '{top_point[L1]}', '{top_point[D]}', '{top_point[d]}', '{top_point[W1]}', '{top_point[S]}'],
-        #    ['2', 'Узел взрывозащиты подшипникового узла с противоположной приводу стороны', '{bottom_point[L1]}', '{bottom_point[D]}', '{bottom_point[d]}', '{bottom_point[W1]}', '{bottom_point[S]}'],
-        #]
-        #cols = len(template[0])
-        #rows = len(template)
-        #styles = [
-        #    ['Regular Bold Center'] * cols,
-        #    *[['Regular Center'] * cols] * (rows - 1)
-        #]
-        #table_data = values(template, data)
-        #table = self.table(table_data, styles, [1, 4, 1, 1, 1, 1, 1])
-        #table.setStyle(TableStyle([
-        #    ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-        #    ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-        #    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        #    ('TOPPADDING', (0,0), (-1,-1), 0)
-        #]))
-        #self.Story.append(table)
-        #self.Story.append(Spacer(1, 0.5 * cm))
+        zones_data = engine.control_zones()
+        template = [
+            ['1 &ndash; {control_zone_1}'],
+            ['2 &ndash; {control_zone_2}'],
+            ['3 &ndash; {control_zone_3}'],
+            ['4 &ndash; {control_zone_4}'],
+        ]
+        rows = len(template)
+        styles = [
+            *[['Regular']] * rows
+        ]
+        table_data = values(template, zones_data)
+        table = self.table(table_data, styles, [8, 2])
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1,-1), 0)
+        ]))
+        table.hAlign = 'RIGHT'
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 0.5 * cm))
 
-        #data = engine.random_data.get('unmoveable_Ex_connections')
+        self.put('Техническое состояние элементов', 'Regular Bold Center', 0.4)
+        template = [
+            ['Зона контроля', 'Толщина основного металла, мм', '', '', 'Дефекты', ''],
+            ['', 'фактическая', 'норма (не менее)', 'соотв. норме', 'основного металла', 'сварных соединений'],
+            ['{control_zone_1_cap}', '{control_zone_1_real}', '{control_zone_1_norm}'] + ['соответствует'] * 3,
+            ['{control_zone_2_cap}', '{control_zone_2_real}', '{control_zone_2_norm}'] + ['соответствует'] * 3,
+            ['{control_zone_3_cap}', '{control_zone_3_real}', '{control_zone_3_norm}'] + ['соответствует'] * 3,
+            ['{control_zone_4_cap}', '{control_zone_4_real}', '{control_zone_4_norm}'] + ['соответствует'] * 3,
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            *[['Regular Bold Center'] * cols] * 2,
+            *[['Regular'] + ['Regular Center'] * (cols - 1)] * (rows - 2),
+        ]
+        table_data = values(template, zones_data)
+        print(table_data)
+        table = self.table(table_data, styles, [3, 1, 1, 1, 2, 2], styleTable=True)
+        table.setStyle(TableStyle([
+            ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('SPAN', (0,0), (0, 1)),
+            ('SPAN', (1,0), (3, 0)),
+            ('SPAN', (4,0), (5, 0)),
+        ]))
+        self.Story.append(table)
+
     '''
         Helper functions
     '''
 
-    def table(self, data, styles, colWidths=(10, )):
+    def table(self, data, styles, colWidths=(10, ), styleTable=False):
         table = Table(
             self.tabelize(data, styles),
             colWidths=self.columnize(*colWidths)
         )
         table.hAlign = 'LEFT'
-        table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ]))
+        if styleTable:
+            table.setStyle(TableStyle([
+                ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+                ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ]))
         return table
 
     def tabelize(self, lst, styles=None):
