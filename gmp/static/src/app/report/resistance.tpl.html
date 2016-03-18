@@ -1,0 +1,50 @@
+<ng-form name="vm.resistanceForm">
+  <h4>Данные измерений сопротивления изоляции обмотки статора</h4>
+    <div layout="row">
+        <md-table-container>
+          <table md-table>
+            <thead md-head>
+              <tr md-row>
+                <th md-column><span>Параметр</span></th>
+                <th md-column><span>Значение</span></th>
+              </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row>
+                      <td md-cell>Сопротивление изоляции, МОм</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.resistance, 'isolation')"
+                          ng-class="{'md-placeholder': !vm.report.resistance.isolation}">
+                          {{vm.report.resistance.isolation || 'Введите значение'}}
+                      </td>
+                </tr>
+                <tr md-row>
+                      <td md-cell>Сопротивление обмотки, мОм (фаза A-B)</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.resistance, 'wireAB')"
+                          ng-class="{'md-placeholder': !vm.report.resistance.wireAB}">
+                          {{vm.report.resistance.wireAB || 'Введите значение'}}
+                      </td>
+                </tr>
+                <tr md-row>
+                      <td md-cell>Сопротивление обмотки, мОм (фаза B-C)</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.resistance, 'wireBC')"
+                          ng-class="{'md-placeholder': !vm.report.resistance.wireBC}">
+                          {{vm.report.resistance.wireBC || 'Введите значение'}}
+                      </td>
+                </tr>
+                <tr md-row>
+                      <td md-cell>Сопротивление обмотки, мОм (фаза C-A)</td>
+                      <td md-cell
+                          ng-click="vm.enterValue($event, vm.report.resistance, 'wireCA')"
+                          ng-class="{'md-placeholder': !vm.report.resistance.wireCA}">
+                          {{vm.report.resistance.wireCA || 'Введите значение'}}
+                      </td>
+                </tr>
+            </tbody>
+          </table>
+        </md-table-container>
+    </div>
+
+</ng-form>

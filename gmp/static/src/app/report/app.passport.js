@@ -59,7 +59,8 @@
             docs: docs,
             files: {},
             therm: {},
-            vibro: {}
+            vibro: {},
+            resistance: {}
         };
 
         activate();
@@ -101,6 +102,7 @@
             })[0].id;
             console.dir('selected class: ' + JSON.stringify(vm.report.therm));
             vm.report.investigationDate = vm.investigationDate.toLocaleString();
+            vm.report.engine.new_date = vm.report.engine.new_date.toLocaleString();
             vm.report.workBegin = vm.workBegin.toLocaleString();
             vm.report.workEnd = vm.workEnd.toLocaleString();
 

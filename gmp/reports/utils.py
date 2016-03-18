@@ -4,7 +4,6 @@ import locale
 from django.conf import settings
 
 from PIL import Image as PILImage
-#from babel.numbers import format_decimal
 import environ
 
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT
@@ -28,14 +27,23 @@ from gmp.filestorage.models import UploadedFile
 locale.setlocale(locale.LC_ALL, "")
 loc = partial(locale.format, "%.2f")
 
-class Normatives():
+class StaticText():
     @staticmethod
-    def get():
-        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'normatives.txt'))
+    def get_list(fname):
+        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', fname))
         res = []
         with open(file_) as f:
             for n, line in enumerate(f, start=1):
                 res.append([str(n), line])
+        return res
+
+    @staticmethod
+    def plain(fname):
+        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', fname))
+        res = []
+        with open(file_) as f:
+            for line in f:
+                res.append([line])
         return res
 
 #class MyDocTemplate(BaseDocTemplate):
@@ -66,6 +74,9 @@ class Report():
         self.investigation_date = self.data.get('investigationDate').split(',')[0]
         self.date_begin = self.data.get('workBegin').split(',')[0]
         self.date_end = self.data.get('workEnd').split(',')[0]
+        self.data['engine'].update(
+            {'new_date': self.data['engine']['new_date'].split(',')[0]}
+        )
         self.Story = []
 
         self.obj_data = self.data['obj_data']
@@ -101,6 +112,19 @@ class Report():
         self.page15()
         self.page16()
         self.page17()
+        self.page18()
+        self.page19()
+        self.page20()
+        self.page21()
+        self.appendix('1 Сведения об эксплуатации электродвигателя',
+            ['Дата', 'Число пусков', 'Суммарная наработка, час'],
+            [2, 3, 5])
+        self.appendix('2 Сведения об испытаниях электродвигателя',
+            ['Дата', 'Вид', 'Содержание', 'Заключение'],
+            [1, 2, 3, 4])
+        self.appendix('3 Сведения о ремонтах электродвигателя',
+            ['Дата', 'Вид', 'Содержание', 'Заключение'],
+            [1, 2, 3, 4])
             
         doc.build(self.Story)
 
@@ -332,7 +356,7 @@ class Report():
 
         self.put('Нормативное и методическое обеспечение работ', 'Regular Bold Center', 0.5)
         table = Table(
-            self.preetify(Normatives().get(), 'Regular', 'Regular'),
+            self.preetify(StaticText().get_list('normatives.txt'), 'Paragraph', 'Paragraph Justified'),
             colWidths=self.columnize(1,9)
         )
         table.hAlign = 'LEFT'
@@ -462,7 +486,7 @@ class Report():
         self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
 
         image = UploadedFile.objects.get(pk=self.data['files']['main'])
-        self.put_photo(image, size=18)
+        self.put_photo(image, size=14)
         self.Story.append(Spacer(1, 1 * cm))
 
     def page11(self):
@@ -477,15 +501,15 @@ class Report():
         self.formular('6-1 Электрическая схема подключения электродвигателя')
         self.put_image(engine.connection.all()[0].scheme)
 
-    def page10(self):
-        self.Story.append(PageBreak())
+    #def page10(self):
+    #    self.Story.append(PageBreak())
 
-        self.formular('5 Общий вид электродвигателя')
-        self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
+    #    self.formular('5 Общий вид электродвигателя')
+    #    self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
 
-        image = UploadedFile.objects.get(pk=self.data['files']['main'])
-        self.put_photo(image, size=18)
-        self.Story.append(Spacer(1, 1 * cm))
+    #    image = UploadedFile.objects.get(pk=self.data['files']['main'])
+    #    self.put_photo(image, size=18)
+    #    self.Story.append(Spacer(1, 1 * cm))
 
     def page12(self):
         self.Story.append(PageBreak())
@@ -580,7 +604,7 @@ class Report():
 Вибродиагностический контроль электродвигателя проводился в соответствии с требованиями ГОСТ Р ИСО 10816-3-99 "Вибрация. Контроль состояния машин по результатам измерения вибрации на невращающихся частях. Часть 3. Промышленные машины номинальной мощностью более 15 кВт и номинальной скоростью от 120 до 15000 мин -1".
         '''
         self.Story.append(Spacer(1, 0.5 * cm))
-        self.put(text, 'Paragraph')
+        self.put(text, 'Paragraph Justified Indent')
 
     def page14(self):
         self.Story.append(PageBreak())
@@ -597,7 +621,6 @@ class Report():
         self.Story.append(Spacer(1, 0.5 * cm))
 
         engine = Engine.objects.get(name=self.data['engine']['type'])
-        print('coef:', engine.coef_power)
         data = engine.random_data.get('moveable_Ex_connections')
         template = [
             ['№ п/п', 'Подвижное взрывонепроницаемое соединение', 'L1, мм', 'D, мм', 'd, мм', 'W1, мм', 'S, Ra'],
@@ -795,7 +818,6 @@ class Report():
             *[['Regular'] + ['Regular Center'] * (cols - 1)] * (rows - 2),
         ]
         table_data = values(template, zones_data)
-        print(table_data)
         table = self.table(table_data, styles, [3, 1, 1, 1, 2, 2], styleTable=True)
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 5),
@@ -806,6 +828,142 @@ class Report():
         ]))
         self.Story.append(table)
 
+    def page18(self):
+        self.Story.append(PageBreak())
+        self.formular('11 Измерение сопротивления обмотки статора постоянному току')
+        self.put('Схема подключения прибора', 'Regular Center', 0.2)
+        img = fetch_static_image('meter_scheme.gif', 5.3)
+        img.hAlign = 'CENTER'
+        self.Story.append(img)
+        self.Story.append(Spacer(1, 0.5 * cm))
+        template = [
+            ['Фаза', 'А-В', 'B-C', 'C-A'],
+            ['Сопротивление обмотки, Ом', '{wireAB}', '{wireBC}', '{wireCA}'],
+            ['Соответствие норме', 'соответствует', '', ''],
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            ['Regular Bold Center'] * cols,
+            *[['Regular'] + ['Regular Center'] * (cols - 1)] * (rows - 1),
+        ]
+        table_data = values(template, self.data['resistance'])
+        table = self.table(table_data, styles, [4, 2, 2, 2], styleTable=True)
+        table.setStyle(TableStyle([
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+            ('TOPPADDING', (0,0), (-1,-1), 5),
+            ('SPAN', (1,2), (3, 2)),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 0.5 * cm))
+
+        self.put('Измерение проведено в соответствии с требованиями п. 1.8.15. «Правила устройства электроустановок» 7-е издание.', 'Paragraph', 0.2)
+        self.Story.append(Spacer(1, 1 * cm))
+
+        self.formular('12 Измерение сопротивления изоляции обмотки статора')
+        self.put('Упрощенная схема подключения мегаомметра', 'Regular Center', 0.2)
+        img = fetch_static_image('megaommetr_scheme.jpg', 5.3)
+        img.hAlign = 'CENTER'
+        self.Story.append(img)
+        self.Story.append(Spacer(1, 0.5 * cm))
+        template = [
+            ['Фаза', 'А-0', 'B-0', 'C-0', 'А-В', 'B-C', 'C-A'],
+            ['Сопротивление изоляции, Мом', '{isolation}', '{isolation}', '{isolation}', '&ndash;', '&ndash;', '&ndash;'],
+            ['Соответствие норме', 'соответствует', '', '', '', '', ''],
+        ]
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            ['Regular Bold Center'] * cols,
+            *[['Regular'] + ['Regular Center'] * (cols - 1)] * (rows - 1),
+        ]
+        table_data = values(template, self.data['resistance'])
+        table = self.table(table_data, styles, [4, 1, 1, 1, 1, 1, 1], styleTable=True)
+        table.setStyle(TableStyle([
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+            ('TOPPADDING', (0,0), (-1,-1), 5),
+            ('SPAN', (1,2), (6, 2)),
+        ]))
+        self.Story.append(table)
+        self.Story.append(Spacer(1, 0.5 * cm))
+
+        self.put('Измерение проведено согласно табл. 5.1-5.3 РД 34.45-51.300-97 «Объем и нормы испытаний электрооборудования».', 'Paragraph')
+
+    def page19(self):
+        self.Story.append(PageBreak())
+        self.formular('13 Рекомендации по ремонту и эксплуатации')
+
+        self.put('В соответствии с требованиями нормативной документации и с результатами диагностики и исследований необходимо:', 'Paragraph', 0.2)
+
+        text = StaticText().get_list('recommendations.txt')
+        data = values(text, self.data['engine'])
+        table = Table(
+            self.preetify(data, 'Paragraph', 'Paragraph Justified'),
+            colWidths=self.columnize(1,9)
+        )
+        table.hAlign = 'LEFT'
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ]))
+        self.Story.append(table)
+
+    def page20(self):
+        self.Story.append(PageBreak())
+        self.formular('14 Заключение')
+
+        template = StaticText().plain('decision.txt')
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            *[['Paragraph Justified Indent'] * cols] * rows
+        ]
+        table_data = values(template, self.data['engine'])
+        table = self.table(table_data, styles, [10])
+        table.setStyle(TableStyle([
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+        ]))
+        self.Story.append(table)
+
+    def page21(self):
+        self.Story.append(PageBreak())
+        self.formular('15 Выполненные мероприятия в процессе проведения работ')
+
+        self.put('В процессе технического диагностирования были проведены следующие мероприятия:', 'Paragraph', 0.2)
+        text = StaticText().get_list('completed_tasks.txt')
+        data = values(text, self.data['engine'])
+        table = Table(
+            self.preetify(data, 'Paragraph', 'Paragraph Justified'),
+            colWidths=self.columnize(1,9)
+        )
+        table.hAlign = 'LEFT'
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ]))
+        self.Story.append(table)
+
+    def appendix(self, title, columns, widths):
+        self.Story.append(PageBreak())
+        self.formular(title, header='Приложение')
+        template = [
+            columns,
+            *[list(map(lambda _: '&nbsp;', columns))] * 39
+        ]
+        rows = len(template)
+        cols = len(template[0])
+        styles = [
+            *[['Regular Bold Center'] * cols] * rows
+        ]
+        table_data = values(template, {})
+        table = self.table(table_data, styles, widths)
+        table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+        ]))
+        #table.hAlign = 'RIGHT'
+        self.Story.append(table)
     '''
         Helper functions
     '''
@@ -842,8 +1000,8 @@ class Report():
             )
         )
 
-    def formular(self, text):
-        table = self.table([['ФОРМУЛЯР № ' + text]], [['Page Header']])
+    def formular(self, text, header='ФОРМУЛЯР'):
+        table = self.table([[header + ' № ' + text]], [['Page Header']])
         table.setStyle(TableStyle([
             ('INNERGRID', (0,0), (-1,-1), 1, colors.black),
             ('BOX', (0,0), (-1,-1), 2, colors.black),
@@ -885,7 +1043,10 @@ class Report():
 
     def fetch_image(self, image, size):
         MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
-        return Image(str(MEDIA_ROOT.path(str(image.name))), width=size * cm, height=size * cm)
+        file_ = str(MEDIA_ROOT.path(str(image.name)))
+        image = PILImage.open(file_)
+        ratio = float(image.width/image.height)
+        return Image(file_, width=size * cm * ratio, height=size * cm)
 
     '''
         Other setup utils
@@ -1019,3 +1180,16 @@ class Report():
             leading=18,
             firstLineIndent=0.7 * cm,
             alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Paragraph Justified',
+            fontName='Times',
+            fontSize=13,
+            leading=18,
+            alignment=TA_JUSTIFY))
+        self.styles.add(ParagraphStyle(
+            name='Paragraph Justified Indent',
+            fontName='Times',
+            fontSize=13,
+            leading=18,
+            firstLineIndent=0.7 * cm,
+            alignment=TA_JUSTIFY))
