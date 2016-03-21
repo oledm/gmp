@@ -69,7 +69,7 @@ def header(canvas, doc, content):
 
 class Report():
     def __init__(self, data):
-        self.full_width = 19.2
+        #self.full_width = 19.2
         self.data = data
         self.investigation_date = self.data.get('investigationDate').split(',')[0]
         self.date_begin = self.data.get('workBegin').split(',')[0]
@@ -93,6 +93,7 @@ class Report():
         self.setup_fonts()
         self.setup_styles()
         self.setup_page_templates(doc)
+        self.full_width = doc.width
 
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
@@ -280,74 +281,59 @@ class Report():
 
     def page4(self):
         self.Story.append(PageBreak())
-
-        table_data = [
+        template = [
             ['Список сертифицированных членов бригады'],
             [
-                '№\nп/п', 'Фамилия И.О.', '№ квалифика-\nционного\nудостоверения',
-                'Дата\nвыдачи', 'Срок\nдейст-\nвия', 'Виды\nконтроля', 'Уровень', 'Группа\nЭБ'
+                '№ п/п', 'Фамилия И.О.', '№ квалифика-<br/>ционного удостоверения',
+                'Дата выдачи', 'Срок дейст-<br/>вия', 'Виды конт-<br/>роля', 'Уро-<br/>вень', 'Группа ЭБ'
             ]
         ]
 
         for num, person in enumerate(self.data.get('team'), start=1):
             emp = Employee.objects.get_by_full_name(person['name'])
             cert = Certificate.objects.get(employee=emp)
-            row_data = [num, emp.fio()]
-            row_data.extend(cert.details())
-            table_data.append(row_data)
-
-        table = Table(table_data, colWidths=[1.7 * cm, 3.8 * cm, 3.8 * cm,
-            1.85 * cm, 1.85 * cm, 1.85 * cm, 1.85 * cm, 1.85 * cm])
-        table.hAlign = 'LEFT'
+            data = [num, emp.fio(), *cert.details()]
+            template.append(list(map(lambda x: str(x), data)))
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            ['Regular Bold Center'] * cols,
+            *[['Regular Center'] * cols] * (rows - 1),
+        ]
+        table_data = values(template, {})
+        table = self.table(table_data, styles, [1, 2, 2, 1, 1, 1, 1, 1], styleTable=True)
         table.setStyle(TableStyle([
-            ('FONTNAME', (0,0), (-1,-1), 'Times'),
-            ('FONTSIZE', (0,0), (-1,-1), 12),
-            ('TOPPADDING', (0,0), (-1,-1), 6),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-            ('LEADING', (0,0), (-1,-1), 16),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-
-            ('SPAN', (0,0), (-1,0)),
-            ('FONTNAME', (0,0), (-1,0), 'Times Bold'),
-            ('TOPPADDING', (0,0), (-1,0), 8),
-            ('BOTTOMPADDING', (0,0), (-1,0), 8),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+            ('TOPPADDING', (0,0), (-1,-1), 5),
+            ('SPAN', (0,0), (-1, 0)),
         ]))
         self.Story.append(table)
-        self.Story.append(Spacer(1, 0.5 * cm))
+        self.Story.append(Spacer(1, 1 * cm))
 
-        table_data = [
+
+        template = [
             ['Перечень приборов'],
             [
-                '№\nп/п', 'Тип прибора', 'Заводской номер\nприбора',
-                'Свидетельство о\nповерке', 'Дата следующей\nповерки' 
+                '№<br/>п/п', 'Тип прибора', 'Заводской номер<br/>прибора',
+                'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
             ]
         ]
-
         for num, measurer in enumerate(self.data.get('measurers'), start=1):
             meas = Measurer.objects.get(id=measurer['id'])
-            row_data = [num, *map(lambda p: Paragraph(p, self.styles['Normal Center']), meas.details())]
-            table_data.append(row_data)
-
-        table = Table(table_data, colWidths=[1.7 * cm, 5.7 * cm, 3.75 * cm, 3.85 * cm, 3.65 * cm])
-        table.hAlign = 'LEFT'
+            data = [num, *meas.details()]
+            template.append(list(map(lambda x: str(x), data)))
+        cols = len(template[0])
+        rows = len(template)
+        styles = [
+            ['Regular Bold Center'] * cols,
+            *[['Regular Center'] * cols] * (rows - 1),
+        ]
+        table_data = values(template, {})
+        table = self.table(table_data, styles, [1, 3, 2, 2, 2], styleTable=True)
         table.setStyle(TableStyle([
-            ('FONTNAME', (0,0), (-1,-1), 'Times'),
-            ('FONTSIZE', (0,0), (-1,-1), 12),
-            ('TOPPADDING', (0,0), (-1,-1), 6),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-            ('LEADING', (0,0), (-1,-1), 16),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-
-            ('SPAN', (0,0), (-1,0)),
-            ('FONTNAME', (0,0), (-1,0), 'Times Bold'),
-            ('TOPPADDING', (0,0), (-1,0), 8),
-            ('BOTTOMPADDING', (0,0), (-1,0), 8),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+            ('TOPPADDING', (0,0), (-1,-1), 5),
+            ('SPAN', (0,0), (-1, 0)),
         ]))
         self.Story.append(table)
 
@@ -857,7 +843,7 @@ class Report():
         self.Story.append(table)
         self.Story.append(Spacer(1, 0.5 * cm))
 
-        self.put('Измерение проведено в соответствии с требованиями п. 1.8.15. «Правила устройства электроустановок» 7-е издание.', 'Paragraph', 0.2)
+        self.put('Измерение проведено в соответствии с требованиями п. 1.8.15. «Правила устройства электроустановок» 7-е издание.', 'Paragraph Justified', 0.2)
         self.Story.append(Spacer(1, 1 * cm))
 
         self.formular('12 Измерение сопротивления изоляции обмотки статора')
@@ -887,13 +873,13 @@ class Report():
         self.Story.append(table)
         self.Story.append(Spacer(1, 0.5 * cm))
 
-        self.put('Измерение проведено согласно табл. 5.1-5.3 РД 34.45-51.300-97 «Объем и нормы испытаний электрооборудования».', 'Paragraph')
+        self.put('Измерение проведено согласно табл. 5.1-5.3 РД 34.45-51.300-97 «Объем и нормы испытаний электрооборудования».', 'Paragraph Justified')
 
     def page19(self):
         self.Story.append(PageBreak())
         self.formular('13 Рекомендации по ремонту и эксплуатации')
 
-        self.put('В соответствии с требованиями нормативной документации и с результатами диагностики и исследований необходимо:', 'Paragraph', 0.2)
+        self.put('В соответствии с требованиями нормативной документации и с результатами диагностики и исследований необходимо:', 'Paragraph Justified', 0.2)
 
         text = StaticText().get_list('recommendations.txt')
         data = values(text, self.data['engine'])
@@ -1014,7 +1000,7 @@ class Report():
         self.Story.append(Spacer(1, 0.5 * cm))
 
     def columnize(self, *widths):
-        return [self.full_width * width * 0.1 * cm for width in widths]
+        return [self.full_width * width * 0.1 for width in widths]
 
     def mput(self, content_list, style_name, spacer=None):
         list(map(lambda x: self.put(x, style_name), content_list))
@@ -1068,6 +1054,7 @@ class Report():
         pdfmetrics.registerFont(MyFontObject)
      
     def setup_page_templates(self, doc):
+        print('doc.width', doc.width)
         frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='no_header')
         template_title = PageTemplate(id='Title', frames=frame_full)
 
@@ -1094,56 +1081,53 @@ class Report():
         self.styles.add(ParagraphStyle(
             name='Heading 1',
             fontName='Times',
-            #borderWidth=0.3,
-            #borderColor=colors.black,
             fontSize=13,
             leading=18,
             leftIndent=1*cm,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
+            name='MainTitle',
+            fontName='Times Bold',
+            fontSize=16,
+            leading=20,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
             name='Signature',
             fontName='Times',
-            #borderWidth=0.3,
-            #borderColor=colors.black,
             fontSize=13,
             leading=30,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
+            name='Signature Left',
+            fontName='Times',
+            leading=30,
+            fontSize=13,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
             name='Signature Handwrite',
             fontName='Times',
-            #borderWidth=0.3,
-            #borderColor=colors.black,
             fontSize=13,
             leftIndent=1*cm,
             leading=30,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
-            name='MainTitle',
-            fontName='Times Bold',
-            #borderWidth=0.3,
-            #borderColor=colors.black,
-            fontSize=16,
-            leading=20,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
             name='Page Header',
             fontName='Times Bold',
-            #borderWidth=0.3,
-            #borderColor=colors.black,
             fontSize=13,
             leading=16,
-            alignment=TA_LEFT))
-        self.styles.add(ParagraphStyle(
-            name='Normal Center',
-            fontName='Times',
-            fontSize=13,
-            alignment=TA_CENTER))
+            alignment=TA_JUSTIFY))
         self.styles.add(ParagraphStyle(
             name='Regular',
             fontName='Times',
             fontSize=13,
             leading=13,
             alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Regular Center',
+            fontName='Times',
+            fontSize=13,
+            leading=16,
+            alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Regular Justified',
             fontName='Times',
@@ -1155,18 +1139,6 @@ class Report():
             fontName='Times Bold',
             fontSize=13,
             alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Regular Center',
-            fontName='Times',
-            fontSize=13,
-            leading=16,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Signature Left',
-            fontName='Times',
-            leading=30,
-            fontSize=13,
-            alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Table Content',
             fontName='Times',
