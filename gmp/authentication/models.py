@@ -27,30 +27,34 @@ class EmployeeManager(BaseUserManager):
         return employee
 
     def get_by_full_name(self, full_name):
-        last_name, first_name = full_name.split()
+        last_name, first_name, middle_name = full_name.split()
         return super(EmployeeManager, self).get(
             first_name=first_name,
-            last_name=last_name
+            last_name=last_name,
+            middle_name=middle_name
         )
 
 class Employee(AbstractBaseUser):
 
-    email = models.EmailField(blank=True, unique=True)
-    username = models.CharField(max_length=40, unique=True)
+    email = models.EmailField('Электронная почта', blank=True, unique=True)
+    username = models.CharField('Имя пользователя', max_length=40, unique=True)
 
-    first_name = models.CharField(max_length=40, blank=True)
-    last_name = models.CharField(max_length=40, blank=True)
+    last_name = models.CharField('Фамилия', max_length=40, blank=True)
+    first_name = models.CharField('Имя', max_length=40, blank=True)
+    middle_name = models.CharField('Отчество', max_length=40, blank=True)
 
     department = models.ForeignKey(
         'departments.Department', 
-        on_delete=models.CASCADE)
-    phone = models.CharField(max_length=11, blank=True)
-    birth_date = models.DateField(null=True)
+        on_delete=models.CASCADE,
+        verbose_name='Отдел'
+    )
+    phone = models.CharField('Номер телефона', max_length=11, blank=True)
+    birth_date = models.DateField('День рождения', null=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField('Дата создания учетной записи', auto_now_add=True)
+    modified_at = models.DateTimeField('Дата изменения учетной записи', auto_now=True)
 
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField('Является администратором', default=False)
 
     objects = EmployeeManager()
 
@@ -61,10 +65,10 @@ class Employee(AbstractBaseUser):
         return self.email
 
     def get_full_name(self):
-        return ' '.join([self.last_name, self.first_name])
+        return ' '.join([self.last_name, self.first_name, self.middle_name])
 
     def fio(self):
-        return '{} {}.'.format(self.last_name, self.first_name[0])
+        return '{} {}.{}.'.format(self.last_name, self.first_name[0], self.middle_name[0])
 
     def get_short_name(self):
         return self.first_name

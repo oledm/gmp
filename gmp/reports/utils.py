@@ -77,6 +77,9 @@ class Report():
         self.data['engine'].update(
             {'new_date': self.data['engine']['new_date'].split(',')[0]}
         )
+        # Filter empty team members appeared after accident click on 'Add'
+        # team's member button
+        self.data['team'] = list(filter(lambda x: x['name'], self.data.get('team')))
         self.Story = []
 
         self.obj_data = self.data['obj_data']
@@ -223,11 +226,11 @@ class Report():
         self.formular('1 Регистрация работ')
 
         ptext = '<b>Фамилия И.О.</b><br/>' + '<br/>'.join(
-                [x.get('name') for x in self.data.get('team')]
+                [Employee.objects.get_by_full_name(x['name']).fio() for x in self.data.get('team')]
         )
         left = Paragraph(ptext, self.styles['Table Content']) 
         ptext = '<b>Должность</b><br/>' + '<br/>'.join(
-                [x.get('rank') for x in self.data.get('team')]
+                [x.get('rank', '') for x in self.data.get('team')]
         )
         right = Paragraph(ptext, self.styles['Table Content']) 
         team_table = Table([[left, right]])
@@ -243,7 +246,7 @@ class Report():
         ])
         team_table.setStyle(style)
 
-        text = '\n'.join(['____________________' + x.get('name') for x in self.data.get('team')])
+        text = '\n'.join(['____________________' + Employee.objects.get_by_full_name(x['name']).fio() for x in self.data.get('team')])
         table2 = Table([[Paragraph(text, self.styles['Signature Left'])]])
         table2.hAlign = 'LEFT'
         table2.setStyle(style)
@@ -502,11 +505,15 @@ class Report():
 
         self.formular('7 Тепловизионный контроль. Определение соответствия электродвигателя температурному классу')
 
-        image = self.fetch_image(
+        image1 = self.fetch_image(
             UploadedFile.objects.get(pk=self.data['files']['therm1']),
             size=9
         )
-        table_data = [[image, image]]
+        image2 = self.fetch_image(
+            UploadedFile.objects.get(pk=self.data['files']['therm2']),
+            size=9
+        )
+        table_data = [[image1, image2]]
         table = Table(table_data,colWidths=self.columnize(5, 5))
         table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
@@ -1054,7 +1061,6 @@ class Report():
         pdfmetrics.registerFont(MyFontObject)
      
     def setup_page_templates(self, doc):
-        print('doc.width', doc.width)
         frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='no_header')
         template_title = PageTemplate(id='Title', frames=frame_full)
 

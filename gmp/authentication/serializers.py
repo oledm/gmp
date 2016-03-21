@@ -13,7 +13,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ('id', 'email', 'username', 'first_name', 'last_name',
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'middle_name',
             'birth_date', 'phone', 'created_at', 'modified_at', 'department',
             'is_admin', 'password', 'confirm_password',
         )
@@ -35,6 +35,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         instance.username = validated_data.get('username', instance.username)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.middle_name = validated_data.get('middle_name', instance.middle_name)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
         print('validated data from update:', validated_data)
         #instance.department = department

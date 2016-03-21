@@ -76,7 +76,6 @@
                 }).
                 then(function(response) {
                     vm.report.files[fieldname] = response.data.id;
-                    console.log(JSON.stringify(vm.report.files));
                 }, function(response) {
                     console.log('Error status: ' + response.status);
                 });
@@ -149,33 +148,33 @@
                 });
         }
 
-	function enterValue(event, param, prop) {
-	    event.stopPropagation();
+        function enterValue(event, param, prop) {
+            event.stopPropagation();
 
-	    var promise = $mdEditDialog.small({
-	        modelValue: param[prop],
-	        placeholder: 'Введите значение',
-	        save: function (input) {
-                    param[prop] = input.$modelValue;
-	        },
-	        targetEvent: event,
-	        validators: {
-                    'md-maxlength': 30,
-                    'ng-pattern': "/^[0-9.,]*$/",
-	        },
-                messages: {
-                    'md-maxlength': 'Слишком большое значение',
-                    'required': 'Обязательное значение',
-                }
-	    });
+            var promise = $mdEditDialog.small({
+                modelValue: param[prop],
+                placeholder: 'Введите значение',
+                save: function (input) {
+                param[prop] = input.$modelValue;
+            },
+            targetEvent: event,
+            validators: {
+                'md-maxlength': 30,
+                'ng-pattern': '/^[0-9.,]*$/'
+            },
+            messages: {
+                'md-maxlength': 'Слишком большое значение',
+                'required': 'Обязательное значение'
+            }
+            });
 
-	    promise.then(function (ctrl) {
-	        var input = ctrl.getInput();
+            promise.then(function (ctrl) {
+                var input = ctrl.getInput();
 
-	        input.$viewChangeListeners.push(function () {
-                    input.$setValidity('test', input.$modelValue !== 'test');
-	        });
-	    });
-	}
+                input.$viewChangeListeners.push(function () {
+                input.$setValidity('test', input.$modelValue !== 'test');
+            });
+        });
+}
     }
 })();

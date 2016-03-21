@@ -32,9 +32,9 @@
         }
 
         function set(data) {
-            $log.log('cookie to be set ' + JSON.stringify(data));
+//            $log.log('cookie to be set ' + JSON.stringify(data));
             $cookies.put(cookieName, JSON.stringify(data));
-            $log.log('in cookie: ' + JSON.stringify(cookies.get()));
+//            $log.log('in cookie: ' + JSON.stringify(cookies.get()));
         }
 
         function remove() {

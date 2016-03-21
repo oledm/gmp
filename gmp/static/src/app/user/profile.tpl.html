@@ -26,6 +26,14 @@
         </md-input-container>
  
         <md-input-container class="md-block" flex-gt-sm>
+          <label>Отчество</label>
+          <input md-maxlength="50" name="last_name" ng-model="vm.userdata.data.middle_name" />
+          <div ng-messages="userForm.middle_name.$error">
+            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
+          </div>
+        </md-input-container>
+
+        <md-input-container class="md-block" flex-gt-sm>
           <label>E-mail</label>
           <input type="email" md-maxlength="50" name="email" ng-model="vm.userdata.data.email" />
           <div ng-messages="userForm.email.$error">

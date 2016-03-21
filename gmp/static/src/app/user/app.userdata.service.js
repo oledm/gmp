@@ -12,6 +12,7 @@
             email: '',
             first_name: '',
             last_name: '',
+            middle_name: '',
             department: ''
         };
         var userdata = {
@@ -49,7 +50,7 @@
 
         function getAllUsersSuccess(response) {
             return response.data.map(function(user) {
-                return user.last_name + ' ' + user.first_name;
+                return user.last_name + ' ' + user.first_name + ' ' + user.middle_name;
             });
         }
 
@@ -71,6 +72,7 @@
             return $http.put('/api/user/' + cookie.username + '/', {
                 first_name: data.first_name,
                 last_name: data.last_name,
+                middle_name: data.middle_name,
                 email: data.email,
             })
             .then(updateSuccess)
