@@ -1,0 +1,47 @@
+<ng-form name="vm.signersForm">
+  <h4>Данные подписантов</h4>
+
+<div layout="row" layout-align="begin center">
+    <span>Кто утверждает (должность):&nbsp;&nbsp;&nbsp;</span>
+    <md-input-container>
+      <label>Должность</label>
+      <textarea name="approve_rank" ng-model="vm.report.signers.approve.rank" required md-maxlength="100"></textarea>
+      <div ng-messages="vm.report.signers.approve.rank.$error">
+        <div ng-message="pattern">Неверное значение</div>
+      </div>
+    </md-input-container>
+</div>
+
+<div layout="row" layout-align="begin center">
+    <span>Кто утверждает (ФИО):&nbsp;&nbsp;&nbsp;</span>
+    <md-input-container>
+      <label>ФИО</label>
+      <input required name="approve_fio" ng-model="vm.report.signers.approve.fio" />
+      <div ng-messages="vm.report.signers.approve.fio.$error">
+        <div ng-message="pattern">Неверное значение</div>
+      </div>
+    </md-input-container>
+</div>
+
+<div layout="row" layout-align="begin center">
+    <span>Подписант из службы (должность):&nbsp;&nbsp;&nbsp;</span>
+    <md-input-container>
+      <label>Должность</label>
+      <textarea name="signer_rank" ng-model="vm.report.signers.signer.rank" required md-maxlength="100"></textarea>
+      <div ng-messages="vm.report.signers.signer.rank.$error">
+        <div ng-message="pattern">Неверное значение</div>
+      </div>
+    </md-input-container>
+</div>
+
+<div layout="row" layout-align="begin center">
+    <span>Подписант из службы (ФИО):&nbsp;&nbsp;&nbsp;</span>
+    <md-input-container>
+      <label>ФИО</label>
+      <input required name="signer_fio" ng-model="vm.report.signers.signer.fio" />
+      <div ng-messages="vm.report.signers.signer.fio.$error">
+        <div ng-message="pattern">Неверное значение</div>
+      </div>
+    </md-input-container>
+</div>
+</ng-form>

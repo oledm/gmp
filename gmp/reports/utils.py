@@ -137,40 +137,41 @@ class Report():
         self.Story.append(Paragraph(ptext, self.styles["Heading 1 Bold"]))
         self.Story.append(Spacer(1, 0.5 * cm))
 
-        ptext = '''<b>"Согласовано"</b><br/><br/>
-        Заместитель генерального директора по производству - Главный инженер 
-        Шеморданского ЛПУ МГ<br/>
-        ООО"Газпром трансгаз Ставрополь"
-        '''
-        left_column = Paragraph(ptext, self.styles["Heading 1"]) 
-        ptext = '''<b>"Утверждаю"</b><br/><br/>
-        Директор филиала<br/>
-        ООО «ГАЗМАШПРОЕКТ»<br/>
-        «НАГАТИНСКИЙ»
-        '''
-        right_column = Paragraph(ptext, self.styles["Heading 1"]) 
-        table_data = [[left_column, right_column]]
-        
-        ptext = '''___________________Ю.В. Иванов
-"____"_________________201     г.
-        '''
-        left_column = XPreformatted(ptext, self.styles["Signature Handwrite"]) 
-        ptext = '''_______________А.Н. Бондаренко
-"____"_________________201     г.
-        '''
-        right_column = XPreformatted(ptext, self.styles["Signature Handwrite"]) 
-        table_data.extend([[left_column, right_column]])
-        table = Table(table_data)
-        table.setStyle(TableStyle([
-            #('INNERGRID', (0,0), (-1,-1), 0.1, colors.black),
-            #('BOX', (0,0), (-1,-1), 1.0, colors.black),
+        signers = self.data['signers']['approve']
 
+        date_string = '"____"{:_>21}'.format('_') + '201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;г'
+        fio_string = '{fio:_>32}'
+        first_col = ['"Согласовано"', '{rank}', fio_string,
+             date_string    
+        ]
+        second_col = [
+            '"Утверждаю"',
+            'Директор филиала<br/>ООО «ГАЗМАШПРОЕКТ» «НАГАТИНСКИЙ»',
+            fio_string.format(fio='А.Н. Бондаренко'),
+            date_string    
+        ]
+        template = list(zip(first_col, ['&nbsp;'] * len(first_col), second_col))
+        cols = len(template[0])
+        styles = [
+            ['Heading 1 Bold'] * cols,
+            ['Heading 1'] * cols,
+            *[['Regular'] * cols] * 2,
+        ]
+        table_data = values(template, signers)
+        table = self.table(table_data, styles, [4, 2, 4], styleTable=False)
+        table.hAlign = 'LEFT'
+        table.setStyle(TableStyle([
+            ('BOTTOMPADDING', (0,0), (-1,-1), 15),
+            ('BOTTOMPADDING', (0,0), (-1,0), 20),
+            ('BOTTOMPADDING', (0,1), (-1,1), 20),
+            #('TOPPADDING', (0,0), (-1,-1), 5),
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
-            ('RIGHTPADDING', (0,0), (0,-1), 1.5*cm),
-            ('LEFTPADDING', (-1,0), (-1,-1), 1.5*cm),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
         ]))
         self.Story.append(table)
-        self.Story.append(Spacer(1, 1.3 * cm))
+        self.Story.append(Spacer(1, 1.0 * cm))
+
+
 
         self.mput([
             'ПАСПОРТ 1-2/1715-10-14',
@@ -184,42 +185,32 @@ class Report():
                 **self.obj_data, **self.data.get('engine')
         )
         self.put(text, 'MainTitle', 1)
+        self.put('Дата обследования: ' + self.investigation_date, 'Heading 1', 2)
 
-        self.put('Дата обследования: ' + self.investigation_date, 'Heading 1', 1)
-        self.Story.append(Spacer(1, 1 * cm))
-
-        ptext = '''Заместитель начальника отдела ДОЭ<br/>
-        Шеморданского ЛПУ МГ<br/>
-        ООО"Газпром трансгаз Ставрополь"
-        '''
-        left_column = Paragraph(ptext, self.styles["Heading 1"]) 
-        ptext = '''Начальник проектно-<br/>
-        диагностического отдела<br/>
-        ООО «ГАЗМАШПРОЕКТ»<br/>
-        «НАГАТИНСКИЙ»
-        '''
-        right_column = Paragraph(ptext, self.styles["Heading 1"]) 
-        table_data = [[left_column, right_column]]
-        
-        ptext = '''___________________П.Д. Петров
-"____"_________________201     г.
-        '''
-        left_column = XPreformatted(ptext, self.styles["Signature Handwrite"]) 
-        ptext = '''________________И.Ю. Медведев
-"____"_________________201     г.
-        '''
-        right_column = XPreformatted(ptext, self.styles["Signature Handwrite"]) 
-        table_data.extend([[left_column, right_column]])
-        table = Table(table_data)
+        signers = self.data['signers']['signer']
+        first_col = ['{rank}', fio_string, date_string]
+        second_col = [
+            'Начальник проектно-<br/>диагностического отдела<br/>ООО «ГАЗМАШПРОЕКТ»<br/>«НАГАТИНСКИЙ»',
+            fio_string.format(fio='И.Ю. Медведев'),
+            date_string    
+        ]
+        template = list(zip(first_col, ['&nbsp;'] * len(first_col), second_col))
+        cols = len(template[0])
+        styles = [
+            ['Heading 1'] * cols,
+            *[['Regular'] * cols] * 2,
+        ]
+        table_data = values(template, signers)
+        table = self.table(table_data, styles, [4, 2, 4], styleTable=False)
+        table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
-            #('INNERGRID', (0,0), (-1,-1), 0.1, colors.black),
-            #('BOX', (0,0), (-1,-1), 1.0, colors.black),
-
+            ('BOTTOMPADDING', (0,0), (-1,-1), 15),
+            ('BOTTOMPADDING', (0,1), (-1,1), 20),
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
-            ('RIGHTPADDING', (0,0), (0,-1), 1.5*cm),
-            ('LEFTPADDING', (-1,0), (-1,-1), 1.5*cm),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
         ]))
         self.Story.append(table)
+
 
     def page3(self):
         self.Story.append(PageBreak())
@@ -489,16 +480,6 @@ class Report():
         # Until paste into report only the first connection type's picture
         self.formular('6-1 Электрическая схема подключения электродвигателя')
         self.put_image(engine.connection.all()[0].scheme)
-
-    #def page10(self):
-    #    self.Story.append(PageBreak())
-
-    #    self.formular('5 Общий вид электродвигателя')
-    #    self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
-
-    #    image = UploadedFile.objects.get(pk=self.data['files']['main'])
-    #    self.put_photo(image, size=18)
-    #    self.Story.append(Spacer(1, 1 * cm))
 
     def page12(self):
         self.Story.append(PageBreak())
@@ -1089,7 +1070,9 @@ class Report():
             fontName='Times',
             fontSize=13,
             leading=18,
-            leftIndent=1*cm,
+            #borderColor=colors.black,
+            #borderWidth=1,
+            #leftIndent=1*cm,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='MainTitle',

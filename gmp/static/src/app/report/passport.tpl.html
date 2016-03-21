@@ -37,8 +37,12 @@
     ng-if="vm.measurers.selected.length > 0">
 </div>
 
+<div class="animate-repeat" ng-include="'/static/src/app/report/signers.tpl.html'"
+    ng-if="vm.measurers.selected.length > 0">
+</div>
+
 <div>
-    <md-button ng-if="vm.LPUForm.$valid && vm.engineForm.$valid && vm.valuesForm.$valid && vm.imagesForm.$valid && vm.thermForm.$valid && vm.vibroForm.$valid && vm.resistanceForm.$valid" ng-click="vm.createPassport()" class="md-raised md-primary"> Создать паспорт 
+    <md-button ng-if="vm.LPUForm.$valid && vm.engineForm.$valid && vm.valuesForm.$valid && vm.imagesForm.$valid && vm.thermForm.$valid && vm.vibroForm.$valid && vm.resistanceForm.$valid && vm.signersForm.$valid" ng-click="vm.createPassport()" class="md-raised md-primary"> Создать паспорт 
     </md-button>    
 </div>
  

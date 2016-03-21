@@ -5,7 +5,7 @@
     <span>Сопротивление изоляции обмотки статора относительно корпуса двигателя:&nbsp;&nbsp;&nbsp;</span>
     <md-input-container>
       <label>Значение, МОм</label>
-      <input ng-pattern="/^[0-9]*$/" required name="resistance_isolation" ng-model="vm.report.values.factory_values.resistance_isolation" />
+      <input ng-pattern="/^[0-9.,]*$/" required name="resistance_isolation" ng-model="vm.report.values.factory_values.resistance_isolation" />
       <div ng-messages="vm.valuesForm.resistance_isolation.$error">
         <div ng-message="pattern">Неверное значение</div>
       </div>
