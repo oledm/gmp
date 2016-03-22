@@ -3,7 +3,6 @@
 
     angular.module('app.config', [
         'ui.router',
-        'ngMaterial',
         'ngResource'
     ]);
 })();

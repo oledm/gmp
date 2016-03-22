@@ -5,9 +5,9 @@
         .module('app.authentication')
         .factory('Authentication', Authentication);
 
-    Authentication.$inject = ['$http', '$mdDialog', 'Cookies'];
+    Authentication.$inject = ['$http', 'Cookies'];
 
-    function Authentication($http, $mdDialog, Cookies) {
+    function Authentication($http, Cookies) {
         var authentication = {
             isAuthenticated: isAuthenticated,
             login: login,
@@ -51,13 +51,13 @@
         }
 
         function loginFail() {
-            $mdDialog
-                .show(
-                    $mdDialog.alert({
-                        title: 'Ошибка',
-                        textContent: 'Неверно указан email/пароль',
-                        ok: 'Закрыть'
-                    }));
+//            $mdDialog
+//                .show(
+//                    $mdDialog.alert({
+//                        title: 'Ошибка',
+//                        textContent: 'Неверно указан email/пароль',
+//                        ok: 'Закрыть'
+//                    }));
         }
 
         function logoutSuccess() {

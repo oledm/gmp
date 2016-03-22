@@ -16,8 +16,8 @@ module.exports = function (grunt) {
     return {
       app: this.app,
       templates: this.app + '/templates',
-      css: this.app + '/static/css',
-      sass: this.app + '/static/sass',
+      css: this.app + '/static/src/assets/css',
+      sass: this.app + '/static/src/sass',
       fonts: this.app + '/static/fonts',
       images: this.app + '/static/images',
       js: this.app + '/static/src',
@@ -77,7 +77,7 @@ module.exports = function (grunt) {
               precision: 10
           },
           files: {
-              '<%= paths.css %>/project.css': '<%= paths.sass %>/project.scss'
+              '<%= paths.css %>/app.css': '<%= paths.sass %>/app.scss'
           },
       },
       dist: {
@@ -87,7 +87,7 @@ module.exports = function (grunt) {
               precision: 10
           },
           files: {
-              '<%= paths.css %>/project.css': '<%= paths.sass %>/project.scss'
+              '<%= paths.css %>/app.css': '<%= paths.sass %>/app.scss'
           },
       }
     },

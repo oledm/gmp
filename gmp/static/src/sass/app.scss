@@ -1,0 +1,6 @@
+@import "customVariables";
+@import "../../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
+
+.nav-tabs > li > a {
+    outline: none;
+}

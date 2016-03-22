@@ -5,8 +5,8 @@
         .module('app.passport')
         .controller('PassportController', PassportController);
 
-    PassportController.$inject = ['$scope', 'UserData', 'Department', 'Engine', 'Passport', 'Upload', '$mdEditDialog'];
-    function PassportController($scope, UserData, Department, Engine, Passport, Upload, $mdEditDialog) {
+    PassportController.$inject = ['$scope', 'UserData', 'Department', 'Engine', 'Passport', 'Upload'];
+    function PassportController($scope, UserData, Department, Engine, Passport, Upload) {
 
         $scope.upload = upload;
 

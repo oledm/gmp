@@ -1,0 +1,15 @@
+<form name="userForm" novalidate>
+    <gmp-input field="userForm.email" model="vm.email"></gmp-input>
+
+    <div class="form-group" ng-class="{ 'has-error': userForm.password.$touched && userForm.password.$invalid }">
+      <label for="password">Пароль</label>
+      <input class="form-control" placeholder="Пароль" type="password" id="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+      <div class="help-block" role="alert" ng-messages="userForm.password.$error" ng-if="userForm.password.$touched">
+          <div ng-messages-include="/static/src/assets/messages.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" ng-click="vm.login();"> Войти </button>
+    </div>
+</form>

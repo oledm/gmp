@@ -9,7 +9,6 @@
 
     function MainController(Authentication) {
         var vm = this;
-        console.log('menu: ' + vm.menu);
         vm.menu = [
             {name: 'Мои файлы', link: 'Файлы', icon: 'upload', ref: 'upload'},
             {name: 'Профиль', link: 'Профиль', icon: 'person', ref: 'profile'},

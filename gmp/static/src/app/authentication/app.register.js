@@ -21,6 +21,12 @@
                 .then(registerSuccess, registerFail);
         };
 
+        activate();
+
+        function activate() {
+            vm.loadDepartments();
+        }
+
         function registerSuccess() {
             Authentication.login(vm.email, vm.password);
         }

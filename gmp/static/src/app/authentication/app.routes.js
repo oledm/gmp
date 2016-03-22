@@ -9,15 +9,25 @@
         '$stateProvider',
         '$urlRouterProvider',
         '$resourceProvider',
-        '$mdThemingProvider',
         '$locationProvider'
     ];
 
-    function config($stateProvider, $urlRouterProvider, $resourceProvider,
-            $mdThemingProvider, $locationProvider) {
+    function config($stateProvider, $urlRouterProvider, $resourceProvider, $locationProvider) {
         $stateProvider
             .state('home', {
                 url: '/'
+            })
+            .state('login', {
+                url: '/',
+                controller: 'LoginController',
+                controllerAs: 'vm',
+                templateUrl: '/static/src/app/user/login.tpl.html'
+            })
+            .state('register', {
+                url: '/',
+                controller: 'RegisterController',
+                controllerAs: 'vm',
+                templateUrl: '/static/src/app/user/register.tpl.html'
             })
             .state('profile', {
                 url: '/profile',
@@ -38,11 +48,9 @@
                 templateUrl: '/static/src/app/report/passport.tpl.html'
             });
 
-        $urlRouterProvider.otherwise('/');
+        $urlRouterProvider.otherwise('/login');
 
         $resourceProvider.defaults.stripTrailingSlashes = false;
-
-        $mdThemingProvider.theme('default').primaryPalette('blue');
 
         $locationProvider.html5Mode(true);
         $locationProvider.hashPrefix('!');

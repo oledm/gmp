@@ -202,12 +202,13 @@ BOWER_INSTALLED_APPS = (
     'angular-resource#1.5.0',
     'angular-ui-router#0.2.18',
     'angular-cookies',
-    'angular-material',
+    #'angular-material',
     'angular-cookies',
     'ionicons',
     'ng-file-upload-shim',
     'ng-file-upload',
-    'angular-material-data-table',
+    #'angular-material-data-table',
+    'bootstrap-sass',
     #'material-design-icons',
 )
 
