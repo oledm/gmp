@@ -54,7 +54,7 @@
         vm.measurers = measurers;
         vm.ranks = ranks;
         vm.report = {
-            team: [{'name': '', 'required': 'required'}],
+            team: [{'name': '', 'required': true}],
             measurers: measurers.selected,
             docs: docs,
             files: {},
@@ -91,8 +91,9 @@
 
         function addEmployee() {
             vm.report.team.push({
-                'name': ''
+                'name': '', 'required': false
             });
+            console.dir('team: ' + JSON.stringify(vm.report.team));
         }
         function createPassport() {
             delete vm.report.team[0].required;
