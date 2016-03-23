@@ -51,8 +51,6 @@
     <script src="{% static 'src/app/authentication/app.department.service.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.cookies.service.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.cookies.service.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.main.module.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.main.js' %}"></script>
     <!-- 
         <script src="{% static 'src/app/authentication/app.sidenav.module.js' %}"></script>
         <script src="{% static 'src/app/authentication/app.sidenav.js' %}"></script>
@@ -65,6 +63,8 @@
     <script src="{% static 'src/app/authentication/app.register.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.routes.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.routes.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.main.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.main.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.js' %}"></script>
     <script src="{% static 'src/app/user/gmp-input.directive.js' %}"></script>
 {% endblock %}
@@ -73,6 +73,8 @@
 {% if debug %}
     <script src="//localhost:35729/livereload.js"></script>
 {% endif %}
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap-sass/assets/javascripts/bootstrap.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -80,9 +82,7 @@
 {% verbatim %}
 <div ng-if="main.isAuthenticated()" ng-cloak>
     <div ng-controller="UserDataController as vm">
-        <h1 class="md-headline">
-              <i class="logo icon ion-earth"></i>
-        </h1>
+
         <div>
             <span ng-bind-template="{{vm.userdata.data.last_name}} {{vm.userdata.data.first_name}}"></span>
             <span ng-bind="vm.userdata.data.email"></span>
@@ -103,35 +103,53 @@
 </div>
 
  <div ng-controller="ToolbarController as vm">
-     <!-- 
-         <div ng-if="main.isAuthenticated()">
-               <div>
-                    
-                <h2><a ui-sref="home">
-                          <i class="icon ion-home"></i>
-                </a></h2>
-              <a  href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
-                  <i class="icon ion-android-exit"></i>
-              </a>
-              </div>
-         </div>
-      -->
+     <div ng-if="main.isAuthenticated()">
+
+
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#"><i class="logo icon ion-earth"></i></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">Link</a></li>
+              </ul>
+
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
+                    <i class="icon ion-android-exit"></i></a>
+                </li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+
+
+     </div>
      
-     <div ng-hide="main.isAuthenticated()" ng-cloak>
+     <div class="tabbable" ng-hide="main.isAuthenticated()" ng-cloak>
         <ul class="nav nav-tabs">
-            <li ui-sref-active="active" class="item" role="presentation" class="active"><a ui-sref="login">Вход</a></li>
-            <li ui-sref-active="active" class="item" role="presentation"><a ui-sref="register">Регистрация</a></li>
+            <li data-toggle="tab" ui-sref-active="active" class="active item" role="presentation"><a ui-sref="login">Вход</a></li>
+            <li data-toggle="tab" ui-sref-active="active" class="item" role="presentation"><a ui-sref="register">Регистрация</a></li>
         </ul>
-        <div class="container" ui-view></div>
     </div>
 
       <!-- 
           Main workspace content
        -->
-     <div ng-if="main.isAuthenticated()" ng-cloak ui-view>
-     </div>
+    <div class="container" ng-cloak ui-view></div>
 
-     </div>
- </div>
+</div>
 {% endverbatim %}
 {% endblock %}

@@ -1,6 +1,6 @@
 (function() {
     'use strict';
 
-    angular.module('app.login', ['ngMessages']);
+    angular.module('app.login', ['ngMessages', 'ui.router']);
 })();
 

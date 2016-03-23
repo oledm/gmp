@@ -11,8 +11,10 @@
         var vm = this;
 
         vm.logout = function() {
-            Authentication.logout();
-            $state.go('home');
+            Authentication.logout()
+                .then(function() {
+                    $state.go('login');
+                });
         };
     }
 })();

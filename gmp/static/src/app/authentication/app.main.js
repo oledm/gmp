@@ -5,9 +5,9 @@
         .module('app.main')
         .controller('MainController', MainController);
 
-    MainController.$inject = ['Authentication'];
+    MainController.$inject = ['Authentication', '$location'];
 
-    function MainController(Authentication) {
+    function MainController(Authentication, $location) {
         var vm = this;
         vm.menu = [
             {name: 'Мои файлы', link: 'Файлы', icon: 'upload', ref: 'upload'},
@@ -15,6 +15,15 @@
             {name: 'Паспорт двигателя', link: 'Паспорт двигателя', icon: 'document-text', ref: 'passport'}
         ];
 
+        activate();
+
+        ///////////////////////////////////////////////
+
+        function activate() {
+            if (!Authentication.isAuthenticated()) {
+                $location.path("/login");
+            }
+        }
         vm.isAuthenticated = function() {
             return Authentication.isAuthenticated();
         };

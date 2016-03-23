@@ -18,13 +18,13 @@
                 url: '/'
             })
             .state('login', {
-                url: '/',
+                url: '/login',
                 controller: 'LoginController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/user/login.tpl.html'
             })
             .state('register', {
-                url: '/',
+                url: '/register',
                 controller: 'RegisterController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/user/register.tpl.html'

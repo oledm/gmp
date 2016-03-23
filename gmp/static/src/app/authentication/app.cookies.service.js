@@ -38,7 +38,9 @@
         }
 
         function remove() {
+//            console.log('before delete ' + JSON.parse($cookies.get(cookieName)));
             $cookies.remove(cookieName);
+//            console.log('after delete ' + $cookies.get(cookieName));
         }
     }
 })();

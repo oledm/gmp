@@ -5,9 +5,9 @@
         .module('app.login')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['Authentication'];
+    LoginController.$inject = ['Authentication', '$state'];
 
-    function LoginController(Authentication) {
+    function LoginController(Authentication, $state) {
         var vm = this;
 
         vm.login = login;
@@ -16,12 +16,12 @@
 
         function login() {
             Authentication.login(vm.email, vm.password);
+            $state.go('home');
         }
 
         function activate() {
             if (Authentication.isAuthenticated()) {
-                console.log('TODO goto home state');
-//                $state.go('profile');
+                $state.go('home');
             }
         }
     }

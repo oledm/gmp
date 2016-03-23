@@ -1,6 +1,8 @@
-<div class="form-group" ng-class="{ 'has-error': field.$touched && field.$invalid }">
-    <label for="email">E-mail</label>
-    <input class="form-control" type="email" placeholder="Email" id="email" required name="email" ng-maxlength="50" ng-model="model" />
+<div class="form-group" ng-class="{ 'has-error': hasError}">
+    <label>E-mail</label>
+    <p>{{emailTouched}}</p>
+    <input class="form-control" type="{{type}}" 
+            placeholder="{{placeholder}}"  ng-model="model" />
     <div class="help-block" role="alert" ng-messages="field.$error" ng-if="field.$touched">
         <div ng-messages-include="/static/src/assets/messages.html"></div>
     </div>
