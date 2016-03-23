@@ -10,7 +10,7 @@
     function MainController(Authentication, $location) {
         var vm = this;
         vm.menu = [
-            {name: 'Мои файлы', link: 'Файлы', icon: 'upload', ref: 'upload'},
+            {name: 'Файлы', link: 'Файлы', icon: 'upload', ref: 'upload'},
             {name: 'Профиль', link: 'Профиль', icon: 'person', ref: 'profile'},
             {name: 'Паспорт двигателя', link: 'Паспорт двигателя', icon: 'document-text', ref: 'passport'}
         ];

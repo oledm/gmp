@@ -1,6 +1,25 @@
 @import "customVariables";
 @import "../../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
 
-.nav-tabs > li > a {
+form {
+    padding-top: 1em;
+}
+
+.navbar-text {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    text-align: center;
+}
+
+li > a {
+    font-size: 18px;
+}
+
+a:focus {
     outline: none;
+}
+
+i.icon {
+    font-size: 30px;
 }

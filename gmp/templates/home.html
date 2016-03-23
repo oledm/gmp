@@ -9,9 +9,11 @@
  -->
 <link rel="stylesheet" href="{% static 'Ionicons/css/ionicons.min.css' %}">
 <link rel="stylesheet" href="{% static 'src/assets/css/app.css' %}">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 {% endblock %}
 
 {% block angular %}
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'angular/angular.js' %}"></script>
     <!-- 
         <script src="{% static 'angular-i18n/ru-ru.js' %}"></script>
@@ -73,34 +75,13 @@
 {% if debug %}
     <script src="//localhost:35729/livereload.js"></script>
 {% endif %}
-    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap-sass/assets/javascripts/bootstrap.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
  
 {% verbatim %}
-<div ng-if="main.isAuthenticated()" ng-cloak>
-    <div ng-controller="UserDataController as vm">
 
-        <div>
-            <span ng-bind-template="{{vm.userdata.data.last_name}} {{vm.userdata.data.first_name}}"></span>
-            <span ng-bind="vm.userdata.data.email"></span>
-            <span ng-bind="vm.userdata.data.department.name"></span>
-        </div>
-
-       <div>
-           <ul ng-repeat="entry in main.menu">
-               <a ui-sref="{{entry.ref}}"  aria-label="{{entry.link}}">
-                        <div class="inset">
-                            <i class="icon ion-{{entry.icon}}"></i>
-                        </div>
-                        <div class="inset" ng-class="{activeLink:true}" ng-bind="entry.name"></div>
-                </a>
-           </ul>
-        </div>
-    </div>
-</div>
 
  <div ng-controller="ToolbarController as vm">
      <div ng-if="main.isAuthenticated()">
@@ -108,27 +89,41 @@
 
         <nav class="navbar navbar-default">
           <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#"><i class="logo icon ion-earth"></i></a>
-            </div>
+            <!-- 
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#"><i class="logo icon ion-earth"></i></a>
+                </div>
+             -->
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-              <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Link</a></li>
-              </ul>
+               <ul class="nav navbar-nav" ng-repeat="entry in main.menu">
+                   <li>
+                       <a ui-sref="{{entry.ref}}" ui-sref-active="active" aria-label="{{entry.link}}">
+                           <!-- 
+                               <i class="icon ion-{{entry.icon}}"></i>
+                            -->
+                           {{entry.name}}
+                        </a>
+                   </li>
+               </ul>
 
-              <ul class="nav navbar-nav navbar-right">
+              <ul class="nav navbar-nav navbar-right" ng-controller="UserDataController as uc">
+
+
+                <div class="navbar-text">{{uc.userdata.data.last_name}} {{uc.userdata.data.first_name}}<br/>{{uc.userdata.data.department.name}}</div>
                 <li><a href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
-                    <i class="icon ion-android-exit"></i></a>
+                    <!-- 
+                        <i class="icon ion-android-exit"></i>
+                     -->
+                     Выход
+                    </a>
                 </li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -144,6 +139,7 @@
             <li data-toggle="tab" ui-sref-active="active" class="item" role="presentation"><a ui-sref="register">Регистрация</a></li>
         </ul>
     </div>
+
 
       <!-- 
           Main workspace content
