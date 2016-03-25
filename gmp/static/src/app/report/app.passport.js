@@ -97,9 +97,11 @@
             console.dir('team: ' + JSON.stringify(vm.report.team));
         }
         function createPassport() {
-            console.log('investigationDate ' + vm.investigationDate.toLocaleString());
-            console.log('begin ' + vm.workBegin.toLocaleString());
-            console.log('end ' + vm.workEnd.toLocaleString());
+
+            console.log('docs ' + JSON.stringify(vm.report.docs));
+//            console.log('investigationDate ' + vm.investigationDate.toLocaleString());
+//            console.log('begin ' + vm.workBegin.toLocaleString());
+//            console.log('end ' + vm.workEnd.toLocaleString());
 //            return;
 //            delete vm.report.team[0].required;
 //            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {

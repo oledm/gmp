@@ -1,17 +1,33 @@
 <ng-form name="vm.imagesForm" class="md-padding">
-    <h4>Графические данные</h4>
-    <div class="md-padding">
-        <span>Общий вид электродвигателя&nbsp;</span>
-        <input id="file" onchange="angular.element(this).scope().upload(this)" type="file" name="main" aria-label="fileupload"></input>
-    </div>
+    <h4 checkmark>Графические данные</h4>
 
-    <div class="md-padding">
-        <span>Фото термограммы 1&nbsp;</span>
-        <input id="file" onchange="angular.element(this).scope().upload(this)" type="file" name="therm1" aria-label="fileupload"></input>
-    </div>
-
-    <div class="md-padding">
-        <span>Фото термограммы 2&nbsp;</span>
-        <input id="file" onchange="angular.element(this).scope().upload(this)" type="file" name="therm2" aria-label="fileupload"></input>
-    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-4" ng-class="{ 'has-error': vm.imagesForm.main.$touched && vm.imagesForm.main.$invalid }">
+                  <label class="control-label" for="main">Общий вид электродвигателя</label>
+                  <input valid-file required type="file" id="main" name="main" ng-model="main"
+                      onchange="angular.element(this).scope().upload(this)" />
+                  <div class="help-block" role="alert" ng-messages="vm.imagesForm.main.$error" ng-if="vm.imagesForm.main.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            <div class="col-sm-4" ng-class="{ 'has-error': vm.imagesForm.therm1.$touched && vm.imagesForm.therm1.$invalid }">
+                  <label class="control-label" for="therm1">Фото термограммы 1</label>
+                  <input valid-file required type="file" id="therm1" name="therm1" ng-model="therm1"
+                      onchange="angular.element(this).scope().upload(this)" />
+                  <div class="help-block" role="alert" ng-messages="vm.imagesForm.therm1.$error" ng-if="vm.imagesForm.therm1.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            <div class="col-sm-4" ng-class="{ 'has-error': vm.imagesForm.therm2.$touched && vm.imagesForm.therm2.$invalid }">
+                  <label class="control-label" for="therm2">Фото термограммы 2</label>
+                  <input valid-file required type="file" id="therm2" name="therm2" ng-model="therm2"
+                      onchange="angular.element(this).scope().upload(this)" />
+                  <div class="help-block" role="alert" ng-messages="vm.imagesForm.therm2.$error" ng-if="vm.imagesForm.therm2.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            
+        </div>
+        </div>
 </ng-form>

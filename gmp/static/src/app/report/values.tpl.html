@@ -1,25 +1,29 @@
-<ng-form name="vm.valuesForm">
-  <h4>Данные произведенных замеров</h4>
-
-<div layout="row" layout-align="begin center">
-    <span>Сопротивление изоляции обмотки статора относительно корпуса двигателя:&nbsp;&nbsp;&nbsp;</span>
-    <md-input-container>
-      <label>Значение, МОм</label>
-      <input ng-pattern="/^[0-9.,]*$/" required name="resistance_isolation" ng-model="vm.report.values.factory_values.resistance_isolation" />
-      <div ng-messages="vm.valuesForm.resistance_isolation.$error">
-        <div ng-message="pattern">Неверное значение</div>
-      </div>
-    </md-input-container>
-</div>
-
-<div layout="row" layout-align="begin center">
-    <span>Сопротивление фазы обмотки статора постоянному току в холодном состоянии при 20°C:&nbsp;&nbsp;&nbsp;</span>
-    <md-input-container>
-      <label>Значение, Ом</label>
-      <input ng-pattern="/^[0-9.,]*$/" required name="resistance_phase" ng-model="vm.report.values.factory_values.resistance_phase" />
-      <div ng-messages="vm.valuesForm.resistance_phase.$error">
-        <div ng-message="pattern">Неверное значение</div>
-      </div>
-    </md-input-container>
-</div>
+<ng-form name="vm.valuesForm" novalidate>
+  <h4 checkmark>Данные произведенных замеров</h4>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.valuesForm.resistance_isolation.$touched && vm.valuesForm.resistance_isolation.$invalid }">
+                  <label class="control-label" for="resistance_isolation">Сопротивление изоляции обмотки статора относительно корпуса двигателя, МОм</label>
+                  <input class="form-control" required ng-pattern="/^[0-9.,]*$/"
+                      id="resistance_isolation" name="resistance_isolation"
+                      placeholder="Значение" ng-maxlength="50"
+                      ng-model="vm.report.values.factory_values.resistance_isolation" />
+                  <div class="help-block" role="alert" ng-messages="vm.valuesForm.resistance_isolation.$error" ng-if="vm.valuesForm.resistance_isolation.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.valuesForm.resistance_phase.$touched && vm.valuesForm.resistance_phase.$invalid }">
+                  <label class="control-label" for="resistance_phase">Сопротивление фазы обмотки статора постоянному току в холодном состоянии при 20°C</label>
+                  <input class="form-control" required ng-pattern="/^[0-9.,]*$/"
+                      id="resistance_phase" name="resistance_phase"
+                      placeholder="Значение" ng-maxlength="50"
+                      ng-model="vm.report.values.factory_values.resistance_phase" />
+                  <div class="help-block" role="alert" ng-messages="vm.valuesForm.resistance_phase.$error" ng-if="vm.valuesForm.resistance_phase.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            
+        </div>
+    </div>
 </ng-form>

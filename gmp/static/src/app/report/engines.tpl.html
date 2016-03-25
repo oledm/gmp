@@ -1,6 +1,5 @@
 <ng-form name="vm.engineForm" novalidate>
-    <h4><i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.engineForm.$valid"></i>&nbsp;
-        Заполните информацию об объекте обследования</h4>
+    <h4 checkmark>Заполните информацию об объекте обследования</h4>
 
     <div class="form-group">
         <div class="row">
@@ -99,7 +98,7 @@
                 >
                   <label class="control-label" for="new_date">Дата проделения срока эксплуатации двигателя</label>
                     <p class="input-group">
-                  <input type="text" ng-model="vm.report.engine.new_date" id="new_date" name="new_date" class="form-control" uib-datepicker-popup="yyyy" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.yearOptions" required   />
+                  <input type="text" ng-model="vm.report.engine.new_date" id="new_date" name="new_date" class="form-control" uib-datepicker-popup is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required   />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>

@@ -1,50 +1,43 @@
-<div ng-include="'/static/src/app/report/team.tpl.html'">
+<div class="block animate-if" ng-include="'/static/src/app/report/team.tpl.html'">
 </div>
 
-<div ng-include="'/static/src/app/report/measurers.tpl.html'"
-    >
+<div class="block animate-if" ng-include="'/static/src/app/report/measurers.tpl.html'"
+     ng-if="vm.teamForm.$valid">
 </div>
     
-<div ng-include="'/static/src/app/report/lpu.tpl.html'"
-    >
+<div class="block animate-if" ng-include="'/static/src/app/report/lpu.tpl.html'"
+    ng-if="vm.measurers.selected.length > 0">
 </div>
 
-<div ng-include="'/static/src/app/report/dates.tpl.html'"
-    >
+<div class="block animate-if" ng-include="'/static/src/app/report/dates.tpl.html'"
+    ng-if="vm.LPUForm.$valid">
 </div>
 
-<div ng-include="'/static/src/app/report/engines.tpl.html'"
-    >
+<div class="block animate-if" ng-include="'/static/src/app/report/engines.tpl.html'"
+    ng-if="vm.datesForm.$valid">
 </div>
 
+<div class="block animate-if" ng-include="'/static/src/app/report/values.tpl.html'"
+    ng-if="vm.engineForm.$valid">
+</div>
+
+<div class="block animate-if" ng-include="'/static/src/app/report/docs.tpl.html'"
+    ng-if="vm.valuesForm.$valid">
+</div>
+
+<div class="block animate-if" ng-include="'/static/src/app/report/photos.tpl.html'"
+    >
+</div>
 <!-- 
-    <div ng-include="'/static/src/app/report/values.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
     
-    <div ng-include="'/static/src/app/report/docs.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
     
-    <div ng-include="'/static/src/app/report/photos.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
+    ng-include="'/static/src/app/report/therm.tpl.html'"
     
-    <div ng-include="'/static/src/app/report/therm.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
+    ng-include="'/static/src/app/report/vibro.tpl.html'"
     
-    <div ng-include="'/static/src/app/report/vibro.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
+    ng-include="'/static/src/app/report/resistance.tpl.html'"
     
-    <div ng-include="'/static/src/app/report/resistance.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
-    
-    <div ng-include="'/static/src/app/report/signers.tpl.html'"
-        ng-if="vm.measurers.selected.length > 0">
-    </div>
+    ng-include="'/static/src/app/report/signers.tpl.html'"
  -->
 
 <div>

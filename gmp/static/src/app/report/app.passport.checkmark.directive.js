@@ -10,7 +10,6 @@
             restrict: 'A',
             link: function(scope, elem, attrs, formController) {
                 scope.$watch(formController.$name + '.$valid', function(newValue, oldValue) {
-                    console.log(newValue);
                     if (newValue) {
                         scope.showCheckmark = true;
                     } else {
