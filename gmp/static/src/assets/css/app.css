@@ -5817,6 +5817,9 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+table.selectable tbody tr {
+  cursor: pointer; }
+
 form {
   padding-top: 1em; }
 

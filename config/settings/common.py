@@ -197,19 +197,23 @@ STATICFILES_FINDERS = (
 BOWER_COMPONENTS_ROOT = str(APPS_DIR.path('static/vendor'))
 BOWER_PATH = '/usr/bin/bower'
 BOWER_INSTALLED_APPS = ( 
-    'angular#1.5.0',
-    'angular-i18n#1.5.0',
-    'angular-resource#1.5.0',
-    'angular-ui-router#0.2.18',
+    'angular',
+    'angular-i18n',
+    'angular-resource',
+    'angular-ui-router',
     'angular-cookies',
     #'angular-material',
+    #'angular-material-data-table',
     'angular-cookies',
     'ionicons',
     'ng-file-upload-shim',
     'ng-file-upload',
-    #'angular-material-data-table',
     'bootstrap-sass',
+    #'bootstrap-table',
+    #'angular-selection-model',
     #'material-design-icons',
+    'angular-ui-bootstrap-bower',
+    'angular-datepicker',
 )
 
 

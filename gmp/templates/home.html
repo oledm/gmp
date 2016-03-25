@@ -3,10 +3,6 @@
 
 {% block css %}
 <base href="/">
-<!-- 
-    <link rel="stylesheet" href="{% static 'angular-material/angular-material.css' %}">
-    <link rel="stylesheet" href="{% static 'angular-material-data-table/dist/md-data-table.min.css' %}">
- -->
 <link rel="stylesheet" href="{% static 'Ionicons/css/ionicons.min.css' %}">
 <link rel="stylesheet" href="{% static 'src/assets/css/app.css' %}">
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
@@ -24,6 +20,8 @@
     <script src="{% static 'angular-resource/angular-resource.js' %}"></script>
     <script src="{% static 'angular-cookies/angular-cookies.js' %}"></script>
     <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
+    <script src="{% static 'angular-bootstrap/ui-bootstrap.min.js' %}"></script>
+    <script src="{% static 'angular-bootstrap/ui-bootstrap-tpls.min.js' %}"></script>
     <!-- 
         <script src="{% static 'angular-material/angular-material.min.js' %}"></script>
         <script src="{% static 'angular-material-data-table/dist/md-data-table.min.js' %}"></script>
@@ -33,6 +31,8 @@
     <!-- 
         This app
      -->
+    <script src="{% static 'src/app/user/app.datepicker.module.js' %}"></script>
+    <script src="{% static 'src/app/user/app.datepicker.js' %}"></script>
     <script src="{% static 'src/app/user/app.userdata.service.module.js' %}"></script>
     <script src="{% static 'src/app/user/app.userdata.service.js' %}"></script>
     <script src="{% static 'src/app/user/app.userdata.controller.module.js' %}"></script>
@@ -117,7 +117,7 @@
               <ul class="nav navbar-nav navbar-right" ng-controller="UserDataController as uc">
 
 
-                <div class="navbar-text">{{uc.userdata.data.last_name}} {{uc.userdata.data.first_name}}<br/>{{uc.userdata.data.department.name}}</div>
+                  <div class="navbar-text">{{uc.userdata.data.last_name}} {{uc.userdata.data.first_name}}<br/><small>{{uc.userdata.data.department.name}}</small></div>
                 <li><a href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
                     <!-- 
                         <i class="icon ion-android-exit"></i>

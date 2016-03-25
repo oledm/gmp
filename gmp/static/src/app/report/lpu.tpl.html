@@ -1,42 +1,48 @@
-<ng-form name="vm.LPUForm" class="md-padding">
-    <div class="md-block">
+<ng-form name="vm.LPUForm" novalidate>
     <h4>Выберите объект обследования</h4>
-    <md-input-container>
-      <label>Организация</label>
-      <md-select name="org" ng-change="vm.getLPUs(vm.report.obj_data.org)"
-          placeholder="Организация" required ng-model="vm.report.obj_data.org">
-            <md-option ng-bind="org.name" ng-repeat="org in vm.orgs"></md-option>
-      </md-select>
-    </md-input-container>
 
-    <md-input-container>
-      <label>ЛПУ МГ</label>
-      <md-select name="lpu" placeholder="ЛПУ МГ" required ng-model="vm.report.obj_data.lpu">
-            <md-option ng-bind="lpu.name" ng-repeat="lpu in vm.lpus"></md-option>
-      </md-select>
-    </md-input-container>
+    <div class="form-group">
+        <div ng-class="{ 'has-error': vm.LPUForm.org.$touched && vm.LPUForm.org.$invalid }">
+          <label class="control-label" for="org">Организация</label>
+              <select class="form-control" placeholder="Организация"
+                  ng-change="vm.getLPUs(vm.report.obj_data.org)" required
+                  ng-model="vm.report.obj_data.org" name="org" id="org">
+                  <option ng-repeat="org in vm.orgs">{{org.name}}</option>
+              </select>
+          <div class="help-block" role="alert" ng-messages="vm.LPUForm.org.$error" ng-if="vm.LPUForm.org.$touched">
+              <div ng-messages-include="/static/src/assets/messages.html"></div>
+          </div>
+        </div>
+
+        <div ng-class="{ 'has-error': vm.LPUForm.lpu.$touched && vm.LPUForm.lpu.$invalid }">
+          <label class="control-label" for="lpu">ЛПУ МГ</label>
+              <select class="form-control" placeholder="ЛПУ МГ" required
+                  ng-model="vm.report.obj_data.lpu" name="lpu" id="lpu">
+                  <option ng-repeat="lpu in vm.lpus">{{lpu.name}}</option>
+              </select>
+          <div class="help-block" role="alert" ng-messages="vm.LPUForm.lpu.$error" ng-if="vm.LPUForm.lpu.$touched">
+              <div ng-messages-include="/static/src/assets/messages.html"></div>
+          </div>
+        </div>
     </div>
 
-    <md-input-container>
-      <label>Наименование КС или установки</label>
-      <input md-maxlength="70" required name="ks" ng-model="vm.report.obj_data.ks" />
-      <div ng-messages="vm.LPUForm.ks.$error">
-        <div ng-message="md-maxlength">Длина поля не более 70 символов</div>
-      </div>
-    </md-input-container>
-
-    <md-input-container>
-      <label>Название цеха</label>
-      <input md-maxlength="70" required name="plant" ng-model="vm.report.obj_data.plant" />
-      <div ng-messages="vm.LPUForm.plant.$error">
-        <div ng-message="md-maxlength">Длина поля не более 70 символов</div>
-      </div>
-    </md-input-container>
-
-    <div class="md-block">
-        <h4>Укажите даты выполнения работ</h4>
-        <md-datepicker required ng-model="vm.investigationDate" md-placeholder="Обследование"></md-datepicker>
-        <md-datepicker required ng-model="vm.workBegin" md-placeholder="Начало работ"></md-datepicker>
-        <md-datepicker required ng-model="vm.workEnd" md-placeholder="Окончание работ"></md-datepicker>
+    <div class="form-group">
+        <div ng-class="{ 'has-error': vm.LPUForm.ks.$touched && vm.LPUForm.ks.$invalid }">
+          <label class="control-label" for="ks">Наименование КС или установки</label>
+              <input class="form-control" type="text" id="ks" required
+                  name="ks" ng-maxlength="50" ng-model="vm.report.obj_data.ks" />
+          <div class="help-block" role="alert" ng-messages="vm.LPUForm.ks.$error" ng-if="vm.LPUForm.ks.$touched">
+              <div ng-messages-include="/static/src/assets/messages.html"></div>
+          </div>
+        </div>
+        
+        <div ng-class="{ 'has-error': vm.LPUForm.plant.$touched && vm.LPUForm.plant.$invalid }">
+          <label class="control-label" for="plant">Название цеха</label>
+              <input class="form-control" type="text" id="plant" required
+                  name="plant" ng-maxlength="50" ng-model="vm.report.obj_data.plant" />
+          <div class="help-block" role="alert" ng-messages="vm.LPUForm.plant.$error" ng-if="vm.LPUForm.plant.$touched">
+              <div ng-messages-include="/static/src/assets/messages.html"></div>
+          </div>
+        </div>
     </div>
 </ng-form>

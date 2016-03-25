@@ -7,6 +7,7 @@
         'app.department',
         'app.engine.service',
         'app.main',
+        'app.datepicker',
         'app.login',
         'app.register',
         'app.cookies',

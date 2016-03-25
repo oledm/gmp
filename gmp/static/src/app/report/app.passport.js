@@ -44,6 +44,7 @@
         vm.createPassport = createPassport;
         vm.engine = engine;
         vm.enterValue = enterValue;
+        vm.setSelected = setSelected;
         vm.workBegin = undefined;
         vm.workEnd = undefined;
         vm.investigationDate = undefined;
@@ -96,17 +97,21 @@
             console.dir('team: ' + JSON.stringify(vm.report.team));
         }
         function createPassport() {
-            delete vm.report.team[0].required;
-            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
-                return el.name === vm.tclasses.selected;
-            })[0].id;
-            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-            vm.report.investigationDate = vm.investigationDate.toLocaleString();
-            vm.report.engine.new_date = vm.report.engine.new_date.toLocaleString();
-            vm.report.workBegin = vm.workBegin.toLocaleString();
-            vm.report.workEnd = vm.workEnd.toLocaleString();
-
-            Passport.createPassport(vm.report);
+            console.log('investigationDate ' + vm.investigationDate.toLocaleString());
+            console.log('begin ' + vm.workBegin.toLocaleString());
+            console.log('end ' + vm.workEnd.toLocaleString());
+//            return;
+//            delete vm.report.team[0].required;
+//            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
+//                return el.name === vm.tclasses.selected;
+//            })[0].id;
+//            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
+//            vm.report.investigationDate = vm.investigationDate.toLocaleString();
+//            vm.report.engine.new_date = vm.report.engine.new_date.toLocaleString();
+//            vm.report.workBegin = vm.workBegin.toLocaleString();
+//            vm.report.workEnd = vm.workEnd.toLocaleString();
+//
+//            Passport.createPassport(vm.report);
         }
 
         function getEmployees() {
@@ -174,8 +179,21 @@
 
                 input.$viewChangeListeners.push(function () {
                 input.$setValidity('test', input.$modelValue !== 'test');
+                });
             });
-        });
-}
+        }
+
+        function setSelected(selected, item) {
+            var id = item.id,
+                index = selected.indexOf(id);
+            if (index !== -1) {
+                selected.splice(index, 1);
+                item['selected'] = false;
+            } else {
+                item['selected'] = true;
+                selected.push(id);
+            }
+            console.log('Выбраны приборы с id ' + JSON.stringify(selected));
+        }
     }
 })();

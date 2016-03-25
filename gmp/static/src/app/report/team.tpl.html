@@ -1,4 +1,4 @@
-<ng-form name="vm.teamForm" class="form-horizontal">
+<ng-form name="vm.teamForm">
     <h4>Выберите членов бригады&nbsp;
         <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.teamForm.$valid"></i>
     </h4>
@@ -6,26 +6,22 @@
     <div class="form-group" ng-repeat="emp in vm.report.team">
 
         <div ng-class="{ 'has-error': vm.teamForm.employee.$touched && vm.teamForm.employee.$invalid }">
-          <label class="col-sm-2 control-label" for="employee">Работник</label>
-          <div class="col-sm-4">
+          <label class="control-label" for="employee">Работник</label>
               <select class="form-control" placeholder="Работник" ng-required="emp.required" ng-model="emp.name" name="employee" id="employee">
                   <option ng-repeat="employee in vm.allEmployees">{{employee}}</option>
               </select>
-          </div>
           <div class="help-block" role="alert" ng-messages="vm.teamForm.employee.$error" ng-if="vm.teamForm.employee.$touched">
               <div ng-messages-include="/static/src/assets/messages.html"></div>
           </div>
         </div>
 
-          <label class="col-sm-2 control-label" for="rank">Должность</label>
-            <div class="col-sm-4">
+          <label class="control-label" for="rank">Должность</label>
                 <select class="form-control" placeholder="Должность" ng-required="emp.required" ng-model="emp.rank" id="rank">
                     <option ng-repeat="rank in vm.ranks">{{rank}}</option>
                 </select>
-            </div>
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary" ng-click="vm.addEmployee()"> Добавить </button>
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary" ng-disabled="!vm.teamForm.$valid" ng-click="vm.addEmployee()"> Добавить </button>
     </div>
 </ng-form>

@@ -1,12 +1,26 @@
 <ng-form name="vm.engineForm">
   <h4>Выберите двигатель</h4>
 
-    <md-input-container>
-      <label>Двигатель</label>
-      <md-select name="engine" placeholder="Двигатель" required ng-model="vm.report.engine.type">
-            <md-option ng-bind="engine.name" ng-repeat="engine in vm.engine.all"></md-option>
-      </md-select>
-      </md-input-container>
+    <div class="form-group">
+        <div ng-class="{ 'has-error': vm.engineForm.engine.$touched && vm.engineForm.engine.$invalid }">
+          <label class="control-label" for="engine">Двигатель</label>
+              <select class="form-control" placeholder="Двигатель" required ng-model="vm.report.engine.type" name="engine" id="engine">
+                  <option ng-repeat="engine in vm.engine.all">{{engine.name}}</option>
+              </select>
+          <div class="help-block" role="alert" ng-messages="vm.engineForm.engine.$error" ng-if="vm.engineForm.engine.$touched">
+              <div ng-messages-include="/static/src/assets/messages.html"></div>
+          </div>
+        </div>
+    </div>
+
+    <!-- 
+        <md-input-container>
+          <label>Двигатель</label>
+          <md-select name="engine" placeholder="Двигатель" required ng-model="vm.report.engine.type">
+                <md-option ng-bind="engine.name" ng-repeat="engine in vm.engine.all"></md-option>
+          </md-select>
+          </md-input-container>
+     -->
     
 <div class="md-block">
     <md-input-container>
