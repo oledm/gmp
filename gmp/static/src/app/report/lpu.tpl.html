@@ -1,5 +1,7 @@
 <ng-form name="vm.LPUForm" novalidate>
-    <h4>Выберите объект обследования</h4>
+    <h4>Выберите объект обследования&nbsp;
+        <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.LPUForm.$valid"></i>
+    </h4>
 
     <div class="form-group">
         <div ng-class="{ 'has-error': vm.LPUForm.org.$touched && vm.LPUForm.org.$invalid }">
