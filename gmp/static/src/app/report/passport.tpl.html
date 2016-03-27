@@ -26,19 +26,24 @@
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/photos.tpl.html'"
-    >
+    ng-if="vm.docsForm.$valid">
 </div>
-<!-- 
-    
-    
-    ng-include="'/static/src/app/report/therm.tpl.html'"
-    
-    ng-include="'/static/src/app/report/vibro.tpl.html'"
-    
-    ng-include="'/static/src/app/report/resistance.tpl.html'"
-    
-    ng-include="'/static/src/app/report/signers.tpl.html'"
- -->
+
+<div class="block animate-if" ng-include="'/static/src/app/report/therm.tpl.html'"
+    ng-if="vm.imagesForm.$valid">
+</div>
+
+<div class="block animate-if" ng-include="'/static/src/app/report/vibro.tpl.html'"
+    ng-if="vm.thermForm.$valid">
+</div>
+
+<div class="block animate-if" ng-include="'/static/src/app/report/resistance.tpl.html'"
+    ng-if="vm.vibroForm.$valid">
+</div>
+
+<div class="block animate-if" ng-include="'/static/src/app/report/signers.tpl.html'"
+    ng-if="vm.resistanceForm.$valid">
+</div>
 
 <div>
     <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"

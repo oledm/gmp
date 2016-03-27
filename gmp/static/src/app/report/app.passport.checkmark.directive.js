@@ -9,6 +9,11 @@
             require: '^form',
             restrict: 'A',
             link: function(scope, elem, attrs, formController) {
+                console.log('form name ' + formController.$name);
+                if (formController.$name === 'vm.docsForm') {
+                    scope.showCheckmark = true;
+                    return;
+                }
                 scope.$watch(formController.$name + '.$valid', function(newValue, oldValue) {
                     if (newValue) {
                         scope.showCheckmark = true;

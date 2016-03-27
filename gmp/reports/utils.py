@@ -71,11 +71,11 @@ class Report():
     def __init__(self, data):
         #self.full_width = 19.2
         self.data = data
-        self.investigation_date = self.data.get('investigationDate').split(',')[0]
-        self.date_begin = self.data.get('workBegin').split(',')[0]
-        self.date_end = self.data.get('workEnd').split(',')[0]
+        self.investigation_date = self.data.get('investigationDate')
+        self.date_begin = self.data.get('workBegin')
+        self.date_end = self.data.get('workEnd')
         self.data['engine'].update(
-            {'new_date': self.data['engine']['new_date'].split(',')[0]}
+            {'new_date': self.data['engine']['new_date']}
         )
         # Filter empty team members appeared after accident click on 'Add'
         # team's member button
@@ -312,8 +312,9 @@ class Report():
                 'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
             ]
         ]
+        print('measurers:', self.data.get('measurers'))
         for num, measurer in enumerate(self.data.get('measurers'), start=1):
-            meas = Measurer.objects.get(id=measurer['id'])
+            meas = Measurer.objects.get(id=measurer)
             data = [num, *meas.details()]
             template.append(list(map(lambda x: str(x), data)))
         cols = len(template[0])

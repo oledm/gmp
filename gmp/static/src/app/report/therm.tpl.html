@@ -1,75 +1,88 @@
-<ng-form name="vm.thermForm">
-  <h4>Данные тепловизионного контроля</h4>
-   
-    <div layout="row">
-        <md-table-container>
-          <table md-table>
-            <thead md-head>
-              <tr md-row>
-                <th md-column><span>Параметр</span></th>
-                <th md-column><span>Значение</span></th>
-              </tr>
-            </thead>
-            <tbody md-body>
-                <tr md-row>
-                      <td md-cell>Температурный класс</td>
-                      <td md-cell>
-                        <md-select name="tclass" placeholder='Выберите значение' ng-model="vm.tclasses.selected">
-                              <md-option ng-bind="cls.name" ng-repeat="cls in vm.tclasses.all"></md-option>
-                        </md-select>
-                      </td>
-                </tr>
-                <tr md-row>
-                      <td md-cell>Расстояние до объекта, м</td>
-                      <td md-cell
-                          ng-click="vm.enterValue($event, vm.report.therm, 'distance')"
-                          ng-class="{'md-placeholder': !vm.report.therm.distance}">
-                          {{vm.report.therm.distance || 'Введите значение'}}
-                      </td>
-                </tr>
-                <tr md-row>
-                      <td md-cell>Температура окружающей среды, °С</td>
-                      <td md-cell
-                          ng-click="vm.enterValue($event, vm.report.therm, 'temp_env')"
-                          ng-class="{'md-placeholder': !vm.report.therm.temp_env}">
-                          {{vm.report.therm.temp_env || 'Введите значение'}}
-                      </td>
-                </tr>
-                <tr md-row>
-                      <td md-cell>Максимальная температура, °С</td>
-                      <td md-cell
-                          ng-click="vm.enterValue($event, vm.report.therm, 'temp_max')"
-                          ng-class="{'md-placeholder': !vm.report.therm.temp_max}">
-                          {{vm.report.therm.temp_max || 'Введите значение'}}
-                      </td>
-                </tr>
-                <tr md-row>
-                      <td md-cell>Минимальная температура, °С</td>
-                      <td md-cell
-                          ng-click="vm.enterValue($event, vm.report.therm, 'temp_min')"
-                          ng-class="{'md-placeholder': !vm.report.therm.temp_min}">
-                          {{vm.report.therm.temp_min || 'Введите значение'}}
-                      </td>
-                </tr>
-                <tr md-row>
-                      <td md-cell>Средняя температура, °С</td>
-                      <td md-cell
-                          ng-click="vm.enterValue($event, vm.report.therm, 'temp_avg')"
-                          ng-class="{'md-placeholder': !vm.report.therm.temp_avg}">
-                          {{vm.report.therm.temp_avg || 'Введите значение'}}
-                      </td>
-                </tr>
-                <tr md-row>
-                    <td md-cell>Соответствие норме</td>
-                    <td md-cell>
-                      <md-select name="correct" placeholder='Выберите значение' required ng-model="vm.report.therm.correct">
-                            <md-option>Соответствует</md-option>
-                            <md-option>Не соответствует</md-option>
-                      </md-select>
-                    </td>
-              </tr>
-            </tbody>
-          </table>
-        </md-table-container>
+<ng-form name="vm.thermForm" novalidate>
+  <h4 checkmark>Данные тепловизионного контроля</h4>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.thermForm.tclass.$touched && vm.thermForm.tclass.$invalid }"
+                >
+              <label class="control-label" for="tclass">Температурный класс</label>
+              <select class="form-control" required ng-model="vm.tclasses.selected" name="tclass" id="tclass">
+                  <option ng-repeat="cls in vm.tclasses.all">{{cls.name}}</option>
+              </select>
+              <div class="help-block" role="alert" ng-messages="vm.thermForm.tclass.$error" ng-if="vm.thermForm.tclass.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+
+            <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.thermForm.distance.$touched && vm.thermForm.distance.$invalid }"
+                >
+              <label class="control-label" for="distance">Расстояние до объекта, м</label>
+              <input class="form-control" type="text" id="distance" required ng-pattern="/^[0-9.,]*$/"
+                  name="distance" ng-maxlength="50" ng-model="vm.report.therm.distance" />
+              <div class="help-block" role="alert" ng-messages="vm.thermForm.distance.$error" ng-if="vm.thermForm.distance.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+
+            <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.thermForm.temp_env.$touched && vm.thermForm.temp_env.$invalid }"
+                >
+              <label class="control-label" for="temp_env">Температура окружающей среды</label>
+              <input class="form-control" type="text" id="temp_env" required ng-pattern="/^[0-9.,]*$/"
+                  name="temp_env" ng-maxlength="50" ng-model="vm.report.therm.temp_env" />
+              <div class="help-block" role="alert" ng-messages="vm.thermForm.temp_env.$error" ng-if="vm.thermForm.temp_env.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.thermForm.temp_max.$touched && vm.thermForm.temp_max.$invalid }"
+                >
+              <label class="control-label" for="temp_max">Максимальная температура, °С</label>
+              <input class="form-control" type="text" id="temp_max" required ng-pattern="/^[0-9.,]*$/"
+                  name="temp_max" ng-maxlength="50" ng-model="vm.report.therm.temp_max" />
+              <div class="help-block" role="alert" ng-messages="vm.thermForm.temp_max.$error" ng-if="vm.thermForm.temp_max.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+
+            <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.thermForm.temp_min.$touched && vm.thermForm.temp_min.$invalid }"
+                >
+              <label class="control-label" for="temp_min">Минимальная температура, °С</label>
+              <input class="form-control" type="text" id="temp_min" required ng-pattern="/^[0-9.,]*$/"
+                  name="temp_min" ng-maxlength="50" ng-model="vm.report.therm.temp_min" />
+              <div class="help-block" role="alert" ng-messages="vm.thermForm.temp_min.$error" ng-if="vm.thermForm.temp_min.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+
+            <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.thermForm.temp_avg.$touched && vm.thermForm.temp_avg.$invalid }"
+                >
+              <label class="control-label" for="temp_avg">Средняя температура, °С</label>
+              <input class="form-control" type="text" id="temp_avg" required ng-pattern="/^[0-9.,]*$/"
+                  name="temp_avg" ng-maxlength="50" ng-model="vm.report.therm.temp_avg" />
+              <div class="help-block" role="alert" ng-messages="vm.thermForm.temp_avg.$error" ng-if="vm.thermForm.temp_avg.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.thermForm.correct.$touched && vm.thermForm.correct.$invalid }"
+                >
+              <label class="control-label" for="correct">Температурный класс</label>
+              <select class="form-control" required ng-model="vm.report.therm.correct" name="correct" id="correct">
+                  <option>Соответствует</option>
+                  <option>Не соответствует</option>
+              </select>
+              <div class="help-block" role="alert" ng-messages="vm.thermForm.correct.$error" ng-if="vm.thermForm.correct.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
     </div>
 </ng-form>

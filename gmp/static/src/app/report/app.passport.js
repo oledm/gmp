@@ -5,8 +5,8 @@
         .module('app.passport')
         .controller('PassportController', PassportController);
 
-    PassportController.$inject = ['$scope', 'UserData', 'Department', 'Engine', 'Passport', 'Upload'];
-    function PassportController($scope, UserData, Department, Engine, Passport, Upload) {
+    PassportController.$inject = ['$scope', 'UserData', 'Department', 'Engine', 'Passport', 'Upload', '$filter'];
+    function PassportController($scope, UserData, Department, Engine, Passport, Upload, $filter) {
 
         $scope.upload = upload;
 
@@ -98,22 +98,26 @@
         }
         function createPassport() {
 
-            console.log('docs ' + JSON.stringify(vm.report.docs));
+//            console.log('docs ' + JSON.stringify(vm.report.docs));
 //            console.log('investigationDate ' + vm.investigationDate.toLocaleString());
 //            console.log('begin ' + vm.workBegin.toLocaleString());
 //            console.log('end ' + vm.workEnd.toLocaleString());
 //            return;
-//            delete vm.report.team[0].required;
-//            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
-//                return el.name === vm.tclasses.selected;
-//            })[0].id;
-//            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-//            vm.report.investigationDate = vm.investigationDate.toLocaleString();
+            delete vm.report.team[0].required;
+            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
+            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
+                return el.name === vm.tclasses.selected;
+            })[0].id;
+            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
+
+            var datefilter = $filter('date'),
+                dateFormat = 'dd.MM.yyyy';
+            vm.report.investigationDate = datefilter(vm.investigationDate, dateFormat);
 //            vm.report.engine.new_date = vm.report.engine.new_date.toLocaleString();
-//            vm.report.workBegin = vm.workBegin.toLocaleString();
-//            vm.report.workEnd = vm.workEnd.toLocaleString();
-//
-//            Passport.createPassport(vm.report);
+            vm.report.workBegin = datefilter(vm.workBegin, dateFormat);
+            vm.report.workEnd = datefilter(vm.workEnd, dateFormat);
+
+            Passport.createPassport(vm.report);
         }
 
         function getEmployees() {

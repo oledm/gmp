@@ -1,47 +1,37 @@
-<ng-form name="vm.signersForm">
-  <h4>Данные подписантов</h4>
-
-<div layout="row" layout-align="begin center">
-    <span>Кто утверждает (должность):&nbsp;&nbsp;&nbsp;</span>
-    <md-input-container>
-      <label>Должность</label>
-      <textarea name="approve_rank" ng-model="vm.report.signers.approve.rank" required md-maxlength="100"></textarea>
-      <div ng-messages="vm.report.signers.approve.rank.$error">
-        <div ng-message="pattern">Неверное значение</div>
-      </div>
-    </md-input-container>
-</div>
-
-<div layout="row" layout-align="begin center">
-    <span>Кто утверждает (ФИО):&nbsp;&nbsp;&nbsp;</span>
-    <md-input-container>
-      <label>ФИО</label>
-      <input required name="approve_fio" ng-model="vm.report.signers.approve.fio" />
-      <div ng-messages="vm.report.signers.approve.fio.$error">
-        <div ng-message="pattern">Неверное значение</div>
-      </div>
-    </md-input-container>
-</div>
-
-<div layout="row" layout-align="begin center">
-    <span>Подписант из службы (должность):&nbsp;&nbsp;&nbsp;</span>
-    <md-input-container>
-      <label>Должность</label>
-      <textarea name="signer_rank" ng-model="vm.report.signers.signer.rank" required md-maxlength="100"></textarea>
-      <div ng-messages="vm.report.signers.signer.rank.$error">
-        <div ng-message="pattern">Неверное значение</div>
-      </div>
-    </md-input-container>
-</div>
-
-<div layout="row" layout-align="begin center">
-    <span>Подписант из службы (ФИО):&nbsp;&nbsp;&nbsp;</span>
-    <md-input-container>
-      <label>ФИО</label>
-      <input required name="signer_fio" ng-model="vm.report.signers.signer.fio" />
-      <div ng-messages="vm.report.signers.signer.fio.$error">
-        <div ng-message="pattern">Неверное значение</div>
-      </div>
-    </md-input-container>
-</div>
+<ng-form name="vm.signersForm" novalidate>
+  <h4 checkmark>Данные подписантов</h4>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.signersForm.approve_rank.$touched && vm.signersForm.approve_rank.$invalid }">
+              <label class="control-label" for="approve_rank">Кто утверждает (должность)</label>
+              <textarea class="form-control" type="text" id="approve_rank" required name="approve_rank" ng-maxlength="100" ng-model="vm.report.signers.approve.rank" />
+              <div class="help-block" role="alert" ng-messages="vm.signersForm.approve_rank.$error" ng-if="vm.signersForm.approve_rank.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.signersForm.approve_fio.$touched && vm.signersForm.approve_fio.$invalid }">
+              <label class="control-label" for="approve_fio">Кто утверждает (ФИО)</label>
+              <input class="form-control" type="text" id="approve_fio" required name="approve_fio" ng-maxlength="30" ng-model="vm.report.signers.approve.fio" />
+              <div class="help-block" role="alert" ng-messages="vm.signersForm.approve_fio.$error" ng-if="vm.signersForm.approve_fio.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.signersForm.signer_rank.$touched && vm.signersForm.signer_rank.$invalid }">
+              <label class="control-label" for="signer_rank">Подписант из службы (должность)</label>
+              <textarea class="form-control" type="text" id="signer_rank" required name="signer_rank" ng-maxlength="100" ng-model="vm.report.signers.signer.rank" />
+              <div class="help-block" role="alert" ng-messages="vm.signersForm.signer_rank.$error" ng-if="vm.signersForm.signer_rank.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.signersForm.signer_fio.$touched && vm.signersForm.signer_fio.$invalid }">
+              <label class="control-label" for="signer_fio">Подписант из службы (ФИО)</label>
+              <input class="form-control" type="text" id="signer_fio" required name="signer_fio" ng-maxlength="30" ng-model="vm.report.signers.signer.fio" />
+              <div class="help-block" role="alert" ng-messages="vm.signersForm.signer_fio.$error" ng-if="vm.signersForm.signer_fio.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
 </ng-form>
