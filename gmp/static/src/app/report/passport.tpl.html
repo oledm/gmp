@@ -2,63 +2,63 @@
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/measurers.tpl.html'"
-     ng-if="vm.teamForm.$valid">
+      >
 </div>
     
 <div class="block animate-if" ng-include="'/static/src/app/report/lpu.tpl.html'"
-    ng-if="vm.measurers.selected.length > 0">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/dates.tpl.html'"
-    ng-if="vm.LPUForm.$valid">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/engines.tpl.html'"
-    ng-if="vm.datesForm.$valid">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/values.tpl.html'"
-    ng-if="vm.engineForm.$valid">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/docs.tpl.html'"
-    ng-if="vm.valuesForm.$valid">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/photos.tpl.html'"
-    ng-if="vm.docsForm.$valid">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/therm.tpl.html'"
-    ng-if="vm.imagesForm.$valid">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/vibro.tpl.html'"
-    ng-if="vm.thermForm.$valid">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/resistance.tpl.html'"
-    ng-if="vm.vibroForm.$valid">
+    >
 </div>
 
 <div class="block animate-if" ng-include="'/static/src/app/report/signers.tpl.html'"
-    ng-if="vm.resistanceForm.$valid">
+    >
 </div>
 
-<div>
+<div class="block text-center">
     <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
-        ng-if="
-        vm.teamForm.$valid &&
-        vm.engines.selected.length !== 0 &&
-        vm.LPUForm.$valid &&
-        vm.datesForm.$valid &&
-        vm.engineForm.$valid &&
-        vm.valuesForm.$valid &&
-        vm.imagesForm.$valid &&
-        vm.thermForm.$valid &&
-        vm.vibroForm.$valid &&
-        vm.resistanceForm.$valid &&
-        vm.signersForm.$valid
+        ng-disabled="
+        vm.teamForm.$invalid ||
+        vm.engines.selected.length === 0 ||
+        vm.LPUForm.$invalid ||
+        vm.datesForm.$invalid ||
+        vm.engineForm.$invalid ||
+        vm.valuesForm.$invalid ||
+        vm.imagesForm.$invalid ||
+        vm.thermForm.$invalid ||
+        vm.vibroForm.$invalid ||
+        vm.resistanceForm.$invalid ||
+        vm.signersForm.$invalid
         "
         > Создать паспорт 
     </button>    
@@ -66,6 +66,7 @@
         <md-button ng-if="vm.LPUForm.$valid && vm.datesForm.$valid && vm.engineForm.$valid && vm.valuesForm.$valid && vm.imagesForm.$valid && vm.thermForm.$valid && vm.vibroForm.$valid && vm.resistanceForm.$valid && vm.signersForm.$valid" ng-click="vm.createPassport()" class="md-raised md-primary"> Создать паспорт 
      -->
 </div>
+<div class="block"></div>
  
 <a target="_self" ng-href="/report/">
 </a>

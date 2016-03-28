@@ -1,5 +1,6 @@
 from functools import partial
 import locale
+from datetime import datetime
 
 from django.conf import settings
 
@@ -67,16 +68,17 @@ def header(canvas, doc, content):
     content.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
     canvas.restoreState()
 
+
 class Report():
     def __init__(self, data):
-        #self.full_width = 19.2
         self.data = data
-        self.investigation_date = self.data.get('investigationDate')
+        self.format_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
+        self.format_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
+        self.format_dates(self.data['engine'], ('new_date',))
+
         self.date_begin = self.data.get('workBegin')
         self.date_end = self.data.get('workEnd')
-        self.data['engine'].update(
-            {'new_date': self.data['engine']['new_date']}
-        )
+        self.investigation_date = self.data.get('investigationDate')
         # Filter empty team members appeared after accident click on 'Add'
         # team's member button
         self.data['team'] = list(filter(lambda x: x['name'], self.data.get('team')))
@@ -84,6 +86,11 @@ class Report():
 
         self.obj_data = self.data['obj_data']
         self.styles = getSampleStyleSheet()
+
+    def format_dates(self, d, keys, format_='%d.%m.%Y'):
+        for key in keys:
+            dt = datetime.strptime(d[key].split('T')[0], '%Y-%m-%d')
+            d[key] = dt.strftime(format_)
 
     def make_report(self, report):
         doc = BaseDocTemplate(report, pagesize=A4,
@@ -373,46 +380,45 @@ class Report():
         self.formular('3 Паспортные данные')
 
         data = self.data.get('engine')
-        serial = data.get('serial_number')
-        manufactured = data.get('manufactured_at')
-        started = data.get('started_at')
         engine = Engine.objects.get(name=data.get('type'))
-        moments = engine.random_data.get('moments')
+        engine_data = engine.details()
+        random_data = engine.random_data.get('moments')
 
-        table_data = [
-            ['Тип', engine.name],
-            ['Исполнение по взрывозащите', str(engine.ex)],
-            ['Допустимый диапазон температуры окружающей среды, °С', '{}ºС...+{}ºС'.format(engine.temp_low, engine.temp_high)],
-            ['Заводской номер', serial],
-            ['Завод &ndash; изготовитель', str(engine.factory)],
-            ['Год изготовления', manufactured],
-            ['Год ввода в эксплуатацию', started],
-            ['Соединение фаз', str(engine.connection.get())],
-            ['Номинальная мощность, кВт', '{0:g}'.format(engine.power)],
-            ['Номинальное напряжение, В', str(engine.voltage)],
-            ['Номинальный ток статора, А', loc(engine.current)],
-            ['Номинальная частота вращения, об/мин', str(engine.freq)],
-            ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(engine.freq)],
-            ['Отношение начального пускового тока к номинальному току', str(moments.get('fraction_initial_current'))],
-            ['Отношение максимального вращающего момента к номинальному вращающему моменту', str(moments.get('fraction_max_spin_moment'))],
-            ['Коэффициент полезного действия, %', loc(engine.kpd)],
-            ['Коэффициент мощности, cosφ', loc(engine.coef_power)],
-            ['Класс нагревостойкости изоляции', str(engine.warming_class)],
-            ['Масса двигателя, кг', str(engine.weight)],
+        template = [
+            ['Тип', '{name}'],
+            ['Исполнение по взрывозащите', '{ex}'],
+            ['Допустимый диапазон температуры окружающей среды, °С', '{temp_low}ºС...+{temp_high}ºС'],
+            ['Заводской номер', '{serial_number}'],
+            ['Завод &ndash; изготовитель', '{factory}'],
+            ['Год изготовления', '{manufactured_at}'],
+            ['Год ввода в эксплуатацию', '{started_at}'],
+            ['Соединение фаз', '{connection}'],
+            ['Номинальная мощность, кВт', '{power}'],
+            ['Номинальное напряжение, В', '{voltage}'],
+            ['Номинальный ток статора, А', '{current}'],
+            ['Номинальная частота вращения, об/мин', '{freq}'],
+            ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(random_data.get('fraction_nominal_moment'))],
+            ['Отношение начального пускового тока к номинальному току', str(random_data.get('fraction_initial_current'))],
+            ['Отношение максимального вращающего момента к номинальному вращающему моменту', str(random_data.get('fraction_max_spin_moment'))],
+            ['Коэффициент полезного действия, %', '{kpd}'],
+            ['Коэффициент мощности, cosφ', '{coef_power}'],
+            ['Класс нагревостойкости изоляции', '{warming_class}'],
+            ['Масса двигателя, кг', '{weight}']
         ]
-
-        table = Table(
-            self.preetify(table_data, 'Regular', 'Regular Center'),
-            colWidths=self.columnize(5,5)
-        )
-        table.hAlign = 'LEFT'
+        rows = len(template)
+        styles = [
+            *[['Regular'] + ['Regular Center']] * rows
+        ]
+        data.update(engine_data)
+        table_data = values(template, data)
+        table = self.table(table_data, styles, [5, 5], styleTable=True)
         table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+            ('TOPPADDING', (0,0), (-1,-1), 2),
         ]))
+        table.hAlign = 'LEFT'
         self.Story.append(table)
-        self.Story.append(Spacer(1, 1 * cm))
+        self.Story.append(Spacer(1, 0.5 * cm))
 
     def page9(self):
         self.Story.append(PageBreak())

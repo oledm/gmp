@@ -18,6 +18,26 @@ class EngineDataGenerator(models.Model):
     class Meta:
         abstract = True
 
+    def details(self):
+        return {
+            'coef_power': loc(self.coef_power),
+            'current': loc(self.current),
+            'freq': self.freq,
+            'kpd': loc(self.kpd),
+            'meters': self.meters,
+            'scheme': self.scheme,
+            'temp_high': self.temp_high,
+            'temp_low': self.temp_low,
+            'voltage': self.voltage,
+            'weight': self.weight,
+            'name': self.name,
+            'power': loc(self.power),
+            'resistance_isolation': self.resistance_isolation,
+            'ex': self.ex,
+            'connection': self.connection.get(),
+            'factory': self.factory,
+            'warming_class': self.warming_class,
+        }
     # Техническое состояние элементов
     def control_zones(self):
         return {
