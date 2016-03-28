@@ -80,21 +80,17 @@
         }
 
         function updateSuccess(response) {
-            // TODO Only for demo purpose updating DB is delayed for 700ms.
-            // Remove this later!
-            return $timeout(function() {
-                userdata.isLoading = false;
-                userdata.updateSuccessfull = true;
+            userdata.isLoading = false;
+            userdata.updateSuccessfull = true;
 
-                // OK-indicator will be shown for 3 seconds
-                $timeout(function() {
-                    userdata.updateSuccessfull = false;
-                }, 3000);
+            // OK-indicator will be shown for 3 seconds
+            $timeout(function() {
+                userdata.updateSuccessfull = false;
+            }, 3000);
 
 //                console.log('Data from update: %s', JSON.stringify(response.data));
 //                console.log('Status from update: %s', response.status);
-                return response.data;
-            }, 700);
+            return response.data;
         }
 
         function updateFailed(e) {

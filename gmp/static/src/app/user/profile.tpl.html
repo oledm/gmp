@@ -1,68 +1,71 @@
-<md-card class="md-padding" flex flex-gt-md="70" flex-gt-lg="40" flex-lg="50" >
-    <form name="userForm" class="md-padding">
-        <!-- 
-            <md-input-container class="md-block" flex-gt-sm>
-              <label>Отдел</label>
-                <md-select name="department" placeholder="Отдел" ng-model="vm.userdata.data.department.name">
-                    <md-option ng-bind="d.name" ng-repeat="d in vm.allDeps | orderBy: 'name'" ng-selected="d.name === vm.userdata.data.department.name"></md-option>
-                </md-select>
-            </md-input-container>
-         -->
- 
-        <md-input-container class="md-block" flex-gt-sm>
-          <label>Имя</label>
-          <input md-maxlength="50" name="first_name" ng-model="vm.userdata.data.first_name" />
-          <div ng-messages="userForm.first_name.$error">
-            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-          </div>
-        </md-input-container>
- 
-        <md-input-container class="md-block" flex-gt-sm>
-          <label>Фамилия</label>
-          <input md-maxlength="50" name="last_name" ng-model="vm.userdata.data.last_name" />
-          <div ng-messages="userForm.last_name.$error">
-            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-          </div>
-        </md-input-container>
- 
-        <md-input-container class="md-block" flex-gt-sm>
-          <label>Отчество</label>
-          <input md-maxlength="50" name="last_name" ng-model="vm.userdata.data.middle_name" />
-          <div ng-messages="userForm.middle_name.$error">
-            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-          </div>
-        </md-input-container>
-
-        <md-input-container class="md-block" flex-gt-sm>
-          <label>E-mail</label>
-          <input type="email" md-maxlength="50" name="email" ng-model="vm.userdata.data.email" />
-          <div ng-messages="userForm.email.$error">
-            <div ng-message="email">Некорректно указан email</div>
-            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-          </div>
-        </md-input-container>
- 
-        <md-input-container class="md-block" flex-gt-sm>
-          <label>Пароль</label>
-          <input type="password" md-maxlength="50" name="password" ng-model="vm.password" />
-          <div ng-messages="userForm.password.$error">
-            <div ng-message="md-maxlength">Длина поля не более 50 символов</div>
-          </div>
-        </md-input-container>
-
-        
-
-
-
-          <div layout="row" layout-align="start center">
-        <md-button type="submit" class="md-raised" ng-click="vm.updateProfile()" ng-disabled="vm.userdata.isLoading || userForm.$invalid"> Сохранить 
-            <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.userdata.updateSuccessfull"></i>
-        </md-button>    
-            <div>
-            <md-progress-circular ng-show="vm.userdata.isLoading" md-mode="indeterminate"></md-progress-circular>
+<form name="userForm" novalidate>
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+            <div class="form-group" ng-class="{ 'has-error': userForm.first_name.$touched && userForm.first_name.$invalid }">
+              <label for="first_name">Имя</label>
+              <input class="form-control" type="text" id="first_name" name="first_name" ng-maxlength="50" ng-model="vm.userdata.data.first_name" />
+              <div class="help-block" role="alert" ng-messages="userForm.first_name.$error" ng-if="userForm.first_name.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
             </div>
-          </div>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+            <div class="form-group" ng-class="{ 'has-error': userForm.last_name.$touched && userForm.last_name.$invalid }">
+              <label for="last_name">Фамилия</label>
+              <input class="form-control" type="text" id="last_name" md-maxlength="50" name="last_name" ng-model="vm.userdata.data.last_name" />
+              <div class="help-block" role="alert" ng-messages="userForm.last_name.$error" ng-if="userForm.last_name.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
 
-    </form>
-</md-card>
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+            <div class="form-group" ng-class="{ 'has-error': userForm.middle_name.$touched && userForm.middle_name.$invalid }">
+              <label for="middle_name">Отчество</label>
+              <input class="form-control" type="text" id="middle_name" md-maxlength="50" name="middle_name" ng-model="vm.userdata.data.middle_name" />
+              <div class="help-block" role="alert" ng-messages="userForm.middle_name.$error" ng-if="userForm.middle_name.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+            <div class="form-group" ng-class="{ 'has-error': userForm.email.$touched && userForm.email.$invalid }">
+              <label for="email">Отчество</label>
+              <input class="form-control" type="email" id="email" md-maxlength="50" name="email" ng-model="vm.userdata.data.email" />
+              <div class="help-block" role="alert" ng-messages="userForm.email.$error" ng-if="userForm.email.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+            <div class="form-group" ng-class="{ 'has-error': userForm.password.$touched && userForm.password.$invalid }">
+              <label for="password">Пароль</label>
+              <input class="form-control" type="password" id="password" md-maxlength="50" name="password" ng-model="vm.password" />
+              <div class="help-block" role="alert" ng-messages="userForm.password.$error" ng-if="userForm.password.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+                <button type="submit" class="btn btn-primary" ng-click="vm.updateProfile()" ng-disabled="vm.userdata.isLoading || userForm.$invalid || vm.userdata.updateSuccessfull">Сохранить
+                    <i class="icon ion-checkmark" style="color: #00e676" ng-show="vm.userdata.updateSuccessfull"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

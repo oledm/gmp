@@ -45,7 +45,7 @@
     >
 </div>
 
-<div class="block text-center">
+<div class="block text-center" ng-cloak>
     <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
         ng-disabled="
         vm.teamForm.$invalid ||
@@ -62,16 +62,8 @@
         "
         > Создать паспорт 
     </button>    
-    <!-- 
-        <md-button ng-if="vm.LPUForm.$valid && vm.datesForm.$valid && vm.engineForm.$valid && vm.valuesForm.$valid && vm.imagesForm.$valid && vm.thermForm.$valid && vm.vibroForm.$valid && vm.resistanceForm.$valid && vm.signersForm.$valid" ng-click="vm.createPassport()" class="md-raised md-primary"> Создать паспорт 
-     -->
 </div>
 <div class="block"></div>
  
 <a target="_self" ng-href="/report/">
 </a>
-
-<!-- 
-    <md-button type="submit" class="animate-repeat md-raised md-primary" ng-if="vm.engines.selected.length !== 0"> Создать паспорт 
-    </md-button>    
- -->

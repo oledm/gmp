@@ -7,7 +7,7 @@ from django.conf import settings
 from PIL import Image as PILImage
 import environ
 
-from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT
+from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak, XPreformatted, NextPageTemplate
 from reportlab.platypus.doctemplate import BaseDocTemplate, PageTemplate
@@ -27,6 +27,54 @@ from gmp.filestorage.models import UploadedFile
 
 locale.setlocale(locale.LC_ALL, "")
 loc = partial(locale.format, "%.2f")
+
+
+
+
+
+
+
+
+from reportlab.platypus.flowables import Flowable
+from reportlab.lib.colors import tan, green
+class HandAnnotation(Flowable):
+    '''A hand flowable.'''
+    def __init__(self, xoffset=0, size=None, fillcolor=tan, strokecolor=green):
+        from reportlab.lib.units import inch
+        if size is None: size=4*inch
+        self.fillcolor, self.strokecolor = fillcolor, strokecolor
+        self.xoffset = xoffset
+        self.size = size
+        # normal size is 4 inches
+        self.scale = size/(4.0*inch)
+
+    def wrap(self, *args):
+        return (self.xoffset, self.size)
+
+    def draw(self):
+        canvas = self.canv
+        canvas.setLineWidth(6)
+        canvas.setFillColor(self.fillcolor)
+        canvas.setStrokeColor(self.strokecolor)
+        canvas.translate(self.xoffset+self.size,0)
+        canvas.rotate(90)
+        canvas.scale(self.scale, self.scale)
+        hand(canvas, debug=0, fill=1)
+
+
+class DoubledLine(Flowable):
+    def __init__(self, width, height=0):
+        Flowable.__init__(self)
+        self.width = width
+        self.height = height
+ 
+    def __repr__(self):
+        return "Line(w=%s)" % self.width
+ 
+    def draw(self):
+        self.canv.line(0, self.height, self.width, self.height)
+        self.canv.line(0, self.height + 2, self.width, self.height + 2)
+
 
 class StaticText():
     @staticmethod
@@ -72,9 +120,9 @@ def header(canvas, doc, content):
 class Report():
     def __init__(self, data):
         self.data = data
-        self.format_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
-        self.format_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
-        self.format_dates(self.data['engine'], ('new_date',))
+        self.format_JS_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
+        self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
+        self.format_JS_dates(self.data['engine'], ('new_date',))
 
         self.date_begin = self.data.get('workBegin')
         self.date_end = self.data.get('workEnd')
@@ -87,7 +135,7 @@ class Report():
         self.obj_data = self.data['obj_data']
         self.styles = getSampleStyleSheet()
 
-    def format_dates(self, d, keys, format_='%d.%m.%Y'):
+    def format_JS_dates(self, d, keys, format_='%d.%m.%Y'):
         for key in keys:
             dt = datetime.strptime(d[key].split('T')[0], '%Y-%m-%d')
             d[key] = dt.strftime(format_)
@@ -108,7 +156,7 @@ class Report():
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
-        #self.page2()
+        self.page2()
         self.page3()
         self.page4()
         self.page5_6()
@@ -140,12 +188,15 @@ class Report():
         doc.build(self.Story)
 
     def page1(self):
-        ptext = 'ПАО "ГАЗПРОМ"<br/>РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»'
-        self.Story.append(Paragraph(ptext, self.styles["Heading 1 Bold"]))
+        #ptext = 'ПАО "ГАЗПРОМ"<br/>РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»'
+        #self.Story.append(Paragraph(ptext, self.styles["Heading 1 Bold"]))
+        self.put('ПАО "ГАЗПРОМ"', 'Heading 1 Bold')
+        self.Story.append(DoubledLine(self.full_width))
+        self.put('РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»', 'Heading 1 Bold')
+
         self.Story.append(Spacer(1, 0.5 * cm))
 
         signers = self.data['signers']['approve']
-
         date_string = '"____"{:_>21}'.format('_') + '201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;г'
         fio_string = '{fio:_>32}'
         first_col = ['"Согласовано"', '{rank}', fio_string,
@@ -218,6 +269,43 @@ class Report():
         ]))
         self.Story.append(table)
 
+    def page2(self):
+        self.Story.append(PageBreak())
+        self.put('Содержание', 'Regular Bold Center', 0.5)
+
+        data = (
+            ('ФОРМУЛЯР № 1', 'Регистрация работ', '3'),
+            ('ФОРМУЛЯР № 2', 'Документация, предоставленная заказчиком при выполнении работ', '7'),
+            ('ФОРМУЛЯР № 3', 'Паспортные данные', '8'),
+            ('ФОРМУЛЯР № 4', 'Данные заводских замеров и приёмо-сдаточных испытаний', '9'),
+            ('ФОРМУЛЯР № 5', 'Общий вид электродвигателя', '10'),
+            ('ФОРМУЛЯР № 6', 'Конструктивная схема электродвигателя. Электрическая схема подключения электродвигателя', '11'),
+            ('ФОРМУЛЯР № 7', 'Тепловизионный контроль. Определение соответствия электродвигателя температурному классу', '12'),
+            ('ФОРМУЛЯР № 8', 'Вибрационный контроль электродвигателя', '13'),
+            ('ФОРМУЛЯР № 9-1', 'Визуальный и измерительный контроль электродвигателя', '14'),
+            ('ФОРМУЛЯР № 9-2', 'Контроль параметров взрывозащиты', '16'),
+            ('ФОРМУЛЯР № 10', 'Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя', '17'),
+            ('ФОРМУЛЯР № 11', 'Измерение сопротивления обмотки статора постоянному току', '18'),
+            ('ФОРМУЛЯР № 12', 'Измерение сопротивления изоляции обмотки статора', '18'),
+            ('ФОРМУЛЯР № 13', 'Рекомендации по ремонту и эксплуатации', '19'),
+            ('ФОРМУЛЯР № 14', 'Заключение', '20'),
+            ('ФОРМУЛЯР № 14', 'Заключение', '20'),
+            ('ФОРМУЛЯР № 15', 'Выполненные мероприятия в процессе проведения работ', '21'),
+            ('ПРИЛОЖЕНИЕ 1', 'Сведения об эксплуатации электродвигателя', '22'),
+            ('ПРИЛОЖЕНИЕ 2', 'Сведения об испытаниях электродвигателя', '23'),
+            ('ПРИЛОЖЕНИЕ 3', 'Сведения о ремонтах электродвигателя', '24'),
+        )
+        rows = len(data)
+        styles = [
+            *[['Regular12', 'Regular', 'Regular Right']] * rows
+        ]
+        table_data = values(data, {})
+        table = self.table(table_data, styles, [2, 7, 1])
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ]))
+        self.Story.append(table)
+        #self.Story.append(Spacer(1, 0.5 * cm))
 
     def page3(self):
         self.Story.append(PageBreak())
@@ -1119,11 +1207,23 @@ class Report():
             leading=13,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
+            name='Regular12',
+            fontName='Times',
+            fontSize=12,
+            leading=13,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
             name='Regular Center',
             fontName='Times',
             fontSize=13,
             leading=16,
             alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Regular Right',
+            fontName='Times',
+            fontSize=13,
+            leading=16,
+            alignment=TA_RIGHT))
         self.styles.add(ParagraphStyle(
             name='Regular Justified',
             fontName='Times',

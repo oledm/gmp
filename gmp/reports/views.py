@@ -76,10 +76,6 @@ def create_report_debug(request):
  'investigationDate': '2016-03-18T00:00:00.000Z',
  'workBegin': '2016-03-11T00:00:00.000Z',
  'workEnd': '2016-04-08T00:00:00.000Z'}
-
-
-
-
     
     data = fake
     response = HttpResponse(content_type='application/pdf')
