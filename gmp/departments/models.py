@@ -28,9 +28,12 @@ class Measurer(models.Model):
         return '{} {}'.format(self.name, self.model)
 
     def details(self):
-        return [
+        return (
             self.description(),
             self.serial_number,
             self.verification,
             self.expired_at.strftime('%d.%m.%Y'),
-        ]
+        )
+
+    class Meta():
+        ordering = ['name', 'serial_number']

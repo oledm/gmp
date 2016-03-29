@@ -11,6 +11,7 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak, XPreformatted, NextPageTemplate
 from reportlab.platypus.doctemplate import BaseDocTemplate, PageTemplate
+from reportlab.platypus.flowables import Flowable
 from reportlab.platypus.frames import Frame
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
@@ -28,40 +29,6 @@ from gmp.filestorage.models import UploadedFile
 locale.setlocale(locale.LC_ALL, "")
 loc = partial(locale.format, "%.2f")
 
-
-
-
-
-
-
-
-from reportlab.platypus.flowables import Flowable
-from reportlab.lib.colors import tan, green
-class HandAnnotation(Flowable):
-    '''A hand flowable.'''
-    def __init__(self, xoffset=0, size=None, fillcolor=tan, strokecolor=green):
-        from reportlab.lib.units import inch
-        if size is None: size=4*inch
-        self.fillcolor, self.strokecolor = fillcolor, strokecolor
-        self.xoffset = xoffset
-        self.size = size
-        # normal size is 4 inches
-        self.scale = size/(4.0*inch)
-
-    def wrap(self, *args):
-        return (self.xoffset, self.size)
-
-    def draw(self):
-        canvas = self.canv
-        canvas.setLineWidth(6)
-        canvas.setFillColor(self.fillcolor)
-        canvas.setStrokeColor(self.strokecolor)
-        canvas.translate(self.xoffset+self.size,0)
-        canvas.rotate(90)
-        canvas.scale(self.scale, self.scale)
-        hand(canvas, debug=0, fill=1)
-
-
 class DoubledLine(Flowable):
     def __init__(self, width, height=0):
         Flowable.__init__(self)
@@ -74,7 +41,6 @@ class DoubledLine(Flowable):
     def draw(self):
         self.canv.line(0, self.height, self.width, self.height)
         self.canv.line(0, self.height + 2, self.width, self.height + 2)
-
 
 class StaticText():
     @staticmethod
@@ -188,8 +154,6 @@ class Report():
         doc.build(self.Story)
 
     def page1(self):
-        #ptext = 'ПАО "ГАЗПРОМ"<br/>РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»'
-        #self.Story.append(Paragraph(ptext, self.styles["Heading 1 Bold"]))
         self.put('ПАО "ГАЗПРОМ"', 'Heading 1 Bold')
         self.Story.append(DoubledLine(self.full_width))
         self.put('РОССИЙСКАЯ ФЕДЕРАЦИЯ<br/>ООО «ГАЗМАШПРОЕКТ»', 'Heading 1 Bold')
@@ -228,8 +192,6 @@ class Report():
         ]))
         self.Story.append(table)
         self.Story.append(Spacer(1, 1.0 * cm))
-
-
 
         self.mput([
             'ПАСПОРТ 1-2/1715-10-14',
@@ -305,7 +267,6 @@ class Report():
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         ]))
         self.Story.append(table)
-        #self.Story.append(Spacer(1, 0.5 * cm))
 
     def page3(self):
         self.Story.append(PageBreak())

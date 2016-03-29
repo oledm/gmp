@@ -1,69 +1,29 @@
-<div class="block animate-if" ng-include="'/static/src/app/report/team.tpl.html'">
-</div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/measurers.tpl.html'"
-      >
-</div>
+<div ng-cloak>
+    <h3 class="block text-center">Формирование {{vm.reportType}}</h3>
     
-<div class="block animate-if" ng-include="'/static/src/app/report/lpu.tpl.html'"
-    >
-</div>
+    <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
+    
+    <div class="block text-center" ng-cloak>
+        <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
+            ng-disabled="
+            vm.teamForm.$invalid ||
+            vm.engines.selected.length === 0 ||
+            vm.LPUForm.$invalid ||
+            vm.datesForm.$invalid ||
+            vm.engineForm.$invalid ||
+            vm.valuesForm.$invalid ||
+            vm.imagesForm.$invalid ||
+            vm.thermForm.$invalid ||
+            vm.vibroForm.$invalid ||
+            vm.resistanceForm.$invalid ||
+            vm.signersForm.$invalid
+            "
+            > Создать
+        </button>    
+    </div>
 
-<div class="block animate-if" ng-include="'/static/src/app/report/dates.tpl.html'"
-    >
+    <div class="block"></div>
+     
+    <a target="_self" ng-href="/report/">
+    </a>
 </div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/engines.tpl.html'"
-    >
-</div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/values.tpl.html'"
-    >
-</div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/docs.tpl.html'"
-    >
-</div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/photos.tpl.html'"
-    >
-</div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/therm.tpl.html'"
-    >
-</div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/vibro.tpl.html'"
-    >
-</div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/resistance.tpl.html'"
-    >
-</div>
-
-<div class="block animate-if" ng-include="'/static/src/app/report/signers.tpl.html'"
-    >
-</div>
-
-<div class="block text-center" ng-cloak>
-    <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
-        ng-disabled="
-        vm.teamForm.$invalid ||
-        vm.engines.selected.length === 0 ||
-        vm.LPUForm.$invalid ||
-        vm.datesForm.$invalid ||
-        vm.engineForm.$invalid ||
-        vm.valuesForm.$invalid ||
-        vm.imagesForm.$invalid ||
-        vm.thermForm.$invalid ||
-        vm.vibroForm.$invalid ||
-        vm.resistanceForm.$invalid ||
-        vm.signersForm.$invalid
-        "
-        > Создать паспорт 
-    </button>    
-</div>
-<div class="block"></div>
- 
-<a target="_self" ng-href="/report/">
-</a>

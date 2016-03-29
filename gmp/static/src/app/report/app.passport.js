@@ -5,8 +5,8 @@
         .module('app.passport')
         .controller('PassportController', PassportController);
 
-    PassportController.$inject = ['$scope', 'UserData', 'Department', 'Engine', 'Passport', 'Upload'];
-    function PassportController($scope, UserData, Department, Engine, Passport, Upload) {
+    PassportController.$inject = ['$scope', '$state', 'UserData', 'Department', 'Engine', 'Passport', 'Upload'];
+    function PassportController($scope, $state, UserData, Department, Engine, Passport, Upload) {
 
         $scope.upload = upload;
 
@@ -39,11 +39,32 @@
                 sortOrder: 'name'
             };
 
+        vm.pages = [
+            'team.tpl.html',
+            'measurers.tpl.html',
+            'lpu.tpl.html',
+            'dates.tpl.html',
+            'engines.tpl.html',
+            'values.tpl.html',
+            'docs.tpl.html',
+            'photos.tpl.html',
+            'therm.tpl.html',
+            'vibro.tpl.html',
+            'resistance.tpl.html',
+            'signers.tpl.html'
+        ];
+
+        if ($state.is('passport')) {
+            vm.reportType = 'паспорта двигателя';
+        } else if ($state.is('report')) {
+            vm.reportType = 'экспертного заключения';
+        }
+
+
         vm.addEmployee = addEmployee;
         vm.allEmployees = [];
         vm.createPassport = createPassport;
         vm.engine = engine;
-        vm.enterValue = enterValue;
         vm.setSelected = setSelected;
         vm.workBegin = undefined;
         vm.workEnd = undefined;
@@ -162,34 +183,34 @@
                 });
         }
 
-        function enterValue(event, param, prop) {
-            event.stopPropagation();
-
-            var promise = $mdEditDialog.small({
-                modelValue: param[prop],
-                placeholder: 'Введите значение',
-                save: function (input) {
-                param[prop] = input.$modelValue;
-            },
-            targetEvent: event,
-            validators: {
-                'md-maxlength': 30,
-                'ng-pattern': '/^[0-9.,]*$/'
-            },
-            messages: {
-                'md-maxlength': 'Слишком большое значение',
-                'required': 'Обязательное значение'
-            }
-            });
-
-            promise.then(function (ctrl) {
-                var input = ctrl.getInput();
-
-                input.$viewChangeListeners.push(function () {
-                input.$setValidity('test', input.$modelValue !== 'test');
-                });
-            });
-        }
+//        function enterValue(event, param, prop) {
+//            event.stopPropagation();
+//
+//            var promise = $mdEditDialog.small({
+//                modelValue: param[prop],
+//                placeholder: 'Введите значение',
+//                save: function (input) {
+//                param[prop] = input.$modelValue;
+//            },
+//            targetEvent: event,
+//            validators: {
+//                'md-maxlength': 30,
+//                'ng-pattern': '/^[0-9.,]*$/'
+//            },
+//            messages: {
+//                'md-maxlength': 'Слишком большое значение',
+//                'required': 'Обязательное значение'
+//            }
+//            });
+//
+//            promise.then(function (ctrl) {
+//                var input = ctrl.getInput();
+//
+//                input.$viewChangeListeners.push(function () {
+//                input.$setValidity('test', input.$modelValue !== 'test');
+//                });
+//            });
+//        }
 
         function setSelected(selected, item) {
             var id = item.id,
@@ -201,7 +222,6 @@
                 item['selected'] = true;
                 selected.push(id);
             }
-            console.log('Выбраны приборы с id ' + JSON.stringify(selected));
         }
     }
 })();

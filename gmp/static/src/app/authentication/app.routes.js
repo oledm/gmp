@@ -46,6 +46,12 @@
                 controller: 'PassportController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/report/passport.tpl.html'
+            })
+            .state('report', {
+                url: '/report',
+                controller: 'PassportController',
+                controllerAs: 'vm',
+                templateUrl: '/static/src/app/report/passport.tpl.html'
             });
 
         $urlRouterProvider.otherwise('/login');
