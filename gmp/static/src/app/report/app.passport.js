@@ -56,8 +56,10 @@
 
         if ($state.is('passport')) {
             vm.reportType = 'паспорта двигателя';
+            vm.buttonText = 'паспорт';
         } else if ($state.is('report')) {
             vm.reportType = 'экспертного заключения';
+            vm.buttonText = 'заключение';
         }
 
 
