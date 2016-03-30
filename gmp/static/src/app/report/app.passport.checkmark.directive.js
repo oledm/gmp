@@ -13,13 +13,13 @@
                     scope.showCheckmark = true;
                     return;
                 }
-                scope.$watch(formController.$name + '.$valid', function(newValue, oldValue) {
+                scope.$watch(formController.$name + '.$valid', function(newValue) {
                     if (newValue) {
                         scope.showCheckmark = true;
                     } else {
                         scope.showCheckmark = false;
                     }
-                })
+                });
             },
             scope: true,
             transclude: true,
@@ -27,6 +27,6 @@
                 '<i class="icon ion-checkmark" style="color: #00e676"></i>&nbsp;' +
                 '</span>' +
                 '<span ng-transclude></span>'
-        }
+        };
     }
 })();

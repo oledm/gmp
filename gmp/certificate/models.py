@@ -55,7 +55,6 @@ class Certificate(models.Model):
             '{:0>2}.{}'.format(self.expired_at_month, self.expired_at_year),
             str(self.control_types.get(name=name)),
             self.degree,
-            #self.get_group_display()
         )
 
 class ControlType(models.Model):

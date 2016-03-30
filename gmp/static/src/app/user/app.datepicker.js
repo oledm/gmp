@@ -16,14 +16,14 @@
 
 
         vm.dateOptions = {
-          startingDay: 1,
+            startingDay: 1
         };
 
         vm.yearOptions = {
             datepickerMode: 'year',
             maxMode: 'year',
             minMode: 'year',
-            formatYear: 'yyyy',
+            formatYear: 'yyyy'
         };
 
         vm.open = function() {

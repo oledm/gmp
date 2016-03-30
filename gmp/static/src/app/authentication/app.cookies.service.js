@@ -5,9 +5,9 @@
         .module('app.cookies')
         .factory('Cookies', Cookies);
 
-    Cookies.$inject = ['$cookies', '$log'];
+    Cookies.$inject = ['$cookies'];
 
-    function Cookies($cookies, $log) {
+    function Cookies($cookies) {
         var cookieName = 'authentcatedAccount';
         var cookies = {
             get: get,

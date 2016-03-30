@@ -12,8 +12,7 @@
 //                $scope.hasError = this.field.$touched && this.field.$invalid;
 //
 //            },
-            link: function(scope, el, attrs) {
-                console.log('ddd');
+            link: function(scope) {
                 scope.isValid = scope.userForm.email.$touched;
 //                scope.userForm.email.$touched.$watch()
 
@@ -30,7 +29,7 @@
 //                field: '=',
 //                placeholder: '@'
 //            },
-            templateUrl: "/static/src/app/user/gmp-input.directive.tpl.html"
+            templateUrl: '/static/src/app/user/gmp-input.directive.tpl.html'
         };
     }
 })();

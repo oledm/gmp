@@ -10,7 +10,6 @@
 
         $scope.upload = upload;
 
-
         var vm = this,
             docs = [
                 {name: 'Журнал ремонта электродвигателя', value: true},
@@ -19,6 +18,42 @@
                 {name: 'Протоколы штатных измерений и испытаний', value: true},
                 {name: 'Паспорт завода-изготовителя на взрывозащищенный электродвигатель', value: true},
                 {name: 'Схема электроснабжения электродвигателя', value: true}
+            ],
+            pages = [
+                'team.tpl.html',
+                'measurers.tpl.html',
+                'lpu.tpl.html',
+                'dates.tpl.html',
+                'engines.tpl.html',
+                'values.tpl.html',
+                'docs.tpl.html',
+                'photos.tpl.html',
+                'therm.tpl.html',
+                'vibro.tpl.html',
+                'resistance.tpl.html',
+                'signers.tpl.html'
+            ],
+            control_types = [
+                {
+                    name: 'VIK',
+                    full_name: 'Визуальный и измерительный контроль'
+                },
+                {
+                    name: 'UK',
+                    full_name: 'Ультразвуковой контроль'
+                },
+                {
+                    name: 'TK',
+                    full_name: 'Тепловой контроль'
+                },
+                {
+                    name: 'VD',
+                    full_name: 'Вибродиагностический контроль'
+                },
+                {
+                    name: 'EK',
+                    full_name: 'Электрический контроль'
+                }
             ],
             ranks = [
                 'руководитель бригады',
@@ -39,46 +74,24 @@
                 sortOrder: 'name'
             };
 
-        vm.pages = [
-            'team.tpl.html',
-            'measurers.tpl.html',
-            'lpu.tpl.html',
-            'dates.tpl.html',
-            'engines.tpl.html',
-            'values.tpl.html',
-            'docs.tpl.html',
-            'photos.tpl.html',
-            'therm.tpl.html',
-            'vibro.tpl.html',
-            'resistance.tpl.html',
-            'signers.tpl.html'
-        ];
-
-        if ($state.is('passport')) {
-            vm.reportType = 'паспорта двигателя';
-            vm.buttonText = 'паспорт';
-        } else if ($state.is('report')) {
-            vm.reportType = 'экспертного заключения';
-            vm.buttonText = 'заключение';
-        }
-
 
         vm.addEmployee = addEmployee;
         vm.allEmployees = [];
+        vm.control_types = control_types;
         vm.createPassport = createPassport;
         vm.engine = engine;
-        vm.setSelected = setSelected;
         vm.workBegin = undefined;
         vm.workEnd = undefined;
         vm.investigationDate = undefined;
         vm.lpus = {};
         vm.orgs = {};
+        vm.pages = pages;
         vm.tclasses = {all: [], selected: ''};
         vm.getLPUs = getLPUs;
         vm.measurers = measurers;
         vm.ranks = ranks;
         vm.report = {
-            team: [{'name': '', 'required': true}],
+            team: undefined,
             measurers: measurers.selected,
             docs: docs,
             files: {},
@@ -86,10 +99,28 @@
             vibro: {},
             resistance: {}
         };
+        vm.reportType = {};
+        vm.setSelected = setSelected;
 
         activate();
 
         //////////////////////////
+
+        if ($state.is('passport')) {
+            vm.reportType = {
+                'title': 'паспорта двигателя',
+                'button': 'паспорт',
+                'type': 'passport'
+            };
+            vm.report.team = [{'name': '', 'required': true}];
+        } else if ($state.is('report')) {
+            vm.reportType = {
+                'title': 'экспертного заключения',
+                'button': 'заключение',
+                'type': 'report'
+            };
+            vm.report.team = {};
+        }
 
         function upload(element) {
             var fieldname = element.name;
@@ -126,23 +157,15 @@
 //            console.log('begin ' + vm.workBegin);
 //            console.log('end ' + vm.workEnd.toLocaleString());
 //            Passport.createPassport(vm.workBegin);
-//            return;
-            delete vm.report.team[0].required;
-            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
-            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
-                return el.name === vm.tclasses.selected;
-            })[0].id;
-            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-
-//            var datefilter = $filter('date'),
-//                dateFormat = 'dd.MM.yyyy';
-//            vm.report.investigationDate = datefilter(vm.investigationDate, dateFormat);
-//            vm.report.investigationDate = vm.investigationDate;
-//            vm.report.engine.new_date = vm.report.engine.new_date.toLocaleString();
-//            vm.report.workBegin = vm.workBegin;
-//            vm.report.workEnd = vm.workEnd;
-
-            Passport.createPassport(vm.report);
+            console.log('team:', JSON.stringify(vm.report.team));
+            return;
+//            delete vm.report.team[0].required;
+//            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
+//            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
+//                return el.name === vm.tclasses.selected;
+//            })[0].id;
+//            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
+//            Passport.createPassport(vm.report);
         }
 
         function getEmployees() {
@@ -219,9 +242,9 @@
                 index = selected.indexOf(id);
             if (index !== -1) {
                 selected.splice(index, 1);
-                item['selected'] = false;
+                item.selected = false;
             } else {
-                item['selected'] = true;
+                item.selected = true;
                 selected.push(id);
             }
         }

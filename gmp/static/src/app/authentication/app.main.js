@@ -13,7 +13,7 @@
             {name: 'Файлы', link: 'Файлы', icon: 'upload', ref: 'upload'},
             {name: 'Профиль', link: 'Профиль', icon: 'person', ref: 'profile'},
             {name: 'Паспорт двигателя', link: 'Паспорт двигателя', icon: 'document-text', ref: 'passport'},
-            {name: 'Заключение', link: 'Заключение', icon: 'document-text', ref: 'report'},
+            {name: 'Заключение', link: 'Заключение', icon: 'document-text', ref: 'report'}
         ];
 
         activate();
@@ -22,7 +22,7 @@
 
         function activate() {
             if (!Authentication.isAuthenticated()) {
-                $location.path("/login");
+                $location.path('/login');
             }
         }
         vm.isAuthenticated = function() {

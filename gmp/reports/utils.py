@@ -293,7 +293,7 @@ class Report():
         ])
         team_table.setStyle(style)
 
-        text = '\n'.join(['____________________' + Employee.objects.get_by_full_name(x['name']).fio() for x in self.data.get('team')])
+        text = '<br />'.join(['____________________' + Employee.objects.get_by_full_name(x['name']).fio() for x in self.data.get('team')])
         table2 = Table([[Paragraph(text, self.styles['Signature Left'])]])
         table2.hAlign = 'LEFT'
         table2.setStyle(style)
@@ -340,7 +340,7 @@ class Report():
             ]
         ]
         table_data = values(template, {})
-        cols = len(table_data[1])
+        cols = len(table_data[0])
         styles = [
             *[['Regular Bold Center']],
             *[['Regular Center'] * cols],

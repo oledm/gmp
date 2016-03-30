@@ -10,18 +10,28 @@ class EmployeeSerializer(serializers.ModelSerializer):
     department = DepartmentSerializer()
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
+    control_types = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Employee
+        depth = 1
         fields = ('id', 'email', 'username', 'first_name', 'last_name', 'middle_name',
-            'birth_date', 'phone', 'created_at', 'modified_at', 'department',
-            'is_admin', 'password', 'confirm_password',
+            'birth_date', 'phone', 'created_at', 'modified_at', 'is_admin',
+            'password', 'confirm_password', 'department', 'control_types',
         )
-
         read_only_fields = ('created_at', 'modified_at', 'username')
 
+    def get_control_types(self, obj):
+        # All org's employees have ebcertificate, which allows them
+        # to prosecute electro control.
+        types = set(['Электрический контроль'])
+        for cert in obj.certificate_set.all():
+            types |= {str(t.full_name) for t in cert.control_types.all()}
+        return types
+
     def create(self, validated_data):
-        print('Serializer create run')
+        print('Serializer create')
         #dep_name = validated_data.pop('department')['name']
         #department = Department.objects.get(name=dep_name)
         return Employee.objects.create(**validated_data, department=department)

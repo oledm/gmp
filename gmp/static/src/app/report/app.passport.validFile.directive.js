@@ -4,9 +4,9 @@
     angular.module('app.passport')
         .directive('validFile', ValidFileDirective);
 
-    ValidFileDirective.$inject = ['Upload'];
-
-    function ValidFileDirective(Upload) {
+//    ValidFileDirective.$inject = ['Upload'];
+//
+//    function ValidFileDirective(Upload) {
 //        function upload(file) {
 //            console.log('uploading file ' + file);
 //            Upload.upload({
@@ -20,19 +20,20 @@
 //            });
 //        }
 
+    function ValidFileDirective() {
         return {
-            require:'ngModel',
+            require: 'ngModel',
             scope: true,
-            link:function(scope, el, attrs, ngModel){
-                el.bind('change',function(){
+            link: function(scope, el, attrs, ngModel){
+                el.bind('change', function(){
                     scope.$apply(function(){
                         ngModel.$setViewValue(el.val());
-                        console.log('filename ' + el.val());
+//                        console.log('filename ' + el.val());
                         ngModel.$render();
 //                        upload(scope.img);
                     });
               });
             }
-        }
+        };
     }
 })();
