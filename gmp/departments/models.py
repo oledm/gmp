@@ -8,6 +8,9 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'отдел'
+        verbose_name_plural = 'отделы'
 
 class Measurer(models.Model):
     department = models.ForeignKey(
@@ -37,3 +40,7 @@ class Measurer(models.Model):
 
     class Meta():
         ordering = ['name', 'serial_number']
+
+    class Meta:
+        verbose_name = 'прибор'
+        verbose_name_plural = 'приборы'

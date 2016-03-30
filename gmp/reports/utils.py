@@ -331,35 +331,63 @@ class Report():
 
     def page4(self):
         self.Story.append(PageBreak())
+        # Table header
         template = [
-            ['Список сертифицированных членов бригады'],
+            ['Список сертифицированных членов бригады', *['']*7],
             [
                 '№ п/п', 'Фамилия И.О.', '№ квалифика-<br/>ционного удостоверения',
                 'Дата выдачи', 'Срок дейст-<br/>вия', 'Виды конт-<br/>роля', 'Уро-<br/>вень', 'Группа ЭБ'
             ]
         ]
-
-        for num, person in enumerate(self.data.get('team'), start=1):
-            emp = Employee.objects.get_by_full_name(person['name'])
-            cert = Certificate.objects.get(employee=emp)
-            data = [num, emp.fio(), *cert.details()]
-            template.append(list(map(lambda x: str(x), data)))
-        cols = len(template[0])
-        rows = len(template)
-        styles = [
-            ['Regular Bold Center'] * cols,
-            *[['Regular Center'] * cols] * (rows - 1),
-        ]
         table_data = values(template, {})
+        cols = len(table_data[1])
+        styles = [
+            *[['Regular Bold Center']],
+            *[['Regular Center'] * cols],
+        ]
         table = self.table(table_data, styles, [1, 2, 2, 1, 1, 1, 1, 1], styleTable=True)
         table.setStyle(TableStyle([
-            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
-            ('TOPPADDING', (0,0), (-1,-1), 5),
-            ('SPAN', (0,0), (-1, 0)),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('SPAN', (0, 0), (-1, 0)),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+            ('TOPPADDING', (0,0), (-1,-1), 7),
         ]))
         self.Story.append(table)
-        self.Story.append(Spacer(1, 1 * cm))
 
+        # For each person generate separate table for ability to span 
+        # certain fields
+        for num, person in enumerate(self.data.get('team'), start=1):
+            emp = Employee.objects.get_by_full_name(person['name'])
+            cert = Certificate.objects.filter(employee=emp)
+            all_cert = [
+                [str(num), emp.fio()] +
+                c.plain_details('<br />') +
+                [emp.ebcertificate.get_group_display()] 
+                for c in cert
+            ]
+            table_data = values(all_cert, {})
+            cols = len(table_data[0])
+            rows = len(table_data)
+            styles = [
+                *[['Regular Center'] * cols] * rows,
+            ]
+            table = self.table(table_data, styles, [1, 2, 2, 1, 1, 1, 1, 1], styleTable=False)
+            table.setStyle(TableStyle([
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('SPAN', (0,0), (0, rows - 1)),
+                ('SPAN', (1,0), (1, rows - 1)),
+                ('SPAN', (7,0), (7, rows - 1)),
+                # No padding between in-table rows
+                ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+                ('TOPPADDING', (0,0), (-1,-1), 0),
+                # Add padding for the first and last table's rows
+                ('BOTTOMPADDING', (0,-1), (-1,-1), 4),
+                ('TOPPADDING', (0,0), (-1,0), 4),
+                ('LINEAFTER',(0,0),(-1,-1), 0.5, colors.black),
+                ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            ]))
+            self.Story.append(table)
+        self.Story.append(Spacer(1, 1 * cm))
 
         template = [
             ['Перечень приборов'],
@@ -368,7 +396,6 @@ class Report():
                 'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
             ]
         ]
-        print('measurers:', self.data.get('measurers'))
         for num, measurer in enumerate(self.data.get('measurers'), start=1):
             meas = Measurer.objects.get(id=measurer)
             data = [num, *meas.details()]
@@ -731,7 +758,7 @@ class Report():
         rows = len(template)
         styles = [
             ['Regular Bold Center'],
-            *[['Regular'] * cols] * (rows - 1)
+            *[['Regular', 'Regular Center']] * (rows - 1)
         ]
         table_data = values(template, {})
         table = self.table(table_data, styles, [7, 3])
@@ -756,7 +783,7 @@ class Report():
         rows = len(template)
         styles = [
             ['Regular Bold Center'],
-            *[['Regular'] * cols] * (rows - 1)
+            *[['Regular', 'Regular Center']] * (rows - 1)
         ]
         table_data = values(template, {})
         table = self.table(table_data, styles, [7, 3])

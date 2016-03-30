@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class CertificateConfig(AppConfig):
-    name = 'certificate'
+    name = 'gmp.certificate'
+    verbose_name = 'Удостоверения'
