@@ -4,19 +4,26 @@ from rest_framework import status
 
 from gmp.authentication.models import Employee
 from gmp.departments.models import Department
-from .models import Certificate
+from .models import Certificate, ControlType
+from .serializers import CertificateSerializer
 
 class CertificateSerializerTest(APITestCase):
 
     def createCert(self):
+        self.control_type = ControlType.objects.create(
+            name='ВИК',
+            full_name='Визуально измерительный контроль')
         self.certificate = Certificate.objects.create(
             employee=self.user,
-            received_at=date.today(),
-            expired_at=date.today(),
-            control='ВИК',
-            degree=1,
-            group=3
+            received_at_year=2001,
+            received_at_month=9,
+            expired_at_year=2006,
+            expired_at_month=9,
+            serial_number='321-AAA-67',
+            degree=1
         )
+        self.certificate.save()
+        self.certificate.control_types.add(self.control_type)
 
     def setUp(self):
         self.user = Employee.objects.create_user(
@@ -38,3 +45,7 @@ class CertificateSerializerTest(APITestCase):
             self.user.username
         ))
         self.assertEqual(len(response.data), 1)
+        print('data:', response.data)
+        serializer = CertificateSerializer(data=response.data, many=True)
+        print('is valid:', serializer.is_valid())
+        print('validated data:', serializer.validated_data)
