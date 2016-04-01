@@ -11,7 +11,7 @@ Production Configurations
 '''
 from __future__ import absolute_import, unicode_literals
 
-from boto.s3.connection import OrdinaryCallingFormat
+#from boto.s3.connection import OrdinaryCallingFormat
 from django.utils import six
 
 
@@ -68,7 +68,7 @@ INSTALLED_APPS += ("gunicorn", )
 INSTALLED_APPS += (
     'storages',
 )
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')

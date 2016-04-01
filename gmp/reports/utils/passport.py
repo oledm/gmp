@@ -1,23 +1,11 @@
 from functools import partial
-import locale
-from datetime import datetime
 
-from django.conf import settings
-
-from PIL import Image as PILImage
-import environ
-
-from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
+from reportlab.platypus import Paragraph, Spacer, Image, Table, TableStyle, PageBreak, NextPageTemplate
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak, XPreformatted, NextPageTemplate
-from reportlab.platypus.doctemplate import BaseDocTemplate, PageTemplate
-from reportlab.platypus.flowables import Flowable
 from reportlab.platypus.frames import Frame
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus.doctemplate import PageTemplate
 from reportlab.lib.units import cm
 from reportlab.lib import colors
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase import ttfonts
 
 from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
@@ -26,98 +14,17 @@ from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass
 from gmp.filestorage.models import UploadedFile
 
-locale.setlocale(locale.LC_ALL, "")
-loc = partial(locale.format, "%.2f")
-
-class DoubledLine(Flowable):
-    def __init__(self, width, height=0):
-        Flowable.__init__(self)
-        self.width = width
-        self.height = height
- 
-    def __repr__(self):
-        return "Line(w=%s)" % self.width
- 
-    def draw(self):
-        self.canv.line(0, self.height, self.width, self.height)
-        self.canv.line(0, self.height + 2, self.width, self.height + 2)
-
-class StaticText():
-    @staticmethod
-    def get_list(fname):
-        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', fname))
-        res = []
-        with open(file_) as f:
-            for n, line in enumerate(f, start=1):
-                res.append([str(n), line])
-        return res
-
-    @staticmethod
-    def plain(fname):
-        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', fname))
-        res = []
-        with open(file_) as f:
-            for line in f:
-                res.append([line])
-        return res
-
-#class MyDocTemplate(BaseDocTemplate):
-#    def __init__(self, filename, **kw):
-#        BaseDocTemplate.__init__(self, filename, **kw)
-#        template = PageTemplate('normal', [Frame(0, 0, 15*cm, 25*cm, id='F1')])
-#        self.addPageTemplates(template)
-
-def values(template, data):
-    return list(map(lambda row: list(map(lambda cell: cell.format(**data), row)), template))
-
-def fetch_static_image(img, size):
-    file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'images', img))
-    image = PILImage.open(file_)
-    ratio = float(image.width/image.height)
-    return Image(file_, width=size * cm * ratio, height=size * cm)
-
-def header(canvas, doc, content):
-    canvas.saveState()
-    w, h = content.wrap(doc.width, doc.topMargin)
-    content.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
-    canvas.restoreState()
+from .helpers import ReportMixin, DoubledLine
 
 
-class Report():
-    def __init__(self, data):
-        self.data = data
-        self.format_JS_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
-        self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
-        self.format_JS_dates(self.data['engine'], ('new_date',))
+class Passport(ReportMixin):
+    def create(self):
+        self.setup_page_templates(self.doc)
 
-        self.date_begin = self.data.get('workBegin')
-        self.date_end = self.data.get('workEnd')
-        self.investigation_date = self.data.get('investigationDate')
         # Filter empty team members appeared after accident click on 'Add'
         # team's member button
-        self.data['team'] = list(filter(lambda x: x['name'], self.data.get('team')))
-        self.Story = []
-
-        self.obj_data = self.data['obj_data']
-        self.styles = getSampleStyleSheet()
-
-    def format_JS_dates(self, d, keys, format_='%d.%m.%Y'):
-        for key in keys:
-            dt = datetime.strptime(d[key].split('T')[0], '%Y-%m-%d')
-            d[key] = dt.strftime(format_)
-
-    def make_report(self, report):
-        doc = BaseDocTemplate(report, pagesize=A4,
-                                rightMargin=12,leftMargin=12,
-                                topMargin=12,bottomMargin=12,
-                                title='Паспорт двигателя ' + self.data['engine']['type'],
-                                #showBoundary=1,
-        )
-
-        self.setup_fonts()
-        self.setup_styles()
-        self.setup_page_templates(doc)
-        self.full_width = doc.width
+        self.data['team'] = list(filter(lambda x: x['name'], self.data['team']))
+        self.format_JS_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
 
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
@@ -150,8 +57,6 @@ class Report():
         self.appendix('3 Сведения о ремонтах электродвигателя',
             ['Дата', 'Вид', 'Содержание', 'Заключение'],
             [1, 2, 3, 4])
-            
-        doc.build(self.Story)
 
     def page1(self):
         self.put('ПАО "ГАЗПРОМ"', 'Heading 1 Bold')
@@ -179,14 +84,13 @@ class Report():
             ['Heading 1'] * cols,
             *[['Regular'] * cols] * 2,
         ]
-        table_data = values(template, signers)
+        table_data = self.values(template, signers)
         table = self.table(table_data, styles, [4, 2, 4], styleTable=False)
         table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 15),
             ('BOTTOMPADDING', (0,0), (-1,0), 20),
             ('BOTTOMPADDING', (0,1), (-1,1), 20),
-            #('TOPPADDING', (0,0), (-1,-1), 5),
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
         ]))
@@ -202,10 +106,10 @@ class Report():
         text = '''ОБЪЕКТ: {org}<br/>{lpu}<br/>{ks}<br/>{plant}<br/>{location}<br/>
             станционный № {station_number}<br/>
             ТИП: {type} зав.№ {serial_number}'''.format(
-                **self.obj_data, **self.data.get('engine')
+                **self.data['obj_data'], **self.data.get('engine')
         )
         self.put(text, 'MainTitle', 1)
-        self.put('Дата обследования: ' + self.investigation_date, 'Heading 1', 2)
+        self.put('Дата обследования: ' + self.data['investigationDate'], 'Heading 1', 2)
 
         signers = self.data['signers']['signer']
         first_col = ['{rank}', fio_string, date_string]
@@ -220,7 +124,7 @@ class Report():
             ['Heading 1'] * cols,
             *[['Regular'] * cols] * 2,
         ]
-        table_data = values(template, signers)
+        table_data = self.values(template, signers)
         table = self.table(table_data, styles, [4, 2, 4], styleTable=False)
         table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
@@ -261,7 +165,7 @@ class Report():
         styles = [
             *[['Regular12', 'Regular', 'Regular Right']] * rows
         ]
-        table_data = values(data, {})
+        table_data = self.values(data, {})
         table = self.table(table_data, styles, [2, 7, 1])
         table.setStyle(TableStyle([
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
@@ -300,8 +204,8 @@ class Report():
 
         table_data = [
             ['ВИД РАБОТ', 'Техническое диагностирование'],
-            ['ДАТА НАЧАЛА', self.date_begin],
-            ['ДАТА ОКОНЧАНИЯ', self.date_end],
+            ['ДАТА НАЧАЛА', self.data['workBegin']],
+            ['ДАТА ОКОНЧАНИЯ', self.data['workEnd']],
             [Paragraph('СОСТАВ БРИГАДЫ СПЕЦИАЛИСТОВ', self.styles['Regular Bold Center']), team_table],
             ['ОРГАНИЗАЦИЯ', 'ООО "ГАЗМАШПРОЕКТ"'],
             ['РАЗРЕШЕНИЕ', '''Свидетельство об аккредитации 766-Э/ТД выдано Управлением\nэнергетики ОАО "Газпром" 11 февраля 2015 г.\nСрок действия до 11 февраля 2018 г.'''],
@@ -339,7 +243,7 @@ class Report():
                 'Дата выдачи', 'Срок дейст-<br/>вия', 'Виды конт-<br/>роля', 'Уро-<br/>вень', 'Группа ЭБ'
             ]
         ]
-        table_data = values(template, {})
+        table_data = self.values(template, {})
         cols = len(table_data[0])
         styles = [
             *[['Regular Bold Center']],
@@ -365,7 +269,7 @@ class Report():
                 [emp.ebcertificate.get_group_display()] 
                 for c in cert
             ]
-            table_data = values(all_cert, {})
+            table_data = self.values(all_cert, {})
             cols = len(table_data[0])
             rows = len(table_data)
             styles = [
@@ -406,7 +310,7 @@ class Report():
             ['Regular Bold Center'] * cols,
             *[['Regular Center'] * cols] * (rows - 1),
         ]
-        table_data = values(template, {})
+        table_data = self.values(template, {})
         table = self.table(table_data, styles, [1, 3, 2, 2, 2], styleTable=True)
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 10),
@@ -420,7 +324,7 @@ class Report():
 
         self.put('Нормативное и методическое обеспечение работ', 'Regular Bold Center', 0.5)
         table = Table(
-            self.preetify(StaticText().get_list('normatives.txt'), 'Paragraph', 'Paragraph Justified'),
+            self.preetify(self.static_data_list('normatives.txt'), 'Paragraph', 'Paragraph Justified'),
             colWidths=self.columnize(1,9)
         )
         table.hAlign = 'LEFT'
@@ -486,7 +390,7 @@ class Report():
             *[['Regular'] + ['Regular Center']] * rows
         ]
         data.update(engine_data)
-        table_data = values(template, data)
+        table_data = self.values(template, data)
         table = self.table(table_data, styles, [5, 5], styleTable=True)
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 5),
@@ -601,7 +505,7 @@ class Report():
             ['Соответствие норме', '{correct}'],
         ]
         rows = len(data)
-        table_data = values(data, therm_data)
+        table_data = self.values(data, therm_data)
         table = self.table(table_data, [['Regular', 'Regular Center']] * rows, [8, 2], styleTable=True)
         self.Story.append(table)
 
@@ -623,7 +527,7 @@ class Report():
             ['Regular Bold Center'] * 4,
             *[['Regular'] + ['Regular Center'] * 3] * 3
         ]
-        table_data = values(data, vibro)
+        table_data = self.values(data, vibro)
         table = self.table(table_data, styles, [4, 2, 2, 2])
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -645,7 +549,7 @@ class Report():
             ['Regular Bold Center'] * 2,
             *[['Regular', 'Regular Center']] * 3
         ]
-        table_data = values(data, {})
+        table_data = self.values(data, {})
         table = self.table(table_data, styles, [5, 5])
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -668,9 +572,9 @@ class Report():
         self.formular('9-1 Визуальный и измерительный контроль электродвигателя')
 
         table_data = [[
-            fetch_static_image('engine_details_scheme_1.jpg', 5.3),
-            fetch_static_image('engine_details_scheme_2.jpg', 5.3),
-            fetch_static_image('engine_details_scheme_3.jpg', 5.3),
+            self.fetch_static_image('engine_details_scheme_1.jpg', 5.3),
+            self.fetch_static_image('engine_details_scheme_2.jpg', 5.3),
+            self.fetch_static_image('engine_details_scheme_3.jpg', 5.3),
         ]]
         table = Table(table_data) 
         table.hAlign = 'LEFT'
@@ -690,7 +594,7 @@ class Report():
             ['Regular Bold Center'] * cols,
             *[['Regular Center'] * cols] * (rows - 1)
         ]
-        table_data = values(template, data)
+        table_data = self.values(template, data)
         table = self.table(table_data, styles, [1, 4, 1, 1, 1, 1, 1])
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -715,7 +619,7 @@ class Report():
             ['Regular Bold Center'] * cols,
             *[['Regular Center'] * cols] * (rows - 1)
         ]
-        table_data = values(template, data)
+        table_data = self.values(template, data)
         table = self.table(table_data, styles, [1, 2, 1, 1, 1, 1, 1, 1, 1])
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -734,7 +638,7 @@ class Report():
         cols = len(template[0])
         rows = len(template)
         styles = [['Regular'] * cols] * rows
-        table_data = values(template, {})
+        table_data = self.values(template, {})
         table = self.table(table_data, styles, [4, 6])
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -760,7 +664,7 @@ class Report():
             ['Regular Bold Center'],
             *[['Regular', 'Regular Center']] * (rows - 1)
         ]
-        table_data = values(template, {})
+        table_data = self.values(template, {})
         table = self.table(table_data, styles, [7, 3])
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -785,7 +689,7 @@ class Report():
             ['Regular Bold Center'],
             *[['Regular', 'Regular Center']] * (rows - 1)
         ]
-        table_data = values(template, {})
+        table_data = self.values(template, {})
         table = self.table(table_data, styles, [7, 3])
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -821,7 +725,7 @@ class Report():
         styles = [
             *[['Regular', 'Regular Center']] * rows
         ]
-        table_data = values(template, {})
+        table_data = self.values(template, {})
         table = self.table(table_data, styles, [8, 2], styleTable=True)
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 10),
@@ -849,7 +753,7 @@ class Report():
         styles = [
             *[['Regular']] * rows
         ]
-        table_data = values(template, zones_data)
+        table_data = self.values(template, zones_data)
         table = self.table(table_data, styles, [8, 2])
         table.setStyle(TableStyle([
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -874,7 +778,7 @@ class Report():
             *[['Regular Bold Center'] * cols] * 2,
             *[['Regular'] + ['Regular Center'] * (cols - 1)] * (rows - 2),
         ]
-        table_data = values(template, zones_data)
+        table_data = self.values(template, zones_data)
         table = self.table(table_data, styles, [3, 1, 1, 1, 2, 2], styleTable=True)
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 5),
@@ -889,7 +793,7 @@ class Report():
         self.Story.append(PageBreak())
         self.formular('11 Измерение сопротивления обмотки статора постоянному току')
         self.put('Схема подключения прибора', 'Regular Center', 0.2)
-        img = fetch_static_image('meter_scheme.gif', 5.3)
+        img = self.fetch_static_image('meter_scheme.gif', 5.3)
         img.hAlign = 'CENTER'
         self.Story.append(img)
         self.Story.append(Spacer(1, 0.5 * cm))
@@ -904,7 +808,7 @@ class Report():
             ['Regular Bold Center'] * cols,
             *[['Regular'] + ['Regular Center'] * (cols - 1)] * (rows - 1),
         ]
-        table_data = values(template, self.data['resistance'])
+        table_data = self.values(template, self.data['resistance'])
         table = self.table(table_data, styles, [4, 2, 2, 2], styleTable=True)
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 10),
@@ -919,7 +823,7 @@ class Report():
 
         self.formular('12 Измерение сопротивления изоляции обмотки статора')
         self.put('Упрощенная схема подключения мегаомметра', 'Regular Center', 0.2)
-        img = fetch_static_image('megaommetr_scheme.jpg', 5.3)
+        img = self.fetch_static_image('megaommetr_scheme.jpg', 5.3)
         img.hAlign = 'CENTER'
         self.Story.append(img)
         self.Story.append(Spacer(1, 0.5 * cm))
@@ -934,7 +838,7 @@ class Report():
             ['Regular Bold Center'] * cols,
             *[['Regular'] + ['Regular Center'] * (cols - 1)] * (rows - 1),
         ]
-        table_data = values(template, self.data['resistance'])
+        table_data = self.values(template, self.data['resistance'])
         table = self.table(table_data, styles, [4, 1, 1, 1, 1, 1, 1], styleTable=True)
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 10),
@@ -952,8 +856,8 @@ class Report():
 
         self.put('В соответствии с требованиями нормативной документации и с результатами диагностики и исследований необходимо:', 'Paragraph Justified', 0.2)
 
-        text = StaticText().get_list('recommendations.txt')
-        data = values(text, self.data['engine'])
+        text = self.static_data_list('recommendations.txt')
+        data = self.values(text, self.data['engine'])
         table = Table(
             self.preetify(data, 'Paragraph', 'Paragraph Justified'),
             colWidths=self.columnize(1,9)
@@ -968,13 +872,13 @@ class Report():
         self.Story.append(PageBreak())
         self.formular('14 Заключение')
 
-        template = StaticText().plain('decision.txt')
+        template = self.static_data_plain('decision.txt')
         cols = len(template[0])
         rows = len(template)
         styles = [
             *[['Paragraph Justified Indent'] * cols] * rows
         ]
-        table_data = values(template, self.data['engine'])
+        table_data = self.values(template, self.data['engine'])
         table = self.table(table_data, styles, [10])
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 10),
@@ -986,8 +890,8 @@ class Report():
         self.formular('15 Выполненные мероприятия в процессе проведения работ')
 
         self.put('В процессе технического диагностирования были проведены следующие мероприятия:', 'Paragraph', 0.2)
-        text = StaticText().get_list('completed_tasks.txt')
-        data = values(text, self.data['engine'])
+        text = self.static_data_list('completed_tasks.txt')
+        data = self.values(text, self.data['engine'])
         table = Table(
             self.preetify(data, 'Paragraph', 'Paragraph Justified'),
             colWidths=self.columnize(1,9)
@@ -1010,7 +914,7 @@ class Report():
         styles = [
             *[['Regular Bold Center'] * cols] * rows
         ]
-        table_data = values(template, {})
+        table_data = self.values(template, {})
         table = self.table(table_data, styles, widths)
         table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -1021,109 +925,7 @@ class Report():
         ]))
         #table.hAlign = 'RIGHT'
         self.Story.append(table)
-    '''
-        Helper functions
-    '''
 
-    def table(self, data, styles, colWidths=(10, ), styleTable=False):
-        table = Table(
-            self.tabelize(data, styles),
-            colWidths=self.columnize(*colWidths)
-        )
-        table.hAlign = 'LEFT'
-        if styleTable:
-            table.setStyle(TableStyle([
-                ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-                ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ]))
-        return table
-
-    def tabelize(self, lst, styles=None):
-        styles.reverse()
-        return list(map(lambda x: self.table_row(x, styles.pop()), lst))
-
-    def table_row(self, lst, styles):
-        styles = styles or ['Regular']
-        styles = styles * len(lst)
-        return [Paragraph(item, self.styles[styles[n]]) for n, item in enumerate(lst)]
-
-    def preetify(self, lst, *style):
-        return list(map(
-            lambda a, b: [
-                Paragraph(a, self.styles[style[0]]),
-                Paragraph(b, self.styles[style[1]])
-            ], *zip(*lst)
-            )
-        )
-
-    def formular(self, text, header='ФОРМУЛЯР'):
-        table = self.table([[header + ' № ' + text]], [['Page Header']])
-        table.setStyle(TableStyle([
-            ('INNERGRID', (0,0), (-1,-1), 1, colors.black),
-            ('BOX', (0,0), (-1,-1), 2, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-            ('TOPPADDING', (0,0), (-1,-1), 0),
-        ]))
-        table.hAlign = 'LEFT'
-        self.Story.append(table)
-        self.Story.append(Spacer(1, 0.5 * cm))
-
-    def columnize(self, *widths):
-        return [self.full_width * width * 0.1 for width in widths]
-
-    def mput(self, content_list, style_name, spacer=None):
-        list(map(lambda x: self.put(x, style_name), content_list))
-
-        if spacer:
-            self.Story.append(Spacer(1, spacer * cm))
-
-    def put(self, content, style_name, spacer=None):
-        self.Story.append(Paragraph(content, self.styles[style_name]))
-
-        if spacer:
-            self.Story.append(Spacer(1, spacer * cm))
-
-    ''' 
-        Working with images
-    '''
-    def put_image(self, image, size=10):
-        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
-        ratio = float(image.width/image.height)
-        image = Image(str(MEDIA_ROOT.path(str(image))),
-            width=size * cm * ratio, height=size * cm)
-        self.Story.append(image)
-
-    def put_photo(self, image, size=10):
-        self.Story.append(self.fetch_image(image, size))
-
-    def fetch_image(self, image, size):
-        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
-        file_ = str(MEDIA_ROOT.path(str(image.name)))
-        image = PILImage.open(file_)
-        ratio = float(image.width/image.height)
-        return Image(file_, width=size * cm * ratio, height=size * cm)
-
-    '''
-        Other setup utils
-    '''
-    def setup_fonts(self):
-        fonts = (
-            ('Times', 'times.ttf'), 
-            ('Times Bold', 'timesbd.ttf'),
-            ('Times Italic', 'timesi.ttf'),
-            ('Times Bold Italic', 'timesbi.ttf'),
-        )
-        list(map(self.register_font, *zip(*fonts)))
-        pdfmetrics.registerFontFamily(
-            'Times', normal='Times', bold='Times Bold',
-            italic='Times Bold Italic', boldItalic='Times Bold Italic')
-
-    def register_font(self, font_name, font_file):
-        MyFontObject = ttfonts.TTFont(font_name, font_file)
-        pdfmetrics.registerFont(MyFontObject)
-     
     def setup_page_templates(self, doc):
         frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='no_header')
         template_title = PageTemplate(id='Title', frames=frame_full)
@@ -1133,119 +935,17 @@ class Report():
                 id='with_header')
         header_content = Paragraph('''{org} {lpu} {ks} {location} {plant}
             станционный №{station_number} зав.№{serial_number}'''.format(
-                **self.obj_data, **self.data['engine']
+                **self.data['obj_data'], **self.data['engine']
             ), self.styles["Page Header"]
         )
-        template_content = PageTemplate(id='Content', frames=frame_with_header, onPage=partial(header, content=header_content))
+        template_content = PageTemplate(id='Content', frames=frame_with_header, onPage=partial(self.header, content=header_content))
 
         doc.addPageTemplates([template_title, template_content])
 
-    def setup_styles(self):
-        self.styles.add(ParagraphStyle(name='Justify', alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Heading 1 Bold',
-            fontName='Times Bold',
-            fontSize=14,
-            leading=20,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Heading 1',
-            fontName='Times',
-            fontSize=13,
-            leading=18,
-            #borderColor=colors.black,
-            #borderWidth=1,
-            #leftIndent=1*cm,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='MainTitle',
-            fontName='Times Bold',
-            fontSize=16,
-            leading=20,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Signature',
-            fontName='Times',
-            fontSize=13,
-            leading=30,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Signature Left',
-            fontName='Times',
-            leading=30,
-            fontSize=13,
-            alignment=TA_LEFT))
-        self.styles.add(ParagraphStyle(
-            name='Signature Handwrite',
-            fontName='Times',
-            fontSize=13,
-            leftIndent=1*cm,
-            leading=30,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Page Header',
-            fontName='Times Bold',
-            fontSize=13,
-            leading=16,
-            alignment=TA_JUSTIFY))
-        self.styles.add(ParagraphStyle(
-            name='Regular',
-            fontName='Times',
-            fontSize=13,
-            leading=13,
-            alignment=TA_LEFT))
-        self.styles.add(ParagraphStyle(
-            name='Regular12',
-            fontName='Times',
-            fontSize=12,
-            leading=13,
-            alignment=TA_LEFT))
-        self.styles.add(ParagraphStyle(
-            name='Regular Center',
-            fontName='Times',
-            fontSize=13,
-            leading=16,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Regular Right',
-            fontName='Times',
-            fontSize=13,
-            leading=16,
-            alignment=TA_RIGHT))
-        self.styles.add(ParagraphStyle(
-            name='Regular Justified',
-            fontName='Times',
-            fontSize=13,
-            leading=16,
-            alignment=TA_JUSTIFY))
-        self.styles.add(ParagraphStyle(
-            name='Regular Bold Center',
-            fontName='Times Bold',
-            fontSize=13,
-            alignment=TA_CENTER))
-        self.styles.add(ParagraphStyle(
-            name='Table Content',
-            fontName='Times',
-            leading=16,
-            fontSize=13,
-            alignment=TA_LEFT))
-        self.styles.add(ParagraphStyle(
-            name='Paragraph',
-            fontName='Times',
-            fontSize=13,
-            leading=18,
-            firstLineIndent=0.7 * cm,
-            alignment=TA_LEFT))
-        self.styles.add(ParagraphStyle(
-            name='Paragraph Justified',
-            fontName='Times',
-            fontSize=13,
-            leading=18,
-            alignment=TA_JUSTIFY))
-        self.styles.add(ParagraphStyle(
-            name='Paragraph Justified Indent',
-            fontName='Times',
-            fontSize=13,
-            leading=18,
-            firstLineIndent=0.7 * cm,
-            alignment=TA_JUSTIFY))
+    @staticmethod
+    def header(canvas, doc, content):
+        canvas.saveState()
+        w, h = content.wrap(doc.width, doc.topMargin)
+        content.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
+        canvas.restoreState()
+

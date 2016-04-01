@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class InspectionsConfig(AppConfig):
-    name = 'inspections'
+    name = 'gmp.inspections'
+    verbose_name = 'Объекты исследования'

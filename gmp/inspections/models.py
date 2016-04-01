@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import IntegerRangeField, ArrayField
 
 class Organization(models.Model):
-    name = models.CharField('Наименование ТГ', max_length=100)
+    name = models.CharField('Наименование ТГ', max_length=100, unique=True)
     address = models.CharField('Почтовый адрес', max_length=400)
     phone = models.CharField('Телефон', max_length=100)
     fax = models.CharField('Факс', max_length=20)
@@ -10,6 +10,10 @@ class Organization(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Организация'
+        verbose_name_plural = 'Организации'
 
 
 class LPU(models.Model):
@@ -23,4 +27,5 @@ class LPU(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'LPU'
+        verbose_name = 'ЛПУ'
+        verbose_name_plural = 'ЛПУ'

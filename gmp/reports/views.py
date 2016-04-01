@@ -3,7 +3,7 @@ import pprint
 
 from django.http import HttpResponse
 
-from .utils import Report
+from .utils.reportmaker import ReportMaker
 
 def create_report(request):
     #if request.method == "POST":
@@ -11,13 +11,12 @@ def create_report(request):
     print('\nПолучены данные для формирования паспорта\n')
     pprint.pprint(data['report_data'])
     response = HttpResponse(content_type='application/pdf')
-    report = Report(data['report_data'])
-    report.make_report(response)
+    ReportMaker(data['report_data'], response)
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
     return response
 
 def create_report_debug(request):
-    fake = {'docs': [{'name': 'Журнал ремонта электродвигателя', 'value': True},
+    fake_passport = {'docs': [{'name': 'Журнал ремонта электродвигателя', 'value': True},
           {'name': 'Журнал эксплуатации электродвигателя', 'value': True},
           {'name': 'Инструкция по эксплуатации завода-изготовителя',
            'value': True},
@@ -26,6 +25,7 @@ def create_report_debug(request):
                    'электродвигатель',
            'value': True},
           {'name': 'Схема электроснабжения электродвигателя', 'value': True}],
+ 'type': 'passport',
  'engine': {'manufactured_at': '1982-01-01T00:00:00.000Z',
             'new_date': '2026-08-27T00:00:00.000Z',
             'started_at': '1983-01-01T00:00:00.000Z',
@@ -35,7 +35,7 @@ def create_report_debug(request):
  'files': {'main': '492', 'therm1': '494', 'therm2': '495'},
  'measurers': [4, 5, 6],
  'obj_data': {'ks': 'КС Ефремов',
-              'location': '5',
+              'location': 'АВО газа',
               'lpu': 'Бобровское ЛПУ МГ',
               'org': 'ООО "Газпром трансгаз Югорск"',
               'plant': 'КЦ'},
@@ -76,10 +76,50 @@ def create_report_debug(request):
  'investigationDate': '2016-03-18T00:00:00.000Z',
  'workBegin': '2016-03-11T00:00:00.000Z',
  'workEnd': '2016-04-08T00:00:00.000Z'}
+
+    fake_report = {
+ 'type': 'report',
+ 'engine': {'manufactured_at': '1982-01-01T00:00:00.000Z',
+            'new_date': '2026-08-27T00:00:00.000Z',
+            'started_at': '1983-01-01T00:00:00.000Z',
+            'serial_number': '5602',
+            'station_number': '5А',
+            'type': '2В100L6'},
+ 'measurers': [4, 5, 6],
+ "order": {"number":"ffdfs",
+         "date":"2016-04-09T00:00:00.000Z"},
+ 'obj_data': {'ks': 'КС Ефремов',
+              'location': 'АВО газа',
+              'lpu': 'Бобровское ЛПУ МГ',
+              'org': 'ООО "Газпром трансгаз Югорск"',
+              'plant': 'КЦ'},
+ 'resistance': {'isolation': '90',
+                'wireAB': '65',
+                'wireBC': '544',
+                'wireCA': '6'},
+ 'therm': {'correct': 'Соответствует',
+           'distance': '2',
+           'tclass': 2,
+           'temp_avg': '36,3',
+           'temp_env': '20',
+           'temp_max': '19',
+           'temp_min': '56'},
+ 'values': {'factory_values': {'resistance_isolation': '1,2',
+                               'resistance_phase': '323,21'}},
+ 'vibro': {'axis': '67',
+           'horiz': '6789',
+           'norm': '45',
+           'reverse_axis': '56',
+           'reverse_horiz': '678',
+           'reverse_vert': '7896',
+           'vert': '789'},
+ 'workBegin': '2016-03-11T00:00:00.000Z',
+ 'workEnd': '2016-04-08T00:00:00.000Z',
+
+ }
     
-    data = fake
+    data = fake_report
     response = HttpResponse(content_type='application/pdf')
-    report = Report(fake)
-    report.make_report(response)
+    ReportMaker(data, response)
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
     return response

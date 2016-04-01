@@ -5,6 +5,20 @@
     
     <div class="block text-center" ng-cloak>
         <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
+            ng-disabled="
+            vm.teamForm.$invalid ||
+            vm.engines.selected.length === 0 ||
+            vm.LPUForm.$invalid ||
+            vm.datesForm.$invalid ||
+            vm.engineForm.$invalid ||
+            vm.valuesForm.$invalid ||
+            vm.imagesForm.$invalid ||
+            vm.thermForm.$invalid ||
+            vm.vibroForm.$invalid ||
+            vm.orderForm.$invalid ||
+            vm.resistanceForm.$invalid ||
+            vm.signersForm.$invalid
+            "
             > Создать {{vm.reportType.button}}
         </button>    
     </div>

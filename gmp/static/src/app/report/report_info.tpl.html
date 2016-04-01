@@ -1,0 +1,38 @@
+<ng-form name="vm.reportInfoForm" novalidate>
+  <h4 checkmark>Информация о проведенной экспертизе</h4>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12" ng-class="{ 'has-error': vm.reportInfoForm.approve_rank.$touched && vm.reportInfoForm.approve_rank.$invalid }">
+              <label class="control-label" for="license">Основание для проведения работ</label>
+              <textarea class="form-control" type="text" id="license" required name="license" ng-maxlength="150" ng-model="vm.report.info.license"></textarea>
+              <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.license.$error" ng-if="vm.reportInfoForm.license.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label">Документация, предоставленная заказчиком</label>
+      <p>{{ vm.report.docs | json }}</p>
+        <div class="row" ng-repeat="x in vm.report.docs track by $index">
+            <!-- 
+                <div class="col-sm-12" ng-class="{ 'has-error': vm.reportInfoForm.approve_rank.$touched && vm.reportInfoForm.approve_rank.$invalid }">
+                  <label class="control-label" for="license">Документация, предоставленная заказчиком</label>
+                  <textarea class="form-control" type="text" id="license" required name="license" ng-maxlength="150" ng-model="vm.report.info.license"></textarea>
+                  <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.license.$error" ng-if="vm.reportInfoForm.license.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+                </div>
+             -->
+                    <label class="col-sm-1 text-right">{{ $index + 1 }}</label>
+                    <div class="col-sm-11">
+                        <textarea class="form-control" type="text" id="license" 
+                            ng-model="vm.report.docs[$index]" required name="license"
+                            ng-maxlength="150"></textarea>
+                    </div>
+        </div>
+    </div>
+        <div class="form-group text-center">
+            <button class="btn btn-primary text-center" ng-click="vm.report.docs.push(null)">Добавить</button>
+        </div>
+</ng-form>
