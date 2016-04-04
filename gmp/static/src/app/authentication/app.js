@@ -17,7 +17,8 @@
         'app.upload',
         'app.upload.service',
         'app.passport',
-        'app.passport.service'
+        'app.passport.service',
+        'app.report',
     ]);
 
     angular

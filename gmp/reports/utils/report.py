@@ -19,6 +19,7 @@ from gmp.filestorage.models import UploadedFile
 
 from .helpers import ReportMixin
 
+
 class Report(ReportMixin):
     def create(self):
         self.setup_page_templates(self.doc, self.header_content())
@@ -85,7 +86,6 @@ class Report(ReportMixin):
         self.add(template, [8], para_style, table_style,
             data=self.data, hAlign='CENTER')
 
-
     def page2(self):
         # Main content
         self.new_page()
@@ -134,7 +134,9 @@ class Report(ReportMixin):
         para_style = (('Regular Center', 'Regular Justified'), )
         # 1, 1.1
         template = self.get_csv('report_main_content11.csv')
-        self.add(template, [1, 9], self.get_style(para_style_full, template), table_style)
+        self.add(template, [1, 9], self.get_style(para_style_full, template), table_style,
+            data=self.data['info']
+        )
 
         # 1.2
         template = self.get_csv('report_main_content12.csv')
@@ -163,10 +165,11 @@ class Report(ReportMixin):
             data=self.data['engine'], spacer=0.5)
 
         ### 5
-        #template = self.get_csv('report_main_content5.csv')
-        #self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
-        #    data=self.data)
-
+        template = self.get_csv('report_main_content5.csv')
+        docs = enumerate(filter(lambda x: x, self.data['docs']), start=1)
+        docs_with_5_prepended = list(map(lambda x: ['{}.{}'.format(5, x[0]), x[1]], docs))
+        template.extend(docs_with_5_prepended)
+        self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:])
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content):

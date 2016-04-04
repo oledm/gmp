@@ -2,36 +2,30 @@
     'use strict';
 
     angular
-        .module('app.passport')
-        .controller('PassportController', PassportController);
+        .module('app.report')
+        .controller('ReportController', ReportController);
 
-    PassportController.$inject = ['$scope', '$state', 'UserData', 'Department', 'Engine', 'Passport', 'Upload'];
-    function PassportController($scope, $state, UserData, Department, Engine, Passport, Upload) {
+    ReportController.$inject = ['$scope', '$state', 'UserData', 'Department', 'Engine', 'Passport', 'Upload'];
+    function ReportController($scope, $state, UserData, Department, Engine, Passport, Upload) {
 
         $scope.upload = upload;
 
         var vm = this,
-            docs = [
-                {name: 'Журнал ремонта электродвигателя', value: true},
-                {name: 'Журнал эксплуатации электродвигателя', value: true},
-                {name: 'Инструкция по эксплуатации завода-изготовителя', value: true},
-                {name: 'Протоколы штатных измерений и испытаний', value: true},
-                {name: 'Паспорт завода-изготовителя на взрывозащищенный электродвигатель', value: true},
-                {name: 'Схема электроснабжения электродвигателя', value: true}
-            ],
             pages = [
                 'team.tpl.html',
+                'report_info.tpl.html',
                 'measurers.tpl.html',
                 'lpu.tpl.html',
-                'dates.tpl.html',
+//                'dates.tpl.html',
                 'engines.tpl.html',
-                'values.tpl.html',
-                'docs.tpl.html',
-                'photos.tpl.html',
-                'therm.tpl.html',
-                'vibro.tpl.html',
-                'resistance.tpl.html',
-                'signers.tpl.html'
+                'order.tpl.html',
+//                'values.tpl.html',
+//                'docs.tpl.html',
+//                'photos.tpl.html',
+//                'therm.tpl.html',
+//                'vibro.tpl.html',
+//                'resistance.tpl.html',
+//                'signers.tpl.html'
             ],
             control_types = [
                 {
@@ -54,11 +48,6 @@
                     name: 'EK',
                     full_name: 'Электрический контроль'
                 }
-            ],
-            ranks = [
-                'руководитель бригады',
-                'зам. руководителя бригады',
-                'член бригады'
             ],
             measurers = {
                 all: Department.measurers(),
@@ -90,7 +79,6 @@
         vm.tclasses = {all: [], selected: ''};
         vm.getLPUs = getLPUs;
         vm.measurers = measurers;
-        vm.ranks = ranks;
         vm.report = {
             team: undefined,
             measurers: measurers.selected,
@@ -108,42 +96,16 @@
         //////////////////////////
         // report-related functions
 
-        if ($state.is('passport')) {
-            vm.reportType = {
-                'title': 'паспорта двигателя',
-                'button': 'паспорт',
-                'type': 'passport'
-            };
-            vm.report.team = [{'name': '', 'required': true}];
-            vm.report.docs = docs;
-        } else if ($state.is('report')) {
-            vm.pages = [
-                'team.tpl.html',
-                'report_info.tpl.html',
-                'measurers.tpl.html',
-                'lpu.tpl.html',
-//                'dates.tpl.html',
-                'engines.tpl.html',
-                'order.tpl.html',
-//                'values.tpl.html',
-//                'docs.tpl.html',
-//                'photos.tpl.html',
-//                'therm.tpl.html',
-//                'vibro.tpl.html',
-//                'resistance.tpl.html',
-//                'signers.tpl.html'
-            ];
-            vm.report.info = {
-                license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
-            };
-            vm.reportType = {
-                'title': 'экспертного заключения',
-                'button': 'заключение',
-                'type': 'report'
-            };
-            vm.report.team = {};
-            vm.report.docs = [null];
-        }
+        vm.report.info = {
+            license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
+        };
+        vm.reportType = {
+            'title': 'экспертного заключения',
+            'button': 'заключение',
+            'type': 'report'
+        };
+        vm.report.team = {};
+        vm.report.docs = [null];
 
         function procKeyPress(clickEvent) {
             document.getElementById("license").blur();
@@ -193,7 +155,6 @@
             vm.report.type = vm.reportType.type;
             console.log('team:', JSON.stringify(vm.report));
 //            return;
-            delete vm.report.team[0].required;
 //            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
 //            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
 //                return el.name === vm.tclasses.selected;

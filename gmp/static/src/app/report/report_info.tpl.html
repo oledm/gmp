@@ -13,7 +13,6 @@
     </div>
     <div class="form-group">
       <label class="control-label">Документация, предоставленная заказчиком</label>
-      <p>{{ vm.report.docs | json }}</p>
         <div class="row" ng-repeat="x in vm.report.docs track by $index">
             <!-- 
                 <div class="col-sm-12" ng-class="{ 'has-error': vm.reportInfoForm.approve_rank.$touched && vm.reportInfoForm.approve_rank.$invalid }">
@@ -26,13 +25,18 @@
              -->
                     <label class="col-sm-1 text-right">{{ $index + 1 }}</label>
                     <div class="col-sm-11">
-                        <textarea class="form-control" type="text" id="license" 
-                            ng-model="vm.report.docs[$index]" required name="license"
-                            ng-maxlength="150"></textarea>
+                        <textarea autofocus ng-keypress="vm.procKeyPress($event)"
+                            class="form-control" type="text" id="docs"
+                            title="Нажмите Enter для добавления следующего пункта документации"
+                            ng-model="vm.report.docs[$index]" required name="docs"
+                            ng-maxlength="1024"></textarea>
                     </div>
         </div>
     </div>
         <div class="form-group text-center">
-            <button class="btn btn-primary text-center" ng-click="vm.report.docs.push(null)">Добавить</button>
+            <button ng-submit class="btn btn-primary text-center" ng-click="vm.report.docs.push(null)">Добавить</button>
+            <!-- 
+            <button ng-submit class="btn btn-primary text-center" ng-click="document.getElementById('docs').blur(); vm.report.docs.push(null)">Добавить</button>
+             -->
         </div>
 </ng-form>
