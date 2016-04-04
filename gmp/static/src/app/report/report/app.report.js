@@ -12,11 +12,11 @@
 
         var vm = this,
             pages = [
-                'team.tpl.html',
-                'report_info.tpl.html',
+                'report/team.tpl.html',
+                'report/report_info.tpl.html',
                 'measurers.tpl.html',
                 'lpu.tpl.html',
-//                'dates.tpl.html',
+                'report/dates.tpl.html',
                 'engines.tpl.html',
                 'order.tpl.html',
 //                'values.tpl.html',
@@ -64,14 +64,12 @@
             };
 
 
-        vm.addEmployee = addEmployee;
         vm.allEmployees = [];
         vm.control_types = control_types;
         vm.createPassport = createPassport;
         vm.engine = engine;
         vm.workBegin = undefined;
         vm.workEnd = undefined;
-        vm.investigationDate = undefined;
         vm.lpus = {};
         vm.orgs = {};
         vm.pages = pages;
@@ -93,29 +91,11 @@
 
         activate();
 
-        //////////////////////////
-        // report-related functions
-
-        vm.report.info = {
-            license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
-        };
-        vm.reportType = {
-            'title': 'экспертного заключения',
-            'button': 'заключение',
-            'type': 'report'
-        };
-        vm.report.team = {};
-        vm.report.docs = [null];
-
-        function procKeyPress(clickEvent) {
-            document.getElementById("license").blur();
+        function procKeyPress(data, clickEvent) {
             if (clickEvent.key === 'Enter') {
-                vm.report.docs.push(null);
+                data.push(null);
             }
-
         }
-
-        // End of report-related functions
 
         function upload(element) {
             var fieldname = element.name;
@@ -133,20 +113,27 @@
         }
 
         function activate() {
+            vm.report.info = {
+                license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
+            };
+            vm.reportType = {
+                'title': 'экспертного заключения',
+                'button': 'заключение',
+                'type': 'report'
+            };
+            vm.report.team = {};
+            vm.report.docs = [null];
+            vm.report.obj_data = {
+                detail_info: [null]
+            };
+
             getEmployees();
             getEngines();
             getOrgs();
             getTClasses();
         }
 
-        function addEmployee() {
-            vm.report.team.push({
-                'name': '', 'required': false
-            });
-//            console.dir('team: ' + JSON.stringify(vm.report.team));
-        }
         function createPassport() {
-
 //            console.log('docs ' + JSON.stringify(vm.report.docs));
 //            console.log('investigationDate ' + vm.investigationDate.toLocaleString());
 //            console.log('begin ' + vm.workBegin);
@@ -169,7 +156,6 @@
                     vm.allEmployees = data;
                 });
         }
-
 
         function getEngines() {
             Engine.getAllEngines()

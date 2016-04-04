@@ -166,10 +166,33 @@ class Report(ReportMixin):
 
         ### 5
         template = self.get_csv('report_main_content5.csv')
+        chapter_number = int(''.join(filter(lambda x: x.isdigit(), template[0][0])))
+
         docs = enumerate(filter(lambda x: x, self.data['docs']), start=1)
-        docs_with_5_prepended = list(map(lambda x: ['{}.{}'.format(5, x[0]), x[1]], docs))
-        template.extend(docs_with_5_prepended)
-        self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:])
+        docs_with_chapter_prepended = list(map(lambda x: [
+            '{}.{}'.format(chapter_number, x[0]), x[1]
+        ], docs))
+        template.extend(docs_with_chapter_prepended)
+        self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
+            spacer=0.5)
+
+        ### 6
+        template = self.get_csv('report_main_content6.csv')
+        chapter_number = int(''.join(filter(lambda x: x.isdigit(), template[0][0])))
+
+        docs = enumerate(filter(lambda x: x, self.data['obj_data']['detail_info']), start=1)
+        docs_with_chapter_prepended = list(map(lambda x: [
+            '{}.{}'.format(chapter_number, x[0]), x[1]
+        ], docs))
+        template.extend(docs_with_chapter_prepended)
+        self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
+            spacer=0.5)
+
+        ## 7
+        template = self.get_csv('report_main_content7.csv')
+        self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
+            spacer=0.5)
+
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content):

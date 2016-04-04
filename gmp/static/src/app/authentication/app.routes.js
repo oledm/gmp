@@ -51,7 +51,7 @@
                 url: '/report',
                 controller: 'ReportController',
                 controllerAs: 'vm',
-                templateUrl: '/static/src/app/report/report.tpl.html'
+                templateUrl: '/static/src/app/report/report/report.tpl.html'
             });
 
         $urlRouterProvider.otherwise('/login');
