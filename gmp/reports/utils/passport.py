@@ -8,7 +8,7 @@ from reportlab.lib.units import cm
 from reportlab.lib import colors
 
 from gmp.authentication.models import Employee
-from gmp.certificate.models import Certificate
+from gmp.certificate.models import Certificate, EBcertificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass
@@ -262,12 +262,18 @@ class Passport(ReportMixin):
         # certain fields
         for num, person in enumerate(self.data.get('team'), start=1):
             emp = Employee.objects.get_by_full_name(person['name'])
+            try:
+                eb_cert = emp.ebcertificate.get_group_display()
+            except EBcertificate.DoesNotExist:
+                eb_cert = 'Нет данных'
             cert = Certificate.objects.filter(employee=emp)
             all_cert = [
                 [str(num), emp.fio()] +
                 c.plain_details('<br />') +
-                [emp.ebcertificate.get_group_display()] 
+                [eb_cert] 
                 for c in cert
+            ] or [
+                [str(num), emp.fio(), *['Нет данных'] * 5, eb_cert]
             ]
             table_data = self.values(all_cert, {})
             cols = len(table_data[0])

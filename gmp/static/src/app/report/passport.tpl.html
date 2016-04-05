@@ -1,5 +1,5 @@
 <div ng-cloak>
-    <h3 class="block text-center">Формирование {{vm.reportType.title}}</h3>
+    <h3 class="block text-center">Формирование паспорта двигателя</h3>
     
     <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
     
@@ -18,7 +18,7 @@
             vm.resistanceForm.$invalid ||
             vm.signersForm.$invalid
             "
-            > Создать {{vm.reportType.button}}
+            > Создать паспорт
         </button>    
     </div>
 
