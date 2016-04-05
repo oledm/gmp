@@ -64,6 +64,7 @@
             };
 
 
+        vm.addToCollection = addToCollection;
         vm.allEmployees = [];
         vm.control_types = control_types;
         vm.createPassport = createPassport;
@@ -80,7 +81,9 @@
         vm.report = {
             team: undefined,
             measurers: measurers.selected,
-            files: {},
+            files: {
+                'main': [],
+            },
             therm: {},
             vibro: {},
             order: {},
@@ -90,41 +93,28 @@
 
         activate();
 
-        function procKeyPress(data, clickEvent) {
-            if (clickEvent.key === 'Enter') {
-                data.push(null);
-            }
-        }
-
-        function upload(element) {
-            var fieldname = element.name;
-            angular.forEach(element.files, function(file) {
-                Upload.upload({
-                    url: '/api/upload/',
-                    data: {fileupload: file}
-                }).
-                then(function(response) {
-                    vm.report.files[fieldname] = response.data.id;
-                }, function(response) {
-                    console.log('Error status: ' + response.status);
-                });
-            });
-        }
-
         function activate() {
             vm.report.info = {
                 license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
             };
             vm.report.team = {};
-            vm.report.docs = [null];
+            vm.report.docs = [];
             vm.report.obj_data = {
-                detail_info: [null]
+                detail_info: []
             };
 
             getEmployees();
             getEngines();
             getOrgs();
             getTClasses();
+        }
+
+        function addToCollection(arr, value) {
+            var value = value.trim();
+            // Test for absence of a new value in array 
+            if (value !== '' && arr.indexOf(value) === -1 ) {
+                arr.push(value);
+            }
         }
 
         function createPassport() {
@@ -183,6 +173,15 @@
                 });
         }
 
+        function procKeyPress(clickEvent, arr) {
+            // Check for Return (Enter) key pressed
+            if (clickEvent.which === 13) {
+                clickEvent.preventDefault();
+                addToCollection(arr, clickEvent.target.value);
+                clickEvent.target.value = '';
+            }
+        }
+
         function setSelected(selected, item) {
             var id = item.id,
                 index = selected.indexOf(id);
@@ -193,6 +192,22 @@
                 item.selected = true;
                 selected.push(id);
             }
+        }
+
+        function upload(element) {
+            var fieldname = element.name;
+            angular.forEach(element.files, function(file) {
+                Upload.upload({
+                    url: '/api/upload/',
+                    data: {fileupload: file}
+                }).
+                then(function(response) {
+                    vm.report.files[fieldname].push(response.data.id);
+                    console.log(vm.report.files);
+                }, function(response) {
+                    console.log('Error status: ' + response.status);
+                });
+            });
         }
     }
 })();

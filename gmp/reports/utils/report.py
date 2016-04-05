@@ -34,6 +34,7 @@ class Report(ReportMixin):
         self.page2()
         self.page3()
         self.appendix1()
+        self.appendix2()
         #self.page5_6()
         #self.page7()
         #self.page8()
@@ -220,11 +221,28 @@ class Report(ReportMixin):
         )
         para_style = (('Regular Center', 'Regular Justified'), )
         template = self.static_data_plain('report_appendix1.txt')
-        template = template[:2] + \
-            list(map(lambda x: [str(x[0]), x[1]],
-                enumerate(chain.from_iterable(template[2:]), start=1)))
+        numbered_list = enumerate(chain.from_iterable(template[2:]), start=1)
+        stringified_numbered_list = list(map(lambda x: [str(x[0]), x[1]], numbered_list))
+        template = template[:2] + stringified_numbered_list
         self.add(template, [1,9], self.get_style(para_style_full, template), table_style)
 
+    def appendix2(self):
+        self.new_page()
+
+        self.put('Приложение 2', 'Regular Right Italic')
+
+        for img_id in self.data['files']['main']:
+            image = UploadedFile.objects.get(pk=img_id)
+            self.put_photo(image, size=14)
+            #print(image)
+            #table_data = ((image, ))
+            #table = Table(table_data, colWidths=self.columnize(5, 5))
+            #table.hAlign = 'LEFT'
+            #table.setStyle(TableStyle([
+            #    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            #    ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            #]))
+            #self.Story.append(table)
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content):

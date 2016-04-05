@@ -55,6 +55,7 @@ class ReportMixin():
 
 
         self.full_width = self.doc.width
+        self.full_height = self.doc.height
         self.create()
         self.doc.build(self.Story)
 
@@ -209,8 +210,15 @@ class ReportMixin():
         MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
         file_ = str(MEDIA_ROOT.path(str(image.name)))
         image = PILImage.open(file_)
-        ratio = float(image.width/image.height)
-        return Image(file_, width=size * cm * ratio, height=size * cm)
+        ratio = float(image.height/image.width)
+        print('{} ({},{}) ratio {}'.format(file_, image.width, image.height, ratio))
+        if ratio * self.full_width > self.full_height:
+            print('TOOO BIG!!!!!!!!')
+            #image.resize((image.width / ratio, self.full_height))
+            return Image(file_, width=image.width / ratio, height=self.full_height)
+        print('max height:', self.full_height)
+        #print('ratio', ratio, 'width', self.full_width, 'height', ratio * self.full_width)
+        return Image(file_, width=self.full_width, height=ratio * self.full_width)
 
     '''
         Other setup utils
