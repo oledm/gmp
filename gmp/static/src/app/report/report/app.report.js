@@ -86,7 +86,6 @@
             order: {},
             resistance: {}
         };
-        vm.reportType = {};
         vm.setSelected = setSelected;
 
         activate();
@@ -116,11 +115,6 @@
             vm.report.info = {
                 license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
             };
-            vm.reportType = {
-                'title': 'экспертного заключения',
-                'button': 'заключение',
-                'type': 'report'
-            };
             vm.report.team = {};
             vm.report.docs = [null];
             vm.report.obj_data = {
@@ -139,7 +133,7 @@
 //            console.log('begin ' + vm.workBegin);
 //            console.log('end ' + vm.workEnd.toLocaleString());
 //            Passport.createPassport(vm.workBegin);
-            vm.report.type = vm.reportType.type;
+            vm.report.type =  'report';
             console.log('team:', JSON.stringify(vm.report));
 //            return;
 //            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));

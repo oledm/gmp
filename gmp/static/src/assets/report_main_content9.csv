@@ -1,0 +1,4 @@
+<strong>9</strong>;<strong>Выводы заключения экспертизы</strong>
+;"   Объект - взрывозащищенный электродвигатель {engine[type]}, зав.№ {engine[serial_number]}, станционный № {engine[station_number]}, установленный в {obj_data[org]}, {obj_data[lpu]}, {obj_data[ks]}, {obj_data[plant]}, {obj_data[location]},  соответствует требованиям промышленной безопасности и может быть допущен к дальнейшей эксплуатации."
+;"   Следующую экспертизу промышленной безопасности взрывозащищённого электродвигателя {engine[type]},   зав.№ {engine[serial_number]}, станционный № {engine[station_number]}, установленного в {obj_data[org]}, {obj_data[lpu]}, {obj_data[ks]}, {obj_data[plant]}, {obj_data[location]}, провести не позднее {engine[new_date]} г."
+"<strong>Эксперт в области нефтяной и газовой промышленности, удостоверение № НОА-0070-0822</strong>";<strong>М.В. Галкин</strong>

@@ -1,9 +1,10 @@
 from datetime import datetime
 from functools import partial
+from itertools import chain
 
 from django.forms.models import model_to_dict
 
-from reportlab.platypus import Paragraph, Spacer, Image, NextPageTemplate, TableStyle
+from reportlab.platypus import Paragraph, Spacer, Image, NextPageTemplate, TableStyle, KeepTogether
 from reportlab.platypus.doctemplate import BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
@@ -32,7 +33,7 @@ class Report(ReportMixin):
         self.Story.append(NextPageTemplate('Content'))
         self.page2()
         self.page3()
-        #self.page4()
+        self.appendix1()
         #self.page5_6()
         #self.page7()
         #self.page8()
@@ -110,14 +111,6 @@ class Report(ReportMixin):
         ]
         self.add(template, [2, 7, 1], para_style, table_style)
 
-    # Helper function for styling similar paragraphs
-    def get_style(self, styles, template):
-        rows_count = len(template)
-        styles_count = len(styles)
-        result = list(styles)
-        result[-1:] = result[-1:] * (rows_count - (styles_count - 1))
-        return result
-
     def page3(self):
         self.new_page()
         table_style = (
@@ -192,6 +185,45 @@ class Report(ReportMixin):
         template = self.get_csv('report_main_content7.csv')
         self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
             spacer=0.5)
+
+        ## 8
+        template = self.get_csv('report_main_content8.csv')
+        self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
+            data=self.data, spacer=0.5)
+
+        ## 9
+        template = self.get_csv('report_main_content9.csv')
+        first_N_rows = template[:-1]
+        self.add(first_N_rows, [1, 9], self.get_style(para_style_full, first_N_rows), table_style[1:],
+            data=self.data, spacer=0.5)
+
+        table_style = ()
+        para_style = (('Regular', 'Regular Right'), )
+        last_row = template[-1:]
+        self.add(last_row, [5, 5], self.get_style(para_style, last_row), table_style)
+
+    def appendix1(self):
+        self.new_page()
+        table_style = (
+            ('BOTTOMPADDING', (0,0), (-1,0), 10),
+            ('BOTTOMPADDING', (0,1), (-1,1), 20),
+            ('BOTTOMPADDING', (0,2), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,-1), (-1,-1), 10),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('SPAN', (0,0), (-1,0)),
+            ('SPAN', (0,1), (-1,1)),
+        )
+        para_style_full = (
+            ('Regular Right Italic',),
+            ('Regular Bold Center',),
+            ('Regular Center', 'Regular Justified',),
+        )
+        para_style = (('Regular Center', 'Regular Justified'), )
+        template = self.static_data_plain('report_appendix1.txt')
+        template = template[:2] + \
+            list(map(lambda x: [str(x[0]), x[1]],
+                enumerate(chain.from_iterable(template[2:]), start=1)))
+        self.add(template, [1,9], self.get_style(para_style_full, template), table_style)
 
 
     # Define report's static content

@@ -64,6 +64,14 @@ class ReportMixin():
     '''
         Helper functions
     '''
+    # Helper function for styling similar paragraphs
+    def get_style(self, styles, template):
+        rows_count = len(template)
+        styles_count = len(styles)
+        result = list(styles)
+        result[-1:] = result[-1:] * (rows_count - (styles_count - 1))
+        return result
+
     def get_csv(self, fname):
         contents = []
         with open(self.pathname(fname)) as csv_file:
@@ -292,6 +300,12 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='Regular Right',
             fontName='Times',
+            fontSize=13,
+            leading=16,
+            alignment=TA_RIGHT))
+        self.styles.add(ParagraphStyle(
+            name='Regular Right Italic',
+            fontName='Times Italic',
             fontSize=13,
             leading=16,
             alignment=TA_RIGHT))
