@@ -459,7 +459,7 @@ class Passport(ReportMixin):
         self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
 
         image = UploadedFile.objects.get(pk=self.data['files']['main'])
-        self.put_photo(image, size=14)
+        self.put_photo(image)
         self.Story.append(Spacer(1, 1 * cm))
 
     def page11(self):

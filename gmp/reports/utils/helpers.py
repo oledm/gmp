@@ -85,6 +85,9 @@ class ReportMixin():
     def new_page(self):
         self.Story.append(PageBreak())
 
+    def spacer(self, height):
+        self.Story.append(Spacer(1, height * cm))
+
     def add(self, template, width, para_style, table_style, data={}, spacer=None, hAlign='LEFT'):
         filled_template = self.values(template, data)
         table = self.table(filled_template, para_style, width)
@@ -203,22 +206,21 @@ class ReportMixin():
             width=size * cm * ratio, height=size * cm)
         self.Story.append(image)
 
-    def put_photo(self, image, size=10):
+    def put_photo(self, image, size=None):
         self.Story.append(self.fetch_image(image, size))
 
-    def fetch_image(self, image, size):
+    def fetch_image(self, image, size=None):
         MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
         file_ = str(MEDIA_ROOT.path(str(image.name)))
         image = PILImage.open(file_)
-        ratio = float(image.height/image.width)
-        print('{} ({},{}) ratio {}'.format(file_, image.width, image.height, ratio))
-        if ratio * self.full_width > self.full_height:
-            print('TOOO BIG!!!!!!!!')
-            #image.resize((image.width / ratio, self.full_height))
-            return Image(file_, width=image.width / ratio, height=self.full_height)
-        print('max height:', self.full_height)
-        #print('ratio', ratio, 'width', self.full_width, 'height', ratio * self.full_width)
-        return Image(file_, width=self.full_width, height=ratio * self.full_width)
+        #print('{} ({},{}) ratio {}'.format(file_, image.width, image.height, ratio))
+        if size:
+            maxsize = (size * cm, size * cm)
+        else:
+            maxsize = (self.full_width, self.full_height)
+        # Get new image dimensions to fit on page
+        image.thumbnail(maxsize, PILImage.ANTIALIAS)
+        return Image(file_, width=image.width, height=image.height)
 
     '''
         Other setup utils

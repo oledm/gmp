@@ -4,7 +4,7 @@ from itertools import chain
 
 from django.forms.models import model_to_dict
 
-from reportlab.platypus import Paragraph, Spacer, Image, NextPageTemplate, TableStyle, KeepTogether
+from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether
 from reportlab.platypus.doctemplate import BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
@@ -66,7 +66,7 @@ class Report(ReportMixin):
         img = self.fetch_static_image('zakl_header_img.jpg', 2.3)
         img.hAlign = 'CENTER'
         self.Story.append(img)
-        self.Story.append(Spacer(1, 6 * cm))
+        self.spacer(6)
 
         template = [
             ['ЗАКЛЮЧЕНИЕ № 1-2/1715-10-14'],
@@ -233,16 +233,8 @@ class Report(ReportMixin):
 
         for img_id in self.data['files']['main']:
             image = UploadedFile.objects.get(pk=img_id)
-            self.put_photo(image, size=14)
-            #print(image)
-            #table_data = ((image, ))
-            #table = Table(table_data, colWidths=self.columnize(5, 5))
-            #table.hAlign = 'LEFT'
-            #table.setStyle(TableStyle([
-            #    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            #    ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-            #]))
-            #self.Story.append(table)
+            self.put_photo(image)
+            self.spacer(0.5)
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content):
