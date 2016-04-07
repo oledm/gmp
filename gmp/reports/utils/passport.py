@@ -391,20 +391,50 @@ class Passport(ReportMixin):
             ['Класс нагревостойкости изоляции', '{warming_class}'],
             ['Масса двигателя, кг', '{weight}']
         ]
-        rows = len(template)
-        styles = [
-            *[['Regular'] + ['Regular Center']] * rows
-        ]
-        data.update(engine_data)
-        table_data = self.values(template, data)
-        table = self.table(table_data, styles, [5, 5], styleTable=True)
-        table.setStyle(TableStyle([
+        para_style = (('Regular', 'Regular Center'), )
+        table_style = (
             ('BOTTOMPADDING', (0,0), (-1,-1), 5),
             ('TOPPADDING', (0,0), (-1,-1), 2),
-        ]))
-        table.hAlign = 'LEFT'
-        self.Story.append(table)
-        self.Story.append(Spacer(1, 0.5 * cm))
+        )
+        data.update(engine_data)
+        self.add(template, [5, 5], self.get_style(para_style, template), table_style,
+            data=data, styleTable=True
+        )
+        #template = [
+        #    ['Тип', '{name}'],
+        #    ['Исполнение по взрывозащите', '{ex}'],
+        #    ['Допустимый диапазон температуры окружающей среды, °С', '{temp_low}ºС...+{temp_high}ºС'],
+        #    ['Заводской номер', '{serial_number}'],
+        #    ['Завод &ndash; изготовитель', '{factory}'],
+        #    ['Год изготовления', '{manufactured_at}'],
+        #    ['Год ввода в эксплуатацию', '{started_at}'],
+        #    ['Соединение фаз', '{connection}'],
+        #    ['Номинальная мощность, кВт', '{power}'],
+        #    ['Номинальное напряжение, В', '{voltage}'],
+        #    ['Номинальный ток статора, А', '{current}'],
+        #    ['Номинальная частота вращения, об/мин', '{freq}'],
+        #    ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(random_data.get('fraction_nominal_moment'))],
+        #    ['Отношение начального пускового тока к номинальному току', str(random_data.get('fraction_initial_current'))],
+        #    ['Отношение максимального вращающего момента к номинальному вращающему моменту', str(random_data.get('fraction_max_spin_moment'))],
+        #    ['Коэффициент полезного действия, %', '{kpd}'],
+        #    ['Коэффициент мощности, cosφ', '{coef_power}'],
+        #    ['Класс нагревостойкости изоляции', '{warming_class}'],
+        #    ['Масса двигателя, кг', '{weight}']
+        #]
+        #rows = len(template)
+        #styles = [
+        #    *[['Regular'] + ['Regular Center']] * rows
+        #]
+        #data.update(engine_data)
+        #table_data = self.values(template, data)
+        #table = self.table(table_data, styles, [5, 5], styleTable=True)
+        #table.setStyle(TableStyle([
+        #    ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+        #    ('TOPPADDING', (0,0), (-1,-1), 2),
+        #]))
+        #table.hAlign = 'LEFT'
+        #self.Story.append(table)
+        #self.Story.append(Spacer(1, 0.5 * cm))
 
     def page9(self):
         self.Story.append(PageBreak())
@@ -467,12 +497,12 @@ class Passport(ReportMixin):
 
         self.formular('6 Конструктивная схема электродвигателя')
         engine = Engine.objects.get(name=self.data['engine']['type'])
-        self.put_image(engine.scheme, size=12.5)
-        self.Story.append(Spacer(1, 1 * cm))
+        self.put_photo(engine.scheme, size=15)
+        self.spacer(1)
 
         # Until paste into report only the first connection type's picture
         self.formular('6-1 Электрическая схема подключения электродвигателя')
-        self.put_image(engine.connection.all()[0].scheme)
+        self.put_photo(engine.connection.all()[0].scheme, size=15)
 
     def page12(self):
         self.Story.append(PageBreak())
@@ -481,20 +511,21 @@ class Passport(ReportMixin):
 
         image1 = self.fetch_image(
             UploadedFile.objects.get(pk=self.data['files']['therm1']),
-            size=9
+            size=10
         )
         image2 = self.fetch_image(
             UploadedFile.objects.get(pk=self.data['files']['therm2']),
-            size=9
+            size=10
         )
         table_data = [[image1, image2]]
         table = Table(table_data,colWidths=self.columnize(5, 5))
-        table.hAlign = 'LEFT'
+        table.hAlign = 'CENTER'
         table.setStyle(TableStyle([
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
             ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ]))
         self.Story.append(table)
+        self.spacer(0.5)
 
         therm_data = self.data['therm']
         tc = ThermClass.objects.get(pk=therm_data['tclass'])
@@ -578,14 +609,14 @@ class Passport(ReportMixin):
         self.formular('9-1 Визуальный и измерительный контроль электродвигателя')
 
         table_data = [[
-            self.fetch_static_image('engine_details_scheme_1.jpg', 5.3),
-            self.fetch_static_image('engine_details_scheme_2.jpg', 5.3),
-            self.fetch_static_image('engine_details_scheme_3.jpg', 5.3),
+            self.fetch_static_image('engine_details_scheme_1.jpg', 6.2),
+            self.fetch_static_image('engine_details_scheme_2.jpg', 6.2),
+            self.fetch_static_image('engine_details_scheme_3.jpg', 6.2),
         ]]
         table = Table(table_data) 
-        table.hAlign = 'LEFT'
+        table.hAlign = 'CENTER'
         self.Story.append(table)
-        self.Story.append(Spacer(1, 0.5 * cm))
+        self.spacer(0.5)
 
         engine = Engine.objects.get(name=self.data['engine']['type'])
         data = engine.random_data.get('moveable_Ex_connections')
@@ -594,22 +625,15 @@ class Passport(ReportMixin):
             ['1', 'Узел взрывозащиты подшипникового узла со стороны привода', '{top_point[L1]}', '{top_point[D]}', '{top_point[d]}', '{top_point[W1]}', '{top_point[S]}'],
             ['2', 'Узел взрывозащиты подшипникового узла с противоположной приводу стороны', '{bottom_point[L1]}', '{bottom_point[D]}', '{bottom_point[d]}', '{bottom_point[W1]}', '{bottom_point[S]}'],
         ]
-        cols = len(template[0])
-        rows = len(template)
-        styles = [
-            ['Regular Bold Center'] * cols,
-            *[['Regular Center'] * cols] * (rows - 1)
-        ]
-        table_data = self.values(template, data)
-        table = self.table(table_data, styles, [1, 4, 1, 1, 1, 1, 1])
-        table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('TOPPADDING', (0,0), (-1,-1), 0)
-        ]))
-        self.Story.append(table)
-        self.Story.append(Spacer(1, 0.5 * cm))
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+        )
+        para_style = (
+            ('Regular Bold Center', ), ('Regular Center', ),
+        )
+        self.add(template, [1, 4, 1, 1, 1, 1, 1], self.get_style(para_style, template), table_style,
+            data=data, styleTable=True, spacer=.5
+        )
 
         data = engine.random_data.get('unmoveable_Ex_connections')
         template = [
@@ -619,21 +643,9 @@ class Passport(ReportMixin):
             ['3', 'Крышка узла взрывозащиты &ndash; подшипниковый щит со стороны привода', '{cap_shield[L1]}', '{cap_shield[L2]}', '{cap_shield[W1]}', '{cap_shield[b]}', '{cap_shield[a]}', '{cap_shield[f]}', '{cap_shield[S]}'],
             ['4', 'Крышка узла взрывозащиты &ndash; подшипниковый щит с противоположной приводу стороны', '{cap_shield_reverse[L1]}', '{cap_shield_reverse[L2]}', '{cap_shield_reverse[W1]}', '{cap_shield_reverse[b]}', '{cap_shield_reverse[a]}', '{cap_shield_reverse[f]}', '{cap_shield_reverse[S]}'],
         ]
-        cols = len(template[0])
-        rows = len(template)
-        styles = [
-            ['Regular Bold Center'] * cols,
-            *[['Regular Center'] * cols] * (rows - 1)
-        ]
-        table_data = self.values(template, data)
-        table = self.table(table_data, styles, [1, 2, 1, 1, 1, 1, 1, 1, 1])
-        table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('TOPPADDING', (0,0), (-1,-1), 0)
-        ]))
-        self.Story.append(table)
+        self.add(template, [1, 2, 1, 1, 1, 1, 1, 1, 1], self.get_style(para_style, template), table_style,
+            data=data, styleTable=True
+        )
 
         template = [
             ['Зазор между лопастями вентилятора и защитным кожухом',
@@ -641,18 +653,10 @@ class Passport(ReportMixin):
             ['Наружные и внутренние контактные зажимы заземляющих проводников',
             'Обеспечивают подсоединение проводника сечением не менее 4 мм² согласно п. 15.4 ГОСТ Р 51330.0']
         ]
-        cols = len(template[0])
-        rows = len(template)
-        styles = [['Regular'] * cols] * rows
-        table_data = self.values(template, {})
-        table = self.table(table_data, styles, [4, 6])
-        table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('TOPPADDING', (0,0), (-1,-1), 0)
-        ]))
-        self.Story.append(table)
+        para_style = (('Regular', ), )
+        self.add(template, [4, 6], self.get_style(para_style, template), table_style,
+            styleTable=True, spacer=1
+        )
 
     def page15(self):
         self.Story.append(PageBreak())
@@ -745,7 +749,7 @@ class Passport(ReportMixin):
         self.formular('10 Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя')
 
         engine = Engine.objects.get(name=self.data['engine']['type'])
-        self.put_image(engine.meters, size=12.5)
+        self.put_photo(engine.meters, size=12.5)
         #self.Story.append(Spacer(1, 1 * cm))
 
         zones_data = engine.control_zones()
@@ -799,7 +803,7 @@ class Passport(ReportMixin):
         self.Story.append(PageBreak())
         self.formular('11 Измерение сопротивления обмотки статора постоянному току')
         self.put('Схема подключения прибора', 'Regular Center', 0.2)
-        img = self.fetch_static_image('meter_scheme.gif', 5.3)
+        img = self.fetch_static_image('meter_scheme.gif', 10)
         img.hAlign = 'CENTER'
         self.Story.append(img)
         self.Story.append(Spacer(1, 0.5 * cm))
@@ -829,7 +833,7 @@ class Passport(ReportMixin):
 
         self.formular('12 Измерение сопротивления изоляции обмотки статора')
         self.put('Упрощенная схема подключения мегаомметра', 'Regular Center', 0.2)
-        img = self.fetch_static_image('megaommetr_scheme.jpg', 5.3)
+        img = self.fetch_static_image('megaommetr_scheme.jpg', 10)
         img.hAlign = 'CENTER'
         self.Story.append(img)
         self.Story.append(Spacer(1, 0.5 * cm))

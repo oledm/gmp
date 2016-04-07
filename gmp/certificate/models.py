@@ -45,6 +45,16 @@ class Certificate(models.Model):
             types,
         )
 
+    def info(self):
+        received = '{:0>2}.{}'.format(self.received_at_month, self.received_at_year)
+        expired = '{:0>2}.{}'.format(self.expired_at_month, self.expired_at_year)
+        return {
+            'fio': self.employee.fio(),
+            'serial_number': self.serial_number,
+            'received': received,
+            'expired': expired,
+        }
+
     def plain_details(self, delim=' '):
         return [delim.join(x) for x in self.details()] + [str(self.degree)]
 

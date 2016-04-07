@@ -94,3 +94,6 @@ class Employee(AbstractBaseUser):
         else:
             raise ValidationError('Введите корректный email.') 
         super(Employee, self).save(*args, **kwargs)
+
+    def get_certs_by_abbr(self, name):
+        return self.certificate_set.filter(control_types__name=name)

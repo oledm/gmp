@@ -88,9 +88,10 @@ class ReportMixin():
     def spacer(self, height):
         self.Story.append(Spacer(1, height * cm))
 
-    def add(self, template, width, para_style, table_style, data={}, spacer=None, hAlign='LEFT'):
+    def add(self, template, width, para_style, table_style, data={},
+            spacer=None, hAlign='CENTER', styleTable=False):
         filled_template = self.values(template, data)
-        table = self.table(filled_template, para_style, width)
+        table = self.table(filled_template, para_style, width, styleTable=styleTable)
         table.setStyle(TableStyle(table_style))
         table.hAlign = hAlign
         self.Story.append(table)
@@ -122,13 +123,6 @@ class ReportMixin():
     @staticmethod
     def values(template, data):
         return list(map(lambda row: list(map(lambda cell: cell.format(**data), row)), template))
-
-    @staticmethod
-    def fetch_static_image(img, height):
-        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'images', img))
-        image = PILImage.open(file_)
-        ratio = float(image.width/image.height)
-        return Image(file_, width=height * cm * ratio, height=height * cm)
 
     @staticmethod
     def format_JS_dates(d, keys, format_='%d.%m.%Y'):
@@ -197,23 +191,35 @@ class ReportMixin():
             self.Story.append(Spacer(1, spacer * cm))
 
     ''' 
-        Working with images
+        Functions for working with images
     '''
-    def put_image(self, image, size=10):
-        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
-        ratio = float(image.width/image.height)
-        image = Image(str(MEDIA_ROOT.path(str(image))),
-            width=size * cm * ratio, height=size * cm)
-        self.Story.append(image)
+    #def put_image(self, image, size=10):
+    #    MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
+    #    ratio = float(image.width/image.height)
+    #    image = Image(str(MEDIA_ROOT.path(str(image))),
+    #        width=size * cm * ratio, height=size * cm)
+    #    image.hAlign = 'CENTER'
+    #    self.Story.append(image)
 
-    def put_photo(self, image, size=None):
-        self.Story.append(self.fetch_image(image, size))
+    def put_photo(self, filename, size=None):
+        if hasattr(filename, 'name'):
+            image = self.fetch_image(filename, size)
+        else:
+            image = self.fetch_static_image(filename, size)
+        image.hAlign = 'CENTER'
+        self.Story.append(image)
 
     def fetch_image(self, image, size=None):
         MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
         file_ = str(MEDIA_ROOT.path(str(image.name)))
+        return self.proc_image(file_, size)
+
+    def fetch_static_image(self, img, size):
+        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'images', img))
+        return self.proc_image(file_, size)
+
+    def proc_image(self, file_, size):
         image = PILImage.open(file_)
-        #print('{} ({},{}) ratio {}'.format(file_, image.width, image.height, ratio))
         if size:
             maxsize = (size * cm, size * cm)
         else:
@@ -221,6 +227,7 @@ class ReportMixin():
         # Get new image dimensions to fit on page
         image.thumbnail(maxsize, PILImage.ANTIALIAS)
         return Image(file_, width=image.width, height=image.height)
+
 
     '''
         Other setup utils
@@ -296,6 +303,19 @@ class ReportMixin():
             leading=13,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
+            name='Regular Bold',
+            fontName='Times Bold',
+            fontSize=13,
+            leading=16,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Zakluchenie',
+            fontName='Times Bold',
+            firstLineIndent=0.7 * cm,
+            fontSize=13,
+            leading=16,
+            alignment=TA_JUSTIFY))
+        self.styles.add(ParagraphStyle(
             name='Regular12',
             fontName='Times',
             fontSize=12,
@@ -319,6 +339,12 @@ class ReportMixin():
             fontSize=13,
             leading=16,
             alignment=TA_RIGHT))
+        self.styles.add(ParagraphStyle(
+            name='Regular Center Italic',
+            fontName='Times Italic',
+            fontSize=13,
+            leading=16,
+            alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Regular Justified',
             fontName='Times',

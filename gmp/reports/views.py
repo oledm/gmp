@@ -32,7 +32,7 @@ def create_report_debug(request):
             'serial_number': '5602',
             'station_number': '5А',
             'type': '2В100L6'},
- 'files': {'main': '492', 'therm1': '494', 'therm2': '495'},
+ 'files': {'main': '492', 'therm1': '602', 'therm2': '495'},
  'measurers': [4, 5, 6],
  'obj_data': {'ks': 'КС Ефремов',
               'location': 'АВО газа',
@@ -113,7 +113,7 @@ def create_report_debug(request):
             'type': '2В100L6'},
  "order": {"number":"ffdfs",
          "date":"2016-04-09T00:00:00.000Z"},
- 'measurers': [4, 5, 6],
+ 'measurers': [4, 5, 6, 14],
  'obj_data': {'ks': 'КС Ефремов',
               'location': 'АВО газа',
               'lpu': 'Бобровское ЛПУ МГ',
@@ -157,6 +157,7 @@ def create_report_debug(request):
 
  }
     
+    #data = fake_passport
     data = fake_report
     response = HttpResponse(content_type='application/pdf')
     ReportMaker(data, response)

@@ -4,7 +4,7 @@ from itertools import chain
 
 from django.forms.models import model_to_dict
 
-from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether
+from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table
 from reportlab.platypus.doctemplate import BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
@@ -35,37 +35,11 @@ class Report(ReportMixin):
         self.page3()
         self.appendix1()
         self.appendix2()
-        #self.page5_6()
-        #self.page7()
-        #self.page8()
-        #self.page9()
-        #self.page10()
-        #self.page11()
-        #self.page12()
-        #self.page13()
-        #self.page14()
-        #self.page15()
-        #self.page16()
-        #self.page17()
-        #self.page18()
-        #self.page19()
-        #self.page20()
-        #self.page21()
-        #self.appendix('1 Сведения об эксплуатации электродвигателя',
-        #    ['Дата', 'Число пусков', 'Суммарная наработка, час'],
-        #    [2, 3, 5])
-        #self.appendix('2 Сведения об испытаниях электродвигателя',
-        #    ['Дата', 'Вид', 'Содержание', 'Заключение'],
-        #    [1, 2, 3, 4])
-        #self.appendix('3 Сведения о ремонтах электродвигателя',
-        #    ['Дата', 'Вид', 'Содержание', 'Заключение'],
-        #    [1, 2, 3, 4])
-        #    
+        self.appendix3()
+        self.appendix4()
 
     def page1(self):
-        img = self.fetch_static_image('zakl_header_img.jpg', 2.3)
-        img.hAlign = 'CENTER'
-        self.Story.append(img)
+        self.put_photo('zakl_header_img.jpg')
         self.spacer(6)
 
         template = [
@@ -229,12 +203,227 @@ class Report(ReportMixin):
     def appendix2(self):
         self.new_page()
 
-        self.put('Приложение 2', 'Regular Right Italic')
+        self.put('Приложение 2', 'Regular Right Italic', 0.5)
 
         for img_id in self.data['files']['main']:
             image = UploadedFile.objects.get(pk=img_id)
             self.put_photo(image)
             self.spacer(0.5)
+
+    def appendix3(self):
+        self.new_page()
+        data = self.data.get('engine')
+        engine = Engine.objects.get(name=data.get('type'))
+        engine_data = engine.details()
+        random_data = engine.random_data.get('moments')
+
+        self.put('Приложение 3', 'Regular Right Italic', 0.5)
+        self.put('Технические данные объекта', 'Regular Bold Center', 1)
+
+        template = [
+            ['Тип', '{name}'],
+            ['Исполнение по взрывозащите', '{ex}'],
+            ['Допустимый диапазон температуры окружающей среды, °С', '{temp_low}ºС...+{temp_high}ºС'],
+            ['Заводской номер', '{serial_number}'],
+            ['Завод &ndash; изготовитель', '{factory}'],
+            ['Год изготовления', '{manufactured_at}'],
+            ['Год ввода в эксплуатацию', '{started_at}'],
+            ['Соединение фаз', '{connection}'],
+            ['Номинальная мощность, кВт', '{power}'],
+            ['Номинальное напряжение, В', '{voltage}'],
+            ['Номинальный ток статора, А', '{current}'],
+            ['Номинальная частота вращения, об/мин', '{freq}'],
+            ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(random_data.get('fraction_nominal_moment'))],
+            ['Отношение начального пускового тока к номинальному току', str(random_data.get('fraction_initial_current'))],
+            ['Отношение максимального вращающего момента к номинальному вращающему моменту', str(random_data.get('fraction_max_spin_moment'))],
+            ['Коэффициент полезного действия, %', '{kpd}'],
+            ['Коэффициент мощности, cosφ', '{coef_power}'],
+            ['Класс нагревостойкости изоляции', '{warming_class}'],
+            ['Масса двигателя, кг', '{weight}']
+        ]
+        para_style = (('Regular', 'Regular Center'), )
+        table_style = (
+            ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+            ('TOPPADDING', (0,0), (-1,-1), 2),
+        )
+        data.update(engine_data)
+        self.add(template, [5, 5], self.get_style(para_style, template), table_style,
+            data=data, styleTable=True
+        )
+
+    def appendix4(self):
+        self.new_page()
+        table_style = (
+            ('TOPPADDING', (-1,3), (-1,3), 15),
+            ('TOPPADDING', (-1,5), (-1,5), 15),
+            ('TOPPADDING', (-1,5), (-1,5), 15),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            ('TOPPADDING', (0,-2), (-1,-1), 0),
+        )
+        para_style = [
+            *[['Regular Bold Center', ]] * 5, ['Regular', ],
+        ]
+        data = self.data
+        data.update({'control_type': 'визуального и измерительного контроля'})
+        template = self.static_data_plain('report_appendix_protocol_title.txt')
+        self.add(template, [10], self.get_style(para_style, template), table_style,
+            data=data, spacer=.15
+        )
+
+        # Measurers table
+        template = [
+            [
+                '№<br/>п/п', 'Тип прибора', 'Заводской номер<br/>прибора',
+                'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
+            ]
+        ]
+        all_measurers = Measurer.objects.filter(
+            id__in=self.data.get('measurers')
+        ).filter(
+            name__icontains='визуальн'
+        )
+        for num, measurer in enumerate(all_measurers, start=1):
+            template.append([str(num), *measurer.details()])
+        table_style = ()
+        para_style = (('Regular Center', ),)
+        self.add(template, [1, 3, 2, 2, 2], self.get_style(para_style, template), table_style,
+            styleTable=True, spacer=.5
+        )
+        
+        # Headers
+        res = '<u>{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{}:</u>'.format(
+            ' '.join('Результаты').upper(),
+            ' '.join('контроля').upper(),
+        )
+        self.put(res, 'Regular Bold Center', 0.1)
+        res = 'КОНТРОЛЬ ПАРАМЕТРОВ ВЗРЫВОЗАЩИТЫ'
+        self.put(res, 'Regular Center', 0.2)
+
+        # Measure data
+        table_data = [[
+            self.fetch_static_image('engine_details_scheme_1.jpg', 6.2),
+            self.fetch_static_image('engine_details_scheme_2.jpg', 6.2),
+            self.fetch_static_image('engine_details_scheme_3.jpg', 6.2),
+        ]]
+        table = Table(table_data) 
+        table.hAlign = 'CENTER'
+        self.Story.append(table)
+        self.spacer(0.5)
+
+        engine = Engine.objects.get(name=self.data['engine']['type'])
+        data = engine.random_data.get('moveable_Ex_connections')
+        template = [
+            ['№ п/п', 'Подвижное взрывонепроницаемое соединение', 'L1, мм', 'D, мм', 'd, мм', 'W1, мм', 'S, Ra'],
+            ['1', 'Узел взрывозащиты подшипникового узла со стороны привода', '{top_point[L1]}', '{top_point[D]}', '{top_point[d]}', '{top_point[W1]}', '{top_point[S]}'],
+            ['2', 'Узел взрывозащиты подшипникового узла с противоположной приводу стороны', '{bottom_point[L1]}', '{bottom_point[D]}', '{bottom_point[d]}', '{bottom_point[W1]}', '{bottom_point[S]}'],
+        ]
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+        )
+        para_style = (
+            ('Regular Bold Center', ), ('Regular Center', ),
+        )
+        self.add(template, [1, 4, 1, 1, 1, 1, 1], self.get_style(para_style, template), table_style,
+            data=data, styleTable=True, spacer=.5
+        )
+
+        data = engine.random_data.get('unmoveable_Ex_connections')
+        template = [
+            ['№ п/п', 'Неподвижное взрывонепроницаемое соединение', 'L1, мм', 'L2, мм', 'W1, мм', 'b, мм', 'a, мм', 'f, мм', 'S, Ra'],
+            ['1', 'Выводное устройство &ndash; крышка', '{out_krishka[L1]}', '{out_krishka[L2]}', '{out_krishka[W1]}', '{out_krishka[b]}', '{out_krishka[a]}', '{out_krishka[f]}', '{out_krishka[S]}'],
+            ['2', 'Выводное устройство &ndash; станина', '{out_stanina[L1]}', '{out_stanina[L2]}', '{out_stanina[W1]}', '{out_stanina[b]}', '{out_stanina[a]}', '{out_stanina[f]}', '{out_stanina[S]}'],
+            ['3', 'Крышка узла взрывозащиты &ndash; подшипниковый щит со стороны привода', '{cap_shield[L1]}', '{cap_shield[L2]}', '{cap_shield[W1]}', '{cap_shield[b]}', '{cap_shield[a]}', '{cap_shield[f]}', '{cap_shield[S]}'],
+            ['4', 'Крышка узла взрывозащиты &ndash; подшипниковый щит с противоположной приводу стороны', '{cap_shield_reverse[L1]}', '{cap_shield_reverse[L2]}', '{cap_shield_reverse[W1]}', '{cap_shield_reverse[b]}', '{cap_shield_reverse[a]}', '{cap_shield_reverse[f]}', '{cap_shield_reverse[S]}'],
+        ]
+        self.add(template, [1, 2, 1, 1, 1, 1, 1, 1, 1], self.get_style(para_style, template), table_style,
+            data=data, styleTable=True
+        )
+
+        template = [
+            ['Зазор между лопастями вентилятора и защитным кожухом',
+            'Не менее 1/100 максимального диаметра вентилятора согласно п.17.3 ГОСТ Р 51330.0'],
+            ['Наружные и внутренние контактные зажимы заземляющих проводников',
+            'Обеспечивают подсоединение проводника сечением не менее 4 мм² согласно п. 15.4 ГОСТ Р 51330.0']
+        ]
+        para_style = (('Regular', ), )
+        self.add(template, [4, 6], self.get_style(para_style, template), table_style,
+            styleTable=True, spacer=.5
+        )
+
+        #
+        res = 'ВИК УЗЛОВ ВЗРЫВОЗАЩИТЫ'
+        self.put(res, 'Regular Bold', 0.5)
+        template = [
+            ['Отсутствие маркировки и предупреждающих знаков', 'нет'],
+            ['Наличие коррозии и механических повреждений на взрывонепроницаемых поверхностях взрывонепроницаемой оболочки', 'нет'],
+            ['Наличие механических повреждений (сколы, трещины, вмятины) на деталях взрывонепроницаемой оболочки', 'нет'],
+            ['Отсутствие крепёжных элементов', 'нет'],
+            ['Среднее число полных неповрежденных непрерывных ниток резьбы', '8'],
+            ['Качество резьбы', 'хорошее'],
+            ['Затяжка крепёжных болтов', 'хорошее'],
+            ['Наличие следов эрозии и коррозии на резьбовых соединениях', 'нет'],
+            ['Наличие коррозии и механических повреждений на крышке и корпусе выводного устройства', 'нет'],
+            ['Наличие повреждений прокладок', 'нет'],
+            ['Отсутствие антикоррозионной смазки  на взрывонепроницаемых поверхностях', 'нет'],
+            ['Наличие повреждений уплотнительного кольца кабельного ввода', 'нет'],
+        ]
+        para_style = (('Regular', 'Regular Center'),)
+        table_style = (
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+        )
+        self.add(template, [8, 2], self.get_style(para_style, template), table_style,
+            styleTable=True
+        )
+        template = [
+            ['ВИК СТАТОРА', ''],                                
+            ['Наличие пыли, масла, механических повреждений на корпусе статора', 'нет'],
+            ['ВИК РОТОРА', ''],
+            ['Коррозия и механические повреждения на наружных поверхностях деталей подшипников качения', 'нет'],
+            ['Свободное вращение ротора в собранном двигателе от руки', 'да']
+        ]
+        para_style = (
+            ('Regular Bold', ),
+            ('Regular', 'Regular Center'),
+            ('Regular Bold', ),
+            ('Regular', 'Regular Center'),
+        )
+        table_style = table_style + (
+            ('BOTTOMPADDING', (0,0), (0,0), 0),
+            ('BOTTOMPADDING', (0,2), (0,2), 0),
+            ('SPAN', (0,0), (-1,0)),
+            ('SPAN', (0,2), (-1,2)),
+        )
+        self.add(template, [8, 2], self.get_style(para_style, template), table_style,
+            styleTable=True
+        )
+
+        # VIK result
+        template = [
+            ['Заключение: Соответствует. Двигатель годен к дальнейшей эксплуатации без ограничений.'],
+            ['Контроль провел', '{fio}'],
+            ['Удостоверение № {serial_number}, '
+             'выдано {received} г., '
+             'действительно по {expired} г.', '']
+        ]
+        para_style = (
+            ('Zakluchenie', ),
+            ('Regular Bold', 'Regular Right Bold'),
+            ('Regular Center Italic', ),
+        )
+        table_style = table_style + (
+            ('SPAN', (0,0), (-1,0)),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+            ('TOPPADDING', (0,-1), (-1,-1), 10),
+            ('ALIGN', (-1,1), (-1,1), 'RIGHT')
+        )
+
+        person = self.data.get('team')['VIK']
+        emp = Employee.objects.get_by_full_name(person)
+        cert = emp.get_certs_by_abbr('ВИК')[0]
+        self.add(template, [5,5], self.get_style(para_style, template), table_style,
+            data=cert.info()
+        )
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content):
