@@ -5,7 +5,6 @@ from itertools import chain
 from django.forms.models import model_to_dict
 
 from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table
-from reportlab.platypus.doctemplate import BaseDocTemplate
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
 from reportlab.lib.units import cm
@@ -39,6 +38,8 @@ class Report(ReportMixin):
         self.appendix4()
         self.appendix5_6()
         self.appendix7()
+        self.appendix8()
+        self.appendix9()
 
     def page1(self):
         self.put_photo('zakl_header_img.jpg')
@@ -409,7 +410,7 @@ class Report(ReportMixin):
         self.put('Схема ультразвукового контроля', 'Regular Bold Center', 0.5)
 
         engine = Engine.objects.get(name=self.data['engine']['type'])
-        self.put_photo(engine.meters, size=12.5)
+        self.put_photo(engine.meters, height=12.5)
 
         template = [
             ['1 &ndash; {control_zone_1}'],
@@ -431,14 +432,15 @@ class Report(ReportMixin):
         self.put('Приложение 7', 'Regular Right Italic', 0.5)
         self.zakl_header('теплового контроля')
         self.measurers('инфракрас')
+        self.spacer(.3)
 
         image1 = self.fetch_image(
             UploadedFile.objects.get(pk=self.data['files']['therm1'][0]),
-            size=10
+            height=7, width=7
         )
         image2 = self.fetch_image(
             UploadedFile.objects.get(pk=self.data['files']['therm2'][0]),
-            size=10
+            height=7, width=7
         )
         table_data = [[image1, image2]]
         table = Table(table_data,colWidths=self.columnize(5, 5))
@@ -446,10 +448,12 @@ class Report(ReportMixin):
         table_style = (
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
             ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 3),
         )
         table.setStyle(TableStyle(table_style))
         self.Story.append(table)
-        self.spacer(0.5)
+        self.spacer(0.2)
 
         therm_data = self.data['therm']
         tc = ThermClass.objects.get(pk=therm_data['tclass'])
@@ -465,11 +469,94 @@ class Report(ReportMixin):
             ['Средняя температура, °С', '{temp_avg}'],
             ['Соответствие норме', '{correct}'],
         ]
-        para_style = [['Regular', 'Regular Center']]
+        para_style = (
+            ('Regular', 'Regular Center'),
+        )
         self.add(template, [8,2], self.get_style(para_style, template), table_style,
             data=therm_data, styleTable=True, spacer=.5
         )
         self.category_controller('ТК', 'TK')
+
+    def appendix8(self):
+        self.new_page()
+        self.put('Приложение 8', 'Regular Right Italic', 0.5)
+        self.zakl_header('вибродиагностического контроля')
+        self.measurers('вибр')
+        self.spacer(.3)
+
+        template = [
+            ['Зона контроля', 'Вертикальная', 'Горизонтальная', 'Осевая'],
+            ['Подшипниковый узел со стороны привода', '{vert}', '{horiz}', '{axis}'],
+            ['Подшипниковый узел с противоположной приводу стороны', '{reverse_vert}', '{reverse_horiz}', '{reverse_axis}'],
+            ['Норма', '{norm}', '', ''],
+        ]
+        para_style = [
+            ['Regular Bold Center', ],
+            *[['Regular'] + ['Regular Center'] * 3]
+        ]
+        table_style = (
+            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+            ('SPAN', (1,3), (3,3))
+        )
+        self.add(template, [4, 2, 2, 2], self.get_style(para_style, template), table_style,
+            data=self.data['vibro'], styleTable=True, spacer=.5
+        )
+        text = '''
+Вибродиагностический контроль электродвигателя проводился в соответствии с требованиями ГОСТ Р ИСО 10816-3-99 "Вибрация. Контроль состояния машин по результатам измерения вибрации на невращающихся частях. Часть 3. Промышленные машины номинальной мощностью более 15 кВт и номинальной скоростью от 120 до 15000 мин -1".
+        '''
+        self.put(text, 'Paragraph Justified Indent')
+        self.put('Замеры проводились на подшипниковых узлах в трёх направлениях.',
+            'Paragraph Justified Indent', .5)
+        self.category_controller('ВД', 'VD')
+
+    def appendix9(self):
+        self.new_page()
+        self.put('Приложение 9', 'Regular Right Italic', 0.5)
+        self.zakl_header('электрических измерений')
+
+        self.spacer(.5)
+        self.put('а) Измерения сопротивления обмотки статора постоянному току:', 'Regular Bold')
+        self.measurers('микроомметр')
+        self.put('Сопротивление обмотки статора, Ом', 'Regular Center', .2)
+
+        template = [
+            ['А-В', 'B-C', 'C-A'],
+            ['{wireAB}', '{wireBC}', '{wireCA}'],
+        ]
+        para_style = [
+            ['Regular Bold Center'],
+            ['Regular Center']
+        ]
+        table_style = (
+            ('BOTTOMPADDING', (0,0), (-1,0), 6),
+            ('TOPPADDING', (0,0), (-1,0), 2),
+        )
+        self.add(template, [3, 4, 3], self.get_style(para_style, template), table_style,
+            data=self.data['resistance'], styleTable=True, spacer=.5
+        )
+        self.spacer(.5)
+
+        self.put('б)  Измерения сопротивления изоляции обмотки статора:', 'Regular Bold')
+        self.measurers('сопротивления изоляции')
+        self.put('Сопротивление изоляции, МОм', 'Regular Center', .2)
+        template = [
+            ['Фаза', 'А-0', 'B-0', 'C-0', 'А-В', 'B-C', 'C-A'],
+            ['Сопротивление изоляции, Мом', '{isolation}', '{isolation}', '{isolation}', '&ndash;', '&ndash;', '&ndash;'],
+        ]
+        table_style = table_style + (
+            ('BOTTOMPADDING', (0,1), (-1,1), 10),
+            ('TOPPADDING', (0,1), (-1,1), 8),
+        )
+        self.add(template, [4, 1, 1, 1, 1, 1, 1], self.get_style(para_style, template), table_style,
+            data=self.data['resistance'], styleTable=True, spacer=.5
+        )
+        #table_data = self.values(template, self.data['resistance'])
+        #table = self.table(table_data, styles, [4, 1, 1, 1, 1, 1, 1], styleTable=True)
+        #table.setStyle(TableStyle([
+        #    ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+        #    ('TOPPADDING', (0,0), (-1,-1), 5),
+        #    ('SPAN', (1,2), (6, 2)),
+        #]))
 
     def category_controller(self, abbr_rus, abbr_lat):
         template = [
@@ -536,7 +623,10 @@ class Report(ReportMixin):
         )
         for num, measurer in enumerate(all_measurers, start=1):
             template.append([str(num), *measurer.details()])
-        table_style = ()
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 2),
+        )
         para_style = (('Regular Center', ),)
         self.add(template, [1, 3, 2, 2, 2], self.get_style(para_style, template), table_style,
             styleTable=True, spacer=.5
@@ -547,7 +637,7 @@ class Report(ReportMixin):
             ' '.join('Результаты').upper(),
             ' '.join('контроля').upper(),
         )
-        self.put(res, 'Regular Bold Center', 0.5)
+        self.put(res, 'Regular Bold Center', 0.3)
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content):

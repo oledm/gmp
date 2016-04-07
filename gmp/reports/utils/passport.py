@@ -497,12 +497,12 @@ class Passport(ReportMixin):
 
         self.formular('6 Конструктивная схема электродвигателя')
         engine = Engine.objects.get(name=self.data['engine']['type'])
-        self.put_photo(engine.scheme, size=15)
+        self.put_photo(engine.scheme, height=13)
         self.spacer(1)
 
         # Until paste into report only the first connection type's picture
         self.formular('6-1 Электрическая схема подключения электродвигателя')
-        self.put_photo(engine.connection.all()[0].scheme, size=15)
+        self.put_photo(engine.connection.all()[0].scheme, height=10)
 
     def page12(self):
         self.Story.append(PageBreak())
@@ -511,11 +511,11 @@ class Passport(ReportMixin):
 
         image1 = self.fetch_image(
             UploadedFile.objects.get(pk=self.data['files']['therm1']),
-            size=10
+            height=10, width=10
         )
         image2 = self.fetch_image(
             UploadedFile.objects.get(pk=self.data['files']['therm2']),
-            size=10
+            height=10, width=10
         )
         table_data = [[image1, image2]]
         table = Table(table_data,colWidths=self.columnize(5, 5))
@@ -553,48 +553,40 @@ class Passport(ReportMixin):
         text = 'Среднеквадратичные значения виброскоростей  ротора в собственных опорах, мм/с'
         self.put(text, 'Regular Bold Center', 0.5)
 
-        vibro = self.data['vibro']
-        data = [
+        template = [
             ['Зона контроля', 'Вертикальная', 'Горизонтальная', 'Осевая'],
             ['Подшипниковый узел со стороны привода', '{vert}', '{horiz}', '{axis}'],
             ['Подшипниковый узел с противоположной приводу стороны', '{reverse_vert}', '{reverse_horiz}', '{reverse_axis}'],
             ['Норма', '{norm}', '', ''],
         ]
-        styles = [
-            ['Regular Bold Center'] * 4,
-            *[['Regular'] + ['Regular Center'] * 3] * 3
+        para_style = [
+            ['Regular Bold Center'],
+            *[['Regular'] + ['Regular Center'] * 3]
         ]
-        table_data = self.values(data, vibro)
-        table = self.table(table_data, styles, [4, 2, 2, 2])
-        table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        table_style = (
             ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-            ('SPAN', (1,3), (3,3))
-        ]))
-        self.Story.append(table)
-        self.Story.append(Spacer(1, 0.5 * cm))
+            ('SPAN', (1,3), (3,3)),
+        )
+        self.add(template, [4, 2, 2, 2], self.get_style(para_style, template), table_style,
+            data=self.data['vibro'], styleTable=True, spacer=.5
+        )
 
-        data = [
+        template = [
             ['Зона контроля', 'Соответствие норме'],
             ['Подшипники', 'соответствует'],
             ['Установка электродвигателя на раму агрегата', 'соответствует'],
             ['Дисбаланс ротора', 'соответствует'],
         ]
-        styles = [
-            ['Regular Bold Center'] * 2,
-            *[['Regular', 'Regular Center']] * 3
+        para_style = [
+            ['Regular Bold Center'],
+            ['Regular', 'Regular Center']
         ]
-        table_data = self.values(data, {})
-        table = self.table(table_data, styles, [5, 5])
-        table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.black),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        table_style = (
             ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-        ]))
-        self.Story.append(table)
+        )
+        self.add(template, [5, 5], self.get_style(para_style, template), table_style,
+            styleTable=True, spacer=.5
+        )
 
         self.Story.append(Spacer(1, 0.5 * cm))
         self.put('Замеры проводились на подшипниковых узлах в трёх направлениях.', 'Regular')
@@ -749,7 +741,7 @@ class Passport(ReportMixin):
         self.formular('10 Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя')
 
         engine = Engine.objects.get(name=self.data['engine']['type'])
-        self.put_photo(engine.meters, size=12.5)
+        self.put_photo(engine.meters, height=12.5)
         #self.Story.append(Spacer(1, 1 * cm))
 
         zones_data = engine.control_zones()

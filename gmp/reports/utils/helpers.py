@@ -50,7 +50,8 @@ class ReportMixin():
         self.doc = BaseDocTemplate(self.report, pagesize=A4,
                                 rightMargin=12,leftMargin=12,
                                 topMargin=12,bottomMargin=12,
-                                title=title
+                                title=title,
+                                #showBoundary=1
         )
 
 
@@ -193,41 +194,33 @@ class ReportMixin():
     ''' 
         Functions for working with images
     '''
-    #def put_image(self, image, size=10):
-    #    MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
-    #    ratio = float(image.width/image.height)
-    #    image = Image(str(MEDIA_ROOT.path(str(image))),
-    #        width=size * cm * ratio, height=size * cm)
-    #    image.hAlign = 'CENTER'
-    #    self.Story.append(image)
-
-    def put_photo(self, filename, size=None):
+    def put_photo(self, filename, width=0, height=0):
         if hasattr(filename, 'name'):
-            image = self.fetch_image(filename, size)
+            image = self.fetch_image(filename, width, height)
         else:
-            image = self.fetch_static_image(filename, size)
+            image = self.fetch_static_image(filename, width, height)
         image.hAlign = 'CENTER'
         self.Story.append(image)
 
-    def fetch_image(self, image, size=None):
+    def fetch_image(self, image, width=0, height=0):
         MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
         file_ = str(MEDIA_ROOT.path(str(image.name)))
-        return self.proc_image(file_, size)
+        return self.proc_image(file_, width, height)
 
-    def fetch_static_image(self, img, size):
+    def fetch_static_image(self, img, width=0, height=0):
         file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'images', img))
-        return self.proc_image(file_, size)
+        return self.proc_image(file_, width, height)
 
-    def proc_image(self, file_, size):
+    def proc_image(self, file_, width=0, height=0):
         image = PILImage.open(file_)
-        if size:
-            maxsize = (size * cm, size * cm)
-        else:
-            maxsize = (self.full_width, self.full_height)
-        # Get new image dimensions to fit on page
+        maxsize = (
+            (width * cm or self.full_width), 
+            (height * cm or self.full_height)
+        )
+        # Get new image dimensions to fit in desired size
         image.thumbnail(maxsize, PILImage.ANTIALIAS)
+        #print(file_, 'maxsize', maxsize, 'computed', image.width, image.height)
         return Image(file_, width=image.width, height=image.height)
-
 
     '''
         Other setup utils

@@ -115,7 +115,7 @@ def create_report_debug(request):
             'type': '2В100L6'},
  "order": {"number":"ffdfs",
          "date":"2016-04-09T00:00:00.000Z"},
- 'measurers': [4, 5, 6, 14, 20, 11, 13],
+ 'measurers': [4, 5, 6, 14, 20, 11, 13, 16],
  'obj_data': {'ks': 'КС Ефремов',
               'location': 'АВО газа',
               'lpu': 'Бобровское ЛПУ МГ',
