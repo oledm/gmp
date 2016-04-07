@@ -782,22 +782,23 @@ class Passport(ReportMixin):
             ['{control_zone_3_cap}', '{control_zone_3_real}', '{control_zone_3_norm}'] + ['соответствует'] * 3,
             ['{control_zone_4_cap}', '{control_zone_4_real}', '{control_zone_4_norm}'] + ['соответствует'] * 3,
         ]
-        cols = len(template[0])
-        rows = len(template)
-        styles = [
-            *[['Regular Bold Center'] * cols] * 2,
-            *[['Regular'] + ['Regular Center'] * (cols - 1)] * (rows - 2),
-        ]
-        table_data = self.values(template, zones_data)
-        table = self.table(table_data, styles, [3, 1, 1, 1, 2, 2], styleTable=True)
-        table.setStyle(TableStyle([
+        para_style = (
+            ('Regular Bold Center',),
+            ('Regular Bold Center',),
+            ['Regular', *['Regular Center'] * 5],
+        )
+        engine = Engine.objects.get(name=self.data['engine']['type'])
+        zones_data = engine.control_zones()
+        table_style = (
             ('BOTTOMPADDING', (0,0), (-1,-1), 5),
             ('TOPPADDING', (0,0), (-1,-1), 0),
             ('SPAN', (0,0), (0, 1)),
             ('SPAN', (1,0), (3, 0)),
             ('SPAN', (4,0), (5, 0)),
-        ]))
-        self.Story.append(table)
+        )
+        self.add(template, [3, 1, 1, 1, 2, 2], self.get_style(para_style, template), table_style,
+            data=zones_data, styleTable=True, spacer=.5
+        )
 
     def page18(self):
         self.Story.append(PageBreak())

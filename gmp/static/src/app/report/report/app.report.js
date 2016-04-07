@@ -22,9 +22,9 @@
                 'report/photos.tpl.html',
 //                'values.tpl.html',
 //                'docs.tpl.html',
-//                'therm.tpl.html',
-//                'vibro.tpl.html',
-//                'resistance.tpl.html',
+                'therm.tpl.html',
+                'vibro.tpl.html',
+                'resistance.tpl.html',
 //                'signers.tpl.html'
             ],
             control_types = [
@@ -83,6 +83,8 @@
             measurers: measurers.selected,
             files: {
                 'main': [],
+                'therm1': [],
+                'therm2': []
             },
             therm: {},
             vibro: {},

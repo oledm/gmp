@@ -5,4 +5,3 @@
 {control_type}
 Объект: электродвигатель {engine[type]}, зав.№ {engine[serial_number]}, станционный № {engine[station_number]}
 Дата проведения экспертизы: {workBegin} &ndash; {workEnd}
-<u>Средства контроля</u>: 

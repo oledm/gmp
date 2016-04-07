@@ -37,6 +37,8 @@ class Report(ReportMixin):
         self.appendix2()
         self.appendix3()
         self.appendix4()
+        self.appendix5_6()
+        self.appendix7()
 
     def page1(self):
         self.put_photo('zakl_header_img.jpg')
@@ -253,49 +255,10 @@ class Report(ReportMixin):
 
     def appendix4(self):
         self.new_page()
-        table_style = (
-            ('TOPPADDING', (-1,3), (-1,3), 15),
-            ('TOPPADDING', (-1,5), (-1,5), 15),
-            ('TOPPADDING', (-1,5), (-1,5), 15),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
-            ('TOPPADDING', (0,-2), (-1,-1), 0),
-        )
-        para_style = [
-            *[['Regular Bold Center', ]] * 5, ['Regular', ],
-        ]
-        data = self.data
-        data.update({'control_type': 'визуального и измерительного контроля'})
-        template = self.static_data_plain('report_appendix_protocol_title.txt')
-        self.add(template, [10], self.get_style(para_style, template), table_style,
-            data=data, spacer=.15
-        )
-
-        # Measurers table
-        template = [
-            [
-                '№<br/>п/п', 'Тип прибора', 'Заводской номер<br/>прибора',
-                'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
-            ]
-        ]
-        all_measurers = Measurer.objects.filter(
-            id__in=self.data.get('measurers')
-        ).filter(
-            name__icontains='визуальн'
-        )
-        for num, measurer in enumerate(all_measurers, start=1):
-            template.append([str(num), *measurer.details()])
-        table_style = ()
-        para_style = (('Regular Center', ),)
-        self.add(template, [1, 3, 2, 2, 2], self.get_style(para_style, template), table_style,
-            styleTable=True, spacer=.5
-        )
+        self.put('Приложение 4', 'Regular Right Italic', 0.5)
+        self.zakl_header('визуального и измерительного контроля')
+        self.measurers('визуальн')
         
-        # Headers
-        res = '<u>{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{}:</u>'.format(
-            ' '.join('Результаты').upper(),
-            ' '.join('контроля').upper(),
-        )
-        self.put(res, 'Regular Bold Center', 0.1)
         res = 'КОНТРОЛЬ ПАРАМЕТРОВ ВЗРЫВОЗАЩИТЫ'
         self.put(res, 'Regular Center', 0.2)
 
@@ -395,35 +358,196 @@ class Report(ReportMixin):
             ('SPAN', (0,2), (-1,2)),
         )
         self.add(template, [8, 2], self.get_style(para_style, template), table_style,
-            styleTable=True
+            styleTable=True, spacer=.5
+        )
+        self.category_controller('ВИК', 'VIK')
+
+    def appendix5_6(self):
+        engine = Engine.objects.get(name=self.data['engine']['type'])
+        zones_data = engine.control_zones()
+
+        self.appendix5(zones_data)
+        self.appendix6(zones_data)
+
+    def appendix5(self, zones_data):
+        self.new_page()
+        self.put('Приложение 5', 'Regular Right Italic', 0.5)
+        self.zakl_header('ультразвукового контроля')
+        self.measurers('ультразвук')
+
+        res = 'Техническое состояние элементов'
+        self.put(res, 'Regular Bold Center', 0.2)
+
+        template = [
+            ['Зона контроля', 'Толщина основного металла, мм', '', '', 'Дефекты', ''],
+            ['', 'фактическая', 'норма (не менее)', 'соотв. норме', 'основного металла', 'сварных соединений'],
+            ['{control_zone_1_cap}', '{control_zone_1_real}', '{control_zone_1_norm}'] + ['соответствует'] * 3,
+            ['{control_zone_2_cap}', '{control_zone_2_real}', '{control_zone_2_norm}'] + ['соответствует'] * 3,
+            ['{control_zone_3_cap}', '{control_zone_3_real}', '{control_zone_3_norm}'] + ['соответствует'] * 3,
+            ['{control_zone_4_cap}', '{control_zone_4_real}', '{control_zone_4_norm}'] + ['соответствует'] * 3,
+        ]
+        para_style = (
+            ('Regular Bold Center',),
+            ('Regular Bold Center',),
+            ['Regular', *['Regular Center'] * 5],
+        )
+        table_style = (
+            ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('SPAN', (0,0), (0, 1)),
+            ('SPAN', (1,0), (3, 0)),
+            ('SPAN', (4,0), (5, 0)),
+        )
+        self.add(template, [3, 1, 1, 1, 2, 2], self.get_style(para_style, template), table_style,
+            data=zones_data, styleTable=True, spacer=.5
+        )
+        self.category_controller('УК', 'UK')
+
+    def appendix6(self, zones_data):
+        self.new_page()
+        self.put('Приложение 6', 'Regular Right Italic', 0.5)
+        self.put('Схема ультразвукового контроля', 'Regular Bold Center', 0.5)
+
+        engine = Engine.objects.get(name=self.data['engine']['type'])
+        self.put_photo(engine.meters, size=12.5)
+
+        template = [
+            ['1 &ndash; {control_zone_1}'],
+            ['2 &ndash; {control_zone_2}'],
+            ['3 &ndash; {control_zone_3}'],
+            ['4 &ndash; {control_zone_4}'],
+        ]
+        para_style = (('Regular',), )
+        table_style = (
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1,-1), 0)
+        )
+        self.add(template, [8,2], self.get_style(para_style, template), table_style,
+            data=zones_data, spacer=.5, hAlign='RIGHT'
         )
 
-        # VIK result
+    def appendix7(self):
+        self.new_page()
+        self.put('Приложение 7', 'Regular Right Italic', 0.5)
+        self.zakl_header('теплового контроля')
+        self.measurers('инфракрас')
+
+        image1 = self.fetch_image(
+            UploadedFile.objects.get(pk=self.data['files']['therm1'][0]),
+            size=10
+        )
+        image2 = self.fetch_image(
+            UploadedFile.objects.get(pk=self.data['files']['therm2'][0]),
+            size=10
+        )
+        table_data = [[image1, image2]]
+        table = Table(table_data,colWidths=self.columnize(5, 5))
+        table.hAlign = 'CENTER'
+        table_style = (
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        )
+        table.setStyle(TableStyle(table_style))
+        self.Story.append(table)
+        self.spacer(0.5)
+
+        therm_data = self.data['therm']
+        tc = ThermClass.objects.get(pk=therm_data['tclass'])
+        therm_data.update(dict(tclass=tc.get_name_display(), tclass_t_max=str(tc.t_max)))
+
+        template = [
+            ['Температурный класс', '{tclass}'],
+            ['Максимально допустимая температура поверхности оболочки, °C', '{tclass_t_max}'],
+            ['Расстояние до объекта, м', '{distance}'],
+            ['Температура окружающей среды, °С', '{temp_env}'],
+            ['Максимальная температура, °С', '{temp_max}'],
+            ['Минимальная температура, °С', '{temp_min}'],
+            ['Средняя температура, °С', '{temp_avg}'],
+            ['Соответствие норме', '{correct}'],
+        ]
+        para_style = [['Regular', 'Regular Center']]
+        self.add(template, [8,2], self.get_style(para_style, template), table_style,
+            data=therm_data, styleTable=True, spacer=.5
+        )
+        self.category_controller('ТК', 'TK')
+
+    def category_controller(self, abbr_rus, abbr_lat):
         template = [
             ['Заключение: Соответствует. Двигатель годен к дальнейшей эксплуатации без ограничений.'],
             ['Контроль провел', '{fio}'],
             ['Удостоверение № {serial_number}, '
              'выдано {received} г., '
-             'действительно по {expired} г.', '']
+             'действительно по {expired} г.']
         ]
         para_style = (
             ('Zakluchenie', ),
             ('Regular Bold', 'Regular Right Bold'),
             ('Regular Center Italic', ),
         )
-        table_style = table_style + (
+        table_style = (
             ('SPAN', (0,0), (-1,0)),
+            ('SPAN', (0,-1), (-1,-1)),
             ('BOTTOMPADDING', (0,0), (-1,-1), 10),
             ('TOPPADDING', (0,-1), (-1,-1), 10),
             ('ALIGN', (-1,1), (-1,1), 'RIGHT')
         )
 
-        person = self.data.get('team')['VIK']
+        person = self.data.get('team')[abbr_lat]
         emp = Employee.objects.get_by_full_name(person)
-        cert = emp.get_certs_by_abbr('ВИК')[0]
+        cert = emp.get_certs_by_abbr(abbr_rus)[0]
         self.add(template, [5,5], self.get_style(para_style, template), table_style,
             data=cert.info()
         )
+
+    def zakl_header(self, control_type):
+        table_style = (
+            ('TOPPADDING', (-1,3), (-1,3), 15),
+            ('TOPPADDING', (0,5), (-1,5), 15),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,4), (-1,4), 15),
+            ('TOPPADDING', (0,-2), (-1,-1), 0),
+        )
+        para_style = [
+            *[['Regular Bold Center', ]] * 5, ['Regular', ],
+        ]
+        data = self.data
+        data.update({'control_type': control_type})
+        template = self.static_data_plain('report_appendix_protocol_title.txt')
+        self.add(template, [10], self.get_style(para_style, template), table_style,
+            data=data
+        )
+
+    '''
+        Prints table of selected measurers filtered by their purpose name
+    
+    '''
+    def measurers(self, approx_category):
+        self.put('<u>Средства контроля</u>:', 'Regular', .15)
+        template = [
+            [
+                '№<br/>п/п', 'Тип прибора', 'Заводской номер<br/>прибора',
+                'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
+            ]
+        ]
+        all_measurers = Measurer.objects.filter(
+            id__in=self.data.get('measurers')
+        ).filter(
+            name__icontains=approx_category
+        )
+        for num, measurer in enumerate(all_measurers, start=1):
+            template.append([str(num), *measurer.details()])
+        table_style = ()
+        para_style = (('Regular Center', ),)
+        self.add(template, [1, 3, 2, 2, 2], self.get_style(para_style, template), table_style,
+            styleTable=True, spacer=.5
+        )
+
+        # Headers
+        res = '<u>{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{}:</u>'.format(
+            ' '.join('Результаты').upper(),
+            ' '.join('контроля').upper(),
+        )
+        self.put(res, 'Regular Bold Center', 0.5)
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content):
