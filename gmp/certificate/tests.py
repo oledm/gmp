@@ -45,7 +45,4 @@ class CertificateSerializerTest(APITestCase):
             self.user.username
         ))
         self.assertEqual(len(response.data), 1)
-        print('data:', response.data)
         serializer = CertificateSerializer(data=response.data, many=True)
-        print('is valid:', serializer.is_valid())
-        print('validated data:', serializer.validated_data)

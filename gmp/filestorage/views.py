@@ -31,7 +31,7 @@ class FileUploadView(views.APIView):
                 dest.write(chunk)
 
     def save_to_db(self, fname):
-        f = Storage.objects.create(name=fname, uploader=self.request.user)
+        f = Storage.objects.create(orig_file=fname, uploader=self.request.user)
         return str(f.id)
 
 class FileViewset(viewsets.ModelViewSet):
