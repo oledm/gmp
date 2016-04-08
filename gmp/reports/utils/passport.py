@@ -12,7 +12,7 @@ from gmp.certificate.models import Certificate, EBcertificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass
-from gmp.filestorage.models import UploadedFile
+from gmp.filestorage.models import Storage
 
 from .helpers import ReportMixin, DoubledLine
 
@@ -488,7 +488,7 @@ class Passport(ReportMixin):
         self.formular('5 Общий вид электродвигателя')
         self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
 
-        image = UploadedFile.objects.get(pk=self.data['files']['main'])
+        image = Storage.objects.get(pk=self.data['files']['main'])
         self.put_photo(image)
         self.Story.append(Spacer(1, 1 * cm))
 
@@ -510,11 +510,11 @@ class Passport(ReportMixin):
         self.formular('7 Тепловизионный контроль. Определение соответствия электродвигателя температурному классу')
 
         image1 = self.fetch_image(
-            UploadedFile.objects.get(pk=self.data['files']['therm1']),
+            Storage.objects.get(pk=self.data['files']['therm1']),
             height=10, width=10
         )
         image2 = self.fetch_image(
-            UploadedFile.objects.get(pk=self.data['files']['therm2']),
+            Storage.objects.get(pk=self.data['files']['therm2']),
             height=10, width=10
         )
         table_data = [[image1, image2]]

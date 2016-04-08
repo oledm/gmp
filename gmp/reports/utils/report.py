@@ -15,7 +15,7 @@ from gmp.certificate.models import Certificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass
-from gmp.filestorage.models import UploadedFile
+from gmp.filestorage.models import Storage
 
 from .helpers import ReportMixin
 
@@ -211,7 +211,7 @@ class Report(ReportMixin):
         self.put('Приложение 2', 'Regular Right Italic', 0.5)
 
         for img_id in self.data['files']['main']:
-            image = UploadedFile.objects.get(pk=img_id)
+            image = Storage.objects.get(pk=img_id)
             self.put_photo(image)
             self.spacer(0.5)
 
@@ -437,11 +437,11 @@ class Report(ReportMixin):
         self.spacer(.3)
 
         image1 = self.fetch_image(
-            UploadedFile.objects.get(pk=self.data['files']['therm1'][0]),
+            Storage.objects.get(pk=self.data['files']['therm1'][0]),
             height=7, width=7
         )
         image2 = self.fetch_image(
-            UploadedFile.objects.get(pk=self.data['files']['therm2'][0]),
+            Storage.objects.get(pk=self.data['files']['therm2'][0]),
             height=7, width=7
         )
         table_data = [[image1, image2]]
@@ -591,7 +591,7 @@ class Report(ReportMixin):
         self.put('Приложение 11', 'Regular Right Italic', 0.5)
 
         for img_id in self.data['files']['licenses']:
-            image = UploadedFile.objects.get(pk=img_id)
+            image = Storage.objects.get(pk=img_id)
             self.put_photo(image)
             self.spacer(0.5)
 
