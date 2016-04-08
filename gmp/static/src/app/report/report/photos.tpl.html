@@ -29,4 +29,16 @@
             </div>
         </div>
     </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12" ng-class="{ 'has-error': vm.imagesForm.licenses.$touched && vm.imagesForm.licenses.$invalid }">
+                  <label class="control-label" for="licenses">Копии лицензий на право проведения экспертизы, свидетельств об аккредитации, удостоверений экспертов</label>
+                  <input valid-file multiple required type="file" id="licenses" name="licenses" ng-model="licenses"
+                      onchange="angular.element(this).scope().upload(this)" />
+                  <div class="help-block" role="alert" ng-messages="vm.imagesForm.licenses.$error" ng-if="vm.imagesForm.licenses.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+        </div>
+    </div>
 </ng-form>

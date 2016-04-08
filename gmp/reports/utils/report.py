@@ -40,6 +40,8 @@ class Report(ReportMixin):
         self.appendix7()
         self.appendix8()
         self.appendix9()
+        self.appendix10()
+        self.appendix11()
 
     def page1(self):
         self.put_photo('zakl_header_img.jpg')
@@ -361,7 +363,7 @@ class Report(ReportMixin):
         self.add(template, [8, 2], self.get_style(para_style, template), table_style,
             styleTable=True, spacer=.5
         )
-        self.category_controller('ВИК', 'VIK')
+        self.category_controller('ВИК')
 
     def appendix5_6(self):
         engine = Engine.objects.get(name=self.data['engine']['type'])
@@ -402,7 +404,7 @@ class Report(ReportMixin):
         self.add(template, [3, 1, 1, 1, 2, 2], self.get_style(para_style, template), table_style,
             data=zones_data, styleTable=True, spacer=.5
         )
-        self.category_controller('УК', 'UK')
+        self.category_controller('УК')
 
     def appendix6(self, zones_data):
         self.new_page()
@@ -475,7 +477,7 @@ class Report(ReportMixin):
         self.add(template, [8,2], self.get_style(para_style, template), table_style,
             data=therm_data, styleTable=True, spacer=.5
         )
-        self.category_controller('ТК', 'TK')
+        self.category_controller('ТК')
 
     def appendix8(self):
         self.new_page()
@@ -507,7 +509,7 @@ class Report(ReportMixin):
         self.put(text, 'Paragraph Justified Indent')
         self.put('Замеры проводились на подшипниковых узлах в трёх направлениях.',
             'Paragraph Justified Indent', .5)
-        self.category_controller('ВД', 'VD')
+        self.category_controller('ВД')
 
     def appendix9(self):
         self.new_page()
@@ -534,7 +536,7 @@ class Report(ReportMixin):
         self.add(template, [3, 4, 3], self.get_style(para_style, template), table_style,
             data=self.data['resistance'], styleTable=True, spacer=.5
         )
-        self.spacer(.5)
+        self.spacer(.3)
 
         self.put('б)  Измерения сопротивления изоляции обмотки статора:', 'Regular Bold')
         self.measurers('сопротивления изоляции')
@@ -548,17 +550,53 @@ class Report(ReportMixin):
             ('TOPPADDING', (0,1), (-1,1), 8),
         )
         self.add(template, [4, 1, 1, 1, 1, 1, 1], self.get_style(para_style, template), table_style,
-            data=self.data['resistance'], styleTable=True, spacer=.5
+            data=self.data['resistance'], styleTable=True, spacer=.3
         )
-        #table_data = self.values(template, self.data['resistance'])
-        #table = self.table(table_data, styles, [4, 1, 1, 1, 1, 1, 1], styleTable=True)
-        #table.setStyle(TableStyle([
-        #    ('BOTTOMPADDING', (0,0), (-1,-1), 10),
-        #    ('TOPPADDING', (0,0), (-1,-1), 5),
-        #    ('SPAN', (1,2), (6, 2)),
-        #]))
+        self.put('Контроль электрических параметров в электродвигателе проводился в соответствии с требованиями ПТЭЭП, РД 34.45-51.300-97 Объём и нормы испытаний электрооборудования.', 'Paragraph Justified Indent', .3)
+        self.category_controller('ЭЛ')
 
-    def category_controller(self, abbr_rus, abbr_lat):
+    def appendix10(self):
+        self.new_page()
+        self.put('Приложение 10', 'Regular Right Italic', 0.5)
+
+        self.spacer(.5)
+        template = [
+            ['Перечень приборов'],
+            [
+                '№<br/>п/п', 'Тип прибора', 'Заводской номер<br/>прибора',
+                'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
+            ]
+        ]
+        all_measurers = Measurer.objects.filter(id__in=self.data.get('measurers'))
+        for num, measurer in enumerate(all_measurers, start=1):
+            template.append([str(num), *measurer.details()])
+        table_style = (
+            ('SPAN', (0,0), (-1,0)),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 2),
+            ('TOPPADDING', (0,0), (-1,0), 7),
+            ('BOTTOMPADDING', (0,0), (-1,0), 12),
+        )
+        para_style = (
+            ('Regular Bold Center', ),
+            ('Regular Center', ),
+        )
+        self.add(template, [1, 3, 2, 2, 2], self.get_style(para_style, template), table_style,
+            styleTable=True, spacer=.5
+        )
+
+    def appendix11(self):
+        self.new_page()
+
+        self.put('Приложение 11', 'Regular Right Italic', 0.5)
+
+        for img_id in self.data['files']['licenses']:
+            image = UploadedFile.objects.get(pk=img_id)
+            self.put_photo(image)
+            self.spacer(0.5)
+
+
+    def category_controller(self, category):
         template = [
             ['Заключение: Соответствует. Двигатель годен к дальнейшей эксплуатации без ограничений.'],
             ['Контроль провел', '{fio}'],
@@ -579,9 +617,12 @@ class Report(ReportMixin):
             ('ALIGN', (-1,1), (-1,1), 'RIGHT')
         )
 
-        person = self.data.get('team')[abbr_lat]
+        person = self.data.get('team')[category]
         emp = Employee.objects.get_by_full_name(person)
-        cert = emp.get_certs_by_abbr(abbr_rus)[0]
+        if category == 'ЭЛ':
+            cert = emp.ebcertificate
+        else:
+            cert = emp.get_certs_by_abbr(category)[0]
         self.add(template, [5,5], self.get_style(para_style, template), table_style,
             data=cert.info()
         )

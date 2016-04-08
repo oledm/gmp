@@ -98,9 +98,17 @@ class EBcertificate(models.Model):
     expired_at = models.DateField('Срок действия')
     group = models.PositiveSmallIntegerField('Группа ЭБ', choices=EB_GROUPS)   
 
-    def __str__(self):
-        return 'Удостоверение по ЭБ № {} ({})'.format(self.serial_number, self.employee.fio())
-
     class Meta:
         verbose_name = 'Удостоверение по ЭБ'
         verbose_name_plural = 'Удостоверения по ЭБ'
+
+    def __str__(self):
+        return 'Удостоверение по ЭБ № {} ({})'.format(self.serial_number, self.employee.fio())
+
+    def info(self):
+        return {
+            'fio': self.employee.fio(),
+            'serial_number': self.serial_number,
+            'received': self.received_at.strftime('%d.%m.%Y'),
+            'expired': self.expired_at.strftime('%d.%m.%Y'),
+        }

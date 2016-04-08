@@ -29,23 +29,23 @@
             ],
             control_types = [
                 {
-                    name: 'VIK',
+                    name: 'ВИК',
                     full_name: 'Визуальный и измерительный контроль'
                 },
                 {
-                    name: 'UK',
+                    name: 'УК',
                     full_name: 'Ультразвуковой контроль'
                 },
                 {
-                    name: 'TK',
+                    name: 'ТК',
                     full_name: 'Тепловой контроль'
                 },
                 {
-                    name: 'VD',
+                    name: 'ВД',
                     full_name: 'Вибродиагностический контроль'
                 },
                 {
-                    name: 'EK',
+                    name: 'ЭЛ',
                     full_name: 'Электрический контроль'
                 }
             ],
@@ -84,7 +84,8 @@
             files: {
                 'main': [],
                 'therm1': [],
-                'therm2': []
+                'therm2': [],
+                'licenses': []
             },
             therm: {},
             vibro: {},
@@ -129,9 +130,9 @@
             console.log('team:', JSON.stringify(vm.report));
 //            return;
 //            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
-//            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
-//                return el.name === vm.tclasses.selected;
-//            })[0].id;
+            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
+                return el.name === vm.tclasses.selected;
+            })[0].id;
 //            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
             Passport.createPassport(vm.report);
         }
