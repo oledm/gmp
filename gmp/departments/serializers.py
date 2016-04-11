@@ -1,13 +1,14 @@
 from rest_framework import serializers
 
 from .models import Measurer, Department
+from gmp.reports.serializers import ReportSerializer
 
 class DepartmentSerializer(serializers.ModelSerializer):
     name = serializers.CharField()
+    report_types = ReportSerializer(many=True)
 
     class Meta:
         model = Department
-        fields = ('name',)
 
 class MeasurerSerializer(serializers.ModelSerializer):
     

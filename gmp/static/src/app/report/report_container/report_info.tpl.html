@@ -1,0 +1,74 @@
+<ng-form name="vm.reportInfoForm" novalidate>
+  <h4 checkmark>Информация о проведенной экспертизе</h4>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12" ng-class="{ 'has-error': vm.reportInfoForm.approve_rank.$touched && vm.reportInfoForm.approve_rank.$invalid }">
+              <label class="control-label" for="license">Основание для проведения работ</label>
+              <textarea class="form-control" type="text" id="license" required name="license" ng-maxlength="150" ng-model="vm.report.info.license"></textarea>
+              <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.license.$error" ng-if="vm.reportInfoForm.license.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">Документация, предоставленная заказчиком</label>
+        <div class="row" ng-repeat="x in vm.report.docs">
+            <div class="col-sm-12">
+                <div class="alert alert-success alert-dismissible" role="alert"
+                    ng-model="vm.report.docs[$index]">
+                  {{vm.report.docs[$index]}}
+                  <button type="button" ng-click="vm.report.docs.splice($index, 1)"
+                      class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <textarea 
+            ng-keypress="vm.procKeyPress($event, vm.report.docs)"
+            class="form-control" id="docs" name="docs"
+            title="Нажмите Enter для добавления следующего пункта документации"
+            ng-model="newDocValue" required
+            ng-maxlength="1024">
+        </textarea>
+    </div>
+    <div class="form-group text-center">
+        <button ng-submit class="btn btn-primary text-center"
+            ng-click="vm.addToCollection(vm.report.docs, newDocValue); newDocValue=''">Добавить
+        </button>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">Краткая характеристика и назначение объекта экспертизы</label>
+        <div class="row" ng-repeat="x in vm.report.obj_data.detail_info">
+            <div class="col-sm-12">
+                <div class="alert alert-success alert-dismissible" role="alert"
+                    ng-model="vm.report.obj_data.detail_info[$index]">
+                  {{vm.report.obj_data.detail_info[$index]}}
+                  <button type="button" ng-click="vm.report.obj_data.detail_info.splice($index, 1)"
+                      class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <textarea 
+            ng-keypress="vm.procKeyPress($event, vm.report.obj_data.detail_info)"
+            class="form-control" id="obj_info" name="obj_info"
+            title="Нажмите Enter для добавления следующего пункта документации"
+            ng-model="newObjectValue" required
+            ng-maxlength="1024">
+        </textarea>
+    </div>
+    <div class="form-group text-center">
+        <button ng-submit class="btn btn-primary text-center"
+            ng-click="vm.addToCollection(vm.report.obj_data.detail_info, newObjectValue); newObjectValue=''">Добавить
+        </button>
+    </div>
+</ng-form>

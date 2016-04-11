@@ -8,7 +8,7 @@
     Department.$inject = ['$resource'];
 
     function Department($resource) {
-        return $resource('/api/department/', {}, {
+        return $resource('/api/department/:depId/', {}, {
             measurers: {
                 method: 'get',
                 isArray: true,

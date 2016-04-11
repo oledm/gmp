@@ -1,9 +1,12 @@
 import datetime
 from django.db import models
 
+from gmp.reports.models import Report
+
 class Department(models.Model):
 
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField('Название отдела', max_length=100, unique=True)
+    report_types = models.ManyToManyField(Report, verbose_name='Виды отчетов, выпускаемые отделом')
 
     def __str__(self):
         return self.name
