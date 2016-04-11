@@ -14,13 +14,12 @@ from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
-from gmp.engines.models import Engine, ThermClass
 from gmp.filestorage.models import FileStorage
 
 from .helpers import ReportMixin
 
 
-class ReportAdsorber(ReportMixin):
+class ReportContainer(ReportMixin):
     def create(self):
         self.setup_page_templates(self.doc, self.header_content())
 

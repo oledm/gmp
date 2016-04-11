@@ -17,6 +17,7 @@ from gmp.departments import views as department_views
 from gmp.engines import views as engine_views
 from gmp.reports import views as report_views
 from gmp.inspections import views as inspections_views
+from gmp.containers import views as containers_views
 
 
 users = routers.SimpleRouter()
@@ -47,6 +48,9 @@ lpus.register(r'lpu', inspections_views.LPUViewset)
 
 tclasses = routers.SimpleRouter()
 tclasses.register('tclass', engine_views.TClassViewset)
+
+containers = routers.SimpleRouter()
+containers.register('container', containers_views.ContainerViewset)
 
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
@@ -85,14 +89,17 @@ urlpatterns = [
     # /api/tclass/
     url(r'^api/', include(tclasses.urls)),
 
+    # /api/containers/
+    url(r'^api/', include(containers.urls)),
+
     # Additional routes
     url(r'^api/login', user_views.LoginView.as_view(), name='login'),
     url(r'^api/logout', user_views.LogoutView.as_view(), name='logout'),
     url(r'^api/upload', filestorage_views.FileUploadView.as_view(), name='files'),
 
     # Reporr route
-    url(r'^report/$', report_views.create_report, name="report"),
-    #url(r'^report/$', report_views.create_report_debug, name="report"),
+    #url(r'^report/$', report_views.create_report, name="report"),
+    url(r'^report/$', report_views.create_report_debug, name="report"),
     # Pass-through route
     url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
 

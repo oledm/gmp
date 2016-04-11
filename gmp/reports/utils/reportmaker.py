@@ -1,5 +1,6 @@
 from .passport import Passport
 from .report import Report
+from .report_container import ReportContainer
 
 class ReportMaker():
     def __init__(self, data, report):
@@ -8,4 +9,4 @@ class ReportMaker():
         if data['type'] == 'report':
             Report(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])
         if data['type'] == 'report_adsorber':
-            ReportAdsorber(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])
+            ReportContainer(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])

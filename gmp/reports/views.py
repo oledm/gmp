@@ -159,12 +159,12 @@ def create_report_debug(request):
 
  }
 
-    fake_adsorber_report = {
+    fake_container_report = {
  }
     
     #data = fake_passport
     data = fake_report
-    data = fake_adsorber_report
+    data = fake_container_report
     response = HttpResponse(content_type='application/pdf')
     ReportMaker(data, response)
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'

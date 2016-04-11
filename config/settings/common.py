@@ -53,6 +53,7 @@ LOCAL_APPS = (
     'gmp.departments',
     'gmp.engines',
     'gmp.inspections',
+    'gmp.containers',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
