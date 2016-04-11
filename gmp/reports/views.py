@@ -92,21 +92,20 @@ def create_report_debug(request):
           'Лицензия на право эксплуатации взрывопожароопасных производственных объектов № ВП-00-009629 от 11.02.2009 г. на 32 л.',
           None,
           None],
-  'files': {'main': ['590',
-                    '591',
-                    '592',
-                    '594',
-                    '593',
-                    '595',
-                    '596',
-                    '598',
-                    '600',
-                    '599',
-                    '597',
-                    '601'],
-           'therm1': ['619'],
-           'therm2': ['620'],
-           'licenses': ['660', '661', '662', '664', '663', '665']},
+  'files': {'licenses': ['15',
+                        '16',
+                        '18',
+                        '19',
+                        '17',
+                        '21',
+                        '20',
+                        '22',
+                        '23',
+                        '24',
+                        '25'],
+           'main': ['11'],
+           'therm1': ['12'],
+           'therm2': ['13', '14']},
  'info': {'license': 'Договор № 321 от 13.04.2013 на выполнение работ по экспертизе промышленной безопасности.'},
  'engine': {'manufactured_at': '1982-01-01T00:00:00.000Z',
             'new_date': '2026-08-27T00:00:00.000Z',
@@ -159,9 +158,13 @@ def create_report_debug(request):
  'workEnd': '2016-04-08T00:00:00.000Z',
 
  }
+
+    fake_adsorber_report = {
+ }
     
-    data = fake_passport
-    #data = fake_report
+    #data = fake_passport
+    data = fake_report
+    data = fake_adsorber_report
     response = HttpResponse(content_type='application/pdf')
     ReportMaker(data, response)
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'

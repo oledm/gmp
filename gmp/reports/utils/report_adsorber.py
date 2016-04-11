@@ -20,7 +20,7 @@ from gmp.filestorage.models import FileStorage
 from .helpers import ReportMixin
 
 
-class Report(ReportMixin):
+class ReportAdsorber(ReportMixin):
     def create(self):
         self.setup_page_templates(self.doc, self.header_content())
 
@@ -30,21 +30,21 @@ class Report(ReportMixin):
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
-        self.page2()
-        self.page3()
-        self.appendix1()
-        self.appendix2()
-        self.appendix3()
-        self.appendix4()
-        self.appendix5_6()
-        self.appendix7()
-        self.appendix8()
-        self.appendix9()
-        self.appendix10()
-        self.appendix11()
+        #self.page2()
+        #self.page3()
+        #self.appendix1()
+        #self.appendix2()
+        #self.appendix3()
+        #self.appendix4()
+        #self.appendix5_6()
+        #self.appendix7()
+        #self.appendix8()
+        #self.appendix9()
+        #self.appendix10()
+        #self.appendix11()
 
     def page1(self):
-        self.put_photo('zakl_header_img.jpg')
+        self.put_photo('adsorber_report_title.jpg')
         self.spacer(6)
 
         template = [

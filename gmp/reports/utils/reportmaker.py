@@ -7,3 +7,5 @@ class ReportMaker():
             Passport(data, report, 'Паспорт двигателя ' + data['engine']['type'])
         if data['type'] == 'report':
             Report(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])
+        if data['type'] == 'report_adsorber':
+            ReportAdsorber(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])

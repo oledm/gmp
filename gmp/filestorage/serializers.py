@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from .models import Storage
+from .models import FileStorage
 
 class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Storage
+        model = FileStorage

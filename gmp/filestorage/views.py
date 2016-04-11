@@ -6,7 +6,7 @@ from rest_framework import views, viewsets, permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
-from .models import Storage
+from .models import FileStorage
 from .serializers import FileSerializer
 from gmp.authentication.models import Employee
 
@@ -31,13 +31,13 @@ class FileUploadView(views.APIView):
                 dest.write(chunk)
 
     def save_to_db(self, fname):
-        f = Storage.objects.create(orig_file=fname, uploader=self.request.user)
+        f = FileStorage.objects.create(fileupload=fname, uploader=self.request.user)
         return str(f.id)
 
 class FileViewset(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
-    queryset = Storage.objects.all()
+    queryset = FileStorage.objects.all()
     serializer_class = FileSerializer
     
     # TODO make helper function common for entire project to follow DRY
@@ -46,12 +46,12 @@ class FileViewset(viewsets.ModelViewSet):
 
     def list(self, request):
         user = Employee.objects.get(email=self.request.user)
-        files = Storage.objects.filter(uploader=user)
+        files = FileStorage.objects.filter(uploader=user)
         files_serialized = FileSerializer(files, many=True)
         return Response(files_serialized.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):
-        f = Storage.objects.get(pk=pk)
+        f = FileStorage.objects.get(pk=pk)
         f.delete()
 
         msg = 'File successfully removed'
