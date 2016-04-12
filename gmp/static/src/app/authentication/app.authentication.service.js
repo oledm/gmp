@@ -5,9 +5,9 @@
         .module('app.authentication')
         .factory('Authentication', Authentication);
 
-    Authentication.$inject = ['$http', 'Cookies'];
+    Authentication.$inject = ['$http', 'Cookies', '$rootScope', '$state'];
 
-    function Authentication($http, Cookies) {
+    function Authentication($http, Cookies, $rootScope, $state) {
         var authentication = {
             isAuthenticated: isAuthenticated,
             login: login,
@@ -45,9 +45,15 @@
         }
 
         function loginSuccess(response) {
-//            console.log('Cookies before: ' + Cookies.get());
             Cookies.set(response.data);
-//            console.log('Cookies after: ' + JSON.stringify(Cookies.get()));
+            $rootScope.$emit('cokkiesSet', '');
+            $state.go('home');
+        }
+
+        function logoutSuccess() {
+            Cookies.remove();
+            $rootScope.$emit('cokkiesSet', undefined);
+            $state.go('login');
         }
 
         function loginFail() {
@@ -58,10 +64,6 @@
 //                        textContent: 'Неверно указан email/пароль',
 //                        ok: 'Закрыть'
 //                    }));
-        }
-
-        function logoutSuccess() {
-            Cookies.remove();
         }
     }
 })();

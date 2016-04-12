@@ -5,9 +5,9 @@
         .module('app.login')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['Authentication', '$state', '$rootScope'];
+    LoginController.$inject = ['Authentication'];
 
-    function LoginController(Authentication, $state, $rootScope) {
+    function LoginController(Authentication) {
         var vm = this;
 
         vm.login = login;
@@ -15,13 +15,7 @@
         activate();
 
         function login() {
-            Authentication.login(vm.email, vm.password)
-                .then(loginSuccess);
-        }
-
-        function loginSuccess() {
-            $rootScope.$emit('cokkiesSet', '');
-            $state.go('home');
+            Authentication.login(vm.email, vm.password);
         }
 
         function activate() {

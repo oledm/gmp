@@ -5,16 +5,13 @@
         .module('app.toolbar')
         .controller('ToolbarController', ToolbarController);
 
-    ToolbarController.$inject = ['Authentication', '$state'];
+    ToolbarController.$inject = ['Authentication'];
 
-    function ToolbarController(Authentication, $state) {
+    function ToolbarController(Authentication) {
         var vm = this;
 
         vm.logout = function() {
-            Authentication.logout()
-                .then(function() {
-                    $state.go('login');
-                });
+            Authentication.logout();
         };
     }
 })();

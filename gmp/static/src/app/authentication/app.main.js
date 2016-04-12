@@ -20,7 +20,10 @@
                 $location.path('/login');
             } 
 
-            $rootScope.$on('cokkiesSet', function(event, args) {
+            $rootScope.$on('cokkiesSet', function(event, data) {
+                if (data === undefined) {
+                    vm.menu = [];
+                }
                 setupMenu();
             });
 
@@ -28,19 +31,17 @@
         }
 
         function setupMenu() {
-            if (vm.menu.length === 0) {
+                vm.menu = [{name: 'Профиль', link: 'Профиль', ref: 'profile'}];
+
                 var cookies = Cookies.get();
                 if (cookies !== undefined) {
                     var report_types = cookies.department.report_types;
-                    vm.menu.push({name: 'Профиль', link: 'Профиль', ref: 'profile'});
-                    angular.forEach(report_types, function(el) {
-                        vm.menu.push(
-                            {name: el.name, link: el.name, ref: el.url}
-                        );
+                    angular.forEach(report_types, function(report) {
+                        vm.menu.push({name: report.name, link: report.name, ref: report.url});
                     });
                 }
-            }
         }
+
         vm.isAuthenticated = function() {
             return Authentication.isAuthenticated();
         };
