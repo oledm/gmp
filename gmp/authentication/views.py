@@ -62,7 +62,8 @@ class EmployeeViewset(viewsets.ModelViewSet):
         data = request.data
         serializer = self.serializer_class(data=data)
 
-        print('create')
+        print('all data:', data)
+        print('serializer data:', serializer.is_valid)
         if serializer.is_valid(raise_exception=True):
             print('valid')
             dep_name = serializer.validated_data.pop('department')['name']

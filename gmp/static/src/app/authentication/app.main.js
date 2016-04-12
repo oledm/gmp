@@ -5,17 +5,11 @@
         .module('app.main')
         .controller('MainController', MainController);
 
-    MainController.$inject = ['Authentication', '$location', 'Department', 'Cookies'];
+    MainController.$inject = ['Authentication', '$location', 'Cookies', '$rootScope'];
 
-    function MainController(Authentication, $location, Department, Cookies) {
+    function MainController(Authentication, $location, Cookies, $rootScope) {
         var vm = this;
-        vm.menu = [
-//            {name: 'Файлы', link: 'Файлы', icon: 'upload', ref: 'upload'},
-            {name: 'Профиль', link: 'Профиль', icon: 'person', ref: 'profile'},
-            {name: 'Паспорт двигателя', link: 'Паспорт двигателя', icon: 'document-text', ref: 'passport'},
-            {name: 'Заключение', link: 'Заключение', icon: 'document-text', ref: 'report'},
-            {name: 'Отчет по сосудам', link: 'Отчет по сосудам', icon: 'document-text', ref: 'report-container'}
-        ];
+        vm.menu = [];
 
         activate();
 
@@ -26,11 +20,25 @@
                 $location.path('/login');
             } 
 
-            var cookies = Cookies.get();
-            if (cookies !== undefined) {
-                Department.get({depId: cookies.department.id}, function(data) {
-                    console.log('dep data: ' + JSON.stringify(data));
-                });
+            $rootScope.$on('cokkiesSet', function(event, args) {
+                setupMenu();
+            });
+
+            setupMenu();
+        }
+
+        function setupMenu() {
+            if (vm.menu.length === 0) {
+                var cookies = Cookies.get();
+                if (cookies !== undefined) {
+                    var report_types = cookies.department.report_types;
+                    vm.menu.push({name: 'Профиль', link: 'Профиль', ref: 'profile'});
+                    angular.forEach(report_types, function(el) {
+                        vm.menu.push(
+                            {name: el.name, link: el.name, ref: el.url}
+                        );
+                    });
+                }
             }
         }
         vm.isAuthenticated = function() {

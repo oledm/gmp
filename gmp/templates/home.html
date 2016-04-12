@@ -90,7 +90,6 @@
  <div ng-controller="ToolbarController as vm">
      <div ng-if="main.isAuthenticated()">
 
-
         <nav class="navbar navbar-default">
           <div class="container-fluid">
             <!-- 
@@ -104,7 +103,6 @@
                   <a class="navbar-brand" href="#"><i class="logo icon ion-earth"></i></a>
                 </div>
              -->
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                <ul class="nav navbar-nav" ng-repeat="entry in main.menu">
@@ -119,7 +117,6 @@
                </ul>
 
               <ul class="nav navbar-nav navbar-right" ng-controller="UserDataController as uc">
-
 
                   <div class="navbar-text">{{uc.userdata.data.last_name}} {{uc.userdata.data.first_name}}<br/><small>{{uc.userdata.data.department.name}}</small></div>
                 <li><a href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
