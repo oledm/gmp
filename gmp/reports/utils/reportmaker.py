@@ -8,5 +8,5 @@ class ReportMaker():
             Passport(data, report, 'Паспорт двигателя ' + data['engine']['type'])
         if data['type'] == 'report':
             Report(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])
-        if data['type'] == 'report_adsorber':
-            ReportContainer(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])
+        if data['type'] == 'report-container':
+            ReportContainer(data, report, data['device']['full_desc_capital'])

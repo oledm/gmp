@@ -24,6 +24,9 @@ class Passport(ReportMixin):
         # Filter empty team members appeared after accident click on 'Add'
         # team's member button
         self.data['team'] = list(filter(lambda x: x['name'], self.data['team']))
+
+        self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
+        self.format_JS_dates(self.data['engine'], ('new_date',))
         self.format_JS_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
 
         self.Story.append(NextPageTemplate('Title'))

@@ -1,0 +1,186 @@
+<ng-form name="vm.deviceForm" novalidate>
+    <h4 checkmark>Выберите объект обследования</h4>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12"
+                 ng-class="{ 'has-error': vm.deviceForm.device.$touched && vm.deviceForm.device.$invalid }"
+                >
+              <label class="control-label" for="device">Объект обследования</label>
+              <select class="form-control" ng-model="vm.report.device" required ng-options="device as device.full_desc_capital for device in vm.devices.all track by device.id" name="device" id="device"></select>
+              <div class="help-block" role="alert" ng-messages="vm.deviceForm.device.$error" ng-if="vm.deviceForm.device.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="vm.report.device" class="well">
+        <p>Заводской номер:&nbsp;{{vm.report.device.serial_number}}</p>
+        <p>Регистрационный номер:&nbsp;{{vm.report.device.reg_number}}</p>
+        <p>Инвентарный номер:&nbsp;{{vm.report.device.inv_number}}</p>
+        <p>Завод-изготовитель:&nbsp;{{vm.report.device.factory}}</p>
+        <p>Номер чертежа:&nbsp;{{vm.report.device.scheme}}</p>
+        <p>Год изготовления:&nbsp;{{vm.report.device.manufactured_year}}</p>
+        <p>Год ввода в эксплуатацию:&nbsp;{{vm.report.device.started_year}}</p>
+        <p>Место установки:&nbsp;{{vm.report.device.location}}{{vm.report.obj_data.plant ? ' ' + vm.report.obj_data.plant : ''}}{{vm.report.obj_data.ks ? ' ' + vm.report.obj_data.ks : ''}}{{vm.report.obj_data.lpu ? ', ' + vm.report.obj_data.lpu : ''}}</p>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.org.$touched && vm.deviceForm.org.$invalid }">
+                  <label class="control-label" for="org">Организация</label>
+                  <select class="form-control" placeholder="Организация"
+                      ng-change="vm.getLPUs(vm.report.obj_data.org)" required
+                      ng-model="vm.report.obj_data.org" name="org" id="org">
+                      <option ng-repeat="org in vm.orgs">{{org.name}}</option>
+                  </select>
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.org.$error" ng-if="vm.deviceForm.org.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.lpu.$touched && vm.deviceForm.lpu.$invalid }">
+                  <label class="control-label" for="lpu">ЛПУ МГ</label>
+                  <select class="form-control" placeholder="ЛПУ МГ" required
+                      ng-model="vm.report.obj_data.lpu" name="lpu" id="lpu">
+                      <option ng-repeat="lpu in vm.lpus">{{lpu.name}}</option>
+                  </select>
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.lpu.$error" ng-if="vm.deviceForm.lpu.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.ks.$touched && vm.deviceForm.ks.$invalid }">
+                  <label class="control-label" for="ks">Наименование КС или установки</label>
+                  <input class="form-control" type="text" id="ks" required
+                      name="ks" ng-maxlength="50" ng-model="vm.report.obj_data.ks" />
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.ks.$error" ng-if="vm.deviceForm.ks.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.plant.$touched && vm.deviceForm.plant.$invalid }">
+                  <label class="control-label" for="plant">Название цеха</label>
+                  <input class="form-control" type="text" id="plant" required
+                      name="plant" ng-maxlength="50" ng-model="vm.report.obj_data.plant" />
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.plant.$error" ng-if="vm.deviceForm.plant.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    <!-- 
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-4"
+                     ng-class="{ 'has-error': vm.deviceForm.serial_number.$touched && vm.deviceForm.serial_number.$invalid }"
+                    >
+                  <label class="control-label" for="serial_number">Заводской номер</label>
+                  <input class="form-control" type="text" id="serial_number" required
+                      name="serial_number" ng-maxlength="50" ng-model="vm.report.device.serial_number" />
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.serial_number.$error" ng-if="vm.deviceForm.serial_number.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+                </div>
+        
+                <div class="col-sm-4"
+                     ng-class="{ 'has-error': vm.deviceForm.station_number.$touched && vm.deviceForm.station_number.$invalid }"
+                    >
+                  <label class="control-label" for="station_number">Регистрационный номер</label>
+                  <input class="form-control" type="text" id="station_number" required
+                      name="station_number" ng-maxlength="50" ng-model="vm.report.device.station_number" />
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.station_number.$error" ng-if="vm.deviceForm.station_number.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+                </div>
+                <div class="col-sm-4"
+                     ng-class="{ 'has-error': vm.deviceForm.station_number.$touched && vm.deviceForm.station_number.$invalid }"
+                    >
+                  <label class="control-label" for="station_number">Инвентарный номер</label>
+                  <input class="form-control" type="text" id="station_number" required
+                      name="station_number" ng-maxlength="50" ng-model="vm.report.device.station_number" />
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.station_number.$error" ng-if="vm.deviceForm.station_number.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-4"
+                     ng-class="{ 'has-error': vm.deviceForm.location.$touched && vm.deviceForm.location.$invalid }"
+                    >
+                  <label class="control-label" for="location">Место установки</label>
+                  <input class="form-control" type="text" id="location" required
+                      name="location" ng-maxlength="50" ng-model="vm.report.obj_data.location" />
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.location.$error" ng-if="vm.deviceForm.location.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+                </div>
+        
+                <div class="col-sm-4"  ng-controller="DatepickerController as dc"
+                     ng-class="{ 'has-error':
+                         vm.deviceForm.manufactured_at.$touched &&
+                         vm.deviceForm.manufactured_at.$invalid }"
+                    >
+                      <label class="control-label" for="manufactured_at">Год изготовления</label>
+                        <p class="input-group">
+                        <input type="text" ng-model="vm.report.device.manufactured_at" id="manufactured_at" name="manufactured_at" class="form-control" uib-datepicker-popup="yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.yearOptions" required />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                        </p>
+                      <div class="help-block" role="alert" ng-messages="vm.deviceForm.manufactured_at.$error" ng-if="vm.deviceForm.manufactured_at.$touched">
+                          <div ng-messages-include="/static/src/assets/messages.html"></div>
+                      </div>
+                </div>
+        
+                <div class="col-sm-4"  ng-controller="DatepickerController as dc"
+                     ng-class="{ 'has-error':
+                         vm.deviceForm.started_at.$touched &&
+                         vm.deviceForm.started_at.$invalid }"
+                    >
+                      <label class="control-label" for="started_at">Год ввода в эксплуатацию</label>
+                        <p class="input-group">
+                      <input type="text" ng-model="vm.report.device.started_at" id="started_at" name="started_at" class="form-control" uib-datepicker-popup="yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.yearOptions" required   />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                        </p>
+                      <div class="help-block" role="alert" ng-messages="vm.deviceForm.started_at.$error" ng-if="vm.deviceForm.started_at.$touched">
+                          <div ng-messages-include="/static/src/assets/messages.html"></div>
+                      </div>
+                </div>
+        
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-4"  ng-controller="DatepickerController as dc"
+                     ng-class="{ 'has-error':
+                         vm.deviceForm.new_date.$touched &&
+                         vm.deviceForm.new_date.$invalid }"
+                    >
+                      <label class="control-label" for="new_date">Дата проделения срока эксплуатации двигателя</label>
+                        <p class="input-group">
+                      <input type="text" ng-model="vm.report.device.new_date" id="new_date" name="new_date" class="form-control" uib-datepicker-popup ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required   />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                        </p>
+                      <div class="help-block" role="alert" ng-messages="vm.deviceForm.new_date.$error" ng-if="vm.deviceForm.new_date.$touched">
+                          <div ng-messages-include="/static/src/assets/messages.html"></div>
+                      </div>
+                </div>
+        
+            </div>
+        </div>
+     -->
+
+</ng-form>

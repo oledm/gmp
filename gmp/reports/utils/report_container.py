@@ -23,8 +23,8 @@ class ReportContainer(ReportMixin):
     def create(self):
         self.setup_page_templates(self.doc, self.header_content())
 
-        self.format_JS_dates(self.data, ('workBegin', 'workEnd'))
-        self.format_JS_dates(self.data['order'], ('date',))
+        #self.format_JS_dates(self.data, ('workBegin', 'workEnd'))
+        #self.format_JS_dates(self.data['order'], ('date',))
 
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
@@ -43,27 +43,29 @@ class ReportContainer(ReportMixin):
         #self.appendix11()
 
     def page1(self):
-        self.put_photo('adsorber_report_title.jpg')
-        self.spacer(6)
+        self.put_photo('adsorber_report_title.jpg', width=16)
+        self.spacer(1.5)
 
         template = [
-            ['ЗАКЛЮЧЕНИЕ № 1-2/1715-10-14'],
-            ['''ЭКСПЕРТИЗЫ ПРОМЫШЛЕННОЙ БЕЗОПАСНОСТИ НА ТЕХНИЧЕСКОЕ УСТРОЙСТВО,
-                ЭКСПЛУАТИРУЕМОЕ НА ОПАСНОМ ПРОИЗВОДСТВЕННОМ ОБЪЕКТЕ'''],
-            ['<strong>Объект:</strong> Взрывозащищённый электродвигатель {engine[type]}'],
-            ['станционный № {engine[station_number]} зав.№ {engine[serial_number]}'],
-            ['<strong>Владелец:</strong> {obj_data[org]}'],
-            ['''<strong>Место установки:</strong> {obj_data[lpu]}, {obj_data[ks]},
-                {obj_data[plant]}, {obj_data[location]}'''],
-            ['№_____________________________________']
+            ['ОТЧЕТ № ГМП-16ДИА/0012/С2/ТО/2016'],
+            ['ПО РЕЗУЛЬТАТАМ КОМПЛЕКСНОГО ТЕХНИЧЕСКОГО'],
+            ['ДИАГНОСТИРОВАНИЯ'],
+            ['<strong>сосуда, работающего под давлением</strong>'],
+            ['<strong>{device[full_desc_capital]}</strong>'],
+            ['<strong>Предприятие владелец:</strong> {obj_data[org]}'],
+            ['<strong>Место установки:</strong> филиал {obj_data[org]} '
+                '{obj_data[lpu]} {obj_data[ks]} {obj_data[plant]}'''],
         ]
-        rows = len(template)
-        para_style = [
-            *[['Heading 1 Bold']] * 2,
-            *[['Regular Center']] * (rows - 2),
-        ]
-        table_style = (('BOTTOMPADDING', (0,0), (-1,-1), 10), )
-        self.add(template, [8], para_style, table_style,
+        para_style = (
+            ('Heading 1 Bold', ),
+            ('Heading 1 Bold', ),
+            ('Heading 1 Bold', ),
+            ('Regular Center Leading', ),
+        )
+        table_style = (
+            ('BOTTOMPADDING', (0,0), (-1,2), 10),
+        )
+        self.add(template, [8], self.get_style(para_style, template), table_style,
             data=self.data, hAlign='CENTER')
 
     def page2(self):
@@ -698,7 +700,7 @@ class ReportContainer(ReportMixin):
         content[0].drawOn(canvas, doc.width - w, 120)
 
         w, h = content[1].wrap(doc.width, doc.topMargin)
-        content[1].drawOn(canvas, (doc.width) / 2, h + 30)
+        content[1].drawOn(canvas, 0, h - 20)
         canvas.restoreState()
 
     def header_content(self):
@@ -707,22 +709,34 @@ class ReportContainer(ReportMixin):
         template = [
             ['Директор филиала<br/>ООО «ГАЗМАШПРОЕКТ» «НАГАТИНСКИЙ»'],
             [fio_string.format(fio='А.Н. Бондаренко')],
-            [date_string]   
+            [date_string],
+            ['М.П.']
+        ]
+        rows = len(template)
+        styles = [
+            *[['Signature Left']] * rows,
+        ]
+        table_data = self.values(template, {})
+        table = self.table(table_data, styles, [4], styleTable=False)
+        table.hAlign = 'RIGHT'
+        table.setStyle(TableStyle([
+            ('TOPPADDING', (0,-1), (-1,-1), 25),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ]))
+
+        template = [
+            ['Москва'],
+            ['{} г.'.format(datetime.now().year)],
         ]
         rows = len(template)
         styles = [
             *[['Regular Center']] * rows,
         ]
         table_data = self.values(template, {})
-        table = self.table(table_data, styles, [4], styleTable=False)
-        table.hAlign = 'RIGHT'
-        table.setStyle(TableStyle([
-            ('BOTTOMPADDING', (0,0), (-1,-1), 15),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-        ]))
+        table2 = self.table(table_data, styles, [11], styleTable=False)
         return (
             table,
-            Paragraph('{} г.'.format(datetime.now().year), self.styles['Regular'])
+            table2
         )
 

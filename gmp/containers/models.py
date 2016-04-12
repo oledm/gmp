@@ -2,7 +2,6 @@ from django.db import models
 
 class Container(models.Model):
     name = models.CharField('Тип оборудования', max_length=50)
-    desc = models.CharField('Описание оборудования', max_length=150)
     factory = models.OneToOneField(
         'Factory',
         verbose_name='Завод-изготовитель'
@@ -13,6 +12,7 @@ class Container(models.Model):
     inv_number = models.CharField('Инвентарный номер', max_length=50)
     manufactured_year = models.PositiveSmallIntegerField('Год изготовления')
     started_year = models.PositiveSmallIntegerField('Год ввода в эксплуатацию')
+    location = models.CharField('Место установки', max_length=200)
     # Working conditions
     p_work = models.FloatField('Давление рабочее, МПа')
     p_test = models.FloatField('Давление пробное, МПа')
@@ -53,8 +53,7 @@ class Container(models.Model):
     )
 
     def __str__(self):
-        return '{} ({} зав№ {}, рег.№ {}, инв.№ {})'.format(
-            self.desc.capitalize(),
+        return '{} зав.№ {}, рег.№ {}, инв.№ {}'.format(
             self.name.lower(),
             self.serial_number,
             self.reg_number,
@@ -66,7 +65,7 @@ class Container(models.Model):
         verbose_name_plural = 'Сосуды'
 
 class Factory(models.Model):
-    name = models.CharField('Наименование завода', unique=True, max_length=150)
+    name = models.CharField('Наименование завода', unique=True, max_length=200)
 
     def __str__(self):
         return self.name
@@ -76,7 +75,7 @@ class Factory(models.Model):
         verbose_name_plural = 'Заводы-изготовители'
 
 class Carrier(models.Model):
-    name = models.CharField('Тип носителя', unique=True, max_length=150)
+    name = models.CharField('Тип носителя', unique=True, max_length=200)
 
     def __str__(self):
         return self.name
@@ -86,7 +85,7 @@ class Carrier(models.Model):
         verbose_name_plural = 'Носители'
 
 class Material(models.Model):
-    name = models.CharField('Наименование материала', unique=True, max_length=150)
+    name = models.CharField('Наименование материала', unique=True, max_length=200)
 
     def __str__(self):
         return self.name
@@ -96,8 +95,8 @@ class Material(models.Model):
         verbose_name_plural = 'Материалы'
 
 class Welding(models.Model):
-    name = models.CharField('Вид сварки', max_length=150)
-    material = models.CharField('Материал сварки', max_length=150)
+    name = models.CharField('Вид сварки', max_length=200)
+    material = models.CharField('Материал сварки', max_length=200)
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.material)
@@ -107,8 +106,8 @@ class Welding(models.Model):
         verbose_name_plural = 'Сварка'
 
 class Control(models.Model):
-    name = models.CharField('Метод контроля при изготовлении', max_length=150)
-    area = models.CharField('Объем контроля при изготовлении', max_length=150)
+    name = models.CharField('Метод контроля при изготовлении', max_length=200)
+    area = models.CharField('Объем контроля при изготовлении', max_length=200)
 
     def __str__(self):
         return '{} {}'.format(self.name, self.area)

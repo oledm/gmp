@@ -1,10 +1,10 @@
 <form name="userForm" novalidate>
     <div class="row">
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
-            <div class="form-group" ng-class="{ 'has-error': userForm.first_name.$touched && userForm.first_name.$invalid }">
-              <label for="first_name">Имя</label>
-              <input class="form-control" type="text" id="first_name" name="first_name" ng-maxlength="50" ng-model="vm.userdata.data.first_name" />
-              <div class="help-block" role="alert" ng-messages="userForm.first_name.$error" ng-if="userForm.first_name.$touched">
+            <div class="form-group" ng-class="{ 'has-error': userForm.last_name.$touched && userForm.last_name.$invalid }">
+              <label for="last_name">Фамилия</label>
+              <input class="form-control" type="text" id="last_name" md-maxlength="50" name="last_name" ng-model="vm.userdata.data.last_name" />
+              <div class="help-block" role="alert" ng-messages="userForm.last_name.$error" ng-if="userForm.last_name.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
             </div>
@@ -13,10 +13,10 @@
 
     <div class="row">
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
-            <div class="form-group" ng-class="{ 'has-error': userForm.last_name.$touched && userForm.last_name.$invalid }">
-              <label for="last_name">Фамилия</label>
-              <input class="form-control" type="text" id="last_name" md-maxlength="50" name="last_name" ng-model="vm.userdata.data.last_name" />
-              <div class="help-block" role="alert" ng-messages="userForm.last_name.$error" ng-if="userForm.last_name.$touched">
+            <div class="form-group" ng-class="{ 'has-error': userForm.first_name.$touched && userForm.first_name.$invalid }">
+              <label for="first_name">Имя</label>
+              <input class="form-control" type="text" id="first_name" name="first_name" ng-maxlength="50" ng-model="vm.userdata.data.first_name" />
+              <div class="help-block" role="alert" ng-messages="userForm.first_name.$error" ng-if="userForm.first_name.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
             </div>
@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.email.$touched && userForm.email.$invalid }">
-              <label for="email">Отчество</label>
+              <label for="email">Email</label>
               <input class="form-control" type="email" id="email" md-maxlength="50" name="email" ng-model="vm.userdata.data.email" />
               <div class="help-block" role="alert" ng-messages="userForm.email.$error" ng-if="userForm.email.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>

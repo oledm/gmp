@@ -121,7 +121,7 @@
 
               <ul class="nav navbar-nav navbar-right" ng-controller="UserDataController as uc">
 
-                  <div class="navbar-text">{{uc.userdata.data.last_name}} {{uc.userdata.data.first_name}}<br/><small>{{uc.userdata.data.department.name}}</small></div>
+                  <div class="navbar-text">{{uc.userdata.data.last_name}} {{uc.userdata.data.first_name}} {{uc.userdata.data.middle_name}}<br/><small>{{uc.userdata.data.department.name}}</small></div>
                 <li><a href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
                     <!-- 
                         <i class="icon ion-android-exit"></i>

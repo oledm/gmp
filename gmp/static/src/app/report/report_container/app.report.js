@@ -12,11 +12,11 @@
 
         var vm = this,
             pages = [
-                'report_container/containers.tpl.html',
+                'report_container/devices.tpl.html',
+//                'report_container/device_location.tpl.html',
 //                'report/team.tpl.html',
 //                'report/report_info.tpl.html',
 //                'measurers.tpl.html',
-//                'lpu.tpl.html',
 //                'report/dates.tpl.html',
 //                'engines.tpl.html',
 //                'order.tpl.html',
@@ -32,32 +32,32 @@
                 all: Department.measurers(),
                 selected: [],
                 sortOrder: 'name'
-            };
-//            engine = {
-//                all: [],
+            },
+            devices = {
+                all: [],
 //                selected: {
 //                    'type': '',
 //                    'serial_number': 0
 //                },
 //                sortOrder: 'name'
-//            };
+            };
 
 
 //        vm.addToCollection = addToCollection;
 //        vm.allEmployees = [];
 //        vm.control_types = control_types;
-//        vm.createPassport = createPassport;
-//        vm.engine = engine;
+        vm.createPassport = createPassport;
+        vm.devices = devices;
 //        vm.workBegin = undefined;
 //        vm.workEnd = undefined;
-//        vm.lpus = {};
-//        vm.orgs = {};
-//        vm.pages = pages;
+        vm.lpus = {};
+        vm.orgs = {};
+        vm.pages = pages;
 //        vm.procKeyPress = procKeyPress;
 //        vm.tclasses = {all: [], selected: ''};
-//        vm.getLPUs = getLPUs;
+        vm.getLPUs = getLPUs;
 //        vm.measurers = measurers;
-//        vm.report = {
+        vm.report = {};
 //            team: undefined,
 //            measurers: measurers.selected,
 //            files: {
@@ -77,6 +77,7 @@
 
         function activate() {
             getContainers();
+            getOrgs();
 //            vm.report.info = {
 //                license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
 //            };
@@ -88,7 +89,6 @@
 //
 //            getEmployees();
 //            getEngines();
-//            getOrgs();
 //            getTClasses();
         }
 
@@ -101,21 +101,20 @@
         }
 
         function createPassport() {
-            console.log('');
 ////            console.log('docs ' + JSON.stringify(vm.report.docs));
 ////            console.log('investigationDate ' + vm.investigationDate.toLocaleString());
 ////            console.log('begin ' + vm.workBegin);
 ////            console.log('end ' + vm.workEnd.toLocaleString());
 ////            Passport.createPassport(vm.workBegin);
-//            vm.report.type =  'report';
-//            console.log('team:', JSON.stringify(vm.report));
+            vm.report.type = 'report-container';
+            console.log('report:', JSON.stringify(vm.report));
 ////            return;
 ////            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
 //            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
 //                return el.name === vm.tclasses.selected;
 //            })[0].id;
 ////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-//            Passport.createPassport(vm.report);
+            Passport.createPassport(vm.report);
         }
 
 //        function getEmployees() {
@@ -127,31 +126,30 @@
 //
         function getContainers() {
             ServerData.query({category: 'container'}, function(data) {
-                console.log('Get ServerData: ' + JSON.stringify(data));
+                vm.devices.all = data;
+//                vm.devices.all = data.map(function(el) {
+//                    return el;
+//                })
             });
-//            Engine.getAllEngines()
-//                .then(function(data) {
-//                    vm.engine.all = data;
-//                });
         };
-//
-//        function getOrgs() {
-//            Passport.getOrgs()
-//                .then(function(data) {
-//                    vm.orgs = data;
-//                });
-//        }
-//
-//        function getLPUs(orgName) {
-//            var organ = vm.orgs.filter(function(el) {
-//                return el.name === orgName;
-//            });
-//
-//            Passport.getLPUs(organ[0].id)
-//                .then(function(data) {
-//                    vm.lpus = data;
-//                });
-//        }
+
+        function getOrgs() {
+            Passport.getOrgs()
+                .then(function(data) {
+                    vm.orgs = data;
+                });
+        }
+
+        function getLPUs(orgName) {
+            var organ = vm.orgs.filter(function(el) {
+                return el.name === orgName;
+            });
+
+            Passport.getLPUs(organ[0].id)
+                .then(function(data) {
+                    vm.lpus = data;
+                });
+        }
 //
 //        function getTClasses() {
 //            Passport.getTClasses()

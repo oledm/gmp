@@ -24,6 +24,8 @@ class Report(ReportMixin):
     def create(self):
         self.setup_page_templates(self.doc, self.header_content())
 
+        self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
+        self.format_JS_dates(self.data['engine'], ('new_date',))
         self.format_JS_dates(self.data, ('workBegin', 'workEnd'))
         self.format_JS_dates(self.data['order'], ('date',))
 

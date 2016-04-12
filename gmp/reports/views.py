@@ -160,10 +160,50 @@ def create_report_debug(request):
  }
 
     fake_container_report = {
+'device': {'carrier': 'Природный газ',
+            'control': {'area': '100 % длины сварных соединений',
+                        'name': 'УЗК'},
+            'danger_class': 3,
+            'dimensions_height_bottom': 127,
+            'dimensions_height_ring': 1100,
+            'dimensions_height_total': 2700,
+            'dimensions_side_bottom': 20,
+            'dimensions_side_ring': 20,
+            'dimensions_width_bottom': 590,
+            'dimensions_width_ring': 590,
+            'factory': 'БМЗ 423200, г. Бугульма ТАССР',
+            'full_desc': 'адсорбер зав.№ 2162, рег.№ 23051/А, инв.№ 100712',
+            'full_desc_capital': 'Адсорбер зав.№ 2162, рег.№ 23051/А, инв.№ 100712',
+            'id': 1,
+            'inv_number': '100712',
+            'location': 'Установка подготовки пускового, топливного и '
+                        'импульсного газа',
+            'manufactured_year': 1993,
+            'material_bottom': 'Сталь марки 09Г2С ГОСТ 5520',
+            'material_ring': 'Сталь марки 09Г2С ГОСТ 5520',
+            'mode': 'Непрерывный без циклических нагрузок',
+            'name': 'адсорбер',
+            'p_test': 9.4,
+            'p_work': 7.5,
+            'reg_number': '23051/А',
+            'scheme': 'БТ 2719.000.00-00.00 СБ',
+            'serial_number': '2162',
+            'started_year': 1996,
+            'temp_carrier_high': 300,
+            'temp_carrier_low': -20,
+            'volume': 0.36,
+            'weight': 1202,
+            'welding': {'material': 'Сварочная проволока 08Г2С ГОСТ 2246-70',
+                        'name': 'Электродуговая автоматическая'}},
+ 'obj_data': {'ks': 'КС "Кущевская"',
+              'lpu': 'Ивдельское ЛПУ МГ',
+              'org': 'ООО "Газпром трансгаз Югорск"',
+              'plant': 'КЦ-1'},
+ 'type': 'report-container',
  }
     
     #data = fake_passport
-    data = fake_report
+    #data = fake_report
     data = fake_container_report
     response = HttpResponse(content_type='application/pdf')
     ReportMaker(data, response)

@@ -44,9 +44,6 @@ class ReportMixin():
         self.styles = getSampleStyleSheet()
         self.setup_styles()
 
-        self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
-        self.format_JS_dates(self.data['engine'], ('new_date',))
-
         self.doc = BaseDocTemplate(self.report, pagesize=A4,
                                 rightMargin=12,leftMargin=12,
                                 topMargin=12,bottomMargin=12,
@@ -79,7 +76,6 @@ class ReportMixin():
         with open(self.pathname(fname)) as csv_file:
             reader = csv.reader(csv_file, delimiter=';')
             for row in reader:
-                #print(reader.line_num)
                 contents.append(row)
         return contents
 
@@ -319,6 +315,12 @@ class ReportMixin():
             fontName='Times',
             fontSize=13,
             leading=16,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Regular Center Leading',
+            fontName='Times',
+            fontSize=13,
+            leading=30,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Regular Right',
