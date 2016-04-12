@@ -23,8 +23,9 @@
             $rootScope.$on('cokkiesSet', function(event, data) {
                 if (data === undefined) {
                     vm.menu = [];
+                } else {
+                    setupMenu();
                 }
-                setupMenu();
             });
 
             setupMenu();
@@ -47,4 +48,3 @@
         };
     }
 })();
-

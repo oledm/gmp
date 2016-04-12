@@ -52,6 +52,12 @@
                 controller: 'ReportController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/report/report/report.tpl.html'
+            })
+            .state('report-container', {
+                url: '/report-container',
+                controller: 'ReportContainerController',
+                controllerAs: 'vm',
+                templateUrl: '/static/src/app/report/report_container/report.tpl.html'
             });
 
         $urlRouterProvider.otherwise('/login');

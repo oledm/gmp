@@ -50,6 +50,10 @@ class ContainerSerializer(serializers.ModelSerializer):
     material_bottom = MaterialSerializer()
     welding = WeldingSerializer()
     control = ControlSerializer()
+    full_desc = serializers.SerializerMethodField()
+
+    def get_full_desc(self):
+        return 'hahaha'
 
     class Meta:
         model = Container

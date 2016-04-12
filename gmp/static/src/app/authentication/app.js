@@ -5,6 +5,7 @@
         'app.config',
         'app.authentication',
         'app.department',
+        'app.serverdata',
         'app.engine.service',
         'app.main',
         'app.datepicker',
