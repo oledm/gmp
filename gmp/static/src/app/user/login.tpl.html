@@ -3,7 +3,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.email.$touched && userForm.email.$invalid }">
               <label for="email">E-mail</label>
-              <input class="form-control" type="email" placeholder="Email" id="email" required name="email" ng-maxlength="50" ng-model="vm.email" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+		  <input class="form-control" type="email" placeholder="Email" id="email" required name="email" ng-maxlength="50" ng-model="vm.email" />
+		</div>
               <div class="help-block" role="alert" ng-messages="userForm.email.$error" ng-if="userForm.email.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
@@ -15,7 +18,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.password.$touched && userForm.password.$invalid }">
               <label for="password">Пароль</label>
-              <input class="form-control" placeholder="Пароль" type="password" id="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+		  <input class="form-control" placeholder="Пароль" type="password" id="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+		</div>
               <div class="help-block" role="alert" ng-messages="userForm.password.$error" ng-if="userForm.password.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>

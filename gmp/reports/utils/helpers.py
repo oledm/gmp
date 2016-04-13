@@ -1,6 +1,7 @@
 import csv
 from functools import partial
 from datetime import datetime
+from hashlib import sha1
 
 from django.conf import settings
 
@@ -11,6 +12,7 @@ from reportlab.platypus.flowables import Flowable
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak
 from reportlab.platypus.doctemplate import BaseDocTemplate
+from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
@@ -21,6 +23,39 @@ from reportlab.pdfbase import ttfonts
 #import locale
 #locale.setlocale(locale.LC_ALL, "")
 #loc = partial(locale.format, "%.2f")
+
+
+class MyDocTemplate(BaseDocTemplate):
+    def __init__(self, filename, **kw):
+        self.allowSplitting = 0
+        super(MyDocTemplate, self).__init__(filename, **kw)
+
+    # Entries to the table of contents can be done either manually by
+    # calling the addEntry method on the TableOfContents object or automatically
+    # by sending a 'TOCEntry' notification in the afterFlowable method of
+    # the DocTemplate you are using. The data to be passed to notify is a list
+    # of three or four items countaining a level number, the entry text, the page
+    # number and an optional destination key which the entry should point to.
+    # This list will usually be created in a document template's method like
+    # afterFlowable(), making notification calls using the notify() method
+    # with appropriate data.
+
+    def afterFlowable(self, flowable):
+        "Registers TOC entries."
+        if flowable.__class__.__name__ == 'Paragraph':
+            text = flowable.getPlainText()
+            style = flowable.style.name
+            if style == 'Heading 1':
+                level = 0
+            elif style == 'TOC':
+                level = 1
+            else:
+                return
+            E = [level, text, self.page]
+            #if we have a bookmark name append that to our notify data
+            bn = getattr(flowable,'_bookmarkName',None)
+            if bn is not None: E.append(bn)
+            self.notify('TOCEntry', tuple(E))
 
 class DoubledLine(Flowable):
     def __init__(self, width, height=0):
@@ -44,18 +79,30 @@ class ReportMixin():
         self.styles = getSampleStyleSheet()
         self.setup_styles()
 
-        self.doc = BaseDocTemplate(self.report, pagesize=A4,
+        self.doc = MyDocTemplate(self.report, pagesize=A4,
                                 rightMargin=12,leftMargin=12,
                                 topMargin=12,bottomMargin=12,
                                 title=title,
                                 #showBoundary=1
         )
-
+        self.toc = TableOfContents()
+        self.toc.levelStyles = [
+            self.styles['TOCHeading1'],
+            self.styles['TOCHeading2'],
+        ]
 
         self.full_width = self.doc.width
         self.full_height = self.doc.height
         self.create()
-        self.doc.build(self.Story)
+        self.doc.multiBuild(self.Story)
+
+    def add_to_toc(self, text, sty):
+        data = str(text + sty.name).encode()
+        bn = sha1(data).hexdigest()
+        h = Paragraph(text + '<a name="%s"/>' % bn, sty)
+        # store the bookmark name on the flowable so afterFlowable can see this
+        h._bookmarkName = bn
+        self.Story.append(h)
 
     def create(self):
         raise NotImplementedError('Define method "create"')
@@ -383,9 +430,43 @@ class ReportMixin():
             leading=18,
             alignment=TA_JUSTIFY))
         self.styles.add(ParagraphStyle(
+            name='Text',
+            fontName='Times',
+            fontSize=13,
+            leading=18,
+            firstLineIndent=0.7 * cm,
+            alignment=TA_JUSTIFY))
+        self.styles.add(ParagraphStyle(
             name='Paragraph Justified Indent',
             fontName='Times',
             fontSize=13,
             leading=18,
             firstLineIndent=0.7 * cm,
             alignment=TA_JUSTIFY))
+        self.styles.add(ParagraphStyle(
+            name='TOC Regular',
+            fontName='Times',
+            fontSize=13,
+            leading=13,
+            leftIndent=88,
+            firstLineIndent=-88,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='TOC',
+            fontName='Times Bold',
+            fontSize=13,
+            leading=16,
+            firstLineIndent=0.7 * cm,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='TOCHeading1',
+            fontName='Times Bold',
+            fontSize=13,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='TOCHeading2',
+            fontName='Times',
+            fontSize=13,
+            alignment=TA_LEFT))
+            #ParagraphStyle(fontName='Times Bold', fontSize=20, name='TOCHeading1', leftIndent=20, firstLineIndent=-20, spaceBefore=10, leading=16),
+            #ParagraphStyle(fontName='Times',fontSize=18, name='TOCHeading2', leftIndent=40, firstLineIndent=-20, spaceBefore=5, leading=12),

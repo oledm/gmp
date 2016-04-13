@@ -19,17 +19,28 @@ from gmp.filestorage.models import FileStorage
 from .helpers import ReportMixin
 
 
+
 class ReportContainer(ReportMixin):
     def create(self):
-        self.setup_page_templates(self.doc, self.header_content())
+        #self.styles.add(PS(
+        #    name='Paragraph Justified',
+        #    fontName='Times',
+        #    fontSize=13,
+        #    leading=18,
+        #    firstLineIndent=0.7 * cm,
+        #    alignment=TA_JUSTIFY))
+
+        self.setup_page_templates(self.doc, self.header_content(), self.colontitle_content())
 
         #self.format_JS_dates(self.data, ('workBegin', 'workEnd'))
         #self.format_JS_dates(self.data['order'], ('date',))
 
         self.Story.append(NextPageTemplate('Title'))
+        #self.new_page()
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
-        #self.page2()
+        self.put_toc()
+        self.page2()
         #self.page3()
         #self.appendix1()
         #self.appendix2()
@@ -41,6 +52,11 @@ class ReportContainer(ReportMixin):
         #self.appendix9()
         #self.appendix10()
         #self.appendix11()
+
+    def put_toc(self):
+        self.new_page()
+        self.put('СОДЕРЖАНИЕ', 'Regular Bold Center', 0.5)
+        self.Story.append(self.toc)
 
     def page1(self):
         self.put_photo('adsorber_report_title.jpg', width=16)
@@ -71,26 +87,8 @@ class ReportContainer(ReportMixin):
     def page2(self):
         # Main content
         self.new_page()
-        self.put('Содержание', 'Regular Bold Center', 0.5)
-        csv_data = self.get_csv('report_TOC.csv')
-        template = csv_data[:9]
-        rows = len(template)
-        para_style = [
-            *[['Regular Bold Center', 'Regular Justified Bold', 'Regular Right Bold']] * rows
-        ]
-        table_style = (
-            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        )
-        self.add(template, [1, 8, 1], para_style, table_style)
-
-        # Appendix content
-        template = csv_data[9:]
-        rows = len(template)
-        para_style = [
-            *[['Regular Bold Center', 'Regular Justified', 'Regular Right Bold']] * rows
-        ]
-        self.add(template, [2, 7, 1], para_style, table_style)
+        self.add_to_toc('1 Вводная часть', self.styles['TOC'])
+        self.put('Настоящий отчёт выполнен на основании результатов (акты, заключения, протоколы) неразрушающего контроля, гидравлического испытания сосуда, работающего под давлением - адсорбера зав. № 2162, рег. № 23051/А, инв. № 100712.', 'Text')
 
     def page3(self):
         self.new_page()
@@ -682,14 +680,16 @@ class ReportContainer(ReportMixin):
         self.put(res, 'Regular Bold Center', 0.3)
 
     # Define report's static content
-    def setup_page_templates(self, doc, header_content):
+    def setup_page_templates(self, doc, header_content, colontitle_content):
         frame_with_header = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height,
                 bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=0,
                 id='with_header')
         template_title = PageTemplate(id='Title', frames=frame_with_header, onPage=partial(self.header, content=header_content))
 
-        frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='no_header')
-        template_content = PageTemplate(id='Content', frames=frame_full)
+        frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height,
+                bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=20,
+                id='no_header')
+        template_content = PageTemplate(id='Content', frames=frame_full, onPage=partial(self.colontitle, content=colontitle_content))
 
         doc.addPageTemplates([template_title, template_content])
 
@@ -701,6 +701,16 @@ class ReportContainer(ReportMixin):
 
         w, h = content[1].wrap(doc.width, doc.topMargin)
         content[1].drawOn(canvas, 0, h - 20)
+        canvas.restoreState()
+
+    @staticmethod
+    def colontitle(canvas, doc, content):
+        canvas.saveState()
+        w, h = content[0].wrap(doc.width, doc.topMargin)
+        content[0].drawOn(canvas, doc.leftMargin, doc.height)
+
+        w, h = content[1].wrap(doc.width, doc.topMargin)
+        content[1].drawOn(canvas, doc.rightMargin, doc.height)
         canvas.restoreState()
 
     def header_content(self):
@@ -738,5 +748,12 @@ class ReportContainer(ReportMixin):
         return (
             table,
             table2
+        )
+
+
+    def colontitle_content(self):
+        return (
+            Paragraph('ООО «ГАЗМАШПРОЕКТ»', self.styles['Regular']),
+            Paragraph('Отчет № ГМП-16ДИА/0012/С2/ТО/2016', self.styles['Regular Right']),
         )
 
