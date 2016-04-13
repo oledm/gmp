@@ -1,0 +1,27 @@
+<ng-form name="vm.reportInfoForm" novalidate>
+  <h4 checkmark>Информация о проведенной экспертизе</h4>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12" ng-class="{ 'has-error': vm.reportInfoForm.license.$touched && vm.reportInfoForm.license.$invalid }">
+              <label class="control-label" for="license">Основание для проведения работ</label>
+              <textarea class="form-control" type="text" id="license" required name="license" ng-maxlength="500" ng-model="vm.report.info.license"></textarea>
+              <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.license.$error" ng-if="vm.reportInfoForm.license.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12" ng-class="{ 'has-error': vm.reportInfoForm.contract.$touched && vm.reportInfoForm.contract.$invalid }">
+              <label class="control-label" for="license">Номер договора</label>
+              <input class="form-control" type="text" id="contract" required
+                      name="contract" ng-maxlength="50" ng-model="vm.report.info.contract" />
+              <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.contract.$error" ng-if="vm.reportInfoForm.contract.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+</ng-form>

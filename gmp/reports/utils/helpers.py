@@ -4,6 +4,7 @@ from datetime import datetime
 from hashlib import sha1
 
 from django.conf import settings
+from django.utils import dateformat
 
 from PIL import Image as PILImage
 import environ
@@ -174,6 +175,13 @@ class ReportMixin():
             dt = datetime.strptime(d[key].split('T')[0], '%Y-%m-%d')
             d[key] = dt.strftime(format_)
 
+    @staticmethod
+    def format_locale_JS_dates(d, keys, format_='d E Y'):
+        for key in keys:
+            dt = datetime.strptime(d[key].split('T')[0], '%Y-%m-%d')
+            d[key] = dateformat.format(dt, format_)
+            #d[key] = dt.strftime(format_)
+
     def table(self, data, styles, colWidths=(10, ), styleTable=False):
         table = Table(
             self.tabelize(data, styles),
@@ -335,8 +343,8 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='Regular',
             fontName='Times',
-            fontSize=13,
-            leading=13,
+            fontSize=14,
+            leading=14,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Regular Bold',
@@ -360,7 +368,7 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='Regular Center',
             fontName='Times',
-            fontSize=13,
+            fontSize=14,
             leading=16,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
@@ -430,13 +438,6 @@ class ReportMixin():
             leading=18,
             alignment=TA_JUSTIFY))
         self.styles.add(ParagraphStyle(
-            name='Text',
-            fontName='Times',
-            fontSize=13,
-            leading=18,
-            firstLineIndent=0.7 * cm,
-            alignment=TA_JUSTIFY))
-        self.styles.add(ParagraphStyle(
             name='Paragraph Justified Indent',
             fontName='Times',
             fontSize=13,
@@ -451,22 +452,33 @@ class ReportMixin():
             leftIndent=88,
             firstLineIndent=-88,
             alignment=TA_LEFT))
+        # Container's Report specific styles. Until they lies here
+        self.styles.add(ParagraphStyle(
+            name='Text',
+            fontName='Times',
+            fontSize=14,
+            leading=21,
+            bulletIndent=18,
+            firstLineIndent=1.25 * cm,
+            alignment=TA_JUSTIFY))
         self.styles.add(ParagraphStyle(
             name='TOC',
             fontName='Times Bold',
-            fontSize=13,
-            leading=16,
-            firstLineIndent=0.7 * cm,
+            fontSize=14,
+            leading=21,
+            firstLineIndent=1.25 * cm,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='TOCHeading1',
             fontName='Times Bold',
-            fontSize=13,
+            fontSize=14,
+            leading=21,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='TOCHeading2',
             fontName='Times',
-            fontSize=13,
+            fontSize=14,
+            leading=21,
             alignment=TA_LEFT))
             #ParagraphStyle(fontName='Times Bold', fontSize=20, name='TOCHeading1', leftIndent=20, firstLineIndent=-20, spaceBefore=10, leading=16),
             #ParagraphStyle(fontName='Times',fontSize=18, name='TOCHeading2', leftIndent=40, firstLineIndent=-20, spaceBefore=5, leading=12),

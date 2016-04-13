@@ -169,7 +169,7 @@
                     >
                       <label class="control-label" for="new_date">Дата проделения срока эксплуатации двигателя</label>
                         <p class="input-group">
-                      <input type="text" ng-model="vm.report.device.new_date" id="new_date" name="new_date" class="form-control" uib-datepicker-popup ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required   />
+                      <input type="text" ng-model="vm.report.device.new_date" id="new_date" name="new_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required   />
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                       </span>

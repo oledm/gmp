@@ -33,7 +33,7 @@ class ReportContainer(ReportMixin):
         self.setup_page_templates(self.doc, self.header_content(), self.colontitle_content())
 
         #self.format_JS_dates(self.data, ('workBegin', 'workEnd'))
-        #self.format_JS_dates(self.data['order'], ('date',))
+        self.format_locale_JS_dates(self.data['order'], ('date',))
 
         self.Story.append(NextPageTemplate('Title'))
         #self.new_page()
@@ -84,11 +84,106 @@ class ReportContainer(ReportMixin):
         self.add(template, [8], self.get_style(para_style, template), table_style,
             data=self.data, hAlign='CENTER')
 
+    def paragraph(self, title, content, data={}):
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            ('LEFTPADDING', (0,0), (-1,-1), 0),
+            ('RIGHTPADDING', (0,0), (-1,-1), 0),
+        )
+        para_style = (
+            ('Text',),
+        )
+        self.add_to_toc(title, self.styles['TOC'])
+        self.spacer(.1)
+        template = self.static_data_plain(content)
+        self.add(template, [10], self.get_style(para_style, template), table_style,
+            data=data, spacer=.2)
+
     def page2(self):
         # Main content
         self.new_page()
-        self.add_to_toc('1 Вводная часть', self.styles['TOC'])
-        self.put('Настоящий отчёт выполнен на основании результатов (акты, заключения, протоколы) неразрушающего контроля, гидравлического испытания сосуда, работающего под давлением - адсорбера зав. № 2162, рег. № 23051/А, инв. № 100712.', 'Text')
+        self.paragraph('1 Вводная часть',
+            'report_container_1.txt', self.data['device'])
+        self.paragraph('1.1 Основания для проведения технического диагностирования',
+            'report_container_1.1.txt', self.data['info'])
+        self.paragraph('1.2 Сведения об экспертной организации',
+            'report_container_1.2.txt')
+        self.paragraph('1.3 Состав диагностической группы',
+            'report_container_1.3.txt', data=self.data)
+        self.team()
+
+    def team(self):
+        self.new_page()
+        # Table header
+        template = [
+            [
+                'Фамилия И.О.', 'Сведения об аттестации',
+                '№ удостоверения', 'Срок действия до'
+            ]
+        ]
+        para_style = (
+            ('Regular Center', ),
+        )
+        table_style = (
+            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+        )
+        self.add(template, [2, 3, 2.5, 2.5], self.get_style(para_style, template), table_style,
+            styleTable=True
+        )
+        #table_data = self.values(template, {})
+        #cols = len(table_data[0])
+        #styles = [
+        #    *[['Regular Bold Center']],
+        #    *[['Regular Center'] * cols],
+        #]
+        #table = self.table(table_data, styles, [1, 2, 2, 1, 1, 1, 1, 1], styleTable=True)
+        #table.setStyle(TableStyle([
+        #    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        #    ('SPAN', (0, 0), (-1, 0)),
+        #    ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+        #    ('TOPPADDING', (0,0), (-1,-1), 7),
+        #]))
+        #self.Story.append(table)
+
+        # For each person generate separate table for ability to span 
+        # certain fields
+        for num, person in enumerate(self.data.get('team'), start=1):
+            emp = Employee.objects.get_by_full_name(person['name'])
+            cert = Certificate.objects.filter(employee=emp)
+            all_cert = [c.info for c in cert]
+            #all_cert = [
+            #    [str(num), emp.fio()] +
+            #    c.plain_details('<br />') +
+            #    [eb_cert] 
+            #    for c in cert
+            #] or [
+            #    [str(num), emp.fio(), *['Нет данных'] * 5, eb_cert]
+            #]
+            print('allcert')
+            #table_data = self.values(all_cert, {})
+            #cols = len(table_data[0])
+            #rows = len(table_data)
+            #styles = [
+            #    *[['Regular Center'] * cols] * rows,
+            #]
+            #table = self.table(table_data, styles, [1, 2, 2, 1, 1, 1, 1, 1], styleTable=False)
+            #table.setStyle(TableStyle([
+            #    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            #    ('SPAN', (0,0), (0, rows - 1)),
+            #    ('SPAN', (1,0), (1, rows - 1)),
+            #    ('SPAN', (7,0), (7, rows - 1)),
+            #    # No padding between in-table rows
+            #    ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            #    ('TOPPADDING', (0,0), (-1,-1), 0),
+            #    # Add padding for the first and last table's rows
+            #    ('BOTTOMPADDING', (0,-1), (-1,-1), 4),
+            #    ('TOPPADDING', (0,0), (-1,0), 4),
+            #    ('LINEAFTER',(0,0),(-1,-1), 0.5, colors.black),
+            #    ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            #]))
+            #self.Story.append(table)
+        self.Story.append(Spacer(1, 1 * cm))
 
     def page3(self):
         self.new_page()

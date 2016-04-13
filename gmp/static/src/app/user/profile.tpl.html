@@ -3,7 +3,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.last_name.$touched && userForm.last_name.$invalid }">
               <label for="last_name">Фамилия</label>
-              <input class="form-control" type="text" id="last_name" md-maxlength="50" name="last_name" ng-model="vm.userdata.data.last_name" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input class="form-control" type="text" id="last_name" md-maxlength="50" name="last_name" ng-model="vm.userdata.data.last_name" />
+		</div>
               <div class="help-block" role="alert" ng-messages="userForm.last_name.$error" ng-if="userForm.last_name.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
@@ -15,7 +18,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.first_name.$touched && userForm.first_name.$invalid }">
               <label for="first_name">Имя</label>
-              <input class="form-control" type="text" id="first_name" name="first_name" ng-maxlength="50" ng-model="vm.userdata.data.first_name" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input class="form-control" type="text" id="first_name" name="first_name" ng-maxlength="50" ng-model="vm.userdata.data.first_name" />
+		</div>
               <div class="help-block" role="alert" ng-messages="userForm.first_name.$error" ng-if="userForm.first_name.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
@@ -27,7 +33,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.middle_name.$touched && userForm.middle_name.$invalid }">
               <label for="middle_name">Отчество</label>
-              <input class="form-control" type="text" id="middle_name" md-maxlength="50" name="middle_name" ng-model="vm.userdata.data.middle_name" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input class="form-control" type="text" id="middle_name" md-maxlength="50" name="middle_name" ng-model="vm.userdata.data.middle_name" />
+		</div>
               <div class="help-block" role="alert" ng-messages="userForm.middle_name.$error" ng-if="userForm.middle_name.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
@@ -39,7 +48,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.email.$touched && userForm.email.$invalid }">
               <label for="email">Email</label>
-              <input class="form-control" type="email" id="email" md-maxlength="50" name="email" ng-model="vm.userdata.data.email" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input class="form-control" type="email" id="email" md-maxlength="50" name="email" ng-model="vm.userdata.data.email" />
+		</div>
               <div class="help-block" role="alert" ng-messages="userForm.email.$error" ng-if="userForm.email.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
@@ -51,7 +63,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.password.$touched && userForm.password.$invalid }">
               <label for="password">Пароль</label>
-              <input class="form-control" type="password" id="password" md-maxlength="50" name="password" ng-model="vm.password" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                  <input class="form-control" type="password" id="password" md-maxlength="50" name="password" ng-model="vm.password" />
+		</div>
               <div class="help-block" role="alert" ng-messages="userForm.password.$error" ng-if="userForm.password.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>

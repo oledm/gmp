@@ -8,7 +8,7 @@
                 >
                   <label class="control-label" for="workBegin">Дата начала обследования</label>
                     <p class="input-group">
-                  <input type="text" ng-model="vm.report.workBegin" id="workBegin" name="workBegin" class="form-control" uib-datepicker-popup ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required />
+                  <input type="text" ng-model="vm.report.workBegin" id="workBegin" name="workBegin" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>
@@ -22,7 +22,7 @@
                 >
                   <label class="control-label" for="workEnd">Дата окончания обследования</label>
                     <p class="input-group">
-                  <input type="text" ng-model="vm.report.workEnd" id="workEnd" name="workEnd" class="form-control" uib-datepicker-popup ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required />
+                  <input type="text" ng-model="vm.report.workEnd" id="workEnd" name="workEnd" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>

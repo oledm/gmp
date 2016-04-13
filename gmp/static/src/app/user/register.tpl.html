@@ -3,9 +3,12 @@
       <div class="row">
           <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
               <label for="department">Отдел</label>
-                <select class="form-control" required name="department" id="department" placeholder="Отдел" ng-model="vm.department">
-                    <option ng-repeat="d in vm.allDeps | orderBy: 'name'">{{d.name}}</option>
-                </select>
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-wrench"></i></span>
+                    <select class="form-control" required name="department" id="department" placeholder="Отдел" ng-model="vm.department">
+                        <option ng-repeat="d in vm.allDeps | orderBy: 'name'">{{d.name}}</option>
+                    </select>
+		</div>
               <div class="help-block" role="alert" ng-messages="registerForm.department.$error" ng-if="registerForm.department.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
@@ -17,7 +20,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': registerForm.email.$touched && registerForm.email.$invalid }">
               <label for="email">Email</label>
-              <input class="form-control" placeholder="Пароль" type="email" id="email" md-maxlength="50" required name="email" ng-model="vm.email" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input class="form-control" placeholder="Пароль" type="email" id="email" md-maxlength="50" required name="email" ng-model="vm.email" />
+		</div>
               <div class="help-block" role="alert" ng-messages="registerForm.email.$error" ng-if="registerForm.email.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
@@ -29,7 +35,10 @@
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': registerForm.password.$touched && registerForm.password.$invalid }">
               <label for="password">Пароль</label>
-              <input class="form-control" placeholder="Пароль" type="password" id="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                  <input class="form-control" placeholder="Пароль" type="password" id="password" md-maxlength="50" required name="password" ng-model="vm.password" />
+		</div>
               <div class="help-block" role="alert" ng-messages="registerForm.password.$error" ng-if="registerForm.password.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>

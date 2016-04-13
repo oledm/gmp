@@ -68,8 +68,8 @@ class Certificate(models.Model):
         )
 
 class ControlType(models.Model):
-    name = models.CharField('Краткое обозначение вида контроля', max_length=20)
-    full_name = models.CharField('Полное наименование вида контроля', max_length=50)
+    name = models.CharField('Краткое обозначение вида контроля', max_length=30)
+    full_name = models.CharField('Полное наименование вида контроля', max_length=200)
 
     def __str__(self):
         return self.name
