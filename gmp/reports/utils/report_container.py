@@ -111,7 +111,7 @@ class ReportContainer(ReportMixin):
             'report_container_1.2.txt')
         self.paragraph('1.3 Состав диагностической группы',
             'report_container_1.3.txt', data=self.data)
-        self.team()
+        #self.team()
 
     def team(self):
         self.new_page()

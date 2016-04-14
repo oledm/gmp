@@ -343,8 +343,8 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='Regular',
             fontName='Times',
-            fontSize=14,
-            leading=14,
+            fontSize=13,
+            leading=13,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Regular Bold',
@@ -368,7 +368,7 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='Regular Center',
             fontName='Times',
-            fontSize=14,
+            fontSize=13,
             leading=16,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(

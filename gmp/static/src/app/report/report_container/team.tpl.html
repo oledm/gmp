@@ -11,8 +11,9 @@
                 <ul class="list-group selectable" id="team">
                     <li class="list-group-item"
                         ng-class="{'list-group-item-success': vm.report.team.indexOf(employee.id) !== -1}"
-                        ng-click="vm.setSelected(vm.report.team, employee)"
-                        ng-repeat="employee in vm.allEmployees"
+                        ng-click="vm.setSelected(employee)"
+                        ng-repeat="employee in vm.report.team"
+                        ng-if="employee.first_name && employee.last_name && employee.middle_name"
                         >{{employee.fio}}</li>
                 </ul>
             </div>
@@ -31,6 +32,11 @@
                         <div ng-messages-include="/static/src/assets/messages.html"></div>
                     </div>
                 </div>
+
+
+
+
+                        ng-click="vm.setSelected(vm.report.team, employee)"
              -->
         </div>
     </div>

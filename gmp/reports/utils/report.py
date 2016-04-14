@@ -269,9 +269,9 @@ class Report(ReportMixin):
 
         # Measure data
         table_data = [[
-            self.fetch_static_image('engine_details_scheme_1.jpg', 6.2),
-            self.fetch_static_image('engine_details_scheme_2.jpg', 6.2),
-            self.fetch_static_image('engine_details_scheme_3.jpg', 6.2),
+            self.fetch_static_image('engine_details_scheme_1.jpg', height=5),
+            self.fetch_static_image('engine_details_scheme_2.jpg', height=5),
+            self.fetch_static_image('engine_details_scheme_3.jpg', height=5),
         ]]
         table = Table(table_data) 
         table.hAlign = 'CENTER'
