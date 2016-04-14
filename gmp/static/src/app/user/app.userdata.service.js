@@ -43,21 +43,14 @@
         }
 
         function getAllUsers() {
-            return $http.get('/api/user/').then(
+            var cookie = Cookies.get();
+            return $http.get('/api/department/' + cookie.department.id + '/user/').then(
                 getAllUsersSuccess
             );
         }
 
         function getAllUsersSuccess(response) {
-            return response.data
-//                .filter(function(user) {
-//                    // Filtering users possibly haven't certificates for generating reports
-//                    return !user.is_admin;
-//            })
-                .map(function(user) {
-                    user.fio = user.last_name + ' ' + user.first_name + ' ' + user.middle_name;
-                return user;
-            });
+            return response.data;
         }
 
         function update() {
@@ -75,7 +68,8 @@
         }
 
         function updateDB(cookie) {
-            return $http.put('/api/user/' + cookie.username + '/', {
+            return $http.put('/api/department/' + cookie.department.id +
+                    '/user/' + cookie.username + '/', {
                 first_name: data.first_name,
                 last_name: data.last_name,
                 middle_name: data.middle_name,

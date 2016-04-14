@@ -11,6 +11,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
     control_types = serializers.SerializerMethodField()
+    full_fio = serializers.SerializerMethodField()
 
 
     class Meta:
@@ -19,6 +20,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'username', 'first_name', 'last_name', 'middle_name',
             'birth_date', 'phone', 'created_at', 'modified_at', 'is_admin',
             'password', 'confirm_password', 'department', 'control_types',
+            'full_fio',
         )
         read_only_fields = ('created_at', 'modified_at', 'username')
 
@@ -29,6 +31,9 @@ class EmployeeSerializer(serializers.ModelSerializer):
         for cert in obj.certificate_set.all():
             types |= {str(t.full_name) for t in cert.control_types.all()}
         return types
+
+    def get_full_fio(self, obj):
+        return obj.get_full_name()
 
     def create(self, validated_data):
         print('Serializer create')

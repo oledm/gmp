@@ -10,7 +10,7 @@
                          vm.teamForm.employee.$invalid }">
                       <label class="control-label" for="employee">Работник</label>
                       <select class="form-control" ng-required="emp.required" ng-model="emp.name" name="employee" id="employee">
-                          <option ng-repeat="employee in vm.allEmployees">{{employee.fio}}</option>
+                          <option ng-repeat="employee in vm.allEmployees">{{employee.full_fio}}</option>
                       </select>
                       <div class="help-block" role="alert" ng-messages="vm.teamForm.employee.$error" ng-if="vm.teamForm.employee.$touched">
                           <div ng-messages-include="/static/src/assets/messages.html"></div>
