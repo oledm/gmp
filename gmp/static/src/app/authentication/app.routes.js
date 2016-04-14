@@ -3,7 +3,8 @@
 
     angular
         .module('app.config')
-        .config(config);
+        .config(config)
+        .run(run);
 
     config.$inject = [
         '$stateProvider',
@@ -66,5 +67,16 @@
 
         $locationProvider.html5Mode(true);
         $locationProvider.hashPrefix('!');
+    }
+
+    function run() {
+        var doc = angular.element(document);
+        doc.on('click', function() {
+            var navbar = doc.find('.navbar-collapse'),
+                opened = navbar.hasClass('in');
+            if (opened) {
+                navbar.collapse('hide');
+            }
+        });
     }
 })();

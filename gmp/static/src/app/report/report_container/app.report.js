@@ -122,7 +122,7 @@
         function getEmployees() {
             UserData.getAllUsers()
                 .then(function(data) {
-                    vm.report.team = data;
+                    vm.allEmployees = data;
                 });
         }
 
@@ -169,23 +169,17 @@
 //            }
 //        }
 
-        function setSelected(item) {
+        function setSelected(selected, item) {
             console.log('setSelected');
-            if (! 'selected' in item) {
-                item.selected = true;
+            var id = item.id,
+                index = selected.indexOf(id);
+            if (index !== -1) {
+                selected.splice(index, 1);
+                item.selected = false;
             } else {
-                item.selected = !item.selected;
+                item.selected = true;
+                selected.push(id);
             }
-//            console.log('setSelected');
-//            var id = item.id,
-//                index = selected.indexOf(id);
-//            if (index !== -1) {
-//                selected.splice(index, 1);
-//                item.selected = false;
-//            } else {
-//                item.selected = true;
-//                selected.push(id);
-//            }
             console.log(vm.report.team);
         }
 

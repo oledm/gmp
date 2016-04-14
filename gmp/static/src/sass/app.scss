@@ -58,3 +58,9 @@ a:focus {
 i.icon {
     font-size: 30px;
 }
+
+@media (max-width: 768px) {
+     .navbar {
+             text-align: center;
+      } 
+   }

@@ -95,7 +95,6 @@
 
         <nav class="navbar navbar-default">
           <div class="container-fluid">
-            <!-- 
                 <div class="navbar-header">
                   <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
@@ -103,13 +102,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                   </button>
-                  <a class="navbar-brand" href="#"><i class="logo icon ion-earth"></i></a>
+                  <a class="navbar-brand" href="/">
+                      <strong>АСКОД</strong>
+                  </a>
                 </div>
-             -->
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                <ul class="nav navbar-nav" ng-repeat="entry in main.menu">
-                   <li>
+                   <li data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                        <a ui-sref="{{entry.ref}}" ui-sref-active="active" aria-label="{{entry.link}}">
                            <!-- 
                                <i class="icon ion-{{entry.icon}}"></i>
@@ -121,8 +121,8 @@
 
               <ul class="nav navbar-nav navbar-right" ng-controller="UserDataController as uc">
 
-                  <div class="navbar-text">{{uc.userdata.data.last_name}} {{uc.userdata.data.first_name}} {{uc.userdata.data.middle_name}}<br/><small>{{uc.userdata.data.department.name}}</small></div>
-                <li><a href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
+                  <div class="navbar-text hidden-sm hidden-xs">{{uc.userdata.data.last_name}} {{uc.userdata.data.first_name}} {{uc.userdata.data.middle_name}}<br/><small>{{uc.userdata.data.department.name}}</small></div>
+                <li class="danger"><a href="#" ng-click="vm.logout()" ng-show="main.isAuthenticated()" aria-label="Выход">
                     <!-- 
                         <i class="icon ion-android-exit"></i>
                      -->
