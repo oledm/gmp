@@ -33,14 +33,10 @@
                 .then(logoutSuccess);
         }
 
-        function register(email, username, password, department) {
-            return $http.post('/api/user/', {
+        function register(email, password, department_id) {
+            return $http.post('/api/department/' + department_id + '/user/', {
                 email: email,
-                username: username,
-                password: password,
-                department: {
-                    name: department
-                }
+                password: password
             });
         }
 

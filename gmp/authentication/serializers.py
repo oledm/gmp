@@ -7,7 +7,7 @@ from gmp.departments.serializers import DepartmentSerializer
 
 class EmployeeSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(read_only=False)
-    department = DepartmentSerializer()
+    department = DepartmentSerializer(required=False)
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
     control_types = serializers.SerializerMethodField()

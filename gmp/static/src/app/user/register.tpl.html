@@ -5,9 +5,10 @@
               <label for="department">Отдел</label>
 		<div class="input-group">
 		    <span class="input-group-addon"><i class="glyphicon glyphicon-wrench"></i></span>
-                    <select class="form-control" required name="department" id="department" placeholder="Отдел" ng-model="vm.department">
-                        <option ng-repeat="d in vm.allDeps | orderBy: 'name'">{{d.name}}</option>
-                    </select>
+                  <select class="form-control" required ng-model="vm.department"
+                      ng-options="department as department.name for department in vm.allDeps track by department.id"
+                      name="department" id="department">
+                  </select>
 		</div>
               <div class="help-block" role="alert" ng-messages="registerForm.department.$error" ng-if="registerForm.department.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
@@ -22,7 +23,7 @@
               <label for="email">Email</label>
 		<div class="input-group">
 		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                  <input class="form-control" placeholder="Пароль" type="email" id="email" md-maxlength="50" required name="email" ng-model="vm.email" />
+                  <input class="form-control" placeholder="Email" type="email" id="email" md-maxlength="50" required name="email" ng-model="vm.email" />
 		</div>
               <div class="help-block" role="alert" ng-messages="registerForm.email.$error" ng-if="registerForm.email.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>

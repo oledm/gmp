@@ -1,9 +1,9 @@
 import json
 
 from django.contrib.auth import authenticate, login, logout
-from rest_framework import permissions, viewsets, generics, views
+
+from rest_framework import permissions, viewsets, generics, views, status
 from rest_framework.response import Response
-from rest_framework import status
 
 from .serializers import EmployeeSerializer
 from .permissions import IsEmployeeMatch
@@ -58,20 +58,26 @@ class EmployeeViewset(viewsets.ModelViewSet):
 
         return (permissions.IsAuthenticated(), IsEmployeeMatch(),)
 
-    def create(self, request):
+    def list(self, request, department_pk=None):
+        department = Department.objects.get(pk=department_pk)
+        employee = self.queryset.filter(department=department)
+        serializer = EmployeeSerializer(employee , many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, department_pk=None):
         data = request.data
         serializer = self.serializer_class(data=data)
 
         #print('all data:', data)
         #print('serializer data:', serializer.is_valid)
         if serializer.is_valid(raise_exception=True):
-            print('valid')
-            dep_name = serializer.validated_data.pop('department')['name']
-            department = Department.objects.get(name=dep_name)
+            #print('valid')
+            #dep_name = serializer.validated_data.pop('department')['name']
+            department = Department.objects.get(pk=department_pk)
             #created_user = serializer.create(serializer.validated_data)
             #print('created_user:', created_user)
             Employee.objects.create_user(**serializer.validated_data, department=department)
-            return Response(dict(serializer.validated_data, department=dict(name=dep_name)),
+            return Response(dict(serializer.validated_data, department=dict(name=department.name)),
                 status=status.HTTP_201_CREATED)
 
         return Response({

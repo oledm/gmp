@@ -18,6 +18,5 @@ class LPUViewset(viewsets.ViewSet):
             status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None, domain_pk=None):
-        print('LPU retrieve', pk, domain_pk)
         nameservers = self.queryset.get(pk=pk, domain=domain_pk)
         return Response(serializer.data)

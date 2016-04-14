@@ -7,7 +7,10 @@
                  ng-class="{ 'has-error': vm.deviceForm.device.$touched && vm.deviceForm.device.$invalid }"
                 >
               <label class="control-label" for="device">Объект обследования</label>
-              <select class="form-control" ng-model="vm.report.device" required ng-options="device as device.full_desc_capital for device in vm.devices.all track by device.id" name="device" id="device"></select>
+              <select class="form-control" required ng-model="vm.report.device"
+                  ng-options="device as device.full_desc_capital for device in vm.devices.all track by device.id"
+                  name="device" id="device">
+              </select>
               <div class="help-block" role="alert" ng-messages="vm.deviceForm.device.$error" ng-if="vm.deviceForm.device.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>

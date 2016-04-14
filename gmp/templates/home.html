@@ -11,8 +11,10 @@
 {% block angular %}
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'angular/angular.js' %}"></script>
+    <!-- 
+        <script src="{% static 'angular-i18n/angular-locale_ru-ru.js' %}"></script>
+     -->
     <script src="{% static 'angular-i18n/ru-ru.js' %}"></script>
-    <script src="{% static 'angular-i18n/angular-locale_ru-ru.js' %}"></script>
     <script src="{% static 'angular-aria/angular-aria.js' %}"></script>
     <script src="{% static 'angular-animate/angular-animate.js' %}"></script>
     <script src="{% static 'angular-messages/angular-messages.js' %}"></script>
@@ -21,58 +23,58 @@
     <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
     <script src="{% static 'angular-bootstrap/ui-bootstrap.min.js' %}"></script>
     <script src="{% static 'angular-bootstrap/ui-bootstrap-tpls.min.js' %}"></script>
-    <!-- 
-        <script src="{% static 'angular-material/angular-material.min.js' %}"></script>
-        <script src="{% static 'angular-material-data-table/dist/md-data-table.min.js' %}"></script>
-     -->
     <script src="{% static 'ng-file-upload/ng-file-upload.js' %}"></script>
     <script src="{% static 'filesaver/FileSaver.js' %}"></script>
     <!-- 
         This app
      -->
+     <!-- 
+         Modules definition first
+      -->
     <script src="{% static 'src/app/user/app.datepicker.module.js' %}"></script>
-    <script src="{% static 'src/app/user/app.datepicker.js' %}"></script>
     <script src="{% static 'src/app/user/app.userdata.service.module.js' %}"></script>
-    <script src="{% static 'src/app/user/app.userdata.service.js' %}"></script>
     <script src="{% static 'src/app/user/app.userdata.controller.module.js' %}"></script>
-    <script src="{% static 'src/app/user/app.userdata.controller.js' %}"></script>
     <script src="{% static 'src/app/serverdata/app.serverdata.service.module.js' %}"></script>
-    <script src="{% static 'src/app/serverdata/app.serverdata.service.js' %}"></script>
     <script src="{% static 'src/app/engine/app.engine.service.module.js' %}"></script>
-    <script src="{% static 'src/app/engine/app.engine.service.js' %}"></script>
     <script src="{% static 'src/app/filestorage/app.upload.module.js' %}"></script>
-    <script src="{% static 'src/app/filestorage/app.upload.js' %}"></script>
     <script src="{% static 'src/app/filestorage/app.upload.service.module.js' %}"></script>
-    <script src="{% static 'src/app/filestorage/app.upload.service.js' %}"></script>
     <script src="{% static 'src/app/report/app.passport.service.module.js' %}"></script>
-    <script src="{% static 'src/app/report/app.passport.service.js' %}"></script>
     <script src="{% static 'src/app/report/app.passport.module.js' %}"></script>
+    <script src="{% static 'src/app/report/report/app.report.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.authentication.service.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.department.service.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.cookies.service.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.toolbar.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.login.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.register.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.routes.module.js' %}"></script>
+    <script src="{% static 'src/app/authentication/app.main.module.js' %}"></script>
+
+    <script src="{% static 'src/app/user/app.datepicker.js' %}"></script>
+    <script src="{% static 'src/app/user/app.userdata.service.js' %}"></script>
+    <script src="{% static 'src/app/user/app.userdata.controller.js' %}"></script>
+    <script src="{% static 'src/app/serverdata/app.serverdata.service.js' %}"></script>
+    <script src="{% static 'src/app/engine/app.engine.service.js' %}"></script>
+    <script src="{% static 'src/app/filestorage/app.upload.js' %}"></script>
+    <script src="{% static 'src/app/filestorage/app.upload.service.js' %}"></script>
+    <script src="{% static 'src/app/report/app.passport.service.js' %}"></script>
     <script src="{% static 'src/app/report/app.passport.js' %}"></script>
     <script src="{% static 'src/app/report/app.passport.checkmark.directive.js' %}"></script>
     <script src="{% static 'src/app/report/app.passport.autofocus.directive.js' %}"></script>
     <script src="{% static 'src/app/report/app.passport.validFile.directive.js' %}"></script>
-    <script src="{% static 'src/app/report/report/app.report.module.js' %}"></script>
     <script src="{% static 'src/app/report/report/app.report.js' %}"></script>
     <script src="{% static 'src/app/report/report_container/app.report.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.authentication.service.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.authentication.service.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.department.service.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.department.service.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.cookies.service.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.cookies.service.js' %}"></script>
     <!-- 
         <script src="{% static 'src/app/authentication/app.sidenav.module.js' %}"></script>
         <script src="{% static 'src/app/authentication/app.sidenav.js' %}"></script>
      -->
-    <script src="{% static 'src/app/authentication/app.toolbar.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.toolbar.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.login.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.login.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.register.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.register.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.routes.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.routes.js' %}"></script>
-    <script src="{% static 'src/app/authentication/app.main.module.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.main.js' %}"></script>
     <script src="{% static 'src/app/authentication/app.js' %}"></script>
     <script src="{% static 'src/app/user/gmp-input.directive.js' %}"></script>

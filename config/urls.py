@@ -20,18 +20,21 @@ from gmp.inspections import views as inspections_views
 from gmp.containers import views as containers_views
 
 
-users = routers.SimpleRouter()
-users.register(r'user', user_views.EmployeeViewset)
+#users = routers.SimpleRouter()
+#users.register(r'user', user_views.EmployeeViewset)
 
-certificates = routers.NestedSimpleRouter(users, r'user', lookup='user')
-certificates.register(r'certificates', certificate_views.CertificateViewset)
 
 departments = routers.SimpleRouter()
 departments.register(r'department', department_views.DepartmentViewset)
 
-# TODO filter child router base on parent's PK
 measurers = routers.NestedSimpleRouter(departments, r'department', lookup='department')
 measurers.register(r'measurer', department_views.MeasurerViewset)
+
+users = routers.NestedSimpleRouter(departments, r'department', lookup='department')
+users.register(r'user', user_views.EmployeeViewset)
+
+certificates = routers.NestedSimpleRouter(users, r'user', lookup='user')
+certificates.register(r'certificates', certificate_views.CertificateViewset)
 
 files = routers.SimpleRouter()
 files.register('file', filestorage_views.FileViewset)
@@ -42,7 +45,6 @@ engines.register('engine', engine_views.EngineViewset)
 organizations = routers.SimpleRouter()
 organizations.register('organization', inspections_views.OrganizationViewset)
 
-# TODO filter child router base on parent's PK
 lpus = routers.NestedSimpleRouter(organizations, r'organization', lookup='organization')
 lpus.register(r'lpu', inspections_views.LPUViewset)
 

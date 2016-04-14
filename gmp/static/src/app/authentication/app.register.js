@@ -17,7 +17,7 @@
         };
 
         vm.register = function() {
-            Authentication.register(vm.email, vm.name, vm.password, vm.department)
+            Authentication.register(vm.email, vm.password, vm.department.id)
                 .then(registerSuccess, registerFail);
         };
 
