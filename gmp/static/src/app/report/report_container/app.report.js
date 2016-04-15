@@ -40,12 +40,18 @@
 //                    'serial_number': 0
 //                },
 //                sortOrder: 'name'
-            };
+            },
+            device_conditions = [
+                'работоспособное',
+                'неработоспособное',
+                'предельное'
+            ];
 
 
 //        vm.addToCollection = addToCollection;
         vm.allEmployees = [];
 //        vm.control_types = control_types;
+        vm.device_conditions = device_conditions;
         vm.createPassport = createPassport;
         vm.devices = devices;
 //        vm.workBegin = undefined;
@@ -59,6 +65,19 @@
 //        vm.measurers = measurers;
         vm.report = {
             team: [],
+            info: {
+                'info_investigation': 'Экспертиза промышленной безопасности проводится впервые. ' +
+                    '\nНО, ВО – 1 раз в 2 года (ответственный за осуществление ' + 
+                    'производственного контроля за эксплуатацией сосуда). ' +
+                    '\nНО, ВО – 1 раз в 4 года (уполномоченная специализированная организация, ' +
+                    'ответственный за осуществление производственного контроля за эксплуатацией сосуда). ' +
+                    '\nГИ – 1 раз в 8 лет (уполномоченная специализированная организация, ' + 
+                    'ответственный за осуществление производственного контроля за эксплуатацией сосуда)',
+                'info_repair': 'В представленной технической документации не отмечено',
+                'danger_places': 'Места концентраций напряжений – продольные и кольцевые сварные швы, ' + 
+                    'места вварки штуцеров; места наиболее вероятного коррозионного износа – ' + 
+                    'внутренняя поверхность нижнего днища',
+            },
         };
 //            team: undefined,
 //            measurers: measurers.selected,
@@ -170,7 +189,6 @@
 //        }
 
         function setSelected(selected, item) {
-            console.log('setSelected');
             var id = item.id,
                 index = selected.indexOf(id);
             if (index !== -1) {
@@ -180,7 +198,6 @@
                 item.selected = true;
                 selected.push(id);
             }
-            console.log(vm.report.team);
         }
 
         function upload(element) {

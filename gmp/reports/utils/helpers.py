@@ -476,6 +476,20 @@ class ReportMixin():
             bulletIndent=18,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
+            name='Text Simple Dense',
+            fontName='Times',
+            fontSize=14,
+            leading=14,
+            bulletIndent=18,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Text Simple Center Dense',
+            fontName='Times',
+            fontSize=14,
+            leading=14,
+            bulletIndent=18,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
             name='TOC',
             fontName='Times Bold',
             fontSize=14,
