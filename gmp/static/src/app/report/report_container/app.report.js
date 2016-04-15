@@ -5,8 +5,8 @@
         .module('app.report')
         .controller('ReportContainerController', ReportContainerController);
 
-    ReportContainerController.$inject = ['$scope', 'UserData', 'Department', 'Passport', 'Upload', 'ServerData'];
     function ReportContainerController($scope, UserData, Department, Passport, Upload, ServerData) {
+        'ngInject';
 
         $scope.upload = upload;
 

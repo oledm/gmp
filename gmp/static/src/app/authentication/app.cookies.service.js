@@ -5,9 +5,8 @@
         .module('app.cookies')
         .factory('Cookies', Cookies);
 
-    Cookies.$inject = ['$cookies'];
-
     function Cookies($cookies) {
+        'ngInject';
         var cookieName = 'authentcatedAccount';
         var cookies = {
             get: get,
