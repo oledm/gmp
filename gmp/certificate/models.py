@@ -24,7 +24,9 @@ class Certificate(models.Model):
         choices=MONTHS
     )
     control_types = models.ManyToManyField('ControlType', verbose_name='Вид контроля')
-    degree = models.PositiveSmallIntegerField('Уровень')
+    degree = models.PositiveSmallIntegerField('Уровень',
+        blank=True, null=True
+    )
 
     class Meta:
         verbose_name = 'Удостоверение'
@@ -44,6 +46,21 @@ class Certificate(models.Model):
             (expired, ) * types_num,
             types,
         )
+
+    def verbose_info(self):
+        if self.control_types.filter(name='ПБ Ростехнадзора'):
+             title = self.control_types.first().full_name
+        else:
+            level = ' {}-го уровня квалификации'.format(self.degree) if self.degree else ''
+            control_types = ', '.join(tuple(map(lambda x: str(x), self.control_types.all())))
+            title = 'Специалист{} по {}'.format(level, control_types)
+
+        return [
+            title,
+            self.serial_number,
+            '{:0>2}.{} г.'.format(self.expired_at_month, self.expired_at_year)
+        ]
+
 
     def info(self):
         received = '{:0>2}.{}'.format(self.received_at_month, self.received_at_year)
@@ -69,7 +86,10 @@ class Certificate(models.Model):
 
 class ControlType(models.Model):
     name = models.CharField('Краткое обозначение вида контроля', max_length=30)
-    full_name = models.CharField('Полное наименование вида контроля', max_length=200)
+    full_name = models.CharField('Полное наименование вида контроля',
+        max_length=200,
+        blank=True, null=True
+    )
 
     def __str__(self):
         return self.name

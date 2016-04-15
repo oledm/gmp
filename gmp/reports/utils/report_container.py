@@ -111,79 +111,118 @@ class ReportContainer(ReportMixin):
             'report_container_1.2.txt')
         self.paragraph('1.3 Состав диагностической группы',
             'report_container_1.3.txt', data=self.data)
-        #self.team()
+        self.team()
+        self.paragraph('2 Перечень объектов, на которые распространяется действие отчета',
+            'report_container_2.txt', data=self.data)
+        self.paragraph3()
+        self.paragraph('4 Цель проведения технического диагностирования', 'report_container_4.txt')
+        #
+        self.new_page()
+        self.device()
+
+    def paragraph3(self):
+        data = self.data.get('obj_data').copy()
+        org = Organization.objects.filter(name=data['org']).first()
+        data.update({'org': data['org'].split('"')[1], **model_to_dict(org)})
+        self.paragraph('3 Данные о заказчике', 'report_container_3.txt', data=data)
 
     def team(self):
         self.new_page()
         # Table header
+        self.put('Таблица 1.1', 'Text', .1)
         template = [
             [
                 'Фамилия И.О.', 'Сведения об аттестации',
                 '№ удостоверения', 'Срок действия до'
             ]
         ]
-        para_style = (
-            ('Regular Center', ),
+        para_style = (('Text Simple Center', ), )
+        table_style = (('BOTTOMPADDING', (0,0), (-1,-1), 6), )
+        self.add(template, [2, 3.3, 2.35, 2.35], self.get_style(para_style, template), 
+            table_style, styleTable=True
         )
-        table_style = (
-            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-        )
-        self.add(template, [2, 3, 2.5, 2.5], self.get_style(para_style, template), table_style,
-            styleTable=True
-        )
-        #table_data = self.values(template, {})
-        #cols = len(table_data[0])
-        #styles = [
-        #    *[['Regular Bold Center']],
-        #    *[['Regular Center'] * cols],
-        #]
-        #table = self.table(table_data, styles, [1, 2, 2, 1, 1, 1, 1, 1], styleTable=True)
-        #table.setStyle(TableStyle([
-        #    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        #    ('SPAN', (0, 0), (-1, 0)),
-        #    ('BOTTOMPADDING', (0,0), (-1,-1), 12),
-        #    ('TOPPADDING', (0,0), (-1,-1), 7),
-        #]))
-        #self.Story.append(table)
 
         # For each person generate separate table for ability to span 
         # certain fields
-        for num, person in enumerate(self.data.get('team'), start=1):
-            emp = Employee.objects.get_by_full_name(person['name'])
+        for person in self.data.get('team'):
+            emp = Employee.objects.get(pk=person)
+            fio = emp.get_full_name().replace(' ', '<br />')
             cert = Certificate.objects.filter(employee=emp)
-            all_cert = [c.info for c in cert]
-            #all_cert = [
-            #    [str(num), emp.fio()] +
-            #    c.plain_details('<br />') +
-            #    [eb_cert] 
-            #    for c in cert
-            #] or [
-            #    [str(num), emp.fio(), *['Нет данных'] * 5, eb_cert]
-            #]
-            print('allcert')
-            #table_data = self.values(all_cert, {})
-            #cols = len(table_data[0])
-            #rows = len(table_data)
-            #styles = [
-            #    *[['Regular Center'] * cols] * rows,
-            #]
-            #table = self.table(table_data, styles, [1, 2, 2, 1, 1, 1, 1, 1], styleTable=False)
-            #table.setStyle(TableStyle([
-            #    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            #    ('SPAN', (0,0), (0, rows - 1)),
-            #    ('SPAN', (1,0), (1, rows - 1)),
-            #    ('SPAN', (7,0), (7, rows - 1)),
-            #    # No padding between in-table rows
-            #    ('BOTTOMPADDING', (0,0), (-1,-1), 0),
-            #    ('TOPPADDING', (0,0), (-1,-1), 0),
-            #    # Add padding for the first and last table's rows
-            #    ('BOTTOMPADDING', (0,-1), (-1,-1), 4),
-            #    ('TOPPADDING', (0,0), (-1,0), 4),
-            #    ('LINEAFTER',(0,0),(-1,-1), 0.5, colors.black),
-            #    ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            #]))
-            #self.Story.append(table)
-        self.Story.append(Spacer(1, 1 * cm))
+            template = [
+                [fio, *c.verbose_info()] for c in cert
+            ] or [
+                [fio, *['Нет данных'] * 3]
+            ]
+            rows = len(template)
+            para_style = (('Text Simple', 'Text Simple', 'Text Simple Center', 'Text Simple Center', ), )
+            table_style = (
+                ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+                ('SPAN', (0,0), (0, rows - 1)),
+            )
+            self.add(template, [2, 3.3, 2.35, 2.35], self.get_style(para_style, template),
+                table_style, styleTable=True
+            )
+        self.spacer(.5)
+
+    def device(self):
+        data = self.data['device'].copy()
+        self.paragraph('5 Характеристика и назначение объекта диагностирования',
+            'report_container_5.txt', data=data)
+        #
+        self.put('Таблица 5.1', 'Text', .1)
+        data.update(self.data['obj_data'])
+        template = (
+            ('Параметр', 'Характеристика'),
+            ('Наименование объекта экспертизы', 'Сосуд, работающий под избыточным давлением ({full_desc})'),
+            ('Год изготовления', '{manufactured_year}'),
+            ('Завод-изготовитель', '{factory}'),
+            ('Заводской номер', '{serial_number}'),
+            ('Номер чертежа', '{scheme}'),
+            ('Год ввода в эксплуатацию', '{started_year}'),
+            ('Место установки', '{location} {plant} {ks}, {lpu}'),
+            ('Условия эксплуатации:', ''),
+            ('- давление рабочее, МПа', '{p_work}'),
+            ('- давление пробное, МПа', '{p_test}'),
+            ('- рабочая температура среды, °С', 'От {temp_carrier_low} до {temp_carrier_high}'),
+            ('- технологическая среда', '{carrier}'),
+            ('Класс опасности технологической среды по ГОСТ 12.1.007-76', '{danger_class}'),
+            ('Объем рабочий, м3', '{volume}'),
+            ('Масса сосуда (пустого), кг', '{weight}'),
+            ('Режим нагружения', '{mode}'),
+            ('Основные размеры:', ''),
+            ('- внутренний диаметр обечайки, мм', '{dimensions_width_ring}'),
+            ('- внутренний диаметр днища, мм', '{dimensions_width_bottom}'),
+            ('- высота обечайки, мм', '{dimensions_height_ring}'),
+            ('- высота днища, мм', '{dimensions_height_bottom}'),
+            ('- высота сосуда (общая)', '{dimensions_height_total}'),
+            ('Толщина стенок (проектная), мм:', ''),
+            ('- обечайка<br />- днища', '{dimensions_side_ring}<br />{dimensions_side_bottom}'),
+            ('Материал (марка стали, ГОСТ):', ''),
+            ('- обечайка<br />- днища', '{material_ring}<br />{material_bottom}'),
+            ('Сведения о сварке:', ''),
+            ('- вид<br />- материал', '{welding[name]}<br />{welding[material]}'),
+            ('Контроль при изготовлении:', ''),
+            ('- методы<br />- объемы', '{control[name]}<br />{control[area]}'),
+        )
+        para_style = (
+            ('Regular Center', 'Regular Center'), 
+            ('Regular', 'Regular'), 
+            ('Regular', 'Regular Center'), 
+            ('Regular', 'Regular Center'), 
+            ('Regular', 'Regular Center'), 
+            ('Regular', 'Regular Center'), 
+            ('Regular', 'Regular Center'), 
+            ('Regular', 'Regular'), 
+            ('Regular', 'Regular Center'), 
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            #('SPAN', (0,11), (0,12)),
+        )
+        self.add(template, [4, 6], self.get_style(para_style, template),
+            table_style, styleTable=True, data=data
+        )
 
     def page3(self):
         self.new_page()

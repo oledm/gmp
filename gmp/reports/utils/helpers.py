@@ -369,7 +369,7 @@ class ReportMixin():
             name='Regular Center',
             fontName='Times',
             fontSize=13,
-            leading=16,
+            leading=13,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Regular Center Leading',
@@ -461,6 +461,20 @@ class ReportMixin():
             bulletIndent=18,
             firstLineIndent=1.25 * cm,
             alignment=TA_JUSTIFY))
+        self.styles.add(ParagraphStyle(
+            name='Text Simple',
+            fontName='Times',
+            fontSize=14,
+            leading=18,
+            bulletIndent=18,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Text Simple Center',
+            fontName='Times',
+            fontSize=14,
+            leading=18,
+            bulletIndent=18,
+            alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='TOC',
             fontName='Times Bold',
