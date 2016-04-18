@@ -40,14 +40,21 @@ class MyDocTemplate(BaseDocTemplate):
     # This list will usually be created in a document template's method like
     # afterFlowable(), making notification calls using the notify() method
     # with appropriate data.
+    def beforeDocument(self):
+        self.appendixLetter = 'А'
+
 
     def afterFlowable(self, flowable):
         "Registers TOC entries."
         if flowable.__class__.__name__ == 'Paragraph':
             text = flowable.getPlainText()
             style = flowable.style.name
-            if style == 'Heading 1':
-                level = 0
+            #if style == 'Heading 1':
+            #    level = 0
+            if style == 'TOC Appendix':
+                level = 1
+                text = 'Приложение {} {}'.format(self.appendixLetter, text.capitalize())
+                self.appendixLetter = chr(ord(self.appendixLetter) + 1)
             elif style == 'TOC':
                 level = 1
             else:
@@ -372,6 +379,12 @@ class ReportMixin():
             leading=13,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
+            name='Regular Center Small',
+            fontName='Times',
+            fontSize=11,
+            leading=11,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
             name='Regular Center Leading',
             fontName='Times',
             fontSize=13,
@@ -483,6 +496,15 @@ class ReportMixin():
             bulletIndent=18,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
+            name='Text Simple Height',
+            fontName='Times',
+            fontSize=14,
+            leading=21,
+            #firstLineIndent=-0.40 * cm,
+            #bulletIndent=0 * cm,
+            #leftIndent=0.40 * cm,
+            alignment=TA_JUSTIFY))
+        self.styles.add(ParagraphStyle(
             name='Text Simple Center Dense',
             fontName='Times',
             fontSize=14,
@@ -497,6 +519,12 @@ class ReportMixin():
             firstLineIndent=1.25 * cm,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
+            name='TOC Appendix',
+            fontName='Times Bold',
+            fontSize=14,
+            leading=18,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
             name='TOCHeading1',
             fontName='Times Bold',
             fontSize=14,
@@ -507,6 +535,6 @@ class ReportMixin():
             fontName='Times',
             fontSize=14,
             leading=21,
+            firstLineIndent=-3.25 * cm,
+            leftIndent=3.25 * cm,
             alignment=TA_LEFT))
-            #ParagraphStyle(fontName='Times Bold', fontSize=20, name='TOCHeading1', leftIndent=20, firstLineIndent=-20, spaceBefore=10, leading=16),
-            #ParagraphStyle(fontName='Times',fontSize=18, name='TOCHeading2', leftIndent=40, firstLineIndent=-20, spaceBefore=5, leading=12),

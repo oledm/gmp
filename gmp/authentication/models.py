@@ -61,6 +61,9 @@ class Employee(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'department']
 
+    class Meta:
+        ordering = ['last_name', 'first_name', 'middle_name']
+
     def __str__(self):
         return self.email
 

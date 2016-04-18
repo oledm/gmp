@@ -78,6 +78,23 @@ class ReportContainer(ReportMixin):
         self.add(template, [10], self.get_style(para_style, template), table_style,
             data=data, spacer=.2)
 
+    def appendix(self, file_, title=None, data={}, style='Text'):
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            ('LEFTPADDING', (0,0), (-1,-1), 0),
+            ('RIGHTPADDING', (0,0), (-1,-1), 0),
+        )
+        para_style = (
+            (style,),
+        )
+        if title:
+            self.add_to_toc(title, self.styles['TOC Appendix'])
+            self.spacer(.4)
+        template = self.static_data_plain(file_)
+        self.add(template, [10], self.get_style(para_style, template), table_style,
+            data=data)
+
     def page2(self):
         # Main content
         self.new_page()
@@ -99,6 +116,7 @@ class ReportContainer(ReportMixin):
         self.device()
         self.paragraph6()
         self.paragraph7()
+        self.appendixA()
 
     def paragraph3(self):
         data = self.data.get('obj_data').copy()
@@ -256,7 +274,7 @@ class ReportContainer(ReportMixin):
         )
         para_style = (
                 ('Regular Bold Center',),
-                ('Regular Center',),
+                ('Regular Center Small',),
         )
         table_style = (
             ('TOPPADDING', (0,0), (-1,-1), 0),
@@ -264,9 +282,60 @@ class ReportContainer(ReportMixin):
             ('LINEBELOW', (0,0), (0,0), 0.5, colors.black),
         )
         self.add(template, [10], self.get_style(para_style, template),
-            table_style, data=self.data['device']
+            table_style, data=self.data['device'], spacer=.2
         )
-        
+        #
+        template = self.static_data_plain('report_container_7.2_7.3.txt')
+        para_style = (
+            ('Text',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        )
+        self.add(template, [10], self.get_style(para_style, template),
+            table_style, data=self.data['device'], spacer=4
+        )
+        #
+        template = [[
+            '{rank}', '{fio}'
+        ]]
+        para_style = (
+            ('Regular Center',),
+        )
+        self.add(template, [7, 3], self.get_style(para_style, template),
+            table_style, data=self.data['signers']['create']
+        )
+    
+    def appendixA(self):
+        self.new_page()
+        self.put('Приложение А', 'Regular Right', .4)
+        #self.appendix('report_container_appendixA_1.txt', style='Text Simple Height',
+        #    title='ПЕРЕЧЕНЬ ИСПОЛЬЗОВАННОЙ ПРИ ТЕХНИЧЕСКОМ ДИАГНОСТИРОВАНИИ '
+        #    'НОРМАТИВНОЙ, ТЕХНИЧЕСКОЙ И МЕТОДИЧЕСКОЙ ЛИТЕРАТУРЫ')
+        title = 'ПЕРЕЧЕНЬ ИСПОЛЬЗОВАННОЙ ПРИ ТЕХНИЧЕСКОМ ДИАГНОСТИРОВАНИИ ' \
+            'НОРМАТИВНОЙ, ТЕХНИЧЕСКОЙ И МЕТОДИЧЕСКОЙ ЛИТЕРАТУРЫ'
+        self.add_to_toc(title, self.styles['TOC Appendix'])
+        self.spacer(.4)
+        template = self.get_csv('report_container_appendixA_1.txt')
+        para_style = (
+            ('Text Simple Height',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        )
+        self.add(template, [0.5, 9.5], self.get_style(para_style, template),
+            table_style
+        )
+        self.new_page()
+        self.put('Приложение А', 'Regular Right', .4)
+        template = self.get_csv('report_container_appendixA_2.txt')
+        self.add(template, [0.5, 9.5], self.get_style(para_style, template),
+            table_style
+        )
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content, colontitle_content):

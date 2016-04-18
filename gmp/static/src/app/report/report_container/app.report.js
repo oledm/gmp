@@ -15,8 +15,9 @@
                 'report_container/devices.tpl.html',
                 'report_container/report_info.tpl.html',
                 'report_container/order.tpl.html',
-//                'report_container/device_location.tpl.html',
                 'report_container/team.tpl.html',
+                'report_container/signers.tpl.html',
+//                'report_container/device_location.tpl.html',
 //                'measurers.tpl.html',
 //                'report/dates.tpl.html',
 //                'engines.tpl.html',
@@ -26,7 +27,6 @@
 //                'therm.tpl.html',
 //                'vibro.tpl.html',
 //                'resistance.tpl.html',
-//                'signers.tpl.html'
             ],
             measurers = {
                 all: Department.measurers(),

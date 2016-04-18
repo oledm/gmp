@@ -1,0 +1,21 @@
+<ng-form name="vm.signersForm" novalidate>
+  <h4 checkmark>Данные подписантов</h4>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.signersForm.approve_rank.$touched && vm.signersForm.approve_rank.$invalid }">
+              <label class="control-label" for="approve_rank">Отчет составил (должность)</label>
+              <textarea class="form-control" type="text" id="approve_rank" required name="approve_rank" ng-maxlength="100" ng-model="vm.report.signers.create.rank" />
+              <div class="help-block" role="alert" ng-messages="vm.signersForm.approve_rank.$error" ng-if="vm.signersForm.approve_rank.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.signersForm.approve_fio.$touched && vm.signersForm.approve_fio.$invalid }">
+              <label class="control-label" for="approve_fio">Отчет составил (ФИО)</label>
+              <input class="form-control" type="text" id="approve_fio" required name="approve_fio" ng-maxlength="30" ng-model="vm.report.signers.create.fio" />
+              <div class="help-block" role="alert" ng-messages="vm.signersForm.approve_fio.$error" ng-if="vm.signersForm.approve_fio.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+</ng-form>
