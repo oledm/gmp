@@ -204,6 +204,8 @@ BOWER_INSTALLED_APPS = (
     'angular-resource',
     'angular-ui-router',
     'angular-cookies',
+    'angular-messages',
+    'angular-animate',
     #'angular-material',
     #'angular-material-data-table',
     'angular-cookies',

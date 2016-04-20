@@ -117,6 +117,7 @@ class ReportContainer(ReportMixin):
         self.paragraph6()
         self.paragraph7()
         self.appendixA()
+        self.appendixB()
 
     def paragraph3(self):
         data = self.data.get('obj_data').copy()
@@ -336,6 +337,13 @@ class ReportContainer(ReportMixin):
         self.add(template, [0.5, 9.5], self.get_style(para_style, template),
             table_style
         )
+
+    def appendixB(self):
+        self.new_page()
+        self.put('Приложение Б', 'Regular Right', .4)
+        title = 'СХЕМЫ ПРОВЕДЕНИЯ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ'
+        self.add_to_toc(title, self.styles['TOC Appendix'])
+        self.spacer(.4)
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content, colontitle_content):
