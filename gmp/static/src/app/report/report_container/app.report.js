@@ -17,6 +17,7 @@
                 'report_container/order.tpl.html',
                 'report_container/team.tpl.html',
                 'report_container/signers.tpl.html',
+                'report_container/schemes.tpl.html',
 //                'report_container/device_location.tpl.html',
 //                'measurers.tpl.html',
 //                'report/dates.tpl.html',
@@ -65,6 +66,13 @@
 //        vm.measurers = measurers;
         vm.report = {
             team: [],
+            files: {
+                'legend': [],
+                'conrtol_VIK': [],
+                'conrtol_UK_container': [],
+                'conrtol_UK_connections': [],
+                'conrtol_magnit': [],
+            },
             info: {
                 'info_investigation': 'Экспертиза промышленной безопасности проводится впервые. ' +
                     '\nНО, ВО – 1 раз в 2 года (ответственный за осуществление ' + 
@@ -77,6 +85,12 @@
                 'danger_places': 'Места концентраций напряжений – продольные и кольцевые сварные швы, ' + 
                     'места вварки штуцеров; места наиболее вероятного коррозионного износа – ' + 
                     'внутренняя поверхность нижнего днища',
+            },
+            schemes: {
+                'VIK': 'Схема проведения визуально-измерительного контроля сосуда',
+                'UK_container': 'Схема проведения ультразвуковой толщинометрии и твердометрии сосуда',
+                'UK_connections': 'Схема проведения ультразвукового контроля сварных соединений сосуда',
+                'magnit': 'Схема проведения магнитопорошкового контроля сосуда',
             },
         };
 //            team: undefined,
@@ -135,7 +149,7 @@
 //                return el.name === vm.tclasses.selected;
 //            })[0].id;
 ////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-            Passport.createPassport(vm.report);
+//            Passport.createPassport(vm.report);
         }
 
         function getEmployees() {
