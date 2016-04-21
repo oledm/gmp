@@ -149,7 +149,7 @@
 //                return el.name === vm.tclasses.selected;
 //            })[0].id;
 ////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-//            Passport.createPassport(vm.report);
+            Passport.createPassport(vm.report);
         }
 
         function getEmployees() {

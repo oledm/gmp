@@ -318,7 +318,7 @@ class ReportContainer(ReportMixin):
         title = 'ПЕРЕЧЕНЬ ИСПОЛЬЗОВАННОЙ ПРИ ТЕХНИЧЕСКОМ ДИАГНОСТИРОВАНИИ ' \
             'НОРМАТИВНОЙ, ТЕХНИЧЕСКОЙ И МЕТОДИЧЕСКОЙ ЛИТЕРАТУРЫ'
         self.add_to_toc(title, self.styles['TOC Appendix'])
-        self.spacer(.4)
+        self.spacer(1)
         template = self.get_csv('report_container_appendixA_1.txt')
         para_style = (
             ('Text Simple Height',),
@@ -344,6 +344,41 @@ class ReportContainer(ReportMixin):
         title = 'СХЕМЫ ПРОВЕДЕНИЯ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ'
         self.add_to_toc(title, self.styles['TOC Appendix'])
         self.spacer(.4)
+        image = FileStorage.objects.get(pk=self.data['files']['legend'][0])
+        self.put_photo(image)
+        ####################
+        self.new_page()
+        self.put('Приложение Б', 'Regular Right', .4)
+        self.spacer(.4)
+        image = FileStorage.objects.get(pk=self.data['files']['conrtol_VIK'][0])
+        self.put_photo(image)
+        self.spacer(.3)
+        self.put('Рис. 1 ' + self.data['schemes']['VIK'], 'Regular Bold Center')
+        ####################
+        self.new_page()
+        self.put('Приложение Б', 'Regular Right', .4)
+        self.spacer(.4)
+        image = FileStorage.objects.get(pk=self.data['files']['conrtol_UK_container'][0])
+        self.put_photo(image)
+        self.spacer(.3)
+        self.put('Рис. 2 ' + self.data['schemes']['UK_container'], 'Regular Bold Center')
+        ####################
+        self.new_page()
+        self.put('Приложение Б', 'Regular Right', .4)
+        self.spacer(.4)
+        image = FileStorage.objects.get(pk=self.data['files']['conrtol_UK_connections'][0])
+        self.put_photo(image)
+        self.spacer(.3)
+        self.put('Рис. 3 ' + self.data['schemes']['UK_connections'], 'Regular Bold Center')
+        ####################
+        self.new_page()
+        self.put('Приложение Б', 'Regular Right', .4)
+        self.spacer(.4)
+        image = FileStorage.objects.get(pk=self.data['files']['conrtol_magnit'][0])
+        self.put_photo(image)
+        self.spacer(.3)
+        self.put('Рис. 4 ' + self.data['schemes']['magnit'], 'Regular Bold Center')
+
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content, colontitle_content):
