@@ -21,10 +21,16 @@ from .helpers import ReportMixin
 
 class ReportContainer(ReportMixin):
     def create(self):
-        self.setup_page_templates(self.doc, self.header_content(), self.colontitle_content())
-
         self.format_locale_JS_dates(self.data['order'], ('date',))
+        self.format_locale_JS_dates(self.data['info'], ('investigation_date',))
+        self.format_JS_dates(self.data['info'], ('license_date',))
+        self.data.update({'report_code': 'ГМП-{}/{}/ТО/{}'.format(
+            self.data['info']['license_number'].replace('-', '/'),
+            self.data['info']['license_category'],
+            datetime.now().year
+        )})
 
+        self.setup_page_templates(self.doc, self.header_content(), self.colontitle_content())
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
@@ -41,7 +47,7 @@ class ReportContainer(ReportMixin):
         self.spacer(1.5)
 
         template = [
-            ['ОТЧЕТ № ГМП-16ДИА/0012/С2/ТО/2016'],
+            ['ОТЧЕТ № {report_code}'],
             ['ПО РЕЗУЛЬТАТАМ КОМПЛЕКСНОГО ТЕХНИЧЕСКОГО'],
             ['ДИАГНОСТИРОВАНИЯ'],
             ['<strong>сосуда, работающего под давлением</strong>'],
@@ -118,6 +124,7 @@ class ReportContainer(ReportMixin):
         self.paragraph7()
         self.appendixA()
         self.appendixB()
+        self.appendixC()
 
     def paragraph3(self):
         data = self.data.get('obj_data').copy()
@@ -295,8 +302,10 @@ class ReportContainer(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 4),
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         )
+        data = self.data['device'].copy()
+        data.update({'report_EPB': self.data['report_code'].replace('ТО', 'ЭПБ')})
         self.add(template, [10], self.get_style(para_style, template),
-            table_style, data=self.data['device'], spacer=4
+            table_style, data=data, spacer=4
         )
         #
         template = [[
@@ -379,6 +388,70 @@ class ReportContainer(ReportMixin):
         self.spacer(.3)
         self.put('Рис. 4 ' + self.data['schemes']['magnit'], 'Regular Bold Center')
 
+    def appendixC(self):
+        self.new_page()
+        self.put('Приложение В', 'Regular Right', .4)
+        self.add_to_toc('Заключение по результатам визуального и измерительного контроля',
+            self.styles['TOC Appendix Hidden'])
+        self.appendix_header()
+        self.put('ЗАКЛЮЧЕНИЕ № {}/ВИК'.format(self.data['report_code']), 'Text Simple Center Bold', .2)
+        self.put('по результатам визуального и измерительного контроля', 'Text Simple Center', .5)
+        self.put(self.data['info']['investigation_date'], 'Text Simple Right')
+        self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
+
+
+    ######################################
+    # Helpers
+    ######################################
+    def appendix_header(self):
+        data = self.data.copy()
+        data['device']['name'] = data['device']['name'].capitalize()
+        template = [
+            ['ООО «ГАЗМАШПРОЕКТ»', '', '{obj_data[org]}'],
+            ['(предприятие-исполнитель)', '', '(предприятие-Заказчик)'],
+            ['г. Москва, ул. Нагатинская, д. 5', '', '{obj_data[lpu]},'
+                '<br />{obj_data[ks]}, {obj_data[plant]}'],
+            ['(место осуществления лицензируемого вида деятельности)', '', '(место нахождения оборудования)'],
+            ['', '', '{device[name]}'],
+            ['', '', '(тип и наименование оборудования)'],
+            ['', '', 'зав. № {device[serial_number]}, рег. № {device[reg_number]},'
+                        '<br />инв. № {device[inv_number]}'],
+            ['', '', '(номер оборудования)'],
+        ]
+        para_style = (
+            ('Regular Center Italic',),
+            ('Regular Center Italic Small',),
+            ('Regular Center Italic',),
+            ('Regular Center Italic Small',),
+            ('Regular Center Italic',),
+            ('Regular Center Italic Small',),
+            ('Regular Center Italic',),
+            ('Regular Center Italic Small',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('LINEBELOW', (0,0), (0,0), .5, colors.black),
+            ('LINEBELOW', (-1,0), (-1,0), .5, colors.black),
+            ('LINEBELOW', (0,2), (0,2), .5, colors.black),
+            ('LINEBELOW', (-1,2), (-1,2), .5, colors.black),
+            ('LINEBELOW', (-1,4), (-1,4), .5, colors.black),
+            ('LINEBELOW', (-1,6), (-1,6), .5, colors.black),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('BOTTOMPADDING', (0,1), (-1,1), 16),
+            ('BOTTOMPADDING', (0,3), (-1,3), 16),
+            ('BOTTOMPADDING', (0,5), (-1,5), 16),
+            ('VALIGN', (0,0), (-1,0), 'BOTTOM'),
+            ('VALIGN', (0,1), (-1,1), 'TOP'),
+            ('VALIGN', (0,2), (-1,2), 'BOTTOM'),
+            ('VALIGN', (0,3), (-1,3), 'TOP'),
+            ('VALIGN', (0,4), (-1,4), 'BOTTOM'),
+            ('VALIGN', (0,5), (-1,5), 'TOP'),
+            ('VALIGN', (0,6), (-1,6), 'BOTTOM'),
+            ('VALIGN', (0,7), (-1,7), 'TOP'),
+        )
+        self.add(template, [4, 2, 4], self.get_style(para_style, template),
+            table_style, data=data, spacer=.7
+        )
 
     # Define report's static content
     def setup_page_templates(self, doc, header_content, colontitle_content):
@@ -455,6 +528,12 @@ class ReportContainer(ReportMixin):
     def colontitle_content(self):
         return (
             Paragraph('ООО «ГАЗМАШПРОЕКТ»', self.styles['Regular']),
-            Paragraph('Отчет № ГМП-16ДИА/0012/С2/ТО/2016', self.styles['Regular Right']),
+            Paragraph('Отчет № {}'.format(self.data['report_code']), self.styles['Regular Right'])
+            #Paragraph('Отчет № ГМП-{}/{}/ТО/{}'.format(
+            #    self.data['info']['license_number'].replace('-', '/'),
+            #    self.data['info']['license_category'],
+            #    datetime.now().year
+            #),
+            #    self.styles['Regular Right'])
         )
 

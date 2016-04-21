@@ -60,6 +60,8 @@ vendor/
 
 # User-uploaded media
 gmp/media/
+# Build
+gmp/static/dist/
 
 # Hitch directory
 tests/.hitch

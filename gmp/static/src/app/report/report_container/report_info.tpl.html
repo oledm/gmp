@@ -1,26 +1,87 @@
 <ng-form name="vm.reportInfoForm" novalidate>
-  <h4 checkmark>Информация о проведенной экспертизе</h4>
+  <h4 checkmark>Информация о проведенном обследовании</h4>
+    <label class="control-label">Основание для проведения работ</label>
+    <div class="well">
+        <p>{{vm.report.info.license}} № ГМП-{{vm.report.info.license_number}} от {{vm.report.info.license_date | date:'dd.MM.yyyy'}} {{vm.report.info.license_more}}</p>
+        <!-- 
+            <p>Место установки:&nbsp;{{vm.report.device.location}}{{vm.report.obj_data.plant ? ' ' + vm.report.obj_data.plant : ''}}{{vm.report.obj_data.ks ? ' ' + vm.report.obj_data.ks : ''}}{{vm.report.obj_data.lpu ? ', ' + vm.report.obj_data.lpu : ''}}</p>
+         -->
+    </div>
+
     <div class="form-group">
         <div class="row">
-            <div class="col-sm-12" ng-class="{ 'has-error': vm.reportInfoForm.license.$touched && vm.reportInfoForm.license.$invalid }">
-              <label class="control-label" for="license">Основание для проведения работ</label>
-              <textarea class="form-control" type="text" id="license" required name="license" ng-maxlength="500" ng-model="vm.report.info.license"></textarea>
-              <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.license.$error" ng-if="vm.reportInfoForm.license.$touched">
-                  <div ng-messages-include="/static/src/assets/messages.html"></div>
-              </div>
+            <div class="col-sm-6"
+                 ng-class="{ 'has-error': vm.reportInfoForm.license_number.$touched && vm.reportInfoForm.license_number.$invalid }"
+                >
+                  <label class="control-label" for="license_number">Номер договора</label>
+                  <div class="form-inline">
+                    <div class="form-group">
+                          <span>№ ГМП-</span>
+                          <input class="form-control" type="text" id="license_number" required
+                              name="license_number" ng-maxlength="50" ng-model="vm.report.info.license_number" />
+                    </div>
+                  </div>
+                  <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.license_number.$error" ng-if="vm.reportInfoForm.license_number.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            <div class="col-sm-6" ng-controller="DatepickerController as dc"
+                 ng-class="{ 'has-error': vm.reportInfoForm.license_date.$touched && vm.reportInfoForm.license_date.$invalid }"
+                >
+                  <label class="control-label" for="license_date">Дата заключения договора</label>
+                    <p class="input-group">
+                  <input type="text" ng-model="vm.report.info.license_date" id="license_date" name="license_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" required datepicker-options="dc.dateOptions" required />
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                    </p>
+                  <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.license_date.$error" ng-if="vm.reportInfoForm.license_date.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
             </div>
         </div>
     </div>
 
     <div class="form-group">
         <div class="row">
-            <div class="col-sm-12" ng-class="{ 'has-error': vm.reportInfoForm.contract.$touched && vm.reportInfoForm.contract.$invalid }">
-              <label class="control-label" for="license">Номер договора</label>
-              <input class="form-control" type="text" id="contract" required
-                      name="contract" ng-maxlength="50" ng-model="vm.report.info.contract" />
-              <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.contract.$error" ng-if="vm.reportInfoForm.contract.$touched">
-                  <div ng-messages-include="/static/src/assets/messages.html"></div>
-              </div>
+            <div class="col-sm-6"
+                 ng-class="{ 'has-error': vm.reportInfoForm.license_category.$touched && vm.reportInfoForm.license_category.$invalid }"
+                >
+                  <label class="control-label" for="license_category">Номер отчета</label>
+                  <div class="form-inline">
+                    <div class="form-group">
+                          <span>№ ГМП-{{vm.report.info.license_number.replace('-','/')}}</span>
+                          <input class="form-control" type="text" id="license_category" required
+                              name="license_category" ng-maxlength="50" ng-model="vm.report.info.license_category" />
+                          <span>/ТО/2016</span>
+                    </div>
+                  </div>
+                  <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.license_category.$error" ng-if="vm.reportInfoForm.license_category.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            <div class="col-sm-6" ng-controller="DatepickerController as dc"
+                 ng-class="{ 'has-error': vm.reportInfoForm.investigation_date.$touched && vm.reportInfoForm.investigation_date.$invalid }"
+                >
+                  <label class="control-label" for="investigation_date">Дата проведения обследования</label>
+                    <p class="input-group">
+                  <input type="text" ng-model="vm.report.info.investigation_date" id="investigation_date" name="investigation_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" required datepicker-options="dc.dateOptions" required />
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                    </p>
+                  <div class="help-block" role="alert" ng-messages="vm.reportInfoForm.investigation_date.$error" ng-if="vm.reportInfoForm.investigation_date.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12">
+              <label class="control-label" for="license_more">Дополнительные сведения</label>
+              <textarea class="form-control" type="text" id="license_more" name="license_more" ng-maxlength="500" ng-model="vm.report.info.license_more"></textarea>
             </div>
         </div>
     </div>

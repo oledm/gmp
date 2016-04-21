@@ -51,7 +51,7 @@ class MyDocTemplate(BaseDocTemplate):
             style = flowable.style.name
             #if style == 'Heading 1':
             #    level = 0
-            if style == 'TOC Appendix':
+            if style == 'TOC Appendix' or style == 'TOC Appendix Hidden':
                 level = 1
                 text = 'Приложение {} {}'.format(self.appendixLetter, text.capitalize())
                 self.appendixLetter = chr(ord(self.appendixLetter) + 1)
@@ -186,7 +186,7 @@ class ReportMixin():
     def format_locale_JS_dates(d, keys, format_='d E Y'):
         for key in keys:
             dt = datetime.strptime(d[key].split('T')[0], '%Y-%m-%d')
-            d[key] = dateformat.format(dt, format_)
+            d[key] = dateformat.format(dt, format_) + ' г.'
             #d[key] = dt.strftime(format_)
 
     def table(self, data, styles, colWidths=(10, ), styleTable=False):
@@ -409,6 +409,12 @@ class ReportMixin():
             leading=16,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
+            name='Regular Center Italic Small',
+            fontName='Times Italic',
+            fontSize=11,
+            leading=13,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
             name='Regular Justified',
             fontName='Times',
             fontSize=13,
@@ -482,8 +488,29 @@ class ReportMixin():
             bulletIndent=18,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
+            name='Text Simple Bold',
+            fontName='Times Bold',
+            fontSize=14,
+            leading=18,
+            bulletIndent=18,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='Text Simple Right',
+            fontName='Times',
+            fontSize=14,
+            leading=18,
+            bulletIndent=18,
+            alignment=TA_RIGHT))
+        self.styles.add(ParagraphStyle(
             name='Text Simple Center',
             fontName='Times',
+            fontSize=14,
+            leading=18,
+            bulletIndent=18,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Text Simple Center Bold',
+            fontName='Times Bold',
             fontSize=14,
             leading=18,
             bulletIndent=18,
@@ -523,6 +550,12 @@ class ReportMixin():
             fontName='Times Bold',
             fontSize=14,
             leading=18,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='TOC Appendix Hidden',
+            fontName='Times Bold',
+            fontSize=0,
+            textColor=colors.white,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='TOCHeading1',

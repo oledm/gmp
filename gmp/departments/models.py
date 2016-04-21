@@ -28,7 +28,8 @@ class Measurer(models.Model):
     expired_at = models.DateField('Дата следующей поверки', max_length=50)
 
     def __str__(self):
-        return '{} {}, {}'.format(self.name, self.model, self.department.name)
+        #return '{} {}, {}'.format(self.name, self.model, self.department.name)
+        return '{} {}'.format(self.name, self.model, self.department.name)
 
     def description(self):
         return '{} {}'.format(self.name, self.model)
