@@ -338,13 +338,13 @@ class ReportContainer(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 4),
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         )
-        self.add(template, [0.5, 9.5], self.get_style(para_style, template),
+        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
             table_style
         )
         self.new_page()
         self.put('Приложение А', 'Regular Right', .4)
         template = self.get_csv('report_container_appendixA_2.txt')
-        self.add(template, [0.5, 9.5], self.get_style(para_style, template),
+        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
             table_style
         )
 
@@ -411,7 +411,24 @@ class ReportContainer(ReportMixin):
         self.put('Контроль и оценка качества элементов сосуда выполнены согласно:', 'Text Simple Bold', .2)
         self.put('РД 03-606-03; ПБ 03-584-03; СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
         self.put('Объем контроля – см. в Приложении Б., Рис. 1', 'Text Simple', .2)
-
+        ######################################
+        self.put('Результаты визуального и измерительного контроля', 'Text Simple Center Bold', .2)
+        a = enumerate(map(lambda x: x['value'], self.data['results']['VIK']['results']), start=1)
+        template = tuple(map(lambda x: (str(x[0]), x[1]), a))
+        para_style = (
+            ('Text Simple Height',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        )
+        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
+            table_style, spacer=1
+        )
+        self.put('<strong>Заключение: </strong>' +
+            self.data['results']['VIK']['conclusion'],
+            'Text', .2)
 
     ######################################
     # Helpers
