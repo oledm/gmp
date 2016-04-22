@@ -488,6 +488,14 @@ class ReportMixin():
             bulletIndent=18,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
+            name='Text Simple Indent',
+            fontName='Times',
+            fontSize=14,
+            leading=22,
+            leftIndent=24,
+            bulletIndent=3,
+            alignment=TA_JUSTIFY))
+        self.styles.add(ParagraphStyle(
             name='Text Simple Bold',
             fontName='Times Bold',
             fontSize=14,

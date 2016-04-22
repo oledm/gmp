@@ -3,6 +3,7 @@ from functools import partial
 from itertools import chain
 
 from django.forms.models import model_to_dict
+from django.db.models import Q
 
 from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table
 from reportlab.platypus.frames import Frame
@@ -398,6 +399,18 @@ class ReportContainer(ReportMixin):
         self.put('по результатам визуального и измерительного контроля', 'Text Simple Center', .5)
         self.put(self.data['info']['investigation_date'], 'Text Simple Right')
         self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
+        ######################################
+        for measurer in Measurer.objects.filter(
+                Q(id__in=self.data.get('measurers')),
+                Q(name__icontains='визуальн') |
+                Q(name__icontains='люксметр') |
+                Q(name__icontains='дальномер')
+            ):
+            self.put('<bullet>&ndash;</bullet>' + measurer.verbose_info(), 'Text Simple Indent')
+        ######################################
+        self.put('Контроль и оценка качества элементов сосуда выполнены согласно:', 'Text Simple Bold', .2)
+        self.put('РД 03-606-03; ПБ 03-584-03; СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
+        self.put('Объем контроля – см. в Приложении Б., Рис. 1', 'Text Simple', .2)
 
 
     ######################################

@@ -3,9 +3,30 @@
 
     angular
         .module('app.report')
-        .controller('ReportContainerController', ReportContainerController);
+        .controller('ReportContainerController', ReportContainerController)
+        .directive("contenteditable", function() {
+	  return {
+	    restrict: "A",
+	    require: "ngModel",
+	    link: function(scope, element, attrs, ngModel) {
 
-    function ReportContainerController($scope, UserData, Department, Passport, Upload, ServerData) {
+	      function read() {
+		ngModel.$setViewValue(element.html());
+	      }
+
+	      ngModel.$render = function() {
+		element.html(ngModel.$viewValue || "");
+	      };
+
+	      element.bind("blur keypress change", function() {
+		scope.$apply(read);
+		scope.$apply();
+	      });
+	    }
+	};
+    });
+
+    function ReportContainerController($scope, Passport, Upload, ServerData) {
         'ngInject';
 
         $scope.upload = upload;
@@ -16,10 +37,11 @@
                 'report_container/report_info.tpl.html',
                 'report_container/order.tpl.html',
                 'report_container/team.tpl.html',
+                'measurers.tpl.html',
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
+                'report_container/results.tpl.html',
 //                'report_container/device_location.tpl.html',
-//                'measurers.tpl.html',
 //                'report/dates.tpl.html',
 //                'engines.tpl.html',
 //                'report/photos.tpl.html',
@@ -30,12 +52,12 @@
 //                'resistance.tpl.html',
             ],
             measurers = {
-                all: Department.measurers(),
+                all: ServerData.measurers(),
                 selected: [],
                 sortOrder: 'name'
             },
             devices = {
-                all: [],
+                all: ServerData.query({category: 'container'}),
 //                selected: {
 //                    'type': '',
 //                    'serial_number': 0
@@ -46,24 +68,51 @@
                 'работоспособное',
                 'неработоспособное',
                 'предельное'
+            ],
+            results = [
+                {value: 'Сосуд расположен на стальной опоре юбочного типа. ' +
+                    'Состояние опорной конструкции и анкерных болтов крепления ' +
+                    'юбочной опоры к стальной раме – удовлетворительное.'},
+                {value: 'Корпус сосуда (обечайка, днища) видимых формоизменений (нарушений)' +
+                    'геометрических размеров) и недопустимых деформаций не имеет.'
+                },
+                {value: 'Основной металл корпуса сосуда (обечайка, днища) видимых трещин, ' +
+                    'вмятин, выпучин, коррозионных повреждений и других дефектов, ' +
+                    'вызванных условиями эксплуатации, не имеет.'
+                },
+                {value: 'Сварные соединения в удовлетворительном состоянии. Видимых ' +
+                    'дефектов (поверхностных трещин всех видов и направлений, пор, подрезов, ' +
+                    'свищей и др.) не обнаружено.'
+                },
+                {value: 'Места вварки штуцеров в корпус сосуда находятся в удовлетворительном состоянии.' +
+                    'Состояние штуцеров, фланцев и крепежных элементов – удовлетворительное.'
+                },
+                {value: 'Максимальная измеренная овальность обечайки не превышает допустимого ' +
+                    'значения 1,0% определённого п.4.2.3. ПБ 03-584-03 и составляет – 0,1%.'
+                },
+                {value: 'Состояние наружного защитного лакокрасочного покрытия ' +
+                    'корпуса сосуда – удовлетворительное.'
+                }
             ];
 
 
-//        vm.addToCollection = addToCollection;
-        vm.allEmployees = [];
+//        vm.procKeyPressAndSave = procKeyPressAndSave;
+        vm.addToCollection = addToCollection;
+        vm.allEmployees = ServerData.users();
 //        vm.control_types = control_types;
         vm.device_conditions = device_conditions;
         vm.createPassport = createPassport;
         vm.devices = devices;
+//        vm.edit = edit;
 //        vm.workBegin = undefined;
 //        vm.workEnd = undefined;
         vm.lpus = {};
         vm.orgs = {};
         vm.pages = pages;
-//        vm.procKeyPress = procKeyPress;
+        vm.procKeyPress = procKeyPress;
 //        vm.tclasses = {all: [], selected: ''};
         vm.getLPUs = getLPUs;
-//        vm.measurers = measurers;
+        vm.measurers = measurers;
         vm.report = {
             team: [],
             files: {
@@ -93,9 +142,10 @@
                 'UK_connections': 'Схема проведения ультразвукового контроля сварных соединений сосуда',
                 'magnit': 'Схема проведения магнитопорошкового контроля сосуда',
             },
+            measurers: measurers.selected,
+            results: results,
         };
 //            team: undefined,
-//            measurers: measurers.selected,
 //            files: {
 //                'main': [],
 //                'therm1': [],
@@ -112,9 +162,9 @@
         activate();
 
         function activate() {
-            getContainers();
+//            getContainers();
+//            getMeasurers();
             getOrgs();
-            getEmployees();
 //            vm.report.info = {
 //                license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
 //            };
@@ -132,7 +182,7 @@
             var value = value.trim();
             // Test for absence of a new value in array 
             if (value !== '' && arr.indexOf(value) === -1 ) {
-                arr.push(value);
+                arr.push({'value': value});
             }
         }
 
@@ -150,25 +200,25 @@
 //                return el.name === vm.tclasses.selected;
 //            })[0].id;
 ////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-            Passport.createPassport(vm.report);
+//            Passport.createPassport(vm.report);
         }
 
-        function getEmployees() {
-            UserData.getAllUsers()
-                .then(function(data) {
-                    vm.allEmployees = data;
-                });
-        }
+//        function getContainers() {
+//            ServerData.query({category: 'container'}, function(data) {
+//                vm.devices.all = data;
+//                console.log('ServerData ' + JSON.stringify(data));
+////                vm.devices.all = data.map(function(el) {
+////                    return el;
+////                })
+//            });
+//        };
+//
 
-        function getContainers() {
-            ServerData.query({category: 'container'}, function(data) {
-                vm.devices.all = data;
-//                vm.devices.all = data.map(function(el) {
-//                    return el;
-//                })
-            });
-        };
-
+//        function edit(ev) {
+//            console.log('Edit ' + ev);
+//            ev.preventDefault();
+//        }
+//
         function getOrgs() {
             Passport.getOrgs()
                 .then(function(data) {
@@ -194,12 +244,25 @@
 //                });
 //        }
 //
-//        function procKeyPress(clickEvent, arr) {
-//            // Check for Return (Enter) key pressed
-//            if (clickEvent.which === 13) {
-//                clickEvent.preventDefault();
-//                addToCollection(arr, clickEvent.target.value);
-//                clickEvent.target.value = '';
+        function procKeyPress(clickEvent, arr) {
+            console.log('procKeyPress');
+            // Check for Return (Enter) key pressed
+            if (clickEvent.which === 13) {
+                clickEvent.preventDefault();
+                addToCollection(arr, clickEvent.target.value);
+                clickEvent.target.value = '';
+            }
+        }
+
+//        function procKeyPressAndSave(ev, index, editMode) {
+//            if (ev.which === 13) {
+//                ev.preventDefault();
+//                vm.report.results[index] = ev.target.value;
+//                editMode.edit = false;
+//            } else if (ev.which === 27) {
+//                ev.preventDefault();
+//                ev.target.value = vm.report.results[index] ;
+//                editMode.edit = false;
 //            }
 //        }
 

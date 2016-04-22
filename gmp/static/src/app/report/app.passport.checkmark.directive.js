@@ -9,7 +9,7 @@
             require: '^form',
             restrict: 'A',
             link: function(scope, elem, attrs, formController) {
-                if (formController.$name === 'vm.docsForm') {
+                if (formController.$name === 'vm.docsForm' || formController.$name === 'vm.resultsInfoForm') {
                     scope.showCheckmark = true;
                     return;
                 }

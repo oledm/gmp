@@ -22,6 +22,8 @@ gulp.task('js', function() {
         .pipe(gulp.dest('gmp/static/dist'));
 });
 
+gulp.task('build', ['js', 'templates']);
+
 gulp.task('watch', ['js', 'templates'], function() {
     gulp.watch('gmp/static/src/app/**/*.js', ['js']);
     gulp.watch('gmp/static/src/app/**/*.tpl.html', ['templates']);

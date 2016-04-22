@@ -22,14 +22,26 @@ class Measurer(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField('Наименование прибора', max_length=100)
-    model = models.CharField('Тип (марка)', max_length=50)
-    serial_number = models.CharField('Заводской номер', max_length=30)
-    verification = models.CharField('Свидетельство о поверке', max_length=50)
-    expired_at = models.DateField('Дата следующей поверки', max_length=50)
+    model = models.CharField('Тип (марка)', max_length=50, blank=True, null=True)
+    serial_number = models.CharField('Заводской номер', max_length=30, blank=True, null=True)
+    verification = models.CharField('Свидетельство о поверке', max_length=50, blank=True, null=True)
+    expired_at = models.DateField('Дата следующей поверки', max_length=50, blank=True, null=True)
 
     def __str__(self):
         #return '{} {}, {}'.format(self.name, self.model, self.department.name)
         return '{} {}'.format(self.name, self.model, self.department.name)
+
+    def verbose_info(self):
+        first_word, *other_words = self.name.split()
+        info = first_word.lower() + ' ' + ' '.join(other_words)
+        if self.model:
+            info = info + ' ' + self.model
+        if self.serial_number:
+            info = info + ' зав.&nbsp;№&nbsp;' + self.serial_number
+        if self.verification and self.expired_at:
+            info = '{}, свидетельство о поверке №&nbsp;{} действительно до&nbsp;{} г.'.format(
+                info, self.verification, self.expired_at.strftime('%d.%m.%Y'))
+        return info
 
     def description(self):
         return '{} {}'.format(self.name, self.model)
@@ -42,9 +54,7 @@ class Measurer(models.Model):
             self.expired_at.strftime('%d.%m.%Y'),
         )
 
-    class Meta():
-        ordering = ['name', 'serial_number']
-
     class Meta:
+        ordering = ['name', 'serial_number']
         verbose_name = 'прибор'
         verbose_name_plural = 'приборы'

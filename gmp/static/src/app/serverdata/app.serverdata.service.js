@@ -5,9 +5,27 @@
         .module('app.serverdata')
         .factory('ServerData', ServerData);
 
-    ServerData.$inject = ['$resource'];
-
-    function ServerData($resource) {
-        return $resource('/api/:category/');
+    function ServerData($resource, Cookies) {
+        'ngInject';
+        return $resource('/api/:category/:categoryId/:subcategory/:subcategoryId', {}, {
+            measurers: {
+                method: 'get',
+                isArray: true,
+                params: {
+                    category: 'department',
+                    categoryId: Cookies.get().department.id,
+                    subcategory: 'measurer',
+                }
+            },
+            users: {
+                method: 'get',
+                isArray: true,
+                params: {
+                    category: 'department',
+                    categoryId: Cookies.get().department.id,
+                    subcategory: 'user',
+                }
+            }
+        });
     }
 })();
