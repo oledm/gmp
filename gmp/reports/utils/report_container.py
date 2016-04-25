@@ -41,6 +41,8 @@ class ReportContainer(ReportMixin):
         self.appendixB()
         self.Story.append(NextPageTemplate('Приложение В'))
         self.appendixC()
+        self.Story.append(NextPageTemplate('Приложение Г'))
+        self.appendixD()
 
     def put_toc(self):
         self.new_page()
@@ -444,9 +446,63 @@ class ReportContainer(ReportMixin):
             ('VALIGN', (0,0), (-1,-1), 'BOTTOM'),
         )
         self.add(template, [5, 5], self.get_style(para_style, template),
+            table_style)
+
+    def appendixD(self):
+        self.new_page()
+        self.add_to_toc('Протокол ультразвуковой толщинометрии элементов сосуда',
+            self.styles['TOC Appendix Hidden'])
+        self.appendix_header()
+        self.put('ЗАКЛЮЧЕНИЕ № {}/УК'.format(self.data['report_code']), 'Text Simple Center Bold', .2)
+        self.put('ультразвуковой толщинометрии элементов сосуда', 'Text Simple Center', .5)
+        self.put(self.data['info']['investigation_date'], 'Text Simple Right')
+        self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
+        ######################################
+        for measurer in Measurer.objects.filter(
+                Q(id__in=self.data.get('measurers')),
+                Q(name__icontains='толщиномер ультразвуковой') |
+                Q(name__icontains='стандартный образец предприятия') |
+                Q(name__icontains='образец шероховатости поверхности')
+            ):
+            self.put('<bullet>&ndash;</bullet>' + measurer.verbose_info(), 'Text Simple Indent')
+        ######################################
+        self.put('Контроль и оценка качества элементов сосуда выполнены согласно:', 'Text Simple Bold', .2)
+        self.put('ГОСТ Р 55614-2013, РД 03-421-01, ПБ 03-584-03, СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
+        self.put('Объем контроля – см. в Приложении Б., Рис. 2', 'Text Simple', .2)
+        ######################################
+        self.put('Результаты контроля', 'Text Simple Center Bold', .2)
+        a = enumerate(map(lambda x: x['value'], self.data['results']['VIK']['results']), start=1)
+        template = tuple(map(lambda x: (str(x[0]), x[1]), a))
+        para_style = (
+            ('Text Simple Height',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        )
+        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
             table_style, spacer=1
         )
-
+        self.put('<strong>Заключение: </strong>' +
+            self.data['results']['VIK']['conclusion'],
+            'Text', 8.2)
+        ######################################
+        person_id = self.data['team']['Визуальный и измерительный контроль']
+        emp = Employee.objects.get(pk=person_id)
+        template = (
+            (emp.get_cert_details('ВИК'), emp.fio(), ),
+        )
+        para_style = (
+            ('Text Simple','Text Simple Right'),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'BOTTOM'),
+        )
+        self.add(template, [5, 5], self.get_style(para_style, template),
+            table_style)
     ######################################
     # Helpers
     ######################################

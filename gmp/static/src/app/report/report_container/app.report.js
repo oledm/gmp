@@ -43,6 +43,7 @@
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
                 'report_container/results.tpl.html',
+                'report_container/results_table.tpl.html',
 //                'report_container/device_location.tpl.html',
 //                'report/dates.tpl.html',
 //                'engines.tpl.html',
@@ -53,11 +54,6 @@
 //                'vibro.tpl.html',
 //                'resistance.tpl.html',
             ],
-            measurers = {
-                all: ServerData.measurers(),
-                selected: [],
-                sortOrder: 'name'
-            },
             control_types = [
                 {
                     chapter: 'Визуальный и измерительный контроль',
@@ -99,6 +95,11 @@
                 'неработоспособное',
                 'предельное'
             ],
+            measurers = {
+                all: ServerData.measurers(),
+                selected: [],
+                sortOrder: 'name'
+            },
             results = {
                 VIK: {
                     results: [
@@ -129,6 +130,14 @@
                     conclusion: 'Недопустимых дефектов и формоизменений элементов сосуда, влияющих ' +
                         'на его дальнейшую безопасную эксплуатацию, не выявлено.'
                 }
+            },
+            result_values = {
+                common: [],
+                top_bottom: [],
+                ring: [],
+                bottom_bottom: [],
+                top_cap: [],
+                bottom_cap: [],
             };
 
 
@@ -177,6 +186,7 @@
             },
             measurers: measurers.selected,
             results: results,
+            result_values: result_values,
         };
 //            team: undefined,
 //            files: {
@@ -233,7 +243,7 @@
 //                return el.name === vm.tclasses.selected;
 //            })[0].id;
 ////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-            Passport.createPassport(vm.report);
+//            Passport.createPassport(vm.report);
         }
 
 //        function getContainers() {
