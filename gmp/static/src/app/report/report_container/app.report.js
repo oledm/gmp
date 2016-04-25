@@ -42,8 +42,8 @@
                 'measurers.tpl.html',
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
+//                'report_container/results.tpl.html',
                 'report_container/results.tpl.html',
-                'report_container/results_table.tpl.html',
 //                'report_container/device_location.tpl.html',
 //                'report/dates.tpl.html',
 //                'engines.tpl.html',
@@ -129,15 +129,15 @@
                     ],
                     conclusion: 'Недопустимых дефектов и формоизменений элементов сосуда, влияющих ' +
                         'на его дальнейшую безопасную эксплуатацию, не выявлено.'
+                },
+                UK: {
+                    common: [],
+                    top_bottom: [],
+                    ring: [],
+                    bottom_bottom: [],
+                    top_cap: [],
+                    bottom_cap: [],
                 }
-            },
-            result_values = {
-                common: [],
-                top_bottom: [],
-                ring: [],
-                bottom_bottom: [],
-                top_cap: [],
-                bottom_cap: [],
             };
 
 
@@ -186,7 +186,6 @@
             },
             measurers: measurers.selected,
             results: results,
-            result_values: result_values,
         };
 //            team: undefined,
 //            files: {

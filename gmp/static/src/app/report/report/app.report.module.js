@@ -1,5 +1,5 @@
 (function() {
     'use strict';
 
-    angular.module('app.report', ['ngMessages', 'ngAnimate']);
+    angular.module('app.report', ['ngMessages', 'ngAnimate', 'ui.bootstrap']);
 })();
