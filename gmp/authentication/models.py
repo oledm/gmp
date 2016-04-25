@@ -100,3 +100,6 @@ class Employee(AbstractBaseUser):
 
     def get_certs_by_abbr(self, name):
         return self.certificate_set.filter(control_types__name=name)
+
+    def get_cert_details(self, name):
+        return self.certificate_set.get(control_types__name=name).verbose_info2(name)

@@ -29,6 +29,7 @@ from reportlab.pdfbase import ttfonts
 class MyDocTemplate(BaseDocTemplate):
     def __init__(self, filename, **kw):
         self.allowSplitting = 0
+        self.appendix_colontitle = '32167'
         super(MyDocTemplate, self).__init__(filename, **kw)
 
     # Entries to the table of contents can be done either manually by
@@ -64,6 +65,17 @@ class MyDocTemplate(BaseDocTemplate):
             bn = getattr(flowable,'_bookmarkName',None)
             if bn is not None: E.append(bn)
             self.notify('TOCEntry', tuple(E))
+
+#class Appendix_title(Flowable):
+#    def __init__(self, width, text=''):
+#        Flowable.__init__(self)
+# 
+#    def __repr__(self):
+#        return "Appendix title(w=%s)" % self.width
+# 
+#    def draw(self):
+#        self.canv.line(0, self.height, self.width, self.height)
+#        self.canv.line(0, self.height + 2, self.width, self.height + 2)
 
 class DoubledLine(Flowable):
     def __init__(self, width, height=0):

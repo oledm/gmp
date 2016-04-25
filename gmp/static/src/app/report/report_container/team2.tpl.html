@@ -1,0 +1,29 @@
+<ng-form name="vm.teamForm" novalidate>
+    <h4 checkmark>Выберите членов бригады</h4>
+
+    <div class="form-group" ng-cloak
+        ng-repeat="control_type in vm.control_types"
+        >
+        <div class="row"
+            ng-class="{ 'has-error':
+                vm.teamForm[control_type.name].$touched &&
+                vm.teamForm[control_type.name].$invalid }"
+            >
+            <div class="col-sm-4">
+                <label class="control-label" for="{{control_type.name}}">
+                    {{control_type.chapter}}
+                </label>
+            </div>
+            <div class="col-sm-6">
+              <select class="form-control" required ng-model="vm.report.team[control_type.chapter]"
+                  ng-options="employee.id as employee.full_fio for employee in vm.allEmployees | filter:{control_types: control_type.full_name}"
+                  name="{{control_type.name}}"
+                  id="{{control_type.name}}">
+              </select>
+                <div class="help-block" role="alert" ng-messages="vm.teamForm[control_type.name].$error" ng-if="vm.teamForm[control_type.name].$touched">
+                    <div ng-messages-include="/static/src/assets/messages.html"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-form>

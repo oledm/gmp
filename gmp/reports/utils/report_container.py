@@ -37,6 +37,10 @@ class ReportContainer(ReportMixin):
         self.Story.append(NextPageTemplate('Content'))
         self.put_toc()
         self.page2()
+        self.appendixA()
+        self.appendixB()
+        self.Story.append(NextPageTemplate('Приложение В'))
+        self.appendixC()
 
     def put_toc(self):
         self.new_page()
@@ -123,9 +127,6 @@ class ReportContainer(ReportMixin):
         self.device()
         self.paragraph6()
         self.paragraph7()
-        self.appendixA()
-        self.appendixB()
-        self.appendixC()
 
     def paragraph3(self):
         data = self.data.get('obj_data').copy()
@@ -151,7 +152,7 @@ class ReportContainer(ReportMixin):
 
         # For each person generate separate table for ability to span 
         # certain fields
-        for person in self.data.get('team'):
+        for person in set(self.data.get('team').values()):
             emp = Employee.objects.get(pk=person)
             fio = emp.get_full_name().replace(' ', '<br />')
             cert = Certificate.objects.filter(employee=emp)
@@ -269,8 +270,8 @@ class ReportContainer(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 4),
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         )
-        self.add(template, [4, 6], self.get_style(para_style, template),
-            table_style, styleTable=True
+        self.add(template, [4, 6], self.get_style(para_style, template), table_style, 
+            data=self.data['results'], styleTable=True
         )
 
     def paragraph7(self):
@@ -344,7 +345,7 @@ class ReportContainer(ReportMixin):
         self.new_page()
         self.put('Приложение А', 'Regular Right', .4)
         template = self.get_csv('report_container_appendixA_2.txt')
-        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
+        self.add(template, [0.5, 9.5], self.get_style(para_style, template),
             table_style
         )
 
@@ -391,7 +392,6 @@ class ReportContainer(ReportMixin):
 
     def appendixC(self):
         self.new_page()
-        self.put('Приложение В', 'Regular Right', .4)
         self.add_to_toc('Заключение по результатам визуального и измерительного контроля',
             self.styles['TOC Appendix Hidden'])
         self.appendix_header()
@@ -428,7 +428,24 @@ class ReportContainer(ReportMixin):
         )
         self.put('<strong>Заключение: </strong>' +
             self.data['results']['VIK']['conclusion'],
-            'Text', .2)
+            'Text', 8.2)
+        ######################################
+        person_id = self.data['team']['Визуальный и измерительный контроль']
+        emp = Employee.objects.get(pk=person_id)
+        template = (
+            (emp.get_cert_details('ВИК'), emp.fio(), ),
+        )
+        para_style = (
+            ('Text Simple','Text Simple Right'),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'BOTTOM'),
+        )
+        self.add(template, [5, 5], self.get_style(para_style, template),
+            table_style, spacer=1
+        )
 
     ######################################
     # Helpers
@@ -460,6 +477,7 @@ class ReportContainer(ReportMixin):
         )
         table_style = (
             ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('TOPPADDING', (0,0), (-1,0), -10),
             ('LINEBELOW', (0,0), (0,0), .5, colors.black),
             ('LINEBELOW', (-1,0), (-1,0), .5, colors.black),
             ('LINEBELOW', (0,2), (0,2), .5, colors.black),
@@ -486,16 +504,26 @@ class ReportContainer(ReportMixin):
     # Define report's static content
     def setup_page_templates(self, doc, header_content, colontitle_content):
         frame_with_header = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height,
-                bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=0,
-                id='with_header')
+            bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=0, id='with_header')
         template_title = PageTemplate(id='Title', frames=frame_with_header, onPage=partial(self.header, content=header_content))
 
         frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height,
-                bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=20,
-                id='no_header')
+            bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=20, id='no_header')
         template_content = PageTemplate(id='Content', frames=frame_full, onPage=partial(self.colontitle, content=colontitle_content))
 
         doc.addPageTemplates([template_title, template_content])
+
+        frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height,
+            bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=45, id='no_header')
+        letters = ['В', 'Г', 'Д', 'Е', 'Ж', 'И', 'К', 'Л']
+        template_appendix = []
+        for letter in letters:
+            name = 'Приложение ' + letter
+            p = Paragraph(name, self.styles['Regular Right']),
+            content = colontitle_content + p
+            template_appendix.append(PageTemplate(id=name, frames=frame, onPage=partial(self.colontitle, content=content)))
+        doc.addPageTemplates(template_appendix)
+
 
     @staticmethod
     def header(canvas, doc, content):
@@ -507,6 +535,7 @@ class ReportContainer(ReportMixin):
         content[1].drawOn(canvas, 0, h - 20)
         canvas.restoreState()
 
+
     @staticmethod
     def colontitle(canvas, doc, content):
         canvas.saveState()
@@ -515,7 +544,19 @@ class ReportContainer(ReportMixin):
 
         w, h = content[1].wrap(doc.width, doc.topMargin)
         content[1].drawOn(canvas, doc.rightMargin, doc.height)
+
+        if len(content) == 3:
+            w, h = content[2].wrap(doc.width, doc.topMargin)
+            content[2].drawOn(canvas, doc.rightMargin, doc.height - 25)
+
         canvas.restoreState()
+
+    #@staticmethod
+    #def appendix_colontitle(canvas, doc, content):
+    #    canvas.saveState()
+    #    w, h = content[0].wrap(doc.width, doc.topMargin)
+    #    content[0].drawOn(canvas, doc.rightMargin, doc.height - 25)
+    #    canvas.restoreState()
 
     def header_content(self):
         date_string = '"____"{:_>21}'.format('_') + '201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;г'
@@ -559,11 +600,4 @@ class ReportContainer(ReportMixin):
         return (
             Paragraph('ООО «ГАЗМАШПРОЕКТ»', self.styles['Regular']),
             Paragraph('Отчет № {}'.format(self.data['report_code']), self.styles['Regular Right'])
-            #Paragraph('Отчет № ГМП-{}/{}/ТО/{}'.format(
-            #    self.data['info']['license_number'].replace('-', '/'),
-            #    self.data['info']['license_category'],
-            #    datetime.now().year
-            #),
-            #    self.styles['Regular Right'])
         )
-

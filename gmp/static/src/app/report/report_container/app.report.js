@@ -36,7 +36,9 @@
                 'report_container/devices.tpl.html',
                 'report_container/report_info.tpl.html',
                 'report_container/order.tpl.html',
-                'report_container/team.tpl.html',
+//                'report_container/team.tpl.html',
+                'report_container/team2.tpl.html',
+//                'report/team.tpl.html',
                 'measurers.tpl.html',
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
@@ -56,6 +58,34 @@
                 selected: [],
                 sortOrder: 'name'
             },
+            control_types = [
+                {
+                    chapter: 'Визуальный и измерительный контроль',
+                    name: 'ВИК',
+                    full_name: 'Визуальный и измерительный контроль'
+                },
+                {
+                    chapter: 'Ультразвуковая толщинометрия элементов сосуда',
+                    name: 'УК',
+                    full_name: 'Ультразвуковой контроль'
+                },
+                {
+                    chapter: 'Ультразвуковой контроль качества сварных соединений',
+                    name: 'УК',
+                    full_name: 'Ультразвуковой контроль'
+                },
+                {
+                    chapter: 'Контроль физико-механических свойств (твёрдости) ' + 
+                        'сварных соединений и основного металла',
+                    name: 'ВИК',
+                    full_name: 'Визуальный и измерительный контроль'
+                },
+                {
+                    chapter: 'Магнитопорошковый контроль сварных соединений и основного металла',
+                    name: 'МК',
+                    full_name: 'Магнитопорошковый контроль'
+                },
+            ],
             devices = {
                 all: ServerData.query({category: 'container'}),
 //                selected: {
@@ -104,6 +134,7 @@
 
         vm.addToCollection = addToCollection;
         vm.allEmployees = ServerData.users();
+        vm.control_types = control_types;
         vm.device_conditions = device_conditions;
         vm.createPassport = createPassport;
         vm.devices = devices;
@@ -116,7 +147,7 @@
         vm.getLPUs = getLPUs;
         vm.measurers = measurers;
         vm.report = {
-            team: [],
+            team: {},
             files: {
                 'legend': [],
                 'conrtol_VIK': [],

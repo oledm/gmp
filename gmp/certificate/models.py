@@ -61,6 +61,23 @@ class Certificate(models.Model):
             '{:0>2}.{} г.'.format(self.expired_at_month, self.expired_at_year)
         ]
 
+    def verbose_info2(self, control_type):
+        level = {
+            1: 'I',
+            2: 'II',
+            3: 'III',
+            4: 'IV',
+            5: 'V'
+        }
+        info = ['Исполнитель,']
+        info.append('специалист {} {} уровень,'.format(
+            self.control_types.get(name=control_type),
+            level.get(self.degree)))
+        info.append('удостоверение № ' + self.serial_number)
+        info.append('действительно до {:0>2}.{} г.'.format(
+            self.expired_at_month,
+            self.expired_at_year))
+        return '<br />'.join(info)
 
     def info(self):
         received = '{:0>2}.{}'.format(self.received_at_month, self.received_at_year)
