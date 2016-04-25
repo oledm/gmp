@@ -3,6 +3,12 @@
 
     angular
         .module('app.report')
+	.config(['$httpProvider', function($httpProvider){
+	    // django and angular both support csrf tokens. This tells
+	    // angular which cookie to add to what header.
+	    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+	    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+	}])
         .controller('ReportContainerController', ReportContainerController)
         .directive("contenteditable", function() {
 	  return {
@@ -137,6 +143,21 @@
                     bottom_bottom: [],
                     top_cap: [],
                     bottom_cap: [],
+                    results: [
+                        {value: 'Минимальная измеренная толщина стенки верхнего днища –' + 
+                                '   мм, скорость коррозии составляет  мм/год'
+                        },
+                        {value: 'Минимальная измеренная толщина стенки обечайки –' + 
+                                '   мм, скорость коррозии составляет  мм/год'
+                        },
+                        {value: 'Минимальная измеренная толщина стенки нижнего днища –' + 
+                                '   мм, скорость коррозии составляет  мм/год'
+                        },
+                    ],
+                    conclusion: 'Минимальные измеренные толщины стенок элементов сосуда,' + 
+                                ' находятся в пределах паспортных значений. Недопустимых' + 
+                                ' утонений стенок основных элементов сосуда в зонах ' + 
+                                'контроля не обнаружено.'
                 }
             };
 
@@ -204,20 +225,7 @@
         activate();
 
         function activate() {
-//            getContainers();
-//            getMeasurers();
             getOrgs();
-//            vm.report.info = {
-//                license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
-//            };
-//            vm.report.team = {};
-//            vm.report.docs = [];
-//            vm.report.obj_data = {
-//                detail_info: []
-//            };
-//
-//            getEngines();
-//            getTClasses();
         }
 
         function addToCollection(arr, value) {
@@ -231,36 +239,12 @@
         function createPassport() {
 ////            console.log('docs ' + JSON.stringify(vm.report.docs));
 ////            console.log('investigationDate ' + vm.investigationDate.toLocaleString());
-////            console.log('begin ' + vm.workBegin);
-////            console.log('end ' + vm.workEnd.toLocaleString());
-////            Passport.createPassport(vm.workBegin);
             vm.report.type = 'report-container';
             console.log('report:', JSON.stringify(vm.report));
-////            return;
-////            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
-//            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
-//                return el.name === vm.tclasses.selected;
-//            })[0].id;
 ////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-//            Passport.createPassport(vm.report);
+            Passport.createPassport(vm.report);
         }
 
-//        function getContainers() {
-//            ServerData.query({category: 'container'}, function(data) {
-//                vm.devices.all = data;
-//                console.log('ServerData ' + JSON.stringify(data));
-////                vm.devices.all = data.map(function(el) {
-////                    return el;
-////                })
-//            });
-//        };
-//
-
-//        function edit(ev) {
-//            console.log('Edit ' + ev);
-//            ev.preventDefault();
-//        }
-//
         function getOrgs() {
             Passport.getOrgs()
                 .then(function(data) {
@@ -278,16 +262,8 @@
                     vm.lpus = data;
                 });
         }
-//
-//        function getTClasses() {
-//            Passport.getTClasses()
-//                .then(function(data) {
-//                    vm.tclasses.all = data;
-//                });
-//        }
-//
+
         function procKeyPress(clickEvent, arr) {
-            console.log('procKeyPress');
             // Check for Return (Enter) key pressed
             if (clickEvent.which === 13) {
                 clickEvent.preventDefault();
@@ -295,18 +271,6 @@
                 clickEvent.target.value = '';
             }
         }
-
-//        function procKeyPressAndSave(ev, index, editMode) {
-//            if (ev.which === 13) {
-//                ev.preventDefault();
-//                vm.report.results[index] = ev.target.value;
-//                editMode.edit = false;
-//            } else if (ev.which === 27) {
-//                ev.preventDefault();
-//                ev.target.value = vm.report.results[index] ;
-//                editMode.edit = false;
-//            }
-//        }
 
         function setSelected(selected, item) {
             var id = item.id,

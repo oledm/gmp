@@ -471,38 +471,77 @@ class ReportContainer(ReportMixin):
         self.put('Объем контроля – см. в Приложении Б., Рис. 2', 'Text Simple', .2)
         ######################################
         self.put('Результаты контроля', 'Text Simple Center Bold', .2)
-        a = enumerate(map(lambda x: x['value'], self.data['results']['VIK']['results']), start=1)
-        template = tuple(map(lambda x: (str(x[0]), x[1]), a))
+        template = (
+            ('№<br />точки', 'Толщина<br />паспортная,<br />мм', 
+            'Толщина<br />фактическая,<br />мм',) * 2,
+        )
+        data = enumerate(self.data['results']['UK']['common'], start=1)
+        data = tuple(map(lambda x: (str(x[0]), x[1]['passport'], x[1]['real']), data))
+        a = tuple(zip(data[::2], data[1::2])) or data
+        b = tuple(map(lambda x: tuple(chain.from_iterable(x)), a))
+        print(b)
+        template = template + (*b,)
         para_style = (
-            ('Text Simple Height',),
+            ('Text Simple Center Dense',),
         )
         table_style = (
             ('TOPPADDING', (0,0), (-1,-1), 0),
             ('BOTTOMPADDING', (0,0), (-1,-1), 4),
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         )
-        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
-            table_style, spacer=1
+        self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
+            table_style, styleTable=True
         )
-        self.put('<strong>Заключение: </strong>' +
-            self.data['results']['VIK']['conclusion'],
-            'Text', 8.2)
         ######################################
-        person_id = self.data['team']['Визуальный и измерительный контроль']
-        emp = Employee.objects.get(pk=person_id)
-        template = (
-            (emp.get_cert_details('ВИК'), emp.fio(), ),
+        data = enumerate(self.data['results']['UK']['top_bottom'], start=1)
+        data = tuple(map(lambda x: (str(x[0]), x[1]['passport'], x[1]['real']), data))
+        print('len', len(data))
+        a = tuple(zip(data[::2], data[1::2])) or data
+        b = tuple(map(lambda x: tuple(chain.from_iterable(x)), a))
+        template = (('Верхнее днище',), ) + (*b,)
+        table_style = table_style + (
+            ('SPAN', (0,0), (-1,0)),
         )
-        para_style = (
-            ('Text Simple','Text Simple Right'),
+        self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
+            table_style, spacer=1, styleTable=True
         )
-        table_style = (
-            ('TOPPADDING', (0,0), (-1,-1), 0),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-            ('VALIGN', (0,0), (-1,-1), 'BOTTOM'),
+        ######################################
+        data = enumerate(self.data['results']['UK']['common'], start=1)
+        data = tuple(map(lambda x: (str(x[0]), x[1]['passport'], x[1]['real']), data))
+        print(data)
+        print('len', len(data))
+        data = data + ('',) * len(*data)
+        a = tuple(zip(data[::2], data[1::2]))
+        print(a)
+        b = tuple(map(lambda x: tuple(chain.from_iterable(x)), a))
+        print(b)
+        template = (('Обечайка',), ) + (*b,)
+        print('template', template)
+        table_style = table_style + (
+            ('SPAN', (0,0), (-1,0)),
         )
-        self.add(template, [5, 5], self.get_style(para_style, template),
-            table_style)
+        self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
+            table_style, spacer=1, styleTable=True
+        )
+        #self.put('<strong>Заключение: </strong>' +
+        #    self.data['results']['VIK']['conclusion'],
+        #    'Text', 8.2)
+        #######################################
+        #person_id = self.data['team']['Визуальный и измерительный контроль']
+        #emp = Employee.objects.get(pk=person_id)
+        #template = (
+        #    (emp.get_cert_details('ВИК'), emp.fio(), ),
+        #)
+        #para_style = (
+        #    ('Text Simple','Text Simple Right'),
+        #)
+        #table_style = (
+        #    ('TOPPADDING', (0,0), (-1,-1), 0),
+        #    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        #    ('VALIGN', (0,0), (-1,-1), 'BOTTOM'),
+        #)
+        #self.add(template, [5, 5], self.get_style(para_style, template),
+        #    table_style)
     ######################################
     # Helpers
     ######################################

@@ -4,6 +4,8 @@ from django.conf import settings
 
 from rest_framework import views, viewsets, permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import FileStorage
@@ -32,6 +34,7 @@ class FileUploadView(views.APIView):
                 dest.write(chunk)
 
     def save_to_db(self, fname):
+        print('self.request.user', self.request.user)
         f = FileStorage.objects.create(fileupload=fname, uploader=self.request.user)
         return str(f.id)
 
