@@ -3,12 +3,6 @@
 
     angular
         .module('app.report')
-	.config(['$httpProvider', function($httpProvider){
-	    // django and angular both support csrf tokens. This tells
-	    // angular which cookie to add to what header.
-	    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-	    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-	}])
         .controller('ReportContainerController', ReportContainerController)
         .directive("contenteditable", function() {
 	  return {
@@ -42,14 +36,14 @@
                 'report_container/devices.tpl.html',
                 'report_container/report_info.tpl.html',
                 'report_container/order.tpl.html',
-//                'report_container/team.tpl.html',
                 'report_container/team2.tpl.html',
-//                'report/team.tpl.html',
                 'measurers.tpl.html',
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
-//                'report_container/results.tpl.html',
                 'report_container/results.tpl.html',
+//                'report_container/team.tpl.html',
+//                'report/team.tpl.html',
+//                'report_container/results.tpl.html',
 //                'report_container/device_location.tpl.html',
 //                'report/dates.tpl.html',
 //                'engines.tpl.html',
@@ -168,8 +162,6 @@
         vm.device_conditions = device_conditions;
         vm.createPassport = createPassport;
         vm.devices = devices;
-//        vm.workBegin = undefined;
-//        vm.workEnd = undefined;
         vm.lpus = {};
         vm.orgs = {};
         vm.pages = pages;
@@ -198,6 +190,7 @@
                 'danger_places': 'Места концентраций напряжений – продольные и кольцевые сварные швы, ' + 
                     'места вварки штуцеров; места наиболее вероятного коррозионного износа – ' + 
                     'внутренняя поверхность нижнего днища',
+                'license_more': ''
             },
             schemes: {
                 'VIK': 'Схема проведения визуально-измерительного контроля сосуда',

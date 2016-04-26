@@ -5,6 +5,15 @@
     
     <div class="block text-center" ng-cloak>
         <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
+                ng-disabled="
+                vm.deviceForm.$invalid ||
+                vm.reportInfoForm.$invalid ||
+                vm.orderForm.$invalid ||
+                vm.teamForm.$invalid ||
+                vm.signersForm.$invalid ||
+                vm.schemesForm.$invalid ||
+                vm.resultsTableForm.$invalid
+                "
             > Создать отчет
         </button>    
     </div>
@@ -29,3 +38,13 @@
                 vm.signersForm.$invalid
                 "
              -->
+        <!-- 
+            <p>{{vm.deviceForm.$invalid}}</p>
+            <p>{{vm.reportInfoForm.$invalid}}</p>
+            <p>{{vm.orderForm.$invalid}}</p>
+            <p>{{vm.teamForm.$invalid}}</p>
+            <p>{{vm.signersForm.$invalid}}</p>
+            <p>{{vm.schemesForm.$invalid}}</p>
+            <p>{{vm.resultsTableForm.$invalid}}</p>
+                             
+         -->

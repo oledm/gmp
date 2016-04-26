@@ -1,5 +1,4 @@
 <div class="form-group">
-    <p>{{vm.report.results.UK | json}}</p>
     <div class="panel panel-default">
       <!-- Default panel contents -->
       <div class="panel-heading">Результаты контроля</div>
@@ -167,7 +166,7 @@
             ng-keypress="vm.procKeyPress($event, vm.report.results.UK.results)"
             class="form-control"
             title="Нажмите Enter для добавления следующего пункта"
-            ng-model="newDocValue" required
+            ng-model="newDocValue"
             ng-maxlength="1024">
         </textarea>
     </div>

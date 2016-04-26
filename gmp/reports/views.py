@@ -243,11 +243,11 @@ def create_report_debug(request):
          'Магнитопорошковый контроль сварных соединений и основного металла': 96,
          'Ультразвуковая толщинометрия элементов сосуда': 96,
          'Ультразвуковой контроль качества сварных соединений': 96},
- 'files': {'conrtol_UK_connections': ['96'],
-           'conrtol_UK_container': ['96'],
-           'conrtol_VIK': ['96'],
-           'conrtol_magnit': ['96'],
-           'legend': ['96']
+ 'files': {'conrtol_UK_connections': ['88'],
+           'conrtol_UK_container': ['88'],
+           'conrtol_VIK': ['88'],
+           'conrtol_magnit': ['88'],
+           'legend': ['88']
   },
  'schemes': {'UK_connections': 'Схема проведения ультразвукового контроля '
                                'сварных соединений сосуда',
@@ -297,7 +297,7 @@ def create_report_debug(request):
                                            'сосуда – удовлетворительное.'}]},
 	    'UK': {'bottom_bottom': [{'passport': '6785768', 'real': '5678'}],
 			'bottom_cap': [{'passport': '=-', 'real': '=-='}],
-			'common': [{'passport': '22', 'real': '23'}],
+			'common': [{'passport': '2', 'real': '3'}],
 			'conclusion': 'Минимальные измеренные толщины стенок '
 				      'элементов сосуда, находятся в пределах '
 				      'паспортных значений. Недопустимых утонений '
@@ -315,7 +315,14 @@ def create_report_debug(request):
 					      'стенки нижнего днища –   7675 мм, '
 					      'скорость коррозии составляет  67657 '
 					      'мм/год'}],
-			'ring': [{'passport': '4536', 'real': '887'}],
+			'ring': [
+                            {'passport': '4536', 'real': '887'},
+                            {'passport': '6773', 'real': '52'},
+                            {'passport': '4536', 'real': '887'},
+                            {'passport': '4536', 'real': '887'},
+                            {'passport': '6773', 'real': '52'},
+                            {'passport': '6773', 'real': '52'},
+                        ],
 			'top_bottom': [
                             {'passport': '43', 'real': '234'},
                             {'passport': '55543', 'real': '4734'},
@@ -324,7 +331,6 @@ def create_report_debug(request):
                             {'passport': '43', 'real': '234'},
                             {'passport': '55543', 'real': '4734'},
                             {'passport': '467', 'real': '32'},
-                            {'passport': '638', 'real': '954'},
                         ],
 			'top_cap': [{'passport': '7587', 'real': '8758'}]},
      },
