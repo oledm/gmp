@@ -5,8 +5,8 @@ from itertools import chain
 from django.forms.models import model_to_dict
 from django.db.models import Q
 
-from reportlab.platypus.flowables import Flowable
-from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table
+from reportlab.platypus.flowables import Flowable, KeepTogether
+from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table, Spacer
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
 from reportlab.lib.units import cm
@@ -24,7 +24,7 @@ class RotededText(Flowable): #TableTextRotate
     def __init__(self, text, style):
         Flowable.__init__(self)
         self.text = text
-        self.height = 3 * cm
+        self.height = 4 * cm
         #self.weight = 100
         self.style = style
 
@@ -539,7 +539,7 @@ class ReportContainer(ReportMixin):
         self.put('СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
         self.put('Объем контроля – см. в Приложении Б., Рис. 3.', 'Text Simple', .2)
         ######################################
-        self.put('Результаты контроля', 'Text Simple Center Bold', .2)
+        #self.put('Результаты контроля', 'Text Simple Center Bold', .2)
         #data = enumerate(self.data['results']['UK'][group], start=1)
         #data = self.proc_results_data(data)
         #template = ((header,), ) + (*data,)
@@ -559,24 +559,34 @@ class ReportContainer(ReportMixin):
         data = ((
             RotededText('№ участка', self.styles['Regular Center']),
             RotededText('№ дефекта', self.styles['Regular Center']),
-            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
-            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
-            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
-            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
-            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
-            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
-            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
+            RotededText('Эквивалентная площадь дефекта, S, мм', self.styles['Regular Center']),
+            RotededText('Глубина залегания, Н,мм', self.styles['Regular Center']),
+            RotededText('Протяженность ∆L,мм', self.styles['Regular Center']),
+            RotededText('Форма (характер) дефекта (объемный/ плоскостной)', self.styles['Regular Center']),
+            RotededText('Место положение на сварном шве L, мм', self.styles['Regular Center']),
+            RotededText('Примечания', self.styles['Regular Center']),
+            RotededText('Заключение (годен, ремонт, не годен)', self.styles['Regular Center']),
         ), )
         
-        style = [
-            #('ALIGN', (0,0), (-1, -1), 'CENTER'),
+        style = TableStyle([
+            ('ALIGN', (0,0), (-1, -1), 'CENTER'),
+            ('TOPPADDING', (0,0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0,0), (-1, -1), 10),
+            ('LEFTPADDING', (0,0), (0, 0), 15),
+            ('LEFTPADDING', (1,0), (1, 0), 15),
+            ('LEFTPADDING', (2,0), (2, 0), 40),
+            ('LEFTPADDING', (3,0), (3, 0), 30),
+            ('LEFTPADDING', (4,0), (4, 0), 30),
+            ('LEFTPADDING', (5,0), (5, 0), 40),
+            ('LEFTPADDING', (6,0), (6, 0), 40),
+            ('LEFTPADDING', (8,0), (8, 0), 20),
             ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
             ('BOX', (0,0), (-1,-1), 0.25, colors.black),
-            #('VALIGN', (0,0), (-1,-1), 'MIDDLE')
-        ]
+        ])
         
-        tab = Table(data, colWidths=self.columnize(1,1,1,1,1,1,1,1,1), style=style)
-        self.Story.append(tab)
+        tab = Table(data, colWidths=self.columnize(.8,.6,1,1,1,1,1,1.6,1), style=style)
+        p = Paragraph('Результаты контроля', self.styles['Text Simple Center Bold'])
+        self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), tab]))
 
 
     ######################################

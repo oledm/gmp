@@ -389,8 +389,8 @@ class ReportMixin():
             fontName='Times',
             fontSize=13,
             leading=13,
-            borderWidth=0.5,
-            borderColor=colors.black,
+            #borderWidth=0.5,
+            #borderColor=colors.black,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Regular Center Small',
