@@ -190,6 +190,10 @@ class Engine(EngineDataGenerator, models.Model):
             'unmoveable_Ex_connections': self.unmoveable_Ex_connections(),
         }
 
+    class Meta:
+        verbose_name = 'Двигатель'
+        verbose_name_plural = 'Двигатели'
+
 class Connection(models.Model):
     CONNECTION_TYPES = (
         (1, 'Звезда'),
@@ -204,6 +208,10 @@ class Connection(models.Model):
     def __str__(self):
         return self.get_connection_type_display()
 
+    class Meta:
+        verbose_name = 'Соединение'
+        verbose_name_plural = 'Соединения'
+
 
 class Factory(models.Model):
     name = models.CharField('Наименование завода', unique=True, max_length=150)
@@ -212,7 +220,8 @@ class Factory(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Factories'
+        verbose_name = 'Завод'
+        verbose_name_plural = 'Заводы'
 
 
 class ExClass(models.Model):
@@ -225,7 +234,8 @@ class ExClass(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Ex classes'
+        verbose_name = 'Класс взрывозащиты'
+        verbose_name_plural = 'Классы взрывозащиты'
 
 
 class WarmingClass(models.Model):
@@ -242,7 +252,8 @@ class WarmingClass(models.Model):
         return '{}'.format(self.get_name_display())
 
     class Meta:
-        verbose_name_plural = 'Warming classes'
+        verbose_name = 'Класс нагревостойкости'
+        verbose_name_plural = 'Классы нагревостойкости'
 
 class ThermClass(models.Model):
     therm_class_codes = tuple(map(lambda x: 'T' + str(x), range(1,7)))
@@ -259,4 +270,5 @@ class ThermClass(models.Model):
         return '{}'.format(self.get_name_display())
 
     class Meta:
-        verbose_name_plural = 'Therm classes'
+        verbose_name = 'Температурный класс'
+        verbose_name_plural = 'Температурные классы'

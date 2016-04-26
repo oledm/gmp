@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class EnginesConfig(AppConfig):
-    name = 'engines'
+    name = 'gmp.engines'
+    verbose_name = 'Двигатели'

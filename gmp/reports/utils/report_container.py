@@ -43,6 +43,8 @@ class ReportContainer(ReportMixin):
         self.appendixC()
         self.Story.append(NextPageTemplate('Приложение Г'))
         self.appendixD()
+        self.Story.append(NextPageTemplate('Приложение Д'))
+        self.appendixE()
 
     def put_toc(self):
         self.new_page()
@@ -338,7 +340,7 @@ class ReportContainer(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 4),
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         )
-        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
+        self.add(template, [0.5, 9.5], self.get_style(para_style, template),
             table_style
         )
         self.new_page()
@@ -436,7 +438,7 @@ class ReportContainer(ReportMixin):
         self.add_to_toc('Протокол ультразвуковой толщинометрии элементов сосуда',
             self.styles['TOC Appendix Hidden'])
         self.appendix_header()
-        self.put('ЗАКЛЮЧЕНИЕ № {}/УК'.format(self.data['report_code']), 'Text Simple Center Bold', .2)
+        self.put('ПРОТОКОЛ № {}/УТ'.format(self.data['report_code']), 'Text Simple Center Bold', .2)
         self.put('ультразвуковой толщинометрии элементов сосуда', 'Text Simple Center', .5)
         self.put(self.data['info']['investigation_date'], 'Text Simple Right')
         self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
@@ -494,6 +496,31 @@ class ReportContainer(ReportMixin):
             table_style, spacer=8.2
         )
         self.add_specialist('Ультразвуковая толщинометрия элементов сосуда', 'УК')
+
+    def appendixE(self):
+        self.new_page()
+        self.add_to_toc('Заключение по результатам ультразвукового контроля качества сварных соединений',
+            self.styles['TOC Appendix Hidden'])
+        self.appendix_header()
+        self.put('ЗАКЛЮЧЕНИЕ № {}/УК'.format(self.data['report_code']), 'Text Simple Center Bold', .2)
+        self.put('по результатам ультразвукового контроля качества сварных соединений', 'Text Simple Center', .5)
+        self.put(self.data['info']['investigation_date'], 'Text Simple Right')
+        self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
+        ######################################
+        for measurer in Measurer.objects.filter(
+                Q(id__in=self.data.get('measurers')),
+                Q(name__icontains='дефектоскоп ультразвуковой') |
+                Q(name__icontains='контрольный образец') |
+                Q(name__icontains='образец шероховатости поверхности') |
+                Q(name__icontains='люксметр') |
+                Q(name__icontains='стандартный образец предприятия')
+            ):
+            self.put('<bullet>&ndash;</bullet>' + measurer.verbose_info(), 'Text Simple Indent')
+        ######################################
+        self.put('Контроль и оценка качества элементов сосуда выполнены согласно:', 'Text Simple Bold', .2)
+        self.put('ГОСТ Р 55724-2013; ГОСТ Р 55809-2013; ГОСТ Р 55808-2013; СТО 00220256-005-2005;', 'Text Simple', .2)
+        self.put('СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
+        self.put('Объем контроля – см. в Приложении Б., Рис. 3.', 'Text Simple', .2)
 
 
     ######################################

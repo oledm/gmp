@@ -63,12 +63,15 @@ class Employee(AbstractBaseUser):
 
     class Meta:
         ordering = ['last_name', 'first_name', 'middle_name']
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
         return self.email
 
     def get_full_name(self):
         return ' '.join([self.last_name, self.first_name, self.middle_name])
+    get_full_name.short_description = 'Фамилия И.О.'
 
     def fio(self):
         return '{} {}.{}.'.format(self.last_name, self.first_name[0], self.middle_name[0])
