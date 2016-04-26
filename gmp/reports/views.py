@@ -295,7 +295,15 @@ def create_report_debug(request):
                                  {'value': 'Состояние наружного защитного '
                                            'лакокрасочного покрытия корпуса '
                                            'сосуда – удовлетворительное.'}]},
-	    'UK': {'bottom_bottom': [{'passport': '6785768', 'real': '5678'}],
+	    'UK': {'bottom_bottom': [{'site': 'К4'},
+                                      {'area': 'Много',
+                                       'depth': 'Глубоко',
+                                       'site': 'Х555'}],
+                    'conclusion': 'Недопустимых дефектов в сварных соединениях '
+                                  'и в околошовных зонах не обнаружено.',
+                    'ring': [{'site': 'П1'}, {'site': 'К3'}],
+                    'top_bottom': [{'site': 'К1'}, {'site': 'К2'}]},
+	    'UT': {'bottom_bottom': [{'passport': '6785768', 'real': '5678'}],
 			'bottom_cap': [{'passport': '=-', 'real': '=-='}],
 			'common': [{'passport': '2', 'real': '3'}],
 			'conclusion': 'Минимальные измеренные толщины стенок '

@@ -1,0 +1,187 @@
+<div class="form-group">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">Результаты контроля</div>
+      <table class="table table-bordered table-condensed">
+          <thead>
+              <tr>
+                  <th class="text-center">
+                      <button type="button" class="btn btn-sm"
+                          ng-click="vm.report.results.UT.common.push({passport: '', real: ''})">
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                          Добавить
+                      </button>
+                  </th>
+                  <th class="text-center">№ точки</th>
+                  <th class="text-center">Толщина паспортная, мм</th>
+                  <th class="text-center">Толщина фактическая, мм</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="value in vm.report.results.UT.common">
+                  <td></td>
+                  <td class="text-center">{{$index + 1}}</td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.passport" />
+                  </td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.real" />
+                  </td>
+              </tr>
+            <!-- 
+                Верхнее днище  
+             -->
+              <tr>
+                  <td class="text-center">
+                      <button type="button" class="btn btn-sm"
+                          ng-click="vm.report.results.UT.top_bottom.push({passport: '', real: ''})">
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                          Добавить
+                      </button>
+                  </td>
+                  <td class="text-center" colspan="3">Днище верхнее</td>
+              </tr>
+              <tr ng-repeat="value in vm.report.results.UT.top_bottom">
+                  <td></td>
+                  <td class="text-center">{{$index + 1}}</td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.passport" />
+                  </td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.real" />
+                  </td>
+              </tr>
+            <!-- 
+                Обечайка
+             -->
+              <tr>
+                  <td class="text-center">
+                      <button type="button" class="btn btn-sm"
+                          ng-click="vm.report.results.UT.ring.push({passport: '', real: ''})">
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                          Добавить
+                      </button>
+                  </td>
+                  <td class="text-center" colspan="3">Обечайка</td>
+              </tr>
+              <tr ng-repeat="value in vm.report.results.UT.ring">
+                  <td></td>
+                  <td class="text-center">{{$index + 1}}</td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.passport" />
+                  </td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.real" />
+                  </td>
+              </tr>
+            <!-- 
+                Днище нижнее
+             -->
+              <tr>
+                  <td class="text-center">
+                      <button type="button" class="btn btn-sm"
+                          ng-click="vm.report.results.UT.bottom_bottom.push({passport: '', real: ''})">
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                          Добавить
+                      </button>
+                  </td>
+                  <td class="text-center" colspan="3">Днище нижнее</td>
+              </tr>
+              <tr ng-repeat="value in vm.report.results.UT.bottom_bottom">
+                  <td></td>
+                  <td class="text-center">{{$index + 1}}</td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.passport" />
+                  </td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.real" />
+                  </td>
+              </tr>
+            <!-- 
+                Люк верхний
+             -->
+              <tr>
+                  <td class="text-center">
+                      <button type="button" class="btn btn-sm"
+                          ng-click="vm.report.results.UT.top_cap.push({passport: '', real: ''})">
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                          Добавить
+                      </button>
+                  </td>
+                  <td class="text-center" colspan="3">Люк верхний</td>
+              </tr>
+              <tr ng-repeat="value in vm.report.results.UT.top_cap">
+                  <td></td>
+                  <td class="text-center">{{$index + 1}}</td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.passport" />
+                  </td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.real" />
+                  </td>
+              </tr>
+            <!-- 
+                Люк нижний
+             -->
+              <tr>
+                  <td class="text-center">
+                      <button type="button" class="btn btn-sm"
+                          ng-click="vm.report.results.UT.bottom_cap.push({passport: '', real: ''})">
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                          Добавить
+                      </button>
+                  </td>
+                  <td class="text-center" colspan="3">Люк нижний</td>
+              </tr>
+              <tr ng-repeat="value in vm.report.results.UT.bottom_cap">
+                  <td></td>
+                  <td class="text-center">{{$index + 1}}</td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.passport" />
+                  </td>
+                  <td><input class="form-control" type="text"
+                          ng-model="value.real" />
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+    </div>
+</div>
+    
+    <div class="form-group">
+      <div class="row" ng-repeat="x in vm.report.results.UT.results">
+            <div class="col-sm-12 alert alert-success alert-dismissible" role="alert">
+                  <button type="button" ng-click="vm.report.results.UT.results.splice($index, 1)"
+                      class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                <span contenteditable 
+                    ng-model="x.value">
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <textarea 
+            ng-keypress="vm.procKeyPress($event, vm.report.results.UT.results)"
+            class="form-control"
+            title="Нажмите Enter для добавления следующего пункта"
+            ng-model="newDocValue"
+            ng-maxlength="1024">
+        </textarea>
+    </div>
+    <div class="form-group text-center">
+        <button ng-submit class="btn btn-primary text-center"
+            ng-click="vm.addToCollection(vm.report.results.UT.results, newDocValue); newDocValue=''">Добавить
+        </button>
+    </div>
+    <div class="form-group">
+      <label class="control-label">Заключение</label>
+      <div class="row">
+            <div class="col-sm-12 alert alert-success" role="alert">
+                <span contenteditable 
+                    ng-model="vm.report.results.UT.conclusion">
+                </span>
+            </div>
+        </div>
+    </div>

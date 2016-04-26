@@ -5,6 +5,7 @@ from itertools import chain
 from django.forms.models import model_to_dict
 from django.db.models import Q
 
+from reportlab.platypus.flowables import Flowable
 from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
@@ -19,6 +20,22 @@ from gmp.filestorage.models import FileStorage
 
 from .helpers import ReportMixin
 
+class RotededText(Flowable): #TableTextRotate
+    def __init__(self, text, style):
+        Flowable.__init__(self)
+        self.text = text
+        self.height = 3 * cm
+        #self.weight = 100
+        self.style = style
+
+    def draw(self):
+        canvas = self.canv
+        canvas.rotate(90)
+        p = Paragraph(self.text, style=self.style)
+        #p.wrapOn(self.canv, self.width, self.height)
+        #p.drawOn(self.canv, *self.coord(self.x+2, 10, mm))
+        w, h = p.wrap(self.height, 0)
+        p.drawOn(canvas, 0, 0)
 
 class ReportContainer(ReportMixin):
     def create(self):
@@ -460,7 +477,7 @@ class ReportContainer(ReportMixin):
             ('№<br />точки', 'Толщина<br />паспортная,<br />мм', 
             'Толщина<br />фактическая,<br />мм',) * 2,
         )
-        data = enumerate(self.data['results']['UK']['common'], start=1)
+        data = enumerate(self.data['results']['UT']['common'], start=1)
         data = self.proc_results_data(data)
         template = template + (*data,)
         para_style = (
@@ -482,7 +499,7 @@ class ReportContainer(ReportMixin):
         self.append_results_data('bottom_cap', 'Люк нижний')
         ######################################
         self.put('<strong>Заключение: </strong>', 'Text', .2)
-        a = enumerate(map(lambda x: x['value'], self.data['results']['UK']['results']), start=1)
+        a = enumerate(map(lambda x: x['value'], self.data['results']['UT']['results']), start=1)
         template = tuple(map(lambda x: (str(x[0]), x[1]), a))
         para_style = (
             ('Text Simple Height',),
@@ -521,6 +538,45 @@ class ReportContainer(ReportMixin):
         self.put('ГОСТ Р 55724-2013; ГОСТ Р 55809-2013; ГОСТ Р 55808-2013; СТО 00220256-005-2005;', 'Text Simple', .2)
         self.put('СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
         self.put('Объем контроля – см. в Приложении Б., Рис. 3.', 'Text Simple', .2)
+        ######################################
+        self.put('Результаты контроля', 'Text Simple Center Bold', .2)
+        #data = enumerate(self.data['results']['UK'][group], start=1)
+        #data = self.proc_results_data(data)
+        #template = ((header,), ) + (*data,)
+        #template = ((TTR("dsadsds"),), )
+        #para_style = (
+        #    ('Text Simple Center Dense',),
+        #)
+        #table_style = (
+        #    ('SPAN', (0,0), (-1,0)),
+        #    ('TOPPADDING', (0,0), (-1,-1), 0),
+        #    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        #    ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        #)
+        #self.add(template, [10], self.get_style(para_style, template),
+        #    table_style, styleTable=True
+        #)
+        data = ((
+            RotededText('№ участка', self.styles['Regular Center']),
+            RotededText('№ дефекта', self.styles['Regular Center']),
+            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
+            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
+            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
+            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
+            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
+            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
+            RotededText('Эквивалентная площадь дефекта, S', self.styles['Regular Center']),
+        ), )
+        
+        style = [
+            #('ALIGN', (0,0), (-1, -1), 'CENTER'),
+            ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+            ('BOX', (0,0), (-1,-1), 0.25, colors.black),
+            #('VALIGN', (0,0), (-1,-1), 'MIDDLE')
+        ]
+        
+        tab = Table(data, colWidths=self.columnize(1,1,1,1,1,1,1,1,1), style=style)
+        self.Story.append(tab)
 
 
     ######################################
@@ -528,7 +584,7 @@ class ReportContainer(ReportMixin):
     ######################################
     def proc_results_data(self, data):
         data = tuple(map(lambda x: (str(x[0]), x[1]['passport'], x[1]['real']), data))
-        # If data tuple contains odd number of tuples, add one tuple with the same length
+        # If data-tuple contains odd number of tuples, add one tuple with the same length
         if len(data) % 2 != 0:
             data = (*data, ('',) * len(data[0]))
         a = tuple(zip(data[::2], data[1::2])) or data
@@ -536,7 +592,7 @@ class ReportContainer(ReportMixin):
         return b
 
     def append_results_data(self, group, header):
-        data = enumerate(self.data['results']['UK'][group], start=1)
+        data = enumerate(self.data['results']['UT'][group], start=1)
         data = self.proc_results_data(data)
         template = ((header,), ) + (*data,)
         para_style = (
