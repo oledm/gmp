@@ -1,5 +1,5 @@
 (function() {
     'use strict';
 
-    angular.module('app.passport', ['ngMessages', 'ngAnimate']);
+    angular.module('app.passport', ['ngMessages']);
 })();

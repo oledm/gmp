@@ -152,15 +152,21 @@ class ReportMixin():
     def spacer(self, height):
         self.Story.append(Spacer(1, height * cm))
 
-    def add(self, template, width, para_style, table_style, data={},
+    #def add(self, template, width, para_style, table_style, data={},
+    #        spacer=None, hAlign='CENTER', styleTable=False):
+    def add(self, template, width, para_style, table_style, **kwargs):
+        table = self.get(template, width, para_style, table_style, **kwargs)
+        self.Story.append(table)
+        if kwargs.get('spacer'):
+            self.Story.append(Spacer(1, kwargs.get('spacer') * cm))
+
+    def get(self, template, width, para_style, table_style, data={},
             spacer=None, hAlign='CENTER', styleTable=False):
         filled_template = self.values(template, data)
         table = self.table(filled_template, para_style, width, styleTable=styleTable)
         table.setStyle(TableStyle(table_style))
         table.hAlign = hAlign
-        self.Story.append(table)
-        if spacer:
-            self.Story.append(Spacer(1, spacer * cm))
+        return table
 
     @staticmethod
     def static_data_list(fname):

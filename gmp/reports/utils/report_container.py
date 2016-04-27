@@ -591,11 +591,12 @@ class ReportContainer(ReportMixin):
 
     def appendixG(self):
         self.new_page()
-        self.add_to_toc('Заключение по результатам ультразвукового контроля качества сварных соединений',
-            self.styles['TOC Appendix Hidden'])
+        self.add_to_toc('Протокол контроля физико-механических свойств (твёрдости) ' + 
+            'сварных соединений и основного металла', self.styles['TOC Appendix Hidden'])
         self.appendix_header()
         self.put('ПРОТОКОЛ № {}/Т'.format(self.data['report_code']), 'Text Simple Center Bold', .2)
-        self.put('контроля физико-механических свойств (твёрдости) сварных соединений и<br />основного металла', 'Text Simple Center', .5)
+        self.put('контроля физико-механических свойств (твёрдости) сварных ' + 
+            'соединений и<br />основного металла', 'Text Simple Center', .5)
         self.put(self.data['info']['investigation_date'], 'Text Simple Right')
         self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
         ######################################
@@ -613,6 +614,48 @@ class ReportContainer(ReportMixin):
         self.put('Твёрдость основного металла – 120÷180 HB для стали 09Г2С ' 
             '(таблица 8.6 СТО Газпром 2-2.3-491-2010).', 'Text Simple', .2)
         self.put('Объем контроля – см. в Приложении Б., Рис. 2.', 'Text Simple', .2)
+        ######################################
+        para_style = (
+            ('Text Simple Center',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 2),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('VALIGN', (0,0), (-1,0), 'TOP'),
+        )
+        template = [
+            ['№<br />п/п', 'Элемент<br />контроля', '№<br />точки', 'Зона контроля', 'Толщина<br />паспортная,<br />мм', 'Твердость<br />измеренная, НВ']
+        ]
+        for num, value in enumerate(self.data['results']['T']['values'], start=1):
+            d = defaultdict(str)
+            d.update(value)
+            data = self.values([[str(num), '{element}', '{point}', '{zone}', '{width}', '{hardness}']], d)
+            template.extend(data)
+
+        table = self.get(template, [1, 2, 1.5, 2, 1.5, 2], self.get_style(para_style, template),
+            table_style, styleTable=True
+        )
+        p = Paragraph('Результаты контроля', self.styles['Text Simple Center Bold'])
+        self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), table]))
+        self.spacer(1)
+        ######################################
+        self.put('<strong>Заключение: </strong>', 'Text', .2)
+        a = enumerate(map(lambda x: x['value'], self.data['results']['T']['results']), start=1)
+        template = tuple(map(lambda x: (str(x[0]), x[1]), a))
+        para_style = (
+            ('Text Simple Height',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        )
+        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
+            table_style, spacer=.5
+        )
+        self.add_specialist('Контроль физико-механических свойств (твёрдости) сварных' + 
+            ' соединений и основного металла', 'ВИК')
 
 
     ######################################

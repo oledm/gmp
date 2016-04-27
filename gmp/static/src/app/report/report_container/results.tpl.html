@@ -1,14 +1,17 @@
 <ng-form name="vm.resultsTableForm" novalidate>
   <h4 checkmark>Результаты контроля</h4>
     <uib-accordion close-others="oneAtATime">
-        <uib-accordion-group heading="Результаты визуального и измерительного контроля">
+        <uib-accordion-group heading="Визуальный и измерительный контроль">
             <div class="block" ng-include="'/static/src/app/report/report_container/results_VIK.tpl.html'"></div>
         </uib-accordion-group>
-	<uib-accordion-group heading="Результаты ультразвуковой толщинометрии элементов">
+	<uib-accordion-group heading="Ультразвуковая толщинометрия элементов">
             <div class="block" ng-include="'/static/src/app/report/report_container/results_UT.tpl.html'"></div>
 	</uib-accordion-group>
-	<uib-accordion-group heading="Результаты ультразвукового контроля качества сварных соединений">
+	<uib-accordion-group heading="Ультразвуковой контроль качества сварных соединений">
             <div class="block" ng-include="'/static/src/app/report/report_container/results_UK.tpl.html'"></div>
+	</uib-accordion-group>
+	<uib-accordion-group heading="Контроль физико-механических свойств (твёрдости) сварных соединений и основного металла">
+            <div class="block" ng-include="'/static/src/app/report/report_container/results_T.tpl.html'"></div>
 	</uib-accordion-group>
     </uib-accordion>
 </ng-form>
