@@ -18,6 +18,9 @@
             .state('home', {
                 url: '/'
             })
+            .state('admin', {
+                url: '/admin/',
+            })
             .state('login', {
                 url: '/login',
                 controller: 'LoginController',
@@ -61,7 +64,7 @@
                 templateUrl: '/static/src/app/report/report_container/report.tpl.html'
             });
 
-        $urlRouterProvider.otherwise('/login');
+        $urlRouterProvider.otherwise('/');
 
         $resourceProvider.defaults.stripTrailingSlashes = false;
 

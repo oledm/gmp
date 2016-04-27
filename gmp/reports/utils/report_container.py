@@ -63,6 +63,8 @@ class ReportContainer(ReportMixin):
         self.appendixD()
         self.Story.append(NextPageTemplate('Приложение Д'))
         self.appendixE()
+        self.Story.append(NextPageTemplate('Приложение Е'))
+        self.appendixG()
 
     def put_toc(self):
         self.new_page()
@@ -577,6 +579,46 @@ class ReportContainer(ReportMixin):
         ############################################
         # Data
         ############################################
+        self.append_UT_defect('top_bottom', 'Днище верхнее')
+        self.append_UT_defect('ring', 'Обечайка')
+        self.append_UT_defect('bottom_bottom', 'Днище нижнее')
+        self.spacer(1)
+        ######################################
+        self.put('<strong>Заключение: </strong>' +
+            self.data['results']['UK']['conclusion'],
+            'Text', 5.2)
+        self.add_specialist('Ультразвуковой контроль качества сварных соединений', 'УК')
+
+    def appendixG(self):
+        self.new_page()
+        self.add_to_toc('Заключение по результатам ультразвукового контроля качества сварных соединений',
+            self.styles['TOC Appendix Hidden'])
+        self.appendix_header()
+        self.put('ПРОТОКОЛ № {}/Т'.format(self.data['report_code']), 'Text Simple Center Bold', .2)
+        self.put('контроля физико-механических свойств (твёрдости) сварных соединений и<br />основного металла', 'Text Simple Center', .5)
+        self.put(self.data['info']['investigation_date'], 'Text Simple Right')
+        self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
+        ######################################
+        for measurer in Measurer.objects.filter(
+                Q(id__in=self.data.get('measurers')),
+                Q(name__icontains='твердомер') |
+                Q(name__icontains='меры твердости') |
+                Q(name__icontains='образец шероховатости поверхности')
+            ):
+            self.put('<bullet>&ndash;</bullet>' + measurer.verbose_info(), 'Text Simple Indent')
+        ######################################
+        self.put('Контроль и оценка качества элементов сосуда выполнены согласно:', 'Text Simple Bold', .2)
+        self.put('ГОСТ 22761-77; ГОСТ 9012-59; СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
+        self.put('Материал основных элементов сосуда – сталь марки 09Г2С;', 'Text Simple', .2)
+        self.put('Твёрдость основного металла – 120÷180 HB для стали 09Г2С ' 
+            '(таблица 8.6 СТО Газпром 2-2.3-491-2010).', 'Text Simple', .2)
+        self.put('Объем контроля – см. в Приложении Б., Рис. 2.', 'Text Simple', .2)
+
+
+    ######################################
+    # Helpers
+    ######################################
+    def append_UT_defect(self, key, name):
         para_style = (
             ('Text Simple Center',),
         )
@@ -585,39 +627,28 @@ class ReportContainer(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 2),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         )
-        template = (
-            ('Днище верхнее',),
-        )
+        template = ((name,),)
         self.add(template, [10], self.get_style(para_style, template),
             table_style, styleTable=True
         )
-        for defects in self.data['results']['UK']['bottom_bottom']:
-            other_keys = set(defects.keys()) - {'site'}
-            data = defaultdict(lambda: '---')
-            data.update(defects)
+        num = 0
+        for defect in self.data['results']['UK'][key]:
+            data = defaultdict(str)
+            data.update(defect)
+            other_keys = set(defect.keys()) - {'site'}
             if other_keys:
-                print('other keys', other_keys)
-                for num, defect in enumerate(defects, start=1):
-                    template = (
-                        ('{site}', str(num), '{area}', '{depth}', '{length}', '{type}',
-                        '{position}', '{info}', '{result}'),
-                    )
-                    self.add(template, [.8,.6,1,1,1,1.5,1,1.6,1.5], self.get_style(para_style, template),
-                        table_style, data=data, styleTable=True
-                    )
-            else:
-                print('other keys', other_keys)
+                num += 1
                 template = (
-                    (data.get('site'), 'Дефектов не обнаружено', '', 'Годен'),
+                    ('{site}', str(num), '{area}', '{depth}', '{length}', '{type}',
+                    '{position}', '{info}', '{result}'),
                 )
+                self.add(template, [.8,.6,1,1,1,1.5,1,1.6,1.5], self.get_style(para_style, template),
+                    table_style, data=data, styleTable=True)
+            else:
+                template = ((data.get('site'), 'Дефектов не обнаружено', '', 'Годен'),)
                 self.add(template, [.8, 6.1, 1.6, 1.5], self.get_style(para_style, template),
-                    table_style, data=data, styleTable=True
-                )
+                    table_style, data=data, styleTable=True)
 
-
-    ######################################
-    # Helpers
-    ######################################
     def proc_UT_results_data(self, data):
         data = tuple(map(lambda x: (str(x[0]), x[1]['passport'], x[1]['real']), data))
         # If data-tuple contains odd number of tuples, add one tuple with the same length

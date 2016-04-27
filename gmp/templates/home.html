@@ -112,13 +112,13 @@
                   </a>
                 </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" ng-init="adminUrl = 'admin/'" id="bs-example-navbar-collapse-1">
                <ul class="nav navbar-nav" ng-repeat="entry in main.menu">
                    <li data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                       <a ui-sref="{{entry.ref}}" ui-sref-active="active" aria-label="{{entry.link}}">
-                           <!-- 
-                               <i class="icon ion-{{entry.icon}}"></i>
-                            -->
+                       <!-- 
+                           <a ng-href="/{{adminUrl}}">Вход</a>
+                        -->
+                        <a ui-sref="{{entry.ref}}" ng-attr-target="{{entry.ref === 'admin' ? '_self' : ''}}" ui-sref-active="active" aria-label="{{entry.link}}">
                            {{entry.link}}
                         </a>
                    </li>
