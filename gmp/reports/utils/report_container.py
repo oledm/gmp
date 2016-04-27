@@ -1,5 +1,6 @@
 from datetime import datetime
 from functools import partial
+from collections import defaultdict
 from itertools import chain
 
 from django.forms.models import model_to_dict
@@ -478,7 +479,7 @@ class ReportContainer(ReportMixin):
             'Толщина<br />фактическая,<br />мм',) * 2,
         )
         data = enumerate(self.data['results']['UT']['common'], start=1)
-        data = self.proc_results_data(data)
+        data = self.proc_UT_results_data(data)
         template = template + (*data,)
         para_style = (
             ('Text Simple Center Dense',),
@@ -492,11 +493,11 @@ class ReportContainer(ReportMixin):
             table_style, styleTable=True
         )
         ######################################
-        self.append_results_data('top_bottom', 'Верхнее днище')
-        self.append_results_data('ring', 'Обечайка')
-        self.append_results_data('bottom_bottom', 'Днище нижнее')
-        self.append_results_data('top_cap', 'Люк верхний')
-        self.append_results_data('bottom_cap', 'Люк нижний')
+        self.append_UT_results_data('top_bottom', 'Верхнее днище')
+        self.append_UT_results_data('ring', 'Обечайка')
+        self.append_UT_results_data('bottom_bottom', 'Днище нижнее')
+        self.append_UT_results_data('top_cap', 'Люк верхний')
+        self.append_UT_results_data('bottom_cap', 'Люк нижний')
         ######################################
         self.put('<strong>Заключение: </strong>', 'Text', .2)
         a = enumerate(map(lambda x: x['value'], self.data['results']['UT']['results']), start=1)
@@ -538,34 +539,19 @@ class ReportContainer(ReportMixin):
         self.put('ГОСТ Р 55724-2013; ГОСТ Р 55809-2013; ГОСТ Р 55808-2013; СТО 00220256-005-2005;', 'Text Simple', .2)
         self.put('СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
         self.put('Объем контроля – см. в Приложении Б., Рис. 3.', 'Text Simple', .2)
-        ######################################
-        #self.put('Результаты контроля', 'Text Simple Center Bold', .2)
-        #data = enumerate(self.data['results']['UK'][group], start=1)
-        #data = self.proc_results_data(data)
-        #template = ((header,), ) + (*data,)
-        #template = ((TTR("dsadsds"),), )
-        #para_style = (
-        #    ('Text Simple Center Dense',),
-        #)
-        #table_style = (
-        #    ('SPAN', (0,0), (-1,0)),
-        #    ('TOPPADDING', (0,0), (-1,-1), 0),
-        #    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-        #    ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        #)
-        #self.add(template, [10], self.get_style(para_style, template),
-        #    table_style, styleTable=True
-        #)
+        ############################################
+        # Header
+        ############################################
         data = ((
-            RotededText('№ участка', self.styles['Regular Center']),
-            RotededText('№ дефекта', self.styles['Regular Center']),
-            RotededText('Эквивалентная площадь дефекта, S, мм', self.styles['Regular Center']),
-            RotededText('Глубина залегания, Н,мм', self.styles['Regular Center']),
-            RotededText('Протяженность ∆L,мм', self.styles['Regular Center']),
-            RotededText('Форма (характер) дефекта (объемный/ плоскостной)', self.styles['Regular Center']),
-            RotededText('Место положение на сварном шве L, мм', self.styles['Regular Center']),
-            RotededText('Примечания', self.styles['Regular Center']),
-            RotededText('Заключение (годен, ремонт, не годен)', self.styles['Regular Center']),
+            RotededText('№ участка', self.styles['Text Simple Center Dense']),
+            RotededText('№ дефекта', self.styles['Text Simple Center Dense']),
+            RotededText('Эквивалентная площадь дефекта, S, мм', self.styles['Text Simple Center Dense']),
+            RotededText('Глубина залегания, Н,мм', self.styles['Text Simple Center Dense']),
+            RotededText('Протяженность ∆L,мм', self.styles['Text Simple Center Dense']),
+            RotededText('Форма (характер) дефекта (объемный/ плоскостной)', self.styles['Text Simple Center Dense']),
+            RotededText('Место положение на сварном шве L, мм', self.styles['Text Simple Center Dense']),
+            RotededText('Примечания', self.styles['Text Simple Center Dense']),
+            RotededText('Заключение (годен, ремонт, не годен)', self.styles['Text Simple Center Dense']),
         ), )
         
         style = TableStyle([
@@ -577,22 +563,62 @@ class ReportContainer(ReportMixin):
             ('LEFTPADDING', (2,0), (2, 0), 40),
             ('LEFTPADDING', (3,0), (3, 0), 30),
             ('LEFTPADDING', (4,0), (4, 0), 30),
-            ('LEFTPADDING', (5,0), (5, 0), 40),
+            ('LEFTPADDING', (5,0), (5, 0), 60),
             ('LEFTPADDING', (6,0), (6, 0), 40),
-            ('LEFTPADDING', (8,0), (8, 0), 20),
+            ('LEFTPADDING', (7,0), (7, 0), 10),
+            ('LEFTPADDING', (8,0), (8, 0), 40),
             ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
             ('BOX', (0,0), (-1,-1), 0.25, colors.black),
         ])
         
-        tab = Table(data, colWidths=self.columnize(.8,.6,1,1,1,1,1,1.6,1), style=style)
+        tab = Table(data, colWidths=self.columnize(.8,.6,1,1,1,1.5,1,1.6,1.5), style=style)
         p = Paragraph('Результаты контроля', self.styles['Text Simple Center Bold'])
         self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), tab]))
+        ############################################
+        # Data
+        ############################################
+        para_style = (
+            ('Text Simple Center',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 2),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        )
+        template = (
+            ('Днище верхнее',),
+        )
+        self.add(template, [10], self.get_style(para_style, template),
+            table_style, styleTable=True
+        )
+        for defects in self.data['results']['UK']['bottom_bottom']:
+            other_keys = set(defects.keys()) - {'site'}
+            data = defaultdict(lambda: '---')
+            data.update(defects)
+            if other_keys:
+                print('other keys', other_keys)
+                for num, defect in enumerate(defects, start=1):
+                    template = (
+                        ('{site}', str(num), '{area}', '{depth}', '{length}', '{type}',
+                        '{position}', '{info}', '{result}'),
+                    )
+                    self.add(template, [.8,.6,1,1,1,1.5,1,1.6,1.5], self.get_style(para_style, template),
+                        table_style, data=data, styleTable=True
+                    )
+            else:
+                print('other keys', other_keys)
+                template = (
+                    (data.get('site'), 'Дефектов не обнаружено', '', 'Годен'),
+                )
+                self.add(template, [.8, 6.1, 1.6, 1.5], self.get_style(para_style, template),
+                    table_style, data=data, styleTable=True
+                )
 
 
     ######################################
     # Helpers
     ######################################
-    def proc_results_data(self, data):
+    def proc_UT_results_data(self, data):
         data = tuple(map(lambda x: (str(x[0]), x[1]['passport'], x[1]['real']), data))
         # If data-tuple contains odd number of tuples, add one tuple with the same length
         if len(data) % 2 != 0:
@@ -601,9 +627,9 @@ class ReportContainer(ReportMixin):
         b = tuple(map(lambda x: tuple(chain.from_iterable(x)), a))
         return b
 
-    def append_results_data(self, group, header):
+    def append_UT_results_data(self, group, header):
         data = enumerate(self.data['results']['UT'][group], start=1)
-        data = self.proc_results_data(data)
+        data = self.proc_UT_results_data(data)
         template = ((header,), ) + (*data,)
         para_style = (
             ('Text Simple Center Dense',),
