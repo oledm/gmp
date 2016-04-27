@@ -62,7 +62,7 @@ urlpatterns = [
 
     # User management
     url(r'^users/', include("gmp.users.urls", namespace="users")),
-    url(r'^accounts/', include('allauth.urls')),
+    #url(r'^accounts/', include('allauth.urls')),
 
     # /api/user/
     url(r'^api/', include(users.urls)), 
