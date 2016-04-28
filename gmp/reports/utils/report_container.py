@@ -68,6 +68,8 @@ class ReportContainer(ReportMixin):
         self.appendixI()
         self.Story.append(NextPageTemplate('Приложение К'))
         self.appendixJ()
+        self.Story.append(NextPageTemplate('Приложение Л'))
+        self.appendixK()
 
     def put_toc(self):
         self.new_page()
@@ -92,7 +94,7 @@ class ReportContainer(ReportMixin):
             ('Heading 1 Bold', ),
             ('Heading 1 Bold', ),
             ('Heading 1 Bold', ),
-            ('Regular Center Leading', ),
+            ('Text Simple Center Leading', ),
         )
         table_style = (
             ('BOTTOMPADDING', (0,0), (-1,2), 10),
@@ -341,7 +343,7 @@ class ReportContainer(ReportMixin):
             '{rank}', '{fio}'
         ]]
         para_style = (
-            ('Regular Center',),
+            ('Text Simple Center',),
         )
         self.add(template, [7, 3], self.get_style(para_style, template),
             table_style, data=self.data['signers']['create']
@@ -349,7 +351,7 @@ class ReportContainer(ReportMixin):
     
     def appendixA(self):
         self.new_page()
-        self.put('Приложение А', 'Regular Right', .4)
+        self.put('Приложение А', 'Text Simple Right', .4)
         title = 'ПЕРЕЧЕНЬ ИСПОЛЬЗОВАННОЙ ПРИ ТЕХНИЧЕСКОМ ДИАГНОСТИРОВАНИИ ' \
             'НОРМАТИВНОЙ, ТЕХНИЧЕСКОЙ И МЕТОДИЧЕСКОЙ ЛИТЕРАТУРЫ'
         self.add_to_toc(title, self.styles['TOC Appendix'])
@@ -367,7 +369,7 @@ class ReportContainer(ReportMixin):
             table_style
         )
         self.new_page()
-        self.put('Приложение А', 'Regular Right', .4)
+        self.put('Приложение А', 'Text Simple Right', .4)
         template = self.get_csv('report_container_appendixA_2.txt')
         self.add(template, [0.5, 9.5], self.get_style(para_style, template),
             table_style
@@ -375,7 +377,7 @@ class ReportContainer(ReportMixin):
 
     def appendixB(self):
         self.new_page()
-        self.put('Приложение Б', 'Regular Right', .4)
+        self.put('Приложение Б', 'Text Simple Right', .4)
         title = 'СХЕМЫ ПРОВЕДЕНИЯ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ'
         self.add_to_toc(title, self.styles['TOC Appendix'])
         self.spacer(.4)
@@ -383,36 +385,36 @@ class ReportContainer(ReportMixin):
         self.put_photo(image)
         ####################
         self.new_page()
-        self.put('Приложение Б', 'Regular Right', .4)
+        self.put('Приложение Б', 'Text Simple Right', .4)
         self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['conrtol_VIK'][0])
         self.put_photo(image)
         self.spacer(.3)
-        self.put('Рис. 1 ' + self.data['schemes']['VIK'], 'Regular Bold Center')
+        self.put('Рис. 1 ' + self.data['schemes']['VIK'], 'Text Simple Center Bold')
         ####################
         self.new_page()
-        self.put('Приложение Б', 'Regular Right', .4)
+        self.put('Приложение Б', 'Text Simple Right', .4)
         self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['conrtol_UK_container'][0])
         self.put_photo(image)
         self.spacer(.3)
-        self.put('Рис. 2 ' + self.data['schemes']['UK_container'], 'Regular Bold Center')
+        self.put('Рис. 2 ' + self.data['schemes']['UK_container'], 'Text Simple Center Bold')
         ####################
         self.new_page()
-        self.put('Приложение Б', 'Regular Right', .4)
+        self.put('Приложение Б', 'Text Simple Right', .4)
         self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['conrtol_UK_connections'][0])
         self.put_photo(image)
         self.spacer(.3)
-        self.put('Рис. 3 ' + self.data['schemes']['UK_connections'], 'Regular Bold Center')
+        self.put('Рис. 3 ' + self.data['schemes']['UK_connections'], 'Text Simple Center Bold')
         ####################
         self.new_page()
-        self.put('Приложение Б', 'Regular Right', .4)
+        self.put('Приложение Б', 'Text Simple Right', .4)
         self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['conrtol_magnit'][0])
         self.put_photo(image)
         self.spacer(.3)
-        self.put('Рис. 4 ' + self.data['schemes']['magnit'], 'Regular Bold Center')
+        self.put('Рис. 4 ' + self.data['schemes']['magnit'], 'Text Simple Center Bold')
 
     def appendixC(self):
         self.new_page()
@@ -725,6 +727,9 @@ class ReportContainer(ReportMixin):
         self.new_page()
         self.add_to_toc('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', self.styles['TOC Appendix Hidden'])
         self.put('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', 'Text Simple Center Bold', .2)
+        self.spacer(.4)
+        image = FileStorage.objects.get(pk=self.data['files']['hydra'][0])
+        self.put_photo(image)
 
     def appendixJ(self):
         self.new_page()
@@ -764,6 +769,19 @@ class ReportContainer(ReportMixin):
         self.add(template, [1, 4, 1.1, 1.9, 2], self.get_style(para_style, template),
             table_style, spacer=1, styleTable=True
         )
+
+    def appendixK(self):
+        self.new_page()
+        self.add_to_toc('Копии разрешительной документации', self.styles['TOC Appendix Hidden'])
+        self.put('КОПИИ РАЗРЕШИТЕЛЬНОЙ ДОКУМЕНТАЦИИ', 'Text Simple Center Bold', .2)
+        self.spacer(.4)
+        for image in FileStorage.objects.filter(pk__in=self.data['files']['licenses']):
+            self.put_photo(image, height=12)
+            self.spacer(.3)
+
+        self.new_page()
+        image = FileStorage.objects.get(pk=self.data['files']['warrant'][0])
+        self.put_photo(image)
 
     ######################################
     # Helpers
@@ -911,7 +929,7 @@ class ReportContainer(ReportMixin):
         template_appendix = []
         for letter in letters:
             name = 'Приложение ' + letter
-            p = Paragraph(name, self.styles['Regular Right']),
+            p = Paragraph(name, self.styles['Text Simple Right']),
             content = colontitle_content + p
             template_appendix.append(PageTemplate(id=name, frames=frame, onPage=partial(self.colontitle, content=content)))
         doc.addPageTemplates(template_appendix)
@@ -952,7 +970,7 @@ class ReportContainer(ReportMixin):
 
     def header_content(self):
         date_string = '"____"{:_>21}'.format('_') + '201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;г'
-        fio_string = '{fio:_>32}'
+        fio_string = '{fio:_>30}'
         template = [
             ['Директор филиала<br/>ООО «ГАЗМАШПРОЕКТ» «НАГАТИНСКИЙ»'],
             [fio_string.format(fio='А.Н. Бондаренко')],
@@ -961,7 +979,7 @@ class ReportContainer(ReportMixin):
         ]
         rows = len(template)
         styles = [
-            *[['Signature Left']] * rows,
+            *[['Text Simple Leading']] * rows,
         ]
         table_data = self.values(template, {})
         table = self.table(table_data, styles, [4], styleTable=False)
@@ -978,10 +996,10 @@ class ReportContainer(ReportMixin):
         ]
         rows = len(template)
         styles = [
-            *[['Regular Center']] * rows,
+            *[['Text Simple Center']] * rows,
         ]
         table_data = self.values(template, {})
-        table2 = self.table(table_data, styles, [11], styleTable=False)
+        table2 = self.table(table_data, styles, [10.5], styleTable=False)
         return (
             table,
             table2
@@ -990,6 +1008,6 @@ class ReportContainer(ReportMixin):
 
     def colontitle_content(self):
         return (
-            Paragraph('ООО «ГАЗМАШПРОЕКТ»', self.styles['Regular']),
-            Paragraph('Отчет № {}'.format(self.data['report_code']), self.styles['Regular Right'])
+            Paragraph('ООО «ГАЗМАШПРОЕКТ»', self.styles['Text Simple']),
+            Paragraph('Отчет № {}'.format(self.data['report_code']), self.styles['Text Simple Right'])
         )

@@ -41,6 +41,7 @@
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
                 'report_container/results.tpl.html',
+                'report_container/licenses.tpl.html',
 //                'report_container/team.tpl.html',
 //                'report/team.tpl.html',
 //                'report_container/results.tpl.html',
@@ -129,6 +130,12 @@
                     ],
                     conclusion: 'Недопустимых дефектов и формоизменений элементов сосуда, влияющих ' +
                         'на его дальнейшую безопасную эксплуатацию, не выявлено.'
+                },
+                HYDRA: {
+                    conclusion: 'Проведено гидравлическое испытание сосуда, пробным давлением ' +
+                        '1,25 х Р раб. При осмотре элементов сосуда течей, трещин, слезок, потения ' +
+                        'в сварных соединениях и на основном металле, течей в разъемных соединениях, ' + 
+                        'а также видимых остаточных деформаций и падения давления по манометрам не обнаружено.' 
                 },
                 UT: {
                     common: [],
@@ -350,12 +357,13 @@
             team: {},
             files: {
                 'hydra': [],
-                'license': [],
+                'licenses': [],
                 'legend': [],
                 'conrtol_VIK': [],
                 'conrtol_UK_container': [],
                 'conrtol_UK_connections': [],
                 'conrtol_magnit': [],
+                'warrant': [],
             },
             info: {
                 'license': 'Договор субподряда между ООО «ГАЗМАШПРОЕКТ» и ООО «Стройгазмонтаж»',

@@ -17,7 +17,13 @@
             <div class="block" ng-include="'/static/src/app/report/report_container/results_MK.tpl.html'"></div>
 	</uib-accordion-group>
 	<uib-accordion-group heading="Гидравлические испытания">
-            <div class="block" ng-include="'/static/src/app/report/report_container/results_HYDRA.tpl.html'"></div>
+            <div class="panel panel-default">
+                  <div class="panel-heading">Заключение</div>
+                      <div class="alert alert-success marginless" role="alert">
+                          <span contenteditable ng-model="vm.report.results.HYDRA.conclusion">
+                          </span>
+                  </div>
+            </div>
 	</uib-accordion-group>
     </uib-accordion>
 </ng-form>

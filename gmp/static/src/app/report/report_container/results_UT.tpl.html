@@ -145,20 +145,21 @@
               </tr>
           </tbody>
       </table>
+
+
     </div>
 </div>
-    
-    <div class="form-group">
-      <div class="row" ng-repeat="x in vm.report.results.UT.results">
-            <div class="col-sm-12 alert alert-success alert-dismissible" role="alert">
-                  <button type="button" ng-click="vm.report.results.UT.results.splice($index, 1)"
-                      class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-                <span contenteditable 
-                    ng-model="x.value">
-                </span>
-            </div>
+
+<div class="panel panel-default">
+    <div class="form-group" ng-repeat="x in vm.report.results.UT.results">
+        <div class="alert alert-success alert-dismissible" role="alert">
+              <button type="button" ng-click="vm.report.results.UT.results.splice($index, 1)"
+                  class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+            <span contenteditable 
+                ng-model="x.value">
+            </span>
         </div>
     </div>
     <div class="form-group">
@@ -175,13 +176,12 @@
             ng-click="vm.addToCollection(vm.report.results.UT.results, newDocValue); newDocValue=''">Добавить
         </button>
     </div>
-    <div class="form-group">
-      <label class="control-label">Заключение</label>
-      <div class="row">
-            <div class="col-sm-12 alert alert-success" role="alert">
-                <span contenteditable 
-                    ng-model="vm.report.results.UT.conclusion">
-                </span>
-            </div>
-        </div>
-    </div>
+</div>
+    
+<div class="panel panel-default">
+      <div class="panel-heading">Заключение</div>
+          <div class="alert alert-success marginless" role="alert">
+              <span contenteditable ng-model="vm.report.results.UT.conclusion">
+              </span>
+          </div>
+</div>
