@@ -26,15 +26,12 @@ class RotededText(Flowable): #TableTextRotate
         Flowable.__init__(self)
         self.text = text
         self.height = 4 * cm
-        #self.weight = 100
         self.style = style
 
     def draw(self):
         canvas = self.canv
         canvas.rotate(90)
         p = Paragraph(self.text, style=self.style)
-        #p.wrapOn(self.canv, self.width, self.height)
-        #p.drawOn(self.canv, *self.coord(self.x+2, 10, mm))
         w, h = p.wrap(self.height, 0)
         p.drawOn(canvas, 0, 0)
 
@@ -65,6 +62,12 @@ class ReportContainer(ReportMixin):
         self.appendixE()
         self.Story.append(NextPageTemplate('Приложение Е'))
         self.appendixG()
+        self.Story.append(NextPageTemplate('Приложение Ж'))
+        self.appendixH()
+        self.Story.append(NextPageTemplate('Приложение И'))
+        self.appendixI()
+        self.Story.append(NextPageTemplate('Приложение К'))
+        self.appendixJ()
 
     def put_toc(self):
         self.new_page()
@@ -657,6 +660,110 @@ class ReportContainer(ReportMixin):
         self.add_specialist('Контроль физико-механических свойств (твёрдости) сварных' + 
             ' соединений и основного металла', 'ВИК')
 
+    def appendixH(self):
+        self.new_page()
+        self.add_to_toc('Заключение по результатам магнитопорошкового контроля сварных ' + 
+                'соединений и основного металла', self.styles['TOC Appendix Hidden'])
+        self.appendix_header()
+        self.put('ЗАКЛЮЧЕНИЕ № {}/МК'.format(self.data['report_code']), 'Text Simple Center Bold', .2)
+        self.put('по результатам магнитопорошкового контроля сварных ' + 
+            'соединений и основного металла', 'Text Simple Center', .5)
+        self.put(self.data['info']['investigation_date'], 'Text Simple Right')
+        self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
+        ######################################
+        for measurer in Measurer.objects.filter(
+                Q(id__in=self.data.get('measurers')),
+                Q(name__icontains='устройство намагничивающее') |
+                Q(name__icontains='магнитопорошкового контроля') |
+                Q(name__icontains='магнитопорошковой дефектоскопии') |
+                Q(name__icontains='образец шероховатости поверхности')
+            ):
+            self.put('<bullet>&ndash;</bullet>' + measurer.verbose_info(), 'Text Simple Indent')
+        ######################################
+        self.put('Контроль и оценка качества элементов сосуда выполнены согласно:', 'Text Simple Bold', .2)
+        self.put('ГОСТ Р 55612-2013; ГОСТ 21105-87; РД 13-05-2006; ' +
+            'СТО Газпром 2-2.3-218-2008; СТО Газпром 2-2.3-491-2010.', 'Text Simple', .2)
+        self.put('Способ намагничивания: способ приложенного поля (СПП)', 'Text Simple', .2)
+        self.put('Уровень чувствительности: Б.', 'Text Simple', .2)
+        self.put('Вид намагничивания: продольный (полюсной).', 'Text Simple', .2)
+        self.put('Объем контроля – см. в Приложении Б., Рис. 4.', 'Text Simple', .2)
+        ######################################
+        para_style = (
+            ('Text Simple Center',),
+            ('Text Simple', 'Text Simple Center', 'Text Simple Center', 'Text Simple Center', 'Text Simple Center'),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 2),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        )
+        template = [
+            ['Объект контроля', 'Обозначение на схеме контроля',
+	    'Участки с дефектами и их расположение',
+	    'Обнаруженные дефекты (их размеры)', 'Оценка качества объекта']
+        ]
+        for value in self.data['results']['MK']['values']:
+            if any(value.values()):
+                d = defaultdict(str)
+                d.update(value)
+                data = self.values([['{element}', '{point}', '{zone}', '{defect}', '{summary}']], d)
+                template.extend(data)
+
+        table = self.get(template, [4, 1.5, 1.5, 1.5, 1.5], self.get_style(para_style, template),
+            table_style, styleTable=True
+        )
+        p = Paragraph('Результаты контроля', self.styles['Text Simple Center Bold'])
+        self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), table]))
+        self.spacer(1)
+        ######################################
+        self.put('<strong>Заключение: </strong>' +
+            self.data['results']['MK']['conclusion'],
+            'Text', 3.2)
+        self.add_specialist('Магнитопорошковый контроль сварных соединений и основного металла', 'МК')
+
+    def appendixI(self):
+        self.new_page()
+        self.add_to_toc('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', self.styles['TOC Appendix Hidden'])
+        self.put('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', 'Text Simple Center Bold', .2)
+
+    def appendixJ(self):
+        self.new_page()
+        self.add_to_toc('ПЕРЕЧЕНЬ СРЕДСТВ ИЗМЕРЕНИЙ И КОНТРОЛЯ, ИСПОЛЬЗОВАННЫХ В ' 
+            'ПРОЦЕССЕ ПРОВЕДЕНИЯ ТЕХНИЧЕСКОГО ДИАГНОСТИРОВАНИЯ',
+            self.styles['TOC Appendix Hidden'])
+        self.put('ПЕРЕЧЕНЬ СРЕДСТВ ИЗМЕРЕНИЙ И КОНТРОЛЯ, ИСПОЛЬЗОВАННЫХ В ' 
+            'ПРОЦЕССЕ ПРОВЕДЕНИЯ ТЕХНИЧЕСКОГО ДИАГНОСТИРОВАНИЯ', 'Text Simple Center Bold', .2)
+        template = [
+            ['№ п/п', 'Наименование', 'Зав. №', '№ свидетельства о поверке', 'Действительно до']
+        ]
+        ######################################
+        for num, measurer in enumerate(Measurer.objects.filter(id__in=self.data['measurers']), start=1):
+            m = [str(num)]
+            if measurer.model:
+                m.append(' '.join([measurer.name, measurer.model]))
+            else:
+                m.append(measurer.name)
+            m.append(measurer.serial_number or '&ndash;')
+            m.append(measurer.verification or '&ndash;')
+            if measurer.expired_at:
+                m.append(measurer.expired_at.strftime('%d.%m.%Y') + ' г.')
+            else:
+                m.append('&ndash;')
+            template.append(m)
+        para_style = (
+            ('Text Simple Center Bold',),
+            ('Text Simple Center Dense', 'Text Simple', 'Text Simple Center Dense',
+                'Text Simple Center Dense',),
+        )
+        table_style = (
+            ('TOPPADDING', (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        )
+        self.add(template, [1, 4, 1.1, 1.9, 2], self.get_style(para_style, template),
+            table_style, spacer=1, styleTable=True
+        )
 
     ######################################
     # Helpers

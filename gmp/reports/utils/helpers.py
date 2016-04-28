@@ -54,6 +54,9 @@ class MyDocTemplate(BaseDocTemplate):
             #    level = 0
             if style == 'TOC Appendix' or style == 'TOC Appendix Hidden':
                 level = 1
+                # Skip russain letter 'З' and 'Й'
+                if self.appendixLetter ==  'З' or self.appendixLetter ==  'Й':
+                    self.appendixLetter = chr(ord(self.appendixLetter) + 1)
                 text = 'Приложение {} {}'.format(self.appendixLetter, text.capitalize())
                 self.appendixLetter = chr(ord(self.appendixLetter) + 1)
             elif style == 'TOC':

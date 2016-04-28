@@ -1,0 +1,52 @@
+<div class="form-group">
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">Результаты контроля</div>
+      <table class="table table-bordered table-condensed">
+          <thead class="row">
+              <tr>
+                  <th class="text-center col-sm-7"><button type="button" class="btn btn-sm"
+                          ng-click="vm.report.results.MK.values.push({})">
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                          Добавить
+                      </button>
+                      <br />Объект контроля</th>
+                  <th class="text-center col-sm-1">Обозначение на схеме контроля</th>
+                  <th class="text-center col-sm-1">Участки с дефектами и их расположение</th>
+                  <th class="text-center col-sm-1">Обнаруженные дефекты (их размеры)</th>
+                  <th class="text-center col-sm-2">Оценка качества объекта</th>
+              </tr>
+          </thead>
+          <tbody class="row">
+              <tr ng-repeat="value in vm.report.results.MK.values">
+                  <td><input class="form-control col-sm-7" type="text"
+                          ng-model="value.element" />
+                  </td>
+                  <td><input class="form-control col-sm-1" type="text"
+                          ng-model="value.point" />
+                  </td>
+                  <td><input class="form-control col-sm-1" type="text"
+                          ng-model="value.zone" />
+                  </td>
+                  <td><input class="form-control col-sm-1" type="text"
+                          ng-model="value.defect" />
+                  </td>
+                  <td><input class="form-control col-sm-2" type="text"
+                          ng-model="value.summary" />
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+    </div>
+</div>
+    
+<div class="form-group">
+  <label class="control-label">Заключение</label>
+  <div class="row">
+        <div class="col-sm-12 alert alert-success" role="alert">
+            <span contenteditable 
+                ng-model="vm.report.results.MK.conclusion">
+            </span>
+        </div>
+    </div>
+</div>

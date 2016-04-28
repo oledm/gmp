@@ -70,9 +70,12 @@ class Certificate(models.Model):
             5: 'V'
         }
         info = ['Исполнитель,']
-        info.append('специалист {} {} уровень,'.format(
-            self.control_types.get(name=control_type),
-            level.get(self.degree)))
+        if not self.degree:
+            info.append('специалист {},'.format(self.control_types.get(name=control_type)))
+        else:
+            info.append('специалист {} {} уровень,'.format(
+                self.control_types.get(name=control_type),
+                level.get(self.degree)))
         info.append('удостоверение № ' + self.serial_number)
         info.append('действительно до {:0>2}.{} г.'.format(
             self.expired_at_month,

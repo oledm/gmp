@@ -1,0 +1,12 @@
+<div class="form-group">
+    <div class="row">
+        <div class="col-sm-12" ng-class="{ 'has-error': vm.schemesForm.hydra.$touched && vm.schemesForm.hydra.$invalid }">
+              <label class="control-label" for="hydra">Копия акта гидравлического испытания</label>
+              <input valid-file required type="file" id="hydra" name="hydra" ng-model="hydra"
+                  onchange="angular.element(this).scope().upload(this)" />
+              <div class="help-block" role="alert" ng-messages="vm.schemesForm.hydra.$error" ng-if="vm.schemesForm.hydra.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+        </div>
+    </div>
+</div>
