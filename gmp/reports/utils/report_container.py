@@ -73,7 +73,7 @@ class ReportContainer(ReportMixin):
 
     def put_toc(self):
         self.new_page()
-        self.put('СОДЕРЖАНИЕ', 'Regular Bold Center', 0.5)
+        self.put('СОДЕРЖАНИЕ', 'Text Simple Center Bold', 0.5)
         self.Story.append(self.toc)
 
     def page1(self):
@@ -125,9 +125,8 @@ class ReportContainer(ReportMixin):
             ('LEFTPADDING', (0,0), (-1,-1), 0),
             ('RIGHTPADDING', (0,0), (-1,-1), 0),
         )
-        para_style = (
-            (style,),
-        )
+        para_style = ((style,),)
+
         if title:
             self.add_to_toc(title, self.styles['TOC Appendix'])
             self.spacer(.4)
@@ -312,7 +311,7 @@ class ReportContainer(ReportMixin):
             ('работоспособное, неработоспособное, предельное (табл.8.9 СТО ГАЗПРОМ 2-2.3-491-2010)', ),
         )
         para_style = (
-                ('Regular Bold Center',),
+                ('Text Simple Center Bold',),
                 ('Regular Center Small',),
         )
         table_style = (

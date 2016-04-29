@@ -3,28 +3,7 @@
 
     angular
         .module('app.report')
-        .controller('ReportContainerController', ReportContainerController)
-        .directive("contenteditable", function() {
-	  return {
-	    restrict: "A",
-	    require: "ngModel",
-	    link: function(scope, element, attrs, ngModel) {
-
-	      function read() {
-		ngModel.$setViewValue(element.html());
-	      }
-
-	      ngModel.$render = function() {
-		element.html(ngModel.$viewValue || "");
-	      };
-
-	      element.bind("blur keypress change", function() {
-		scope.$apply(read);
-		scope.$apply();
-	      });
-	    }
-	};
-    });
+        .controller('ReportContainerController', ReportContainerController);
 
     function ReportContainerController($scope, Passport, Upload, ServerData) {
         'ngInject';
@@ -42,18 +21,6 @@
                 'report_container/schemes.tpl.html',
                 'report_container/results.tpl.html',
                 'report_container/licenses.tpl.html',
-//                'report_container/team.tpl.html',
-//                'report/team.tpl.html',
-//                'report_container/results.tpl.html',
-//                'report_container/device_location.tpl.html',
-//                'report/dates.tpl.html',
-//                'engines.tpl.html',
-//                'report/photos.tpl.html',
-//                'values.tpl.html',
-//                'docs.tpl.html',
-//                'therm.tpl.html',
-//                'vibro.tpl.html',
-//                'resistance.tpl.html',
             ],
             control_types = [
                 {
@@ -96,6 +63,21 @@
                 'неработоспособное',
                 'предельное'
             ],
+	    info = {
+                'license': 'Договор субподряда между ООО «ГАЗМАШПРОЕКТ» и ООО «Стройгазмонтаж»',
+                'info_investigation': 'Экспертиза промышленной безопасности проводится впервые. ' +
+                    '\nНО, ВО – 1 раз в 2 года (ответственный за осуществление ' + 
+                    'производственного контроля за эксплуатацией сосуда). ' +
+                    '\nНО, ВО – 1 раз в 4 года (уполномоченная специализированная организация, ' +
+                    'ответственный за осуществление производственного контроля за эксплуатацией сосуда). ' +
+                    '\nГИ – 1 раз в 8 лет (уполномоченная специализированная организация, ' + 
+                    'ответственный за осуществление производственного контроля за эксплуатацией сосуда)',
+                'info_repair': 'В представленной технической документации не отмечено',
+                'danger_places': 'Места концентраций напряжений – продольные и кольцевые сварные швы, ' + 
+                    'места вварки штуцеров; места наиболее вероятного коррозионного износа – ' + 
+                    'внутренняя поверхность нижнего днища',
+                'license_more': ''
+            },
             measurers = {
                 all: ServerData.measurers(),
                 selected: [],
@@ -172,10 +154,6 @@
                     bottom_bottom: [
                         {'site': 'К4'},
                     ],
-//                    results: [
-//                        {value: 'Первый результат'},
-//                        {value: 'Второй результат'},
-//                    ],
                     conclusion: 'Недопустимых дефектов в сварных соединениях и в ' + 
                                 'околошовных зонах не обнаружено.'
                 },
@@ -340,7 +318,6 @@
                 },
             };
 
-
         vm.addToCollection = addToCollection;
         vm.allEmployees = ServerData.users();
         vm.control_types = control_types;
@@ -365,21 +342,7 @@
                 'conrtol_magnit': [],
                 'warrant': [],
             },
-            info: {
-                'license': 'Договор субподряда между ООО «ГАЗМАШПРОЕКТ» и ООО «Стройгазмонтаж»',
-                'info_investigation': 'Экспертиза промышленной безопасности проводится впервые. ' +
-                    '\nНО, ВО – 1 раз в 2 года (ответственный за осуществление ' + 
-                    'производственного контроля за эксплуатацией сосуда). ' +
-                    '\nНО, ВО – 1 раз в 4 года (уполномоченная специализированная организация, ' +
-                    'ответственный за осуществление производственного контроля за эксплуатацией сосуда). ' +
-                    '\nГИ – 1 раз в 8 лет (уполномоченная специализированная организация, ' + 
-                    'ответственный за осуществление производственного контроля за эксплуатацией сосуда)',
-                'info_repair': 'В представленной технической документации не отмечено',
-                'danger_places': 'Места концентраций напряжений – продольные и кольцевые сварные швы, ' + 
-                    'места вварки штуцеров; места наиболее вероятного коррозионного износа – ' + 
-                    'внутренняя поверхность нижнего днища',
-                'license_more': ''
-            },
+            info: info,
             schemes: {
                 'VIK': 'Схема проведения визуально-измерительного контроля сосуда',
                 'UK_container': 'Схема проведения ультразвуковой толщинометрии и твердометрии сосуда',
@@ -389,18 +352,7 @@
             measurers: measurers.selected,
             results: results,
         };
-//            team: undefined,
-//            files: {
-//                'main': [],
-//                'therm1': [],
-//                'therm2': [],
-//                'licenses': []
-//            },
-//            therm: {},
-//            vibro: {},
-//            order: {},
-//            resistance: {}
-//        };
+        
         vm.setSelected = setSelected;
 
         activate();
