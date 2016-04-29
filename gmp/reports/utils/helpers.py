@@ -317,7 +317,9 @@ class ReportMixin():
             italic='Times Bold Italic', boldItalic='Times Bold Italic')
 
     def register_font(self, font_name, font_file):
-        MyFontObject = ttfonts.TTFont(font_name, font_file)
+        file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'fonts', font_file))
+        print('Font file', file_)
+        MyFontObject = ttfonts.TTFont(font_name, file_)
         pdfmetrics.registerFont(MyFontObject)
      
     def setup_styles(self):

@@ -61,7 +61,26 @@
                 url: '/report-container',
                 controller: 'ReportContainerController',
                 controllerAs: 'vm',
-                templateUrl: '/static/src/app/report/report_container/report.tpl.html'
+                templateUrl: '/static/src/app/report/report_container/report.tpl.html',
+                resolve: {
+                    ServerData: 'ServerData',
+                    orgs: function(ServerData) {
+                        return ServerData.query({category: 'organization'});
+                    },
+                    allEmployees: function(ServerData) {
+                        return ServerData.users().$promise;
+                    },
+                    allDevices: function(ServerData) {
+                        return ServerData.query({category: 'container'}).$promise;
+                    },
+                    measurers: function(ServerData) {
+                        return ServerData.measurers().$promise;
+                    }
+                },
+                data: {
+                    type: 'report-container'
+                }
+
             });
 
         $urlRouterProvider.otherwise('/');

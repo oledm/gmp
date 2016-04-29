@@ -7,7 +7,7 @@
 
     function ServerData($resource, Cookies) {
         'ngInject';
-        return $resource('/api/:category/:categoryId/:subcategory/:subcategoryId', {}, {
+        return $resource('/api/:category/:categoryId/:subcategory/:subcategoryId', {categoryId: '@id'}, {
             measurers: {
                 method: 'get',
                 isArray: true,

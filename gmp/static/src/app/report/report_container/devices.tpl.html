@@ -35,8 +35,12 @@
                   <label class="control-label" for="org">Организация</label>
                   <select class="form-control" placeholder="Организация"
                       ng-change="vm.getLPUs(vm.report.obj_data.org)" required
-                      ng-model="vm.report.obj_data.org" name="org" id="org">
-                      <option ng-repeat="org in vm.orgs">{{org.name}}</option>
+                      ng-model="vm.report.obj_data.org" name="org" id="org"
+                      ng-options="org as org.name for org in vm.orgs"
+                  >
+                      <!-- 
+                          <option ng-repeat="org in vm.orgs">{{org.name}}</option>
+                       -->
                   </select>
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.org.$error" ng-if="vm.deviceForm.org.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>

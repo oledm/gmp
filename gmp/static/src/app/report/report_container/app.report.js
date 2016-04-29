@@ -5,23 +5,14 @@
         .module('app.report')
         .controller('ReportContainerController', ReportContainerController);
 
-    function ReportContainerController($scope, Passport, Upload, ServerData) {
+    function ReportContainerController($state, $scope, Upload, ServerData, orgs,
+            allEmployees, allDevices, measurers) 
+    {
         'ngInject';
 
         $scope.upload = upload;
 
         var vm = this,
-            pages = [
-                'report_container/devices.tpl.html',
-                'report_container/report_info.tpl.html',
-                'report_container/order.tpl.html',
-                'report_container/team2.tpl.html',
-                'measurers.tpl.html',
-                'report_container/signers.tpl.html',
-                'report_container/schemes.tpl.html',
-                'report_container/results.tpl.html',
-                'report_container/licenses.tpl.html',
-            ],
             control_types = [
                 {
                     chapter: 'Визуальный и измерительный контроль',
@@ -50,19 +41,22 @@
                     full_name: 'Магнитопорошковый контроль'
                 },
             ],
-            devices = {
-                all: ServerData.query({category: 'container'}),
-//                selected: {
-//                    'type': '',
-//                    'serial_number': 0
-//                },
-//                sortOrder: 'name'
-            },
+            devices = {all: allDevices},
             device_conditions = [
                 'работоспособное',
                 'неработоспособное',
                 'предельное'
             ],
+	    files = {
+                'hydra': [],
+                'licenses': [],
+                'legend': [],
+                'conrtol_VIK': [],
+                'conrtol_UK_container': [],
+                'conrtol_UK_connections': [],
+                'conrtol_magnit': [],
+                'warrant': [],
+            },
 	    info = {
                 'license': 'Договор субподряда между ООО «ГАЗМАШПРОЕКТ» и ООО «Стройгазмонтаж»',
                 'info_investigation': 'Экспертиза промышленной безопасности проводится впервые. ' +
@@ -78,11 +72,17 @@
                     'внутренняя поверхность нижнего днища',
                 'license_more': ''
             },
-            measurers = {
-                all: ServerData.measurers(),
-                selected: [],
-                sortOrder: 'name'
-            },
+            pages = [
+                'report_container/devices.tpl.html',
+                'report_container/report_info.tpl.html',
+                'report_container/order.tpl.html',
+                'report_container/team2.tpl.html',
+                'measurers.tpl.html',
+                'report_container/signers.tpl.html',
+                'report_container/schemes.tpl.html',
+                'report_container/results.tpl.html',
+                'report_container/licenses.tpl.html',
+            ],
             results = {
                 VIK: {
                     results: [
@@ -316,92 +316,60 @@
                     conclusion: 'Недопустимых индикаторных рисунков, указывающих ' +
                         'на наличие недопустимых дефектов, не обнаружено.'
                 },
+            },
+	    schemes = {
+                'VIK': 'Схема проведения визуально-измерительного контроля сосуда',
+                'UK_container': 'Схема проведения ультразвуковой толщинометрии и твердометрии сосуда',
+                'UK_connections': 'Схема проведения ультразвукового контроля сварных соединений сосуда',
+                'magnit': 'Схема проведения магнитопорошкового контроля сосуда',
             };
 
         vm.addToCollection = addToCollection;
-        vm.allEmployees = ServerData.users();
+        vm.allEmployees = allEmployees;
         vm.control_types = control_types;
         vm.device_conditions = device_conditions;
         vm.createPassport = createPassport;
         vm.devices = devices;
         vm.lpus = {};
-        vm.orgs = {};
+        vm.orgs = orgs;
         vm.pages = pages;
         vm.procKeyPress = procKeyPress;
         vm.getLPUs = getLPUs;
-        vm.measurers = measurers;
+        vm.measurers = {all: measurers, selected: []};
         vm.report = {
             team: {},
-            files: {
-                'hydra': [],
-                'licenses': [],
-                'legend': [],
-                'conrtol_VIK': [],
-                'conrtol_UK_container': [],
-                'conrtol_UK_connections': [],
-                'conrtol_magnit': [],
-                'warrant': [],
-            },
+            files: files,
             info: info,
-            schemes: {
-                'VIK': 'Схема проведения визуально-измерительного контроля сосуда',
-                'UK_container': 'Схема проведения ультразвуковой толщинометрии и твердометрии сосуда',
-                'UK_connections': 'Схема проведения ультразвукового контроля сварных соединений сосуда',
-                'magnit': 'Схема проведения магнитопорошкового контроля сосуда',
-            },
-            measurers: measurers.selected,
+            schemes: schemes,
+            measurers: vm.measurers.selected,
             results: results,
+            type: $state.current.data.type,
         };
         
         vm.setSelected = setSelected;
 
-        activate();
 
-        function activate() {
-            getOrgs();
+        function createPassport() {
+            console.log('report:', JSON.stringify(vm.report));
+            Passport.createPassport(vm.report);
         }
 
+        function getLPUs(org) {
+            vm.lpus = vm.orgs.$query({subcategory: 'lpu'});
+//            vm.lpus = ServerData.query({
+//                category: 'organization',
+//                categoryId: org.id,
+//                subcategory: 'lpu'});
+        }
+
+        ///////////////////////////////////////////////////////////////////////
+        // TODO create directive for reusing this funcs
+        ///////////////////////////////////////////////////////////////////////
         function addToCollection(arr, value) {
             var value = value.trim();
             // Test for absence of a new value in array 
             if (value !== '' && arr.indexOf(value) === -1 ) {
                 arr.push({'value': value});
-            }
-        }
-
-        function createPassport() {
-////            console.log('docs ' + JSON.stringify(vm.report.docs));
-////            console.log('investigationDate ' + vm.investigationDate.toLocaleString());
-            vm.report.type = 'report-container';
-            console.log('report:', JSON.stringify(vm.report));
-////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-            Passport.createPassport(vm.report);
-        }
-
-        function getOrgs() {
-            Passport.getOrgs()
-                .then(function(data) {
-                    vm.orgs = data;
-                });
-        }
-
-        function getLPUs(orgName) {
-            var organ = vm.orgs.filter(function(el) {
-                return el.name === orgName;
-            });
-
-            Passport.getLPUs(organ[0].id)
-                .then(function(data) {
-                    vm.lpus = data;
-                });
-        }
-
-        function procKeyPress(clickEvent, arr) {
-            // Check for Return (Enter) key pressed
-            if (clickEvent.which === 13) {
-                clickEvent.preventDefault();
-                addToCollection(arr, clickEvent.target.value);
-                clickEvent.target.value = '';
             }
         }
 
@@ -416,6 +384,18 @@
                 selected.push(id);
             }
         }
+
+        function procKeyPress(clickEvent, arr) {
+            // Check for Return (Enter) key pressed
+            if (clickEvent.which === 13) {
+                clickEvent.preventDefault();
+                addToCollection(arr, clickEvent.target.value);
+                clickEvent.target.value = '';
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
 
         function upload(element) {
             var fieldname = element.name;
