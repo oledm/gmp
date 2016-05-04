@@ -5,12 +5,10 @@
         .module('app.report')
         .controller('ReportContainerController', ReportContainerController);
 
-    function ReportContainerController($state, $scope, Upload, ServerData, orgs,
-            allEmployees, allDevices, measurers) 
+    function ReportContainerController($state, ServerData, orgs, allEmployees,
+        allDevices, measurers) 
     {
         'ngInject';
-
-        $scope.upload = upload;
 
         var vm = this,
             control_types = [
@@ -330,7 +328,7 @@
         vm.device_conditions = device_conditions;
         vm.createPassport = createPassport;
         vm.devices = devices;
-        vm.lpus = {};
+        vm.lpus = [];
         vm.orgs = orgs;
         vm.pages = pages;
         vm.procKeyPress = procKeyPress;
@@ -355,11 +353,10 @@
         }
 
         function getLPUs(org) {
-            vm.lpus = vm.orgs.$query({subcategory: 'lpu'});
-//            vm.lpus = ServerData.query({
-//                category: 'organization',
-//                categoryId: org.id,
-//                subcategory: 'lpu'});
+            vm.lpus = ServerData.query({
+                category: 'organization',
+                categoryId: org.id,
+                subcategory: 'lpu'});
         }
 
         ///////////////////////////////////////////////////////////////////////
@@ -396,21 +393,5 @@
         ///////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-
-        function upload(element) {
-            var fieldname = element.name;
-            angular.forEach(element.files, function(file) {
-                Upload.upload({
-                    url: '/api/upload/',
-                    data: {fileupload: file}
-                }).
-                then(function(response) {
-                    vm.report.files[fieldname].push(response.data.id);
-                    console.log(vm.report.files);
-                }, function(response) {
-                    console.log('Error status: ' + response.status);
-                });
-            });
-        }
     }
 })();

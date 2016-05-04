@@ -4,34 +4,40 @@
     angular.module('app.passport')
         .directive('validFile', ValidFileDirective);
 
-//    ValidFileDirective.$inject = ['Upload'];
-//
-//    function ValidFileDirective(Upload) {
-//        function upload(file) {
-//            console.log('uploading file ' + file);
-//            Upload.upload({
-//                url: '/api/upload/',
-//                data: {fileupload: file}
-//            }).
-//            then(function(response) {
-//                vm.report.files[fieldname] = response.data.id;
-//            }, function(response) {
-//                console.log('Error status: ' + response.status);
-//            });
-//        }
-
-    function ValidFileDirective() {
+    function ValidFileDirective(Upload) {
+        'ngInject';
         return {
             require: 'ngModel',
-            scope: true,
+            scope: {
+                ngModel: '='
+            },
             link: function(scope, el, attrs, ngModel){
-                el.bind('change', function(){
-                    scope.$apply(function(){
-                        ngModel.$setViewValue(el.val());
-//                        console.log('filename ' + el.val());
-                        ngModel.$render();
-//                        upload(scope.img);
+                var fieldname = attrs.name;
+
+                el.bind('change', function(e) {
+                    angular.forEach(e.target.files, function(file) {
+                        Upload.upload({
+                            url: '/api/upload/',
+                            data: {fileupload: file}
+                        }).
+                        then(function(response) {
+                            if (attrs.multiple !== undefined) {
+                                console.log('Multiple Upload');
+                                ngModel.$viewValue[fieldname].push(response.data.id);
+                                el.append('<span>dsds</span>')
+                            } else {
+                                ngModel.$viewValue[fieldname] = [response.data.id];
+                            }
+                        }, function(response) {
+                            console.log('Error status: ' + response.status);
+                        });
                     });
+
+//                    scope.$apply(function(){
+//                        ngModel.$setViewValue(el.val());
+//                        ngModel.$render();
+////                        upload(scope.img);
+//                    });
               });
             }
         };
