@@ -3,13 +3,12 @@
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.legend.$touched && vm.schemesForm.legend.$invalid }">
-                  <label class="control-label" for="legend">Условные обозначения</label>
+                  <p>LEGEND: {{vm.report.files | json}}</p>
                   <!-- 
-                      <input valid-file required type="file" id="legend" name="legend" ng-model="legend"
-                          onchange="angular.element(this).scope().upload(this)" />
+                      <label class="control-label" for="legend">Условные обозначения</label>
+                      <input valid-file required ng-model="vm.report.files" type="file" id="legend" name="legend" />
                    -->
-                   <p>LEGEND: {{vm.report.files | json}}</p>
-                  <input valid-file required ng-model="vm.report.files" type="file" id="legend" name="legend" />
+                  <fileupload ng-model="vm.report.files" field="legend" mupltiple label="Условные обозначения"></fileupload>
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.legend.$error" ng-if="vm.schemesForm.legend.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
