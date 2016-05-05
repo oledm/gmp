@@ -96,8 +96,8 @@ urlpatterns = [
     url(r'^api/upload', filestorage_views.FileUploadView.as_view(), name='files'),
 
     # Report route
-    url(r'^report/$', report_views.create_report, name="report"),
-    #url(r'^report/$', report_views.create_report_debug, name="report"),
+    #url(r'^report/$', report_views.create_report, name="report"),
+    url(r'^report/$', report_views.create_report_debug, name="report"),
 
     # Pass-through route
     url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),

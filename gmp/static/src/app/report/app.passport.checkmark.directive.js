@@ -27,7 +27,7 @@
             scope: true,
             transclude: true,
             template: '<span ng-if="showCheckmark">' +
-                '<i class="icon ion-checkmark" style="color: #00e676"></i>&nbsp;' +
+                '<i class="glyphicon glyphicon-ok" style="color: #00e676"></i>&nbsp;' +
                 '</span>' +
                 '<span ng-transclude></span>'
         };

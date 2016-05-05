@@ -17,7 +17,7 @@
                         if (attrs.multiple !== undefined) {
                             console.log('Multiple Upload');
                             ngModel.$viewValue[scope.field].push(response.data.id);
-                            el.append('<span>dsds</span>')
+//                            el.append('<span>dsds</span>')
                         } else {
                             ngModel.$viewValue[scope.field] = [response.data.id];
                         }
@@ -45,7 +45,6 @@
             template: '<input required {{multiple}} type="file" id="{{field}}" name="{{field}}" />',
             
             compile: function(tElem, tAttrs, transclude) {
-                var fileInput = angular.element(tElem)[0];
                 if (tAttrs.label) {
                     var fileLabel = angular.element('<label/>')
                         .addClass('control-label')
