@@ -5,8 +5,7 @@
         .module('app.report')
         .controller('ReportContainerController', ReportContainerController);
 
-    function ReportContainerController($state, ServerData, orgs, allEmployees,
-        allDevices, measurers) 
+    function ReportContainerController($state, ServerData, orgs, allEmployees, allDevices, measurers) 
     {
         'ngInject';
 
@@ -48,11 +47,11 @@
 	    files = {
                 'hydra': [],
                 'licenses': [],
-                'legend': [],
-                'conrtol_VIK': [],
-                'conrtol_UK_container': [],
-                'conrtol_UK_connections': [],
-                'conrtol_magnit': [],
+//                'legend': [],
+                'control_VIK': [],
+                'control_UK_container': [],
+                'control_UK_connections': [],
+                'control_magnit': [],
                 'warrant': [],
             },
 	    info = {
@@ -79,7 +78,7 @@
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
                 'report_container/results.tpl.html',
-                'report_container/licenses.tpl.html',
+//                'report_container/licenses.tpl.html',
             ],
             results = {
                 VIK: {

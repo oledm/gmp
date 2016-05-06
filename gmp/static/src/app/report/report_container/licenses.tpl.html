@@ -3,9 +3,10 @@
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.hydra.$touched && vm.schemesForm.hydra.$invalid }">
-                  <label class="control-label" for="hydra">Акт гидравлического испытания</label>
-                  <input valid-file required ng-model="vm.report.files" type="file" id="hydra" name="hydra" />
+                  <fileupload ng-model="vm.report.files" field="hydra" label="Акт гидравлического испытания"></fileupload>
                   <!-- 
+                      <label class="control-label" for="hydra">Акт гидравлического испытания</label>
+                      <input valid-file required ng-model="vm.report.files" type="file" id="hydra" name="hydra" />
                       <input valid-file required type="file" id="hydra" name="hydra" ng-model="hydra" onchange="angular.element(this).scope().upload(this)" />
                    -->
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.hydra.$error" ng-if="vm.schemesForm.hydra.$touched">
@@ -13,9 +14,10 @@
                   </div>
             </div>
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.licenses.$touched && vm.schemesForm.licenses.$invalid }">
-                  <label class="control-label" for="licenses">Разрешительные документы (свидетельства, лицензии)</label>
-                  <input valid-file multiple required ng-model="vm.report.files" type="file" id="licenses" name="licenses" />
+                  <fileupload ng-model="vm.report.files" field="licenses" multiple label="Разрешительные документы (свидетельства, лицензии)"></fileupload>
                   <!-- 
+                      <label class="control-label" for="licenses">Разрешительные документы (свидетельства, лицензии)</label>
+                      <input valid-file multiple required ng-model="vm.report.files" type="file" id="licenses" name="licenses" />
                       <input valid-file multiple required type="file" id="licenses" name="licenses" ng-model="licenses" onchange="angular.element(this).scope().upload(this)" />
                    -->
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.licenses.$error" ng-if="vm.schemesForm.licenses.$touched">
@@ -23,9 +25,10 @@
                   </div>
             </div>
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.warrant.$touched && vm.schemesForm.warrant.$invalid }">
-                  <label class="control-label" for="warrant">Доверенность</label>
-                  <input valid-file required ng-model="vm.report.files" type="file" id="warrant" name="warrant" />
+                  <fileupload ng-model="vm.report.files" field="warrant" label="Доверенность"></fileupload>
                   <!-- 
+                      <label class="control-label" for="warrant">Доверенность</label>
+                      <input valid-file required ng-model="vm.report.files" type="file" id="warrant" name="warrant" />
                       <input valid-file required type="file" id="warrant" name="warrant" ng-model="warrant" onchange="angular.element(this).scope().upload(this)" />
                    -->
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.warrant.$error" ng-if="vm.schemesForm.warrant.$touched">

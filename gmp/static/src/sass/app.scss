@@ -60,6 +60,12 @@ a:focus {
     outline: none;
 }
 
+.deleteCrossIcon {
+    color: $brand-danger;
+    cursor: pointer;
+    float: right;
+}
+
 @media (max-width: 768px) {
      .navbar {
              text-align: center;
