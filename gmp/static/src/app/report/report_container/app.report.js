@@ -44,16 +44,7 @@
                 'неработоспособное',
                 'предельное'
             ],
-	    files = {
-                'hydra': [],
-                'licenses': [],
-//                'legend': [],
-                'control_VIK': [],
-                'control_UK_container': [],
-                'control_UK_connections': [],
-                'control_magnit': [],
-                'warrant': [],
-            },
+	    files = {},
 	    info = {
                 'license': 'Договор субподряда между ООО «ГАЗМАШПРОЕКТ» и ООО «Стройгазмонтаж»',
                 'info_investigation': 'Экспертиза промышленной безопасности проводится впервые. ' +

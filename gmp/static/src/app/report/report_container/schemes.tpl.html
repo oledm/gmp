@@ -1,17 +1,18 @@
 <ng-form name="vm.schemesForm" novalidate>
   <h4 checkmark>Схемы проведения неразрушающего контроля</h4>
+
+      <p>LEGEND: {{vm.report.files | json}}</p>
+
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.legend.$touched && vm.schemesForm.legend.$invalid }">
-                  <p>LEGEND: {{vm.report.files | json}}</p>
-                  <files-upload ng-model="vm.report.files.legend" multiple required label="Условные обозначения"></files-upload>
+                  <files-upload multiple ng-model="vm.report.files.legend" label="Условные обозначения"></files-upload>
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.legend.$error" ng-if="vm.schemesForm.legend.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>
         </div>
     </div>
-
 
     <div class="form-group">
         <div class="row">
@@ -22,21 +23,14 @@
               </div>
             </div>
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.control_VIK.$touched && vm.schemesForm.control_VIK.$invalid }">
-                  <!-- 
-                      <input valid-file required type="file" id="control_VIK" name="control_VIK" ng-model="control_VIK"
-                          onchange="angular.element(this).scope().upload(this)" />
-                      <input valid-file required ng-model="vm.report.files" type="file" id="control_VIK" name="control_VIK" />
-                   -->
-                  <!-- 
-                      <fileupload ng-model="vm.report.files" field="control_VIK"></fileupload>
-                   -->
+                  <files-upload ng-model="vm.report.files.control_VIK"></files-upload>
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.control_VIK.$error" ng-if="vm.schemesForm.control_VIK.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>
         </div>
     </div>
-
+    
     <div class="form-group">
         <div class="row">
             <div class="col-sm-8" ng-class="{ 'has-error': vm.schemesForm.UK_container.$touched && vm.schemesForm.UK_container.$invalid }">
@@ -46,13 +40,7 @@
               </div>
             </div>
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.control_UK_container.$touched && vm.schemesForm.control_UK_container.$invalid }">
-                  <!-- 
-                      <input valid-file required type="file" id="control_UK_container" name="control_UK_container" ng-model="control_UK_container" onchange="angular.element(this).scope().upload(this)" />
-                      <input valid-file required ng-model="vm.report.files" type="file" id="control_UK_container" name="control_UK_container" />
-                   -->
-                  <!-- 
-                      <fileupload ng-model="vm.report.files" field="control_UK_container"></fileupload>
-                   -->
+                  <files-upload ng-model="vm.report.files.control_UK_container"></files-upload>
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.control_UK_container.$error" ng-if="vm.schemesForm.control_UK_container.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -69,13 +57,7 @@
               </div>
             </div>
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.control_UK_connections.$touched && vm.schemesForm.control_UK_connections.$invalid }">
-                  <!-- 
-                      <input valid-file required type="file" id="control_UK_connections" name="control_UK_connections" ng-model="control_UK_connections" onchange="angular.element(this).scope().upload(this)" />
-                      <input valid-file required ng-model="vm.report.files" type="file" id="control_UK_connections" name="control_UK_connections" />
-                   -->
-                  <!-- 
-                      <fileupload ng-model="vm.report.files" field="control_UK_connections"></fileupload>
-                   -->
+                  <files-upload ng-model="vm.report.files.control_UK_connections"></files-upload>
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.control_UK_connections.$error" ng-if="vm.schemesForm.control_UK_connections.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -92,17 +74,12 @@
               </div>
             </div>
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.control_magnit.$touched && vm.schemesForm.control_magnit.$invalid }">
-                  <!-- 
-                      <input valid-file required type="file" id="control_magnit" name="control_magnit" ng-model="control_magnit" onchange="angular.element(this).scope().upload(this)" />
-                      <input valid-file required ng-model="vm.report.files" type="file" id="control_magnit" name="control_magnit" />
-                   -->
-                  <!-- 
-                      <fileupload ng-model="vm.report.files" field="control_magnit"></fileupload>
-                   -->
+                  <files-upload ng-model="vm.report.files.control_magnit"></files-upload>
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.control_magnit.$error" ng-if="vm.schemesForm.control_magnit.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>
         </div>
     </div>
+
 </ng-form>

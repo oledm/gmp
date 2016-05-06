@@ -34,6 +34,9 @@
     function FileUploadDirective(Upload) {
         'ngInject';
         function link(scope, el, attrs, ngModel) {
+            var div = angular.element(el.children()[0]),
+                buttonText = div.find('span');
+
             scope.files = [];
 
 //            ngModel.$formatters.push(modelValue => {
@@ -51,10 +54,9 @@
 //                console.log(`model from render: ${scope.files}`);
 //            });
 
-//            ngModel.$viewChangeListeners.push(() => {
-//                console.log('viewChangeListeners');
-//                scope.files = ngModel.$viewValue;
-//            });
+            ngModel.$viewChangeListeners.push(() => {
+                scope.files = ngModel.$viewValue;
+            });
 
             scope.$watch('files', () => {
 //                console.log(`files changes somewhere: ${JSON.stringify(scope.files)}`);
@@ -69,8 +71,12 @@
                         data: {fileupload: file}
                     }).
                     then(response => {
-                        let values = [];
+                        // Update button text for single file uploader
+                        if (attrs.multiple === undefined) {
+                            buttonText.html('<small>' + file.name + '</small>');
+                        }
 
+                        let values = [];
                         if (attrs.multiple !== undefined && ngModel.$viewValue !== undefined) {
                             // Save last model condition
                             values = ngModel.$viewValue;
@@ -78,6 +84,7 @@
                         values.push({id: response.data.id, name: file.name});
                         ngModel.$setViewValue(values);
                         ngModel.$setValidity(attrs.ngModel, ngModel.$viewValue.length > 0);
+
                     }, response => {
                         console.log('Error status: ' + response.status);
                     });
@@ -89,28 +96,39 @@
             require: 'ngModel',
             restrict: 'E',
             scope: {
+                ngModel: '@',
                 multiple: '@',
                 label: '@'
             },
             template: `
-            <input required type="file" id="dsdsdsdlksjh" name="dsdsdsdlksjh" />
-            <files-list files="files"><files-list/>
+            <div class="fileUpload btn btn-default">
+                <span>Выбрать файл</span>
+                <input type="file" class="upload" id="{{ngModel}}" name="{{ngModel}}" />
+            </div>
             `,
             
             compile: function(tElem, tAttrs) {
-                var fileInput = angular.element(tElem.children()[0]);
-
-                if (tAttrs.multiple !== undefined) {
-                    fileInput.attr('multiple', '');
-                }
+                var div = angular.element(tElem.children()[0]),
+                    buttonText = div.find('span'),
+                    fileInput = div.find('input');
 
                 if (tAttrs.label) {
-                    var fileLabel = angular.element('<label/>')
+                    let fileLabel = angular.element('<label/>')
                         .addClass('control-label')
                         .text(tAttrs.label)
                         .attr('for', tAttrs.ngModel);
                     tElem.prepend(fileLabel);
                 }
+
+                if (tAttrs.multiple !== undefined) {
+                    let filesList = angular.element('<files-list />');
+                    filesList.attr('files', 'files');
+
+                    tElem.append(filesList);
+                    fileInput.attr('multiple', '');
+                    buttonText.html('Выбрать файлы');
+                }
+
                 return link;
             }
         };

@@ -66,6 +66,23 @@ a:focus {
     float: right;
 }
 
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+//    margin: 10px;
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    margin: 0;
+    padding: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
 @media (max-width: 768px) {
      .navbar {
              text-align: center;
