@@ -1,65 +1,22 @@
 (function() {
     'use strict';
 
-    angular.module('app.passport')
-        .directive('filesList', FilesListDirective)
+    angular.module('app.report')
         .directive('filesUpload', FileUploadDirective);
-
-    function FilesListDirective() {
-        'ngInject';
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: {
-                files: '='
-            },
-            template: '<ul class="list-group" ng-class="{hide: files.length === 0}">' + 
-                '<h5>Выбранные файлы</h5>' + 
-                '<li class="list-group-item" ' + 
-                'ng-repeat="file in files track by $index">{{file.name}}' + 
-                '<span class="deleteCrossIcon glyphicon glyphicon-remove" aria-hidden="true"' + 
-                'ng-click="delete(file.id)"></span>' +
-                '</li>' +
-                '</ul>',
-            link: function(scope, el, attrs) {
-                scope.delete = function(id) {
-                    console.log('delete ' + id);
-                    scope.files = scope.files.filter(file => file.id !== id);
-                    console.log('new files is ' + JSON.stringify(scope.files));
-                };
-            }
-        };
-    }
 
     function FileUploadDirective(Upload) {
         'ngInject';
         function link(scope, el, attrs, ngModel) {
-            var div = angular.element(el.children()[0]),
+            var div = angular.element(el.find('div')),
                 buttonText = div.find('span');
 
             scope.files = [];
-
-//            ngModel.$formatters.push(modelValue => {
-//                console.log('formatters');
-//                return modelValue;
-//            });
-            
-//            ngModel.$parsers.push(viewValue => {
-//                console.log(`parsers: ${JSON.stringify(viewValue)}`);
-//                return viewValue;
-//            });
-//            
-//            ngModel.$render(() => {
-//                scope.files = ngModel.$viewValue;
-//                console.log(`model from render: ${scope.files}`);
-//            });
 
             ngModel.$viewChangeListeners.push(() => {
                 scope.files = ngModel.$viewValue;
             });
 
             scope.$watch('files', () => {
-//                console.log(`files changes somewhere: ${JSON.stringify(scope.files)}`);
                 ngModel.$setViewValue(scope.files);
                 ngModel.$setValidity(attrs.ngModel, ngModel.$viewValue.length > 0);
             });
@@ -71,9 +28,9 @@
                         data: {fileupload: file}
                     }).
                     then(response => {
-                        // Update button text for single file uploader
+                        // Update button text for single-file uploader
                         if (attrs.multiple === undefined) {
-                            buttonText.html('<small>' + file.name + '</small>');
+                            buttonText.html(`<small>${file.name}</small>`);
                         }
 
                         let values = [];
@@ -108,7 +65,7 @@
             `,
             
             compile: function(tElem, tAttrs) {
-                var div = angular.element(tElem.children()[0]),
+                var div = angular.element(tElem.find('div')),
                     buttonText = div.find('span'),
                     fileInput = div.find('input');
 

@@ -69,7 +69,7 @@
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
                 'report_container/results.tpl.html',
-//                'report_container/licenses.tpl.html',
+                'report_container/licenses.tpl.html',
             ],
             results = {
                 VIK: {

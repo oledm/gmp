@@ -55,15 +55,22 @@ class FileViewset(viewsets.ModelViewSet):
         return Response(files_serialized.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):
+        print('destroy file')
         f = FileStorage.objects.get(pk=pk)
         f.delete()
-
-        msg = 'File successfully removed'
-        full_path = os.path.join(settings.MEDIA_ROOT, f.name)
-        try:
-            os.remove(full_path)
-        except FileNotFoundError:
-            msg = 'File is not found or already removed'
         return Response({
-            'message': msg
+            'message': 'File deleted successfully'
             }, status.HTTP_204_NO_CONTENT)
+
+        # Until leave all files on disk - delete only database entry.
+        #
+        #msg = 'File successfully removed'
+        #full_path = os.path.join(settings.MEDIA_ROOT, f.fileupload.name)
+        #print('remove file', full_path)
+        #try:
+        #    os.remove(full_path)
+        #except FileNotFoundError:
+        #    msg = 'File is not found or already removed'
+        #return Response({
+        #    'message': msg
+        #    }, status.HTTP_204_NO_CONTENT)

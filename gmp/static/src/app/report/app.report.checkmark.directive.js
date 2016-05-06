@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('app.passport')
+    angular.module('app.report')
         .directive('checkmark', CheckmarkDirective);
 
     function CheckmarkDirective() {
