@@ -21,6 +21,10 @@
             .state('admin', {
                 url: '/admin/',
             })
+            .state('classic-form', {
+                url: '/contact/',
+                templateUrl: '/contact/'
+            })
             .state('login', {
                 url: '/login',
                 controller: 'LoginController',
