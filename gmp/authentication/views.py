@@ -8,7 +8,18 @@ from rest_framework.response import Response
 from .serializers import EmployeeSerializer
 from .permissions import IsEmployeeMatch
 from .models import Employee
+from .forms import ContactForm
 from gmp.departments.models import Department
+
+from django.views.generic import TemplateView
+
+class ContactFormView(TemplateView):
+    template_name = 'subscribe-form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactFormView, self).get_context_data(**kwargs)
+        context.update(contact_form=ContactForm())
+        return context
 
 
 class LoginView(views.APIView):
