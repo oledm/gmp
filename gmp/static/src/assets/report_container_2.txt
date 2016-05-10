@@ -1,1 +1,1 @@
-Действие настоящего отчёта распространяется на сосуд, работающий под давлением&nbsp;&ndash; {device[full_desc]}, применяемый в филиале {obj_data[org]} {obj_data[lpu]}, {obj_data[ks]}, {obj_data[plant]}.
+Действие настоящего отчёта распространяется на сосуд, работающий под давлением&nbsp;&ndash; {device[full_desc]}, применяемый в филиале {obj_data[org][name]} {obj_data[lpu]}, {obj_data[ks]}, {obj_data[plant]}.

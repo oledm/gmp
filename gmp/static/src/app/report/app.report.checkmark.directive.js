@@ -5,36 +5,32 @@
         .directive('checkmark', CheckmarkDirective);
 
     function CheckmarkDirective() {
+
         return {
             require: '^form',
             restrict: 'A',
             link: function(scope, elem, attrs, formController) {
-                console.log('initial valid is ' + attrs.validon);
-//                if (formController.$name === 'vm.docsForm' ||
-//                    formController.$name === 'vm.resultsInfoForm' ||
-//                    formController.$name === 'vm.resultsTableForm'
-//                    ) {
-//                    scope.showCheckmark = true;
-//                    return;
-//                }
-                attrs.$observe('validon', function(newValue) {
-                    console.log('new valid is ' + newValue);
-                    if (!!newValue) {
-                        console.log('new valid is TRUTH!!!!!');
-                        scope.showCheckmark = true;
-                    } else {
-                        console.log('new valid is FALSY!!!!!');
-                        scope.showCheckmark = false;
-                    }
-                    console.log('showCheckmark is ' + scope.showCheckmark);
-                });
-                scope.$watch(formController.$name + '.$valid', function(newValue) {
-                    if (newValue) {
+                if (attrs.validOn !== undefined) {
+                    attrs.$observe('validOn', function(newValue) {
+                        newValue = scope.$eval(newValue)
+                        console.log('new valid is ' + newValue);
+                        setCheckMark(newValue);
+                    });
+                } else {
+                    scope.$watch(formController.$name + '.$valid', function(newValue) {
+                        setCheckMark(newValue);
+                    });
+                }
+                ///////////////////////////////////////////////////
+                function setCheckMark(value) {
+                    console.log('value: ' + value);
+                    if (value) {
                         scope.showCheckmark = true;
                     } else {
                         scope.showCheckmark = false;
                     }
-                });
+                }
+
             },
             scope: true,
             transclude: true,

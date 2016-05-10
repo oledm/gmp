@@ -44,7 +44,6 @@
                 'неработоспособное',
                 'предельное'
             ],
-	    files = {},
 	    info = {
                 'license': 'Договор субподряда между ООО «ГАЗМАШПРОЕКТ» и ООО «Стройгазмонтаж»',
                 'info_investigation': 'Экспертиза промышленной безопасности проводится впервые. ' +
@@ -326,7 +325,7 @@
         vm.measurers = {all: measurers, selected: []};
         vm.report = {
             team: {},
-            files: files,
+            files: {},
             info: info,
             schemes: schemes,
             measurers: vm.measurers.selected,
@@ -339,7 +338,8 @@
 
         function createPassport() {
             console.log('report:', JSON.stringify(vm.report));
-            Passport.createPassport(vm.report);
+//            Passport.createPassport(vm.report);
+            ServerData.report({'report_data': vm.report});
         }
 
         function getLPUs(org) {

@@ -1,12 +1,10 @@
 <ng-form name="vm.schemesForm" novalidate>
-    <h4 checkmark validon="{{vm.report.files.legend.length >= 3}}">Схемы проведения неразрушающего контроля</h4>
-
-      <p>LEGEND: {{vm.report.files | json}}</p>
+    <h4 checkmark>Схемы проведения неразрушающего контроля</h4>
 
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4" ng-class="{ 'has-error': vm.schemesForm.legend.$touched && vm.schemesForm.legend.$invalid }">
-                  <files-upload ng-model="vm.report.files.legend" multiple label="Условные обозначения"></files-upload>
+                  <files-upload ng-model="vm.report.files.legend" label="Условные обозначения"></files-upload>
                   <div class="help-block" role="alert" ng-messages="vm.schemesForm.legend.$error" ng-if="vm.schemesForm.legend.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>

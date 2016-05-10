@@ -86,8 +86,8 @@ class ReportContainer(ReportMixin):
             ['ДИАГНОСТИРОВАНИЯ'],
             ['<strong>сосуда, работающего под давлением</strong>'],
             ['<strong>{device[full_desc_capital]}</strong>'],
-            ['<strong>Предприятие владелец:</strong> {obj_data[org]}'],
-            ['<strong>Место установки:</strong> филиал {obj_data[org]} '
+            ['<strong>Предприятие владелец:</strong> {obj_data[org][name]}'],
+            ['<strong>Место установки:</strong> филиал {obj_data[org][name]} '
                 '{obj_data[lpu]} {obj_data[ks]} {obj_data[plant]}'''],
         ]
         para_style = (
@@ -158,8 +158,9 @@ class ReportContainer(ReportMixin):
 
     def paragraph3(self):
         data = self.data.get('obj_data').copy()
-        org = Organization.objects.filter(name=data['org']).first()
-        data.update({'org': data['org'].split('"')[1], **model_to_dict(org)})
+        org_name = data['org']['name']
+        org = Organization.objects.filter(name=org_name).first()
+        data.update({'org': org_name, **model_to_dict(org)})
         self.paragraph('3 Данные о заказчике', 'report_container_3.txt', data=data)
 
     def team(self):
@@ -380,13 +381,13 @@ class ReportContainer(ReportMixin):
         title = 'СХЕМЫ ПРОВЕДЕНИЯ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ'
         self.add_to_toc(title, self.styles['TOC Appendix'])
         self.spacer(.4)
-        image = FileStorage.objects.get(pk=self.data['files']['legend'][0])
+        image = FileStorage.objects.get(pk=self.data['files']['legend'][0]['id'])
         self.put_photo(image)
         ####################
         self.new_page()
         self.put('Приложение Б', 'Text Simple Right', .4)
         self.spacer(.4)
-        image = FileStorage.objects.get(pk=self.data['files']['control_VIK'][0])
+        image = FileStorage.objects.get(pk=self.data['files']['control_VIK'][0]['id'])
         self.put_photo(image)
         self.spacer(.3)
         self.put('Рис. 1 ' + self.data['schemes']['VIK'], 'Text Simple Center Bold')
@@ -394,7 +395,7 @@ class ReportContainer(ReportMixin):
         self.new_page()
         self.put('Приложение Б', 'Text Simple Right', .4)
         self.spacer(.4)
-        image = FileStorage.objects.get(pk=self.data['files']['control_UK_container'][0])
+        image = FileStorage.objects.get(pk=self.data['files']['control_UK_container'][0]['id'])
         self.put_photo(image)
         self.spacer(.3)
         self.put('Рис. 2 ' + self.data['schemes']['UK_container'], 'Text Simple Center Bold')
@@ -402,7 +403,7 @@ class ReportContainer(ReportMixin):
         self.new_page()
         self.put('Приложение Б', 'Text Simple Right', .4)
         self.spacer(.4)
-        image = FileStorage.objects.get(pk=self.data['files']['control_UK_connections'][0])
+        image = FileStorage.objects.get(pk=self.data['files']['control_UK_connections'][0]['id'])
         self.put_photo(image)
         self.spacer(.3)
         self.put('Рис. 3 ' + self.data['schemes']['UK_connections'], 'Text Simple Center Bold')
@@ -410,7 +411,7 @@ class ReportContainer(ReportMixin):
         self.new_page()
         self.put('Приложение Б', 'Text Simple Right', .4)
         self.spacer(.4)
-        image = FileStorage.objects.get(pk=self.data['files']['control_magnit'][0])
+        image = FileStorage.objects.get(pk=self.data['files']['control_magnit'][0]['id'])
         self.put_photo(image)
         self.spacer(.3)
         self.put('Рис. 4 ' + self.data['schemes']['magnit'], 'Text Simple Center Bold')
@@ -727,7 +728,7 @@ class ReportContainer(ReportMixin):
         self.add_to_toc('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', self.styles['TOC Appendix Hidden'])
         self.put('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', 'Text Simple Center Bold', .2)
         self.spacer(.4)
-        image = FileStorage.objects.get(pk=self.data['files']['hydra'][0])
+        image = FileStorage.objects.get(pk=self.data['files']['hydra'][0]['id'])
         self.put_photo(image)
 
     def appendixJ(self):
@@ -774,12 +775,13 @@ class ReportContainer(ReportMixin):
         self.add_to_toc('Копии разрешительной документации', self.styles['TOC Appendix Hidden'])
         self.put('КОПИИ РАЗРЕШИТЕЛЬНОЙ ДОКУМЕНТАЦИИ', 'Text Simple Center Bold', .2)
         self.spacer(.4)
-        for image in FileStorage.objects.filter(pk__in=self.data['files']['licenses']):
+        licenses = map(lambda x: int(x['id']), self.data['files']['licenses'])
+        for image in FileStorage.objects.filter(pk__in=licenses):
             self.put_photo(image, height=12)
             self.spacer(.3)
 
         self.new_page()
-        image = FileStorage.objects.get(pk=self.data['files']['warrant'][0])
+        image = FileStorage.objects.get(pk=int(self.data['files']['warrant'][0]['id']))
         self.put_photo(image)
 
     ######################################

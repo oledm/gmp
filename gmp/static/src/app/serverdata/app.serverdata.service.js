@@ -25,6 +25,17 @@
                     categoryId: Cookies.get().department.id,
                     subcategory: 'user',
                 }
+            },
+            report: {
+                url: '/report/',
+                method: 'post',
+                headers: {'Content-Type': 'application/json'},
+                responseType: 'arraybuffer',
+                transformResponse: (data, headers) => {
+                    var file = new Blob([data], {type: 'application/pdf'});
+                    saveAs(file, 'report.pdf');
+                    return headers;
+                }
             }
         });
     }
