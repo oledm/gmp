@@ -1,14 +1,3 @@
-<!-- 
-    <script type="text/javascript">
-        angular.module('djangular-demo', ['djng.forms']);
-    </script>
-    
-<form name="{{ form.form_name }}" method="post" action="." novalidate>
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button type="submit" ng-disabled="{{ form.form_name }}.$invalid" class="btn btn-primary">Subscribe</button>
-</form>
- -->
 <form name="contact_form">
     {{contact_form}}
     <button ng-click="submit()">Submit</button>

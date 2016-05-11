@@ -3,7 +3,27 @@
 
     angular
         .module('app.report')
+        .config(ReportConfig)
+        .controller('FormController', FormController)
         .controller('ReportContainerController', ReportContainerController);
+
+    function ReportConfig($httpProvider) {
+        'ngInject';
+        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    }
+
+    function FormController($scope, $http) {
+        'ngInject';
+
+        $scope.submit = function() {
+            console.log('submitted ' + $scope.subject);
+            var in_data = { subject: $scope.subject };
+            $http.post('/contact/', in_data)
+                .success(function(out_data) {
+                    console.log('out: ' + out_data);
+                });
+        }
+    }
 
     function ReportContainerController($state, ServerData, orgs, allEmployees, allDevices, measurers) 
     {
@@ -336,6 +356,7 @@
         vm.setSelected = setSelected;
 
 
+
         function createPassport() {
             console.log('report:', JSON.stringify(vm.report));
 //            Passport.createPassport(vm.report);
@@ -343,10 +364,12 @@
         }
 
         function getLPUs(org) {
-            vm.lpus = ServerData.query({
-                category: 'organization',
-                categoryId: org.id,
-                subcategory: 'lpu'});
+            if (org !== undefined) {
+                vm.lpus = ServerData.query({
+                    category: 'organization',
+                    categoryId: org.id,
+                    subcategory: 'lpu'});
+            }
         }
 
         ///////////////////////////////////////////////////////////////////////

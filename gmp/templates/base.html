@@ -1,5 +1,5 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
-<html lang="ru" ng-app='app' ng-cloak>
+<html lang="ru" ng-app='app'>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -28,7 +28,7 @@
 
   </head>
 
-  <body ng-controller="MainController as main">
+  <body ng-controller="MainController as main" ng-cloak>
 
       {% block content %}
         <p>Use this document as a way to quick start any new project.</p>

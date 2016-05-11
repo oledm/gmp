@@ -41,7 +41,7 @@ THIRD_PARTY_APPS = (
     #'allauth.socialaccount',  # registration
     'rest_framework',
     'djangobower',
-    #'djng',
+    'djng',
 )
 
 # Apps specific for this project go here.

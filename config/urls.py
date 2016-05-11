@@ -52,6 +52,7 @@ containers.register('container', containers_views.ContainerViewset)
 
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
+
     url(r'^contact/$', user_views.ContactFormView.as_view()),
 
     # Django Admin, use {% url 'admin:index' %}

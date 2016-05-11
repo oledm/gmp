@@ -12,6 +12,9 @@ from .forms import ContactForm
 from gmp.departments.models import Department
 
 from django.views.generic import TemplateView
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseBadRequest, HttpResponse
 
 class ContactFormView(TemplateView):
     template_name = 'subscribe-form.html'
@@ -20,6 +23,21 @@ class ContactFormView(TemplateView):
         context = super(ContactFormView, self).get_context_data(**kwargs)
         context.update(contact_form=ContactForm())
         return context
+
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super(ContactFormView, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        print('post received')
+        if not request.is_ajax():
+            return HttpResponseBadRequest('Expected an XMLHttpRequest')
+        in_data = json.loads(request.body.decode('utf-8'))
+        #print('received data', in_data)
+        bound_contact_form = ContactForm(data={'subject': in_data.get('subject')})
+        #print('is valid?', bound_contact_form.is_valid())
+        if bound_contact_form.is_valid():
+            return HttpResponse(bound_contact_form.data, status=status.HTTP_200_OK)
 
 
 class LoginView(views.APIView):

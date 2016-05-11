@@ -13,7 +13,6 @@
                 if (attrs.validOn !== undefined) {
                     attrs.$observe('validOn', function(newValue) {
                         newValue = scope.$eval(newValue)
-                        console.log('new valid is ' + newValue);
                         setCheckMark(newValue);
                     });
                 } else {
@@ -23,7 +22,6 @@
                 }
                 ///////////////////////////////////////////////////
                 function setCheckMark(value) {
-                    console.log('value: ' + value);
                     if (value) {
                         scope.showCheckmark = true;
                     } else {
