@@ -3,21 +3,29 @@ from django.core.exceptions import ValidationError
 from djng.forms.fields import FloatField
 from djng.forms import NgModelFormMixin, NgForm, NgModelForm
 from djng.styling.bootstrap3.forms import Bootstrap3FormMixin
+from django.forms import inlineformset_factory
+
 
 from .models import Employee
-
-
-def validate_password(value):
-    # Just for demo. Do not validate passwords like this!
-    if value != 'secret':
-        raise ValidationError('The password is wrong.')
-
+from gmp.departments.models import Department
 
 class ContactForm(Bootstrap3FormMixin, NgModelFormMixin, NgModelForm):
     class Meta:
          model = Employee
          fields = '__all__'
 
+class DepartmentForm(Bootstrap3FormMixin, NgModelFormMixin, NgModelForm):
+    class Meta:
+         model = Department
+         fields = '__all__'
+
+DepartmentFormSet = inlineformset_factory(Department, Employee, fields='__all__')
+
+
+def validate_password(value):
+    # Just for demo. Do not validate passwords like this!
+    if value != 'secret':
+        raise ValidationError('The password is wrong.')
 #class ContactForm(NgModelFormMixin, NgForm, Bootstrap3Form):
 #    #CONTINENT_CHOICES = (('am', 'America'), ('eu', 'Europe'), ('as', 'Asia'), ('af', 'Africa'),
 #    #                     ('au', 'Australia'), ('oc', 'Oceania'), ('an', 'Antartica'),)
