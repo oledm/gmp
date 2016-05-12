@@ -6,12 +6,13 @@ from itertools import chain
 from django.forms.models import model_to_dict
 from django.db.models import Q
 
-from reportlab.platypus.flowables import Flowable, KeepTogether
-from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table, Spacer
-from reportlab.platypus.frames import Frame
+from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, Preformatted, Table, Spacer, KeepTogether
 from reportlab.platypus.doctemplate import PageTemplate
-from reportlab.lib.units import cm
+from reportlab.platypus.flowables import Flowable
+from reportlab.platypus.frames import Frame
 from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.pdfgen.canvas import Canvas
 
 from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
@@ -20,6 +21,7 @@ from gmp.departments.models import Measurer
 from gmp.filestorage.models import FileStorage
 
 from .helpers import ReportMixin
+
 
 class RotededText(Flowable): #TableTextRotate
     def __init__(self, text, style):
@@ -52,7 +54,9 @@ class ReportContainer(ReportMixin):
         self.Story.append(NextPageTemplate('Content'))
         self.put_toc()
         self.page2()
+        self.Story.append(NextPageTemplate('Приложение А'))
         self.appendixA()
+        self.Story.append(NextPageTemplate('Приложение Б'))
         self.appendixB()
         self.Story.append(NextPageTemplate('Приложение В'))
         self.appendixC()
@@ -351,12 +355,11 @@ class ReportContainer(ReportMixin):
     
     def appendixA(self):
         self.new_page()
-        self.put('Приложение А', 'Text Simple Right', .4)
         title = 'ПЕРЕЧЕНЬ ИСПОЛЬЗОВАННОЙ ПРИ ТЕХНИЧЕСКОМ ДИАГНОСТИРОВАНИИ ' \
             'НОРМАТИВНОЙ, ТЕХНИЧЕСКОЙ И МЕТОДИЧЕСКОЙ ЛИТЕРАТУРЫ'
         self.add_to_toc(title, self.styles['TOC Appendix'])
         self.spacer(1)
-        template = self.get_csv('report_container_appendixA_1.txt')
+        template = self.static_data_list('report_container_appendixA_1.txt')
         para_style = (
             ('Text Simple Height',),
         )
@@ -368,49 +371,30 @@ class ReportContainer(ReportMixin):
         self.add(template, [0.5, 9.5], self.get_style(para_style, template),
             table_style
         )
-        self.new_page()
-        self.put('Приложение А', 'Text Simple Right', .4)
-        template = self.get_csv('report_container_appendixA_2.txt')
-        self.add(template, [0.5, 9.5], self.get_style(para_style, template),
-            table_style
-        )
 
     def appendixB(self):
         self.new_page()
-        self.put('Приложение Б', 'Text Simple Right', .4)
         title = 'СХЕМЫ ПРОВЕДЕНИЯ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ'
         self.add_to_toc(title, self.styles['TOC Appendix'])
         self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['legend'][0]['id'])
         self.put_photo(image)
         ####################
-        self.new_page()
-        self.put('Приложение Б', 'Text Simple Right', .4)
-        self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['control_VIK'][0]['id'])
         self.put_photo(image)
         self.spacer(.3)
         self.put('Рис. 1 ' + self.data['schemes']['VIK'], 'Text Simple Center Bold')
         ####################
-        self.new_page()
-        self.put('Приложение Б', 'Text Simple Right', .4)
-        self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['control_UK_container'][0]['id'])
         self.put_photo(image)
         self.spacer(.3)
         self.put('Рис. 2 ' + self.data['schemes']['UK_container'], 'Text Simple Center Bold')
         ####################
-        self.new_page()
-        self.put('Приложение Б', 'Text Simple Right', .4)
-        self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['control_UK_connections'][0]['id'])
         self.put_photo(image)
         self.spacer(.3)
         self.put('Рис. 3 ' + self.data['schemes']['UK_connections'], 'Text Simple Center Bold')
         ####################
-        self.new_page()
-        self.put('Приложение Б', 'Text Simple Right', .4)
-        self.spacer(.4)
         image = FileStorage.objects.get(pk=self.data['files']['control_magnit'][0]['id'])
         self.put_photo(image)
         self.spacer(.3)
@@ -726,10 +710,20 @@ class ReportContainer(ReportMixin):
     def appendixI(self):
         self.new_page()
         self.add_to_toc('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', self.styles['TOC Appendix Hidden'])
-        self.put('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', 'Text Simple Center Bold', .2)
-        self.spacer(.4)
+        #self.put('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', 'Text Simple Center Bold', .2)
+        #self.spacer(.4)
+        #image = FileStorage.objects.get(pk=self.data['files']['hydra'][0]['id'])
+        #self.put_photo(image)
+
         image = FileStorage.objects.get(pk=self.data['files']['hydra'][0]['id'])
-        self.put_photo(image)
+        image = self.get_photo(image)
+        story = [
+            Paragraph('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', self.styles['Text Simple Center Bold']),
+            Spacer(0.1 * cm, .4 * cm),
+            image
+        ]
+        self.put_one_page(story)
+
 
     def appendixJ(self):
         self.new_page()
@@ -865,7 +859,7 @@ class ReportContainer(ReportMixin):
         data = self.data.copy()
         data['device']['name'] = data['device']['name'].capitalize()
         template = [
-            ['ООО «ГАЗМАШПРОЕКТ»', '', '{obj_data[org]}'],
+            ['ООО «ГАЗМАШПРОЕКТ»', '', '{obj_data[org][name]}'],
             ['(предприятие-исполнитель)', '', '(предприятие-Заказчик)'],
             ['г. Москва, ул. Нагатинская, д. 5', '', '{obj_data[lpu]},'
                 '<br />{obj_data[ks]}, {obj_data[plant]}'],
@@ -926,7 +920,7 @@ class ReportContainer(ReportMixin):
 
         frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height,
             bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=45, id='no_header')
-        letters = ['В', 'Г', 'Д', 'Е', 'Ж', 'И', 'К', 'Л']
+        letters = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'И', 'К', 'Л']
         template_appendix = []
         for letter in letters:
             name = 'Приложение ' + letter

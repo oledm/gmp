@@ -204,7 +204,7 @@ def create_report_debug(request):
            'control_VIK': [{'id': '1474', 'name': 'dexxus_4714207610.jpg'}],
            'control_magnit': [{'id': '1477',
                                'name': 'mattbuck007_9509909083.jpg'}],
-           'hydra': [{'id': '1465', 'name': 'dexxus_4714207610.jpg'}],
+           'hydra': [{'id': '1515', 'name': 'dexxus_4714207610.jpg'}],
            'legend': [{'id': '1473', 'name': 'blumblaum_3929361972.jpg'}],
            'licenses': [{'id': '1466', 'name': 'dexxus_5626316429.jpg'},
                         {'id': '1467', 'name': 'dexxus_4714207610.jpg'},

@@ -9,7 +9,7 @@ from django.utils import dateformat
 from PIL import Image as PILImage
 import environ
 
-from reportlab.platypus.flowables import Flowable
+from reportlab.platypus.flowables import Flowable, KeepInFrame
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak
 from reportlab.platypus.doctemplate import BaseDocTemplate
@@ -24,6 +24,67 @@ from reportlab.pdfbase import ttfonts
 #import locale
 #locale.setlocale(locale.LC_ALL, "")
 #loc = partial(locale.format, "%.2f")
+
+from pdfrw import PdfReader
+from pdfrw.buildxobj import pagexobj
+from pdfrw.toreportlab import makerl
+
+class PdfImage(Flowable):
+
+    def __init__(self, filename, width=None, height=None, kind='bound',
+                                     mask=None, lazy=True, srcinfo=None):
+        Flowable.__init__(self)
+        self._kind = kind
+        page = PdfReader(filename, decompress=False).pages[0]
+        self.xobj = pagexobj(page)
+        self.imageWidth, self.imageHeight = imageWidth, imageHeight = self.xobj.w, self.xobj.h
+        width = width or imageWidth
+        height = height or imageHeight
+        if kind in ['bound','proportional']:
+            factor = min(float(width)/imageWidth,float(height)/imageHeight)
+            width = factor * imageWidth
+            height = factor * imageHeight
+        self.drawWidth = width
+        self.drawHeight = height
+
+    def wrap(self, aW, aH):
+        return self.drawWidth, self.drawHeight
+
+    def drawOn(self, canv, x, y, _sW=0, width=0, height=0):
+        if _sW > 0 and hasattr(self, 'hAlign'):
+            a = self.hAlign
+            if a in ('CENTER', 'CENTRE', TA_CENTER):
+                x += 0.5*_sW
+            elif a in ('RIGHT', TA_RIGHT):
+                x += _sW
+            elif a not in ('LEFT', TA_LEFT):
+                raise ValueError("Bad hAlign value " + str(a))
+
+        xobj = self.xobj
+        xobj_name = makerl(canv._doc, xobj)
+
+        xscale = (width or self.drawWidth) / xobj.w
+        yscale = (height or self.drawHeight) / xobj.h
+        x -= xobj.x * xscale
+        y -= xobj.y * yscale
+
+        canv.saveState()
+        canv.translate(x, y)
+        canv.scale(xscale, yscale)
+        canv.doForm(xobj_name)
+        canv.restoreState()
+
+    def _restrictSize(self,aW,aH):
+        if self.drawWidth>aW+_FUZZ or self.drawHeight>aH+_FUZZ:
+            self._oldDrawSize = self.drawWidth, self.drawHeight
+            factor = min(float(aW)/self.drawWidth,float(aH)/self.drawHeight)
+            self.drawWidth *= factor
+            self.drawHeight *= factor
+        return self.drawWidth, self.drawHeight
+
+    def getSize(self):
+        return self.drawWidth, self.drawHeight
+
 
 
 class MyDocTemplate(BaseDocTemplate):
@@ -270,12 +331,33 @@ class ReportMixin():
         if spacer:
             self.Story.append(Spacer(1, spacer * cm))
 
+    def put_one_page(self, objects):
+        inframe = KeepInFrame(0, 0, objects, hAlign='CENTER', vAlign='TOP')
+        self.Story.append(inframe)
+
+
     ''' 
         Functions for working with images
     '''
+    def get_photo(self, filename, width=0, height=0):
+        if hasattr(filename, 'name'):
+            if filename.name.rsplit('.', 1)[1].lower() == 'pdf':
+                max_height = self.doc.height - (self.doc.topMargin * 2)
+                image = PdfImage(filename.name, height=max_height/1.14)
+            else:
+                image = self.fetch_image(filename, width, height)
+        else:
+            image = self.fetch_static_image(filename, width, height)
+        image.hAlign = 'CENTER'
+        return image
+
     def put_photo(self, filename, width=0, height=0):
         if hasattr(filename, 'name'):
-            image = self.fetch_image(filename, width, height)
+            if filename.name.rsplit('.', 1)[1].lower() == 'pdf':
+                max_height = self.doc.height - (self.doc.topMargin * 2)
+                image = PdfImage(filename.name, height=max_height/1.2)
+            else:
+                image = self.fetch_image(filename, width, height)
         else:
             image = self.fetch_static_image(filename, width, height)
         image.hAlign = 'CENTER'
@@ -599,7 +681,7 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='TOC Appendix Hidden',
             fontName='Times Bold',
-            fontSize=0,
+            fontSize=0.1,
             textColor=colors.white,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
