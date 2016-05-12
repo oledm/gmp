@@ -1,4 +1,16 @@
-<form name="contact_form">
-    {{contact_form}}
-    <button ng-click="submit()">Submit</button>
+<!-- 
+    <form name="contact_form">
+        {{contact_form}}
+        <button ng-click="submit()">Submit</button>
+    </form>
+ -->
+<form class="form-horizontal form-inline" name="contact_form">
+    {{ formset.management_form }}
+    {{department_formset}}
+    {% for form in formset %}
+        <ul>
+            <li>{{ form }}</li>
+            <li>{{ form.DELETE }}</li>
+        </ul>
+    {% endfor %}
 </form>
