@@ -188,6 +188,14 @@ class ReportMixin():
         h._bookmarkName = bn
         self.Story.append(h)
 
+    def add_to_toc_and_return(self, text, sty):
+        data = str(text + sty.name).encode()
+        bn = sha1(data).hexdigest()
+        h = Paragraph(text + '<a name="%s"/>' % bn, sty)
+        # store the bookmark name on the flowable so afterFlowable can see this
+        h._bookmarkName = bn
+        return h
+
     def create(self):
         raise NotImplementedError('Define method "create"')
 

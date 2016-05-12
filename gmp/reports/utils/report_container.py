@@ -374,31 +374,56 @@ class ReportContainer(ReportMixin):
 
     def appendixB(self):
         self.new_page()
-        title = 'СХЕМЫ ПРОВЕДЕНИЯ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ'
-        self.add_to_toc(title, self.styles['TOC Appendix'])
-        self.spacer(.4)
+        text = 'СХЕМЫ ПРОВЕДЕНИЯ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ'
+        title = self.add_to_toc_and_return(text, self.styles['TOC Appendix'])
         image = FileStorage.objects.get(pk=self.data['files']['legend'][0]['id'])
-        self.put_photo(image)
+        image = self.get_photo(image)
+        pack = [
+            title,
+            Spacer(0.1 * cm, 0.4 * cm),
+            image
+        ]
+        self.put_one_page(pack)
         ####################
+        self.new_page()
         image = FileStorage.objects.get(pk=self.data['files']['control_VIK'][0]['id'])
-        self.put_photo(image)
-        self.spacer(.3)
-        self.put('Рис. 1 ' + self.data['schemes']['VIK'], 'Text Simple Center Bold')
+        image = self.get_photo(image)
+        pack = [
+            image,
+            Spacer(0.1 * cm, 0.3 * cm),
+            Paragraph('Рис. 1 ' + self.data['schemes']['VIK'], self.styles[ 'Text Simple Center Bold'])
+        ]
+        self.put_one_page(pack)
         ####################
+        self.new_page()
         image = FileStorage.objects.get(pk=self.data['files']['control_UK_container'][0]['id'])
-        self.put_photo(image)
-        self.spacer(.3)
-        self.put('Рис. 2 ' + self.data['schemes']['UK_container'], 'Text Simple Center Bold')
+        image = self.get_photo(image)
+        pack = [
+            image,
+            Spacer(0.1 * cm, 0.3 * cm),
+            Paragraph('Рис. 2 ' + self.data['schemes']['UK_container'], self.styles[ 'Text Simple Center Bold'])
+        ]
+        self.put_one_page(pack)
         ####################
+        self.new_page()
         image = FileStorage.objects.get(pk=self.data['files']['control_UK_connections'][0]['id'])
-        self.put_photo(image)
-        self.spacer(.3)
-        self.put('Рис. 3 ' + self.data['schemes']['UK_connections'], 'Text Simple Center Bold')
+        image = self.get_photo(image)
+        pack = [
+            image,
+            Spacer(0.1 * cm, 0.3 * cm),
+            Paragraph('Рис. 3 ' + self.data['schemes']['UK_connections'], self.styles[ 'Text Simple Center Bold'])
+        ]
+        self.put_one_page(pack)
         ####################
+        self.new_page()
         image = FileStorage.objects.get(pk=self.data['files']['control_magnit'][0]['id'])
-        self.put_photo(image)
-        self.spacer(.3)
-        self.put('Рис. 4 ' + self.data['schemes']['magnit'], 'Text Simple Center Bold')
+        image = self.get_photo(image)
+        pack = [
+            image,
+            Spacer(0.1 * cm, 0.3 * cm),
+            Paragraph('Рис. 4 ' + self.data['schemes']['magnit'], self.styles[ 'Text Simple Center Bold'])
+        ]
+        self.put_one_page(pack)
 
     def appendixC(self):
         self.new_page()
@@ -767,10 +792,17 @@ class ReportContainer(ReportMixin):
     def appendixK(self):
         self.new_page()
         self.add_to_toc('Копии разрешительной документации', self.styles['TOC Appendix Hidden'])
-        self.put('КОПИИ РАЗРЕШИТЕЛЬНОЙ ДОКУМЕНТАЦИИ', 'Text Simple Center Bold', .2)
-        self.spacer(.4)
-        licenses = map(lambda x: int(x['id']), self.data['files']['licenses'])
-        for image in FileStorage.objects.filter(pk__in=licenses):
+        first, *rest_licenses = map(lambda x: int(x['id']), self.data['files']['licenses'])
+        image = FileStorage.objects.get(pk=first)
+        image = self.get_photo(image)
+        pack = [
+            Paragraph('КОПИИ РАЗРЕШИТЕЛЬНОЙ ДОКУМЕНТАЦИИ', self.styles['Text Simple Center Bold']),
+            Spacer(0.1 * cm, 0.4 * cm),
+            image
+        ]
+        self.put_one_page(pack)
+
+        for image in FileStorage.objects.filter(pk__in=rest_licenses):
             self.put_photo(image, height=12)
             self.spacer(.3)
 
