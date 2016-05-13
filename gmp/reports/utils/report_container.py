@@ -97,8 +97,9 @@ class ReportContainer(ReportMixin):
             ['<strong>{device[full_desc_capital]}</strong>'],
             ['<strong>Предприятие владелец:</strong> {obj_data[org][name]}'],
             ['<strong>Место установки:</strong> филиал {obj_data[org][name]} '
-                '{obj_data[lpu]} {obj_data[ks]} {obj_data[plant]}'''],
+                '{obj}'''],
         ]
+        obj = ', '.join([self.data['obj_data']['lpu'], self.data['obj_data']['ks'], self.data['obj_data']['plant']])
         para_style = (
             ('Heading 1 Big Bold', ),
             ('Heading 1 Big Bold', ),
@@ -109,8 +110,10 @@ class ReportContainer(ReportMixin):
             ('TOPPADDING', (0,0), (-1,2), 0),
             ('BOTTOMPADDING', (0,0), (-1,2), 0),
         )
+        data = self.data.copy()
+        data.update({'obj': obj})
         self.add(template, [10], self.get_style(para_style, template), table_style,
-            data=self.data, hAlign='CENTER')
+            data=data, hAlign='CENTER')
 
     def paragraph(self, title, file_, data={}):
         table_style = (
