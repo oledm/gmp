@@ -808,7 +808,9 @@ class ReportContainer(ReportMixin):
 
         self.new_page()
         image = FileStorage.objects.get(pk=int(self.data['files']['warrant'][0]['id']))
-        self.put_photo(image)
+        image = self.get_photo(image)
+        pack = [image]
+        self.put_one_page(pack)
 
     ######################################
     # Helpers
