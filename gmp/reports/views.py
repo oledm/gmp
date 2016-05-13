@@ -213,7 +213,7 @@ def create_report_debug(request):
                         {'id': '1468', 'name': 'dexxus_5652914929.jpg'},
                         {'id': '1470', 'name': 'dexxus_5653503758.jpg'},
                         {'id': '1471', 'name': 'blumblaum_3929361972.jpg'}],
-           'warrant': [{'id': '1472', 'name': 'mattbuck007_11192835835.jpg'}]},
+           'warrant': [{'id': '1485', 'name': 'mattbuck007_11192835835.jpg'}]},
  'info': {'danger_places': 'Места концентраций напряжений – продольные и '
                            'кольцевые сварные швы, места вварки штуцеров; '
                            'места наиболее вероятного коррозионного износа – '
@@ -240,7 +240,7 @@ def create_report_debug(request):
           'license_date': '2016-05-07T00:00:00.000Z',
           'license_more': '',
           'license_number': '0012'},
- 'measurers': [31, 32, 27, 23, 22, 28, 30, 34, 33, 35, 29, 25, 24, 26],
+ 'measurers': [31, 32, 27, 23],
  'obj_data': {'ks': 'КС Иваново',
               'lpu': 'Майкопское ЛПУ МГ',
               'org': {'id': 4, 'name': 'ООО "Газпром трансгаз Краснодар"'},

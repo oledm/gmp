@@ -8,6 +8,7 @@ from django.db.models import Q
 
 from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, Preformatted, Table, Spacer, KeepTogether
 from reportlab.platypus.doctemplate import PageTemplate
+from reportlab.lib.styles import ParagraphStyle as PS
 from reportlab.platypus.flowables import Flowable
 from reportlab.platypus.frames import Frame
 from reportlab.lib import colors
@@ -39,6 +40,9 @@ class RotededText(Flowable): #TableTextRotate
 
 class ReportContainer(ReportMixin):
     def create(self):
+        self.content_top_padding = 1.4*cm
+        self.appendix_top_padding = 2.4*cm
+
         self.format_locale_JS_dates(self.data['order'], ('date',))
         self.format_locale_JS_dates(self.data['info'], ('investigation_date',))
         self.format_JS_dates(self.data['info'], ('license_date',))
@@ -52,9 +56,11 @@ class ReportContainer(ReportMixin):
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
+        self.frame_top_padding = self.content_top_padding
         self.put_toc()
         self.page2()
         self.Story.append(NextPageTemplate('Приложение А'))
+        self.frame_top_padding = self.appendix_top_padding
         self.appendixA()
         self.Story.append(NextPageTemplate('Приложение Б'))
         self.appendixB()
@@ -86,8 +92,7 @@ class ReportContainer(ReportMixin):
 
         template = [
             ['ОТЧЕТ № {report_code}'],
-            ['ПО РЕЗУЛЬТАТАМ КОМПЛЕКСНОГО ТЕХНИЧЕСКОГО'],
-            ['ДИАГНОСТИРОВАНИЯ'],
+            ['ПО РЕЗУЛЬТАТАМ КОМПЛЕКСНОГО ТЕХНИЧЕСКОГО ДИАГНОСТИРОВАНИЯ'],
             ['<strong>сосуда, работающего под давлением</strong>'],
             ['<strong>{device[full_desc_capital]}</strong>'],
             ['<strong>Предприятие владелец:</strong> {obj_data[org][name]}'],
@@ -95,15 +100,16 @@ class ReportContainer(ReportMixin):
                 '{obj_data[lpu]} {obj_data[ks]} {obj_data[plant]}'''],
         ]
         para_style = (
-            ('Heading 1 Bold', ),
-            ('Heading 1 Bold', ),
-            ('Heading 1 Bold', ),
+            ('Heading 1 Big Bold', ),
+            ('Heading 1 Big Bold', ),
+            ('Heading 1 Big Bold', ),
             ('Text Simple Center Leading', ),
         )
         table_style = (
-            ('BOTTOMPADDING', (0,0), (-1,2), 10),
+            ('TOPPADDING', (0,0), (-1,2), 0),
+            ('BOTTOMPADDING', (0,0), (-1,2), 0),
         )
-        self.add(template, [8], self.get_style(para_style, template), table_style,
+        self.add(template, [10], self.get_style(para_style, template), table_style,
             data=self.data, hAlign='CENTER')
 
     def paragraph(self, title, file_, data={}):
@@ -261,10 +267,10 @@ class ReportContainer(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 4),
             #('SPAN', (0,11), (0,12)),
         )
-        self.add(template, [4, 6], self.get_style(para_style, template),
+        table = self.get(template, [4, 6], self.get_style(para_style, template),
             table_style, styleTable=True, data=data
         )
-
+        self.put_one_page([table])
         #########################################
         self.new_page()
         self.put('Таблица 5.1 (продолжение)', 'Text', .1)
@@ -587,20 +593,24 @@ class ReportContainer(ReportMixin):
             ('BOX', (0,0), (-1,-1), 0.25, colors.black),
         ])
         
-        tab = Table(data, colWidths=self.columnize(.8,.6,1,1,1,1.5,1,1.6,1.5), style=style)
         p = Paragraph('Результаты контроля', self.styles['Text Simple Center Bold'])
-        self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), tab]))
+        tab = Table(data, colWidths=self.columnize(.8,.6,1,1,1,1.5,1,1.6,1.5), style=style)
         ############################################
         # Data
         ############################################
-        self.append_UT_defect('top_bottom', 'Днище верхнее')
-        self.append_UT_defect('ring', 'Обечайка')
-        self.append_UT_defect('bottom_bottom', 'Днище нижнее')
+        results = []
+        results.extend(self.append_UT_defect('top_bottom', 'Днище верхнее'))
+        results.extend(self.append_UT_defect('ring', 'Обечайка'))
+        results.extend(self.append_UT_defect('bottom_bottom', 'Днище нижнее'))
         self.spacer(1)
         ######################################
-        self.put('<strong>Заключение: </strong>' +
-            self.data['results']['UK']['conclusion'],
-            'Text', 5.2)
+        zakl = Paragraph('<strong>Заключение: </strong>' +
+            self.data['results']['UK']['conclusion'], self.styles['Text'])
+        self.Story.append(KeepTogether([
+            p, Spacer(1 * cm, .7 * cm), tab, *results,
+            Spacer(1 * cm, 1 * cm),
+            zakl, Spacer(1 * cm, 5.2 * cm)
+        ]))
         self.add_specialist('Ультразвуковой контроль качества сварных соединений', 'УК')
 
     def appendixG(self):
@@ -804,13 +814,11 @@ class ReportContainer(ReportMixin):
 
         for image in FileStorage.objects.filter(pk__in=rest_licenses):
             self.put_photo(image, height=12)
-            self.spacer(.3)
+            #self.spacer(.3)
 
-        self.new_page()
+        #self.new_page()
         image = FileStorage.objects.get(pk=int(self.data['files']['warrant'][0]['id']))
-        image = self.get_photo(image)
-        pack = [image]
-        self.put_one_page(pack)
+        self.put_photo(image)
 
     ######################################
     # Helpers
@@ -825,9 +833,9 @@ class ReportContainer(ReportMixin):
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         )
         template = ((name,),)
-        self.add(template, [10], self.get_style(para_style, template),
+        tables = [self.get(template, [10], self.get_style(para_style, template),
             table_style, styleTable=True
-        )
+        )]
         num = 0
         for defect in self.data['results']['UK'][key]:
             data = defaultdict(str)
@@ -839,12 +847,14 @@ class ReportContainer(ReportMixin):
                     ('{site}', str(num), '{area}', '{depth}', '{length}', '{type}',
                     '{position}', '{info}', '{result}'),
                 )
-                self.add(template, [.8,.6,1,1,1,1.5,1,1.6,1.5], self.get_style(para_style, template),
+                table = self.add(template, [.8,.6,1,1,1,1.5,1,1.6,1.5], self.get_style(para_style, template),
                     table_style, data=data, styleTable=True)
             else:
                 template = ((data.get('site'), 'Дефектов не обнаружено', '', 'Годен'),)
-                self.add(template, [.8, 6.1, 1.6, 1.5], self.get_style(para_style, template),
+                table = self.get(template, [.8, 6.1, 1.6, 1.5], self.get_style(para_style, template),
                     table_style, data=data, styleTable=True)
+            tables.append(table)
+        return tables
 
     def proc_UT_results_data(self, data):
         data = tuple(map(lambda x: (str(x[0]), x[1]['passport'], x[1]['real']), data))
@@ -857,6 +867,8 @@ class ReportContainer(ReportMixin):
 
     def append_UT_results_data(self, group, header):
         data = enumerate(self.data['results']['UT'][group], start=1)
+        if data:
+            return
         data = self.proc_UT_results_data(data)
         template = ((header,), ) + (*data,)
         para_style = (
@@ -947,13 +959,13 @@ class ReportContainer(ReportMixin):
         template_title = PageTemplate(id='Title', frames=frame_with_header, onPage=partial(self.header, content=header_content))
 
         frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height,
-            bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=20, id='no_header')
+            bottomPadding=1 * cm, leftPadding=0, rightPadding=0, topPadding=self.content_top_padding, id='no_header')
         template_content = PageTemplate(id='Content', frames=frame_full, onPage=partial(self.colontitle, content=colontitle_content))
 
         doc.addPageTemplates([template_title, template_content])
 
         frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height,
-            bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=45, id='no_header')
+            bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=self.appendix_top_padding, id='appendix_header')
         letters = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'И', 'К', 'Л']
         template_appendix = []
         for letter in letters:
@@ -968,7 +980,7 @@ class ReportContainer(ReportMixin):
     def header(canvas, doc, content):
         canvas.saveState()
         w, h = content[0].wrap(doc.width, doc.topMargin)
-        content[0].drawOn(canvas, doc.width - w, 120)
+        content[0].drawOn(canvas, doc.width - w, 140)
 
         w, h = content[1].wrap(doc.width, doc.topMargin)
         content[1].drawOn(canvas, 0, h - 20)
@@ -978,40 +990,43 @@ class ReportContainer(ReportMixin):
     @staticmethod
     def colontitle(canvas, doc, content):
         canvas.saveState()
+        # Put page number
+        style = PS(
+            'Page Number',
+            fontName='Times',
+            fontSize=13)
+        pageNumber = Paragraph(str(canvas.getPageNumber()), style=style)
+        w, h = pageNumber.wrap(doc.width, doc.topMargin)
+        pageNumber.drawOn(canvas, doc.width + doc.leftMargin, h + 20)
+
+        # Put other provided content
         w, h = content[0].wrap(doc.width, doc.topMargin)
         content[0].drawOn(canvas, doc.leftMargin, doc.height)
 
         w, h = content[1].wrap(doc.width, doc.topMargin)
-        content[1].drawOn(canvas, doc.rightMargin, doc.height)
+        content[1].drawOn(canvas, doc.leftMargin, doc.height)
 
         if len(content) == 3:
             w, h = content[2].wrap(doc.width, doc.topMargin)
-            content[2].drawOn(canvas, doc.rightMargin, doc.height - 25)
+            content[2].drawOn(canvas, doc.leftMargin, doc.height - 25)
 
         canvas.restoreState()
 
-    #@staticmethod
-    #def appendix_colontitle(canvas, doc, content):
-    #    canvas.saveState()
-    #    w, h = content[0].wrap(doc.width, doc.topMargin)
-    #    content[0].drawOn(canvas, doc.rightMargin, doc.height - 25)
-    #    canvas.restoreState()
-
     def header_content(self):
-        date_string = '"____"{:_>21}'.format('_') + '201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;г'
-        fio_string = '{fio:_>30}'
+        fio_string = '{fio:_>25}'
+        date_string = '"___"{:_>15}'.format('_') + '{} г.'.format(datetime.now().year)
         template = [
-            ['Директор филиала<br/>ООО «ГАЗМАШПРОЕКТ» «НАГАТИНСКИЙ»'],
-            [fio_string.format(fio='А.Н. Бондаренко')],
-            [date_string],
-            ['М.П.']
+            ['','Директор филиала<br/>ООО «ГАЗМАШПРОЕКТ» «НАГАТИНСКИЙ»'],
+            ['',fio_string.format(fio='Р.Ю. Ерин')],
+            ['',date_string],
+            ['','М.П.']
         ]
         rows = len(template)
         styles = [
             *[['Text Simple Leading']] * rows,
         ]
         table_data = self.values(template, {})
-        table = self.table(table_data, styles, [4], styleTable=False)
+        table = self.table(table_data, styles, [6,4], styleTable=False)
         table.hAlign = 'RIGHT'
         table.setStyle(TableStyle([
             ('TOPPADDING', (0,-1), (-1,-1), 25),
@@ -1020,15 +1035,15 @@ class ReportContainer(ReportMixin):
         ]))
 
         template = [
-            ['Москва'],
-            ['{} г.'.format(datetime.now().year)],
+            ['','Москва',''],
+            ['','{} г.'.format(datetime.now().year),''],
         ]
         rows = len(template)
         styles = [
-            *[['Text Simple Center']] * rows,
+            *[['Text Simple Leading Center']] * rows,
         ]
         table_data = self.values(template, {})
-        table2 = self.table(table_data, styles, [10.5], styleTable=False)
+        table2 = self.table(table_data, styles, [5.5,2,1], styleTable=False)
         return (
             table,
             table2

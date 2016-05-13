@@ -19,7 +19,7 @@ class FileUploadView(views.APIView):
         file_obj = request.data
         print('file_obj', file_obj)
         up_file = request.FILES['fileupload']
-        self.proc_file(up_file)
+        #self.proc_file(up_file)
         fname = self.save_to_db(up_file)
         return Response({
             'status': 'Created', 

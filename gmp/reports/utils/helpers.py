@@ -90,7 +90,6 @@ class PdfImage(Flowable):
 class MyDocTemplate(BaseDocTemplate):
     def __init__(self, filename, **kw):
         self.allowSplitting = 0
-        self.appendix_colontitle = '32167'
         super(MyDocTemplate, self).__init__(filename, **kw)
 
     # Entries to the table of contents can be done either manually by
@@ -111,8 +110,6 @@ class MyDocTemplate(BaseDocTemplate):
         if flowable.__class__.__name__ == 'Paragraph':
             text = flowable.getPlainText()
             style = flowable.style.name
-            #if style == 'Heading 1':
-            #    level = 0
             if style == 'TOC Appendix' or style == 'TOC Appendix Hidden':
                 level = 1
                 # Skip russain letter 'З' and 'Й'
@@ -130,16 +127,6 @@ class MyDocTemplate(BaseDocTemplate):
             if bn is not None: E.append(bn)
             self.notify('TOCEntry', tuple(E))
 
-#class Appendix_title(Flowable):
-#    def __init__(self, width, text=''):
-#        Flowable.__init__(self)
-# 
-#    def __repr__(self):
-#        return "Appendix title(w=%s)" % self.width
-# 
-#    def draw(self):
-#        self.canv.line(0, self.height, self.width, self.height)
-#        self.canv.line(0, self.height + 2, self.width, self.height + 2)
 
 class DoubledLine(Flowable):
     def __init__(self, width, height=0):
@@ -164,11 +151,17 @@ class ReportMixin():
         self.setup_styles()
 
         self.doc = MyDocTemplate(self.report, pagesize=A4,
-                                rightMargin=12,leftMargin=12,
-                                topMargin=12,bottomMargin=12,
+                                rightMargin=.7*cm,leftMargin=3*cm,
+                                topMargin=1*cm,bottomMargin=1*cm,
                                 title=title,
                                 #showBoundary=1
         )
+        #self.doc = MyDocTemplate(self.report, pagesize=A4,
+        #                        rightMargin=12,leftMargin=12,
+        #                        topMargin=12,bottomMargin=12,
+        #                        title=title,
+        #                        #showBoundary=1
+        #)
         self.toc = TableOfContents()
         self.toc.levelStyles = [
             self.styles['TOCHeading1'],
@@ -347,11 +340,16 @@ class ReportMixin():
     ''' 
         Functions for working with images
     '''
+    def put_photo(self, filename, width=0, height=0):
+        image = self.get_photo(filename, width=0, height=0)
+        self.Story.append(image)
+
     def get_photo(self, filename, width=0, height=0):
         if hasattr(filename, 'name'):
             if filename.name.rsplit('.', 1)[1].lower() == 'pdf':
-                max_height = self.doc.height - (self.doc.topMargin * 2)
-                image = PdfImage(filename.name, height=max_height/1.14)
+                max_height = self.full_height - 2.4 * cm
+                file_ = self.get_file(filename)
+                image = PdfImage(file_, height=max_height/1.2)
             else:
                 image = self.fetch_image(filename, width, height)
         else:
@@ -359,21 +357,13 @@ class ReportMixin():
         image.hAlign = 'CENTER'
         return image
 
-    def put_photo(self, filename, width=0, height=0):
-        if hasattr(filename, 'name'):
-            if filename.name.rsplit('.', 1)[1].lower() == 'pdf':
-                max_height = self.doc.height - (self.doc.topMargin * 2)
-                image = PdfImage(filename.name, height=max_height/1.2)
-            else:
-                image = self.fetch_image(filename, width, height)
-        else:
-            image = self.fetch_static_image(filename, width, height)
-        image.hAlign = 'CENTER'
-        self.Story.append(image)
+    def get_file(self, file_obj):
+        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
+        file_ = str(MEDIA_ROOT.path(str(file_obj.fileupload)))
+        return file_
 
     def fetch_image(self, image, width=0, height=0):
-        MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
-        file_ = str(MEDIA_ROOT.path(str(image.name)))
+        file_ = self.get_file(image)
         return self.proc_image(file_, width, height)
 
     def fetch_static_image(self, img, width=0, height=0):
@@ -382,13 +372,20 @@ class ReportMixin():
 
     def proc_image(self, file_, width=0, height=0):
         image = PILImage.open(file_)
+        max_width = self.full_width
+        max_height = self.full_height
+        #print('max_width', max_width, 'max_height', max_height)
         maxsize = (
-            (width * cm or self.full_width), 
-            (height * cm or self.full_height)
+            #(width * cm or self.full_width), 
+            #(height * cm or self.full_height)
+            (width * cm or max_width), 
+            (height * cm or max_height - 2.4 * cm)
         )
         # Get new image dimensions to fit in desired size
         image.thumbnail(maxsize, PILImage.ANTIALIAS)
         #print(file_, 'maxsize', maxsize, 'computed', image.width, image.height)
+        w, h = Image(file_, width=image.width, height=image.height).wrap(image.width, image.height)
+        #print('w', self.full_width, 'h', self.full_height)
         return Image(file_, width=image.width, height=image.height)
 
     '''
@@ -408,12 +405,18 @@ class ReportMixin():
 
     def register_font(self, font_name, font_file):
         file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'fonts', font_file))
-        print('Font file', file_)
+        #print('Font file', file_)
         MyFontObject = ttfonts.TTFont(font_name, file_)
         pdfmetrics.registerFont(MyFontObject)
      
     def setup_styles(self):
         self.styles.add(ParagraphStyle(name='Justify', alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Heading 1 Big Bold',
+            fontName='Times Bold',
+            fontSize=16,
+            leading=30,
+            alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Heading 1 Bold',
             fontName='Times Bold',
@@ -581,7 +584,7 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='TOC Regular',
             fontName='Times',
-            fontSize=13,
+            fontSize=12,
             leading=13,
             leftIndent=88,
             firstLineIndent=-88,
@@ -590,78 +593,84 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='Text',
             fontName='Times',
-            fontSize=14,
-            leading=21,
+            fontSize=12,
+            leading=18,
             bulletIndent=18,
             firstLineIndent=1.25 * cm,
             alignment=TA_JUSTIFY))
         self.styles.add(ParagraphStyle(
             name='Text Simple',
             fontName='Times',
-            fontSize=14,
-            leading=18,
+            fontSize=12,
+            leading=16,
             bulletIndent=18,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Text Simple Indent',
             fontName='Times',
-            fontSize=14,
-            leading=22,
+            fontSize=12,
+            leading=18,
             leftIndent=24,
             bulletIndent=3,
             alignment=TA_JUSTIFY))
         self.styles.add(ParagraphStyle(
             name='Text Simple Bold',
             fontName='Times Bold',
-            fontSize=14,
-            leading=18,
+            fontSize=12,
+            leading=16,
             bulletIndent=18,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Text Simple Right',
             fontName='Times',
-            fontSize=14,
-            leading=18,
+            fontSize=12,
+            leading=16,
             bulletIndent=18,
             alignment=TA_RIGHT))
         self.styles.add(ParagraphStyle(
             name='Text Simple Center',
             fontName='Times',
-            fontSize=14,
-            leading=18,
+            fontSize=12,
+            leading=16,
             bulletIndent=18,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
+            name='Text Simple Leading Center',
+            fontName='Times',
+            fontSize=14,
+            leading=16,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Text Simple Leading',
             fontName='Times',
             fontSize=14,
-            leading=30,
+            leading=24,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Text Simple Center Leading',
             fontName='Times',
             fontSize=14,
-            leading=30,
+            leading=22,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Text Simple Center Bold',
             fontName='Times Bold',
-            fontSize=14,
-            leading=18,
+            fontSize=12,
+            leading=16,
             bulletIndent=18,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Text Simple Dense',
             fontName='Times',
-            fontSize=14,
+            fontSize=12,
             leading=14,
             bulletIndent=18,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='Text Simple Height',
             fontName='Times',
-            fontSize=14,
-            leading=21,
+            fontSize=12,
+            leading=18,
             #firstLineIndent=-0.40 * cm,
             #bulletIndent=0 * cm,
             #leftIndent=0.40 * cm,
@@ -669,22 +678,22 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='Text Simple Center Dense',
             fontName='Times',
-            fontSize=14,
+            fontSize=12,
             leading=14,
             bulletIndent=18,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='TOC',
             fontName='Times Bold',
-            fontSize=14,
-            leading=21,
+            fontSize=12,
+            leading=18,
             firstLineIndent=1.25 * cm,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='TOC Appendix',
             fontName='Times Bold',
-            fontSize=14,
-            leading=18,
+            fontSize=12,
+            leading=16,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='TOC Appendix Hidden',
@@ -695,14 +704,14 @@ class ReportMixin():
         self.styles.add(ParagraphStyle(
             name='TOCHeading1',
             fontName='Times Bold',
-            fontSize=14,
-            leading=21,
+            fontSize=12,
+            leading=16,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='TOCHeading2',
             fontName='Times',
-            fontSize=14,
-            leading=21,
+            fontSize=12,
+            leading=18,
             firstLineIndent=-3.25 * cm,
             leftIndent=3.25 * cm,
             alignment=TA_LEFT))
