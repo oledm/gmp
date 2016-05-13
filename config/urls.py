@@ -18,6 +18,7 @@ from gmp.engines import views as engine_views
 from gmp.reports import views as report_views
 from gmp.inspections import views as inspections_views
 from gmp.containers import views as containers_views
+from gmp.history import views as history_views
 
 
 departments = routers.SimpleRouter()
@@ -50,6 +51,9 @@ tclasses.register('tclass', engine_views.TClassViewset)
 containers = routers.SimpleRouter()
 containers.register('container', containers_views.ContainerViewset)
 
+history = routers.SimpleRouter()
+history.register(r'history_input', history_views.InputViewset)
+
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
@@ -73,6 +77,9 @@ urlpatterns = [
 
     # /api/department/<id>/measurer/
     url(r'^api/', include(measurers.urls)),
+
+    # /api/history_input/
+    url(r'^api/', include(history.urls)),
 
     # /api/engine/
     url(r'^api/', include(engines.urls)),

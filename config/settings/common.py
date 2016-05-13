@@ -56,6 +56,7 @@ LOCAL_APPS = (
     'gmp.inspections',
     'gmp.containers',
     'gmp.reports',
+    'gmp.history',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
