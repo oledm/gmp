@@ -18,16 +18,14 @@ class InputViewset(viewsets.ModelViewSet):
             #print('Validated data:', serializer.validated_data)
             history = Input.objects.create(obj_model=data['obj_model'],
                 employee=self.request.user)
-            return Response({
-                'message': 'Input history recorded',
-                'id': history.id
-                },
+            return Response({'id': history.id},
                 status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.validated_data,
+            return Response({'message': 'Invalid data'},
                     status=status.HTTP_403_FORBIDDEN)
+
     #def update(self, request, pk=None):
     #    print('update history', pk)
+    #    print('data', request.data)
     #    return Response('OK',
     #            status=status.HTTP_403_FORBIDDEN)
-

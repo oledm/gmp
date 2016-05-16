@@ -25,7 +25,7 @@
         }
     }
 
-    function ReportContainerController($scope, $timeout, $state, ServerData, orgs, allEmployees, allDevices, measurers) 
+    function ReportContainerController($scope, $timeout, $state, ServerData, orgs, allEmployees, allDevices, measurers, History) 
     {
         'ngInject';
 
@@ -406,33 +406,5 @@
         ///////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $scope.$watch('vm.report', (newVal, oldVal) => {
-//            console.log('vm.report change');
-            if (newVal !== oldVal) {
-                updateHistory(newVal);
-            }
-        }, true);
-
-        var timeout = undefined,
-            record = undefined;
-        function updateHistory(newVal) {
-            if (timeout) {
-                $timeout.cancel(timeout);
-            }
-            timeout = $timeout(() => {
-                console.log('write new model to DB');
-                if (!record) {
-                    record = ServerData.save(
-                        {category: 'history_input'},
-                        {'obj_model': newVal}
-                    );
-                } else {
-                    record.$update(
-                        {category: 'history_input'},
-                        {'obj_model': newVal}
-                    );
-                }
-            }, 1000);
-        }
     }
 })();
