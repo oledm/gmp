@@ -208,10 +208,11 @@ BOWER_INSTALLED_APPS = (
     'angular-cookies',
     'angular-messages',
     'angular-animate',
+    'angular-sanitize',
     #'angular-material',
     #'angular-material-data-table',
     'angular-cookies',
-    'ionicons',
+    #'ionicons',
     'ng-file-upload-shim',
     'ng-file-upload',
     'bootstrap-sass',
@@ -220,6 +221,8 @@ BOWER_INSTALLED_APPS = (
     #'material-design-icons',
     'angular-ui-bootstrap-bower',
     'angular-datepicker',
+    'angular-ui-select',
+    'https://github.com/JustGoscha/allmighty-autocomplete.git'
 )
 
 

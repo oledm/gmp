@@ -2,6 +2,16 @@
 @import "fonts";
 @import "../../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
 
+///////////////////////////////////////////////
+// Style for correct display autocomplete input
+///////////////////////////////////////////////
+* {
+    padding: 0px;
+}
+///////////////////////////////////////////////
+
+
+
 .block + .block {
     margin-top: 3em;
 }

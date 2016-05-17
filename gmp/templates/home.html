@@ -3,8 +3,9 @@
 
 {% block css %}
 <base href="/">
-<link rel="stylesheet" href="{% static 'Ionicons/css/ionicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'angular-ui-select/dist/select.css' %}">
 <link rel="stylesheet" href="{% static 'dist/app.css' %}">
+<link rel="stylesheet" href="{% static 'allmighty-autocomplete/style/autocomplete.css' %}">
 <!-- 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
  -->
@@ -15,26 +16,30 @@
 {% block angular %}
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'angular/angular.min.js' %}"></script>
+{% endblock %}
+
+{% block javascript  %}
     <script src="{% static 'angular-bootstrap/ui-bootstrap.min.js' %}"></script>
     <script src="{% static 'angular-bootstrap/ui-bootstrap-tpls.min.js' %}"></script>
     <script src="{% static 'angular-i18n/angular-locale_ru-ru.js' %}"></script>
     <script src="{% static 'angular-i18n/ru-ru.js' %}"></script>
     <script src="{% static 'angular-messages/angular-messages.min.js' %}"></script>
     <script src="{% static 'angular-resource/angular-resource.min.js' %}"></script>
+    <script src="{% static 'angular-sanitize/angular-sanitize.min.js' %}"></script>
     <script src="{% static 'angular-cookies/angular-cookies.min.js' %}"></script>
     <script src="{% static 'angular-ui-router/release/angular-ui-router.min.js' %}"></script>
+    <script src="{% static 'angular-ui-select/dist/select.js' %}"></script>
     <!-- 
         <script src="{% static 'angular-aria/angular-aria.js' %}"></script>
         <script src="{% static 'angular-animate/angular-animate.min.js' %}"></script>
      -->
-{% endblock %}
-
-{% block javascript  %}
     <script src="{% static 'bootstrap-sass/assets/javascripts/bootstrap.min.js' %}"></script>
     <script src="{% static 'ng-file-upload/ng-file-upload-shim.js' %}"></script>
     <script src="{% static 'ng-file-upload/ng-file-upload.js' %}"></script>
     <script src="{% static 'filesaver/FileSaver.js' %}"></script>
     <script src="{% static 'djng/js/django-angular.js' %}"></script>
+    <script src="{% static 'allmighty-autocomplete/script/autocomplete.js' %}"></script>
+    <script src="{% static 'allmighty-autocomplete/script/app.js' %}"></script>
     <!-- 
         This app compiled
      -->
