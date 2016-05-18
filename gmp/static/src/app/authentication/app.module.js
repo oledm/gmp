@@ -20,5 +20,6 @@
         'app.passport',
         'app.passport.service',
         'app.report',
+        'app.dashboard',
     ]);
 })();

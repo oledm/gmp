@@ -9,7 +9,7 @@ class InputViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Input.objects.filter(employee=self.request.user)
+        return Input.objects.filter(employee=self.request.user).order_by('-date')
 
     def create(self, request):
         data = request.data

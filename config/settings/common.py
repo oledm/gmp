@@ -221,8 +221,10 @@ BOWER_INSTALLED_APPS = (
     #'material-design-icons',
     'angular-ui-bootstrap-bower',
     'angular-datepicker',
-    'angular-ui-select',
-    'https://github.com/JustGoscha/allmighty-autocomplete.git'
+    #'angular-ui-select',
+    #'https://github.com/JustGoscha/allmighty-autocomplete.git'
+    'moment',
+    'angular-moment',
 )
 
 

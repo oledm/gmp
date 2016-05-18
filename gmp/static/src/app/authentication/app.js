@@ -3,10 +3,10 @@
 
     angular
         .module('app')
-        .run(['$http',
-            function($http) {
-                $http.defaults.xsrfHeaderName = 'X-CSRFToken';
-                $http.defaults.xsrfCookieName = 'csrftoken';
-        }]);
-
+        .run(function($http, amMoment) {
+            'ngInject';
+            $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+            $http.defaults.xsrfCookieName = 'csrftoken';
+            amMoment.changeLocale('ru');
+        });
 })();

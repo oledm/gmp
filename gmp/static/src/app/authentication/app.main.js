@@ -32,6 +32,7 @@
         }
 
         function setupMenu() {
+                // "Profile" menu entry is present in all accounts
                 vm.menu = [{name: 'Профиль', link: 'Профиль', ref: 'profile'}];
 
                 var cookies = Cookies.get();

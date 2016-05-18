@@ -1,57 +1,8 @@
 <div save-history="vm.report" ng-cloak>
-
-    <ui-select multiple tagging="vm.tagTransform" ng-model="vm.selected.value">
-	<ui-select-match placeholder="Выберите вариант...">
-	    <span ng-bind="$select.selected.name"></span>
-	</ui-select-match>
-	<ui-select-choices repeat="item in (itemArray | filter: $select.search) track by item.id">
-	    <span ng-bind="item.name"></span>
-	</ui-select-choices>
-    </ui-select>
-      <pre>selectedPeople = {{vm.selected | json}}</pre>
-
-
-  <!-- 
-      <ui-select multiple tagging="vm.tagTransform" tagging-tokens="SPACE|,|/" ng-model="vm.selectedPeople" theme="bootstrap" title="Choose a person">
-        <ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
-        <ui-select-choices repeat="person in vm.people">
-          <div ng-if="!person.isTag" ng-bind-html="person.name| highlight: $select.search"></div>
-          <div ng-if="person.isTag" ng-bind-html="(person.name | highlight: $select.search) +' (new)'"></div>
-          <small>
-            email: {{person.email}}
-            age: <span ng-bind-html="''+person.age | highlight: $select.search"></span>
-          </small>
-        </ui-select-choices>
-      </ui-select>
-      <p>Selected: </p>
-      <pre>selectedPeople = {{vm.selectedPeople | json}}</pre>
-   -->
-
-
-
-
-
-
-  <!-- 
-      <ui-select tagging="vm.tagTransform" ng-model="vm.selectedPeople.name" theme="bootstrap" title="Choose a person">
-        <ui-select-match placeholder="Select person...">{{$item.name}}</ui-select-match>
-        <ui-select-choices repeat="person in vm.people">
-          <small>
-            {{person.name}}
-          </small>
-        </ui-select-choices>
-      </ui-select>
-      <p>Selected: </p>
-      <pre>selectedPeople = {{vm.selectedPeople | json}}</pre>
-      
-   -->
-
-
-
-
     <h3 class="block text-center">Формирование отчета по сосудам</h3>
-
-          <autocomplete ng-model="yourchoice" click-activation="true" attr-placeholder="" data="movies" attr-input-class="form-control" attr-class="block"></autocomplete>
+    
+     <autocomplete ng-model="vm.yourchoice" data="vm.movies" click-activation="true"
+           attr-placeholder="" attr-input-class="form-control" attr-class="block"></autocomplete>
     
     <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
     

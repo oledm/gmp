@@ -28,6 +28,8 @@
                     true
                 );
 
+                loadHistory(175);
+
                 function updateHistory(newVal) {
                     if (timeout) {
                         $timeout.cancel(timeout);
@@ -41,6 +43,13 @@
                             History.update(history_id, {obj_model: newVal});
                         }
                     }, secondsWaitForModelChange * 1000);
+                }
+
+                function loadHistory(id) {
+                    History.get(id)
+                        .then(response => {
+                            angular.copy(response.data.obj_model, scope.model);
+                        });
                 }
             }
         }

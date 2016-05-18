@@ -16,7 +16,10 @@
     function config($stateProvider, $urlRouterProvider, $resourceProvider, $locationProvider) {
         $stateProvider
             .state('home', {
-                url: '/'
+                url: '/',
+                controller: 'DashboardController',
+                controllerAs: 'vm',
+                templateUrl: '/static/src/app/dashboard/main.tpl.html'
             })
             .state('admin', {
                 url: '/admin/',

@@ -3,9 +3,8 @@
 
 {% block css %}
 <base href="/">
-<link rel="stylesheet" href="{% static 'angular-ui-select/dist/select.css' %}">
-<link rel="stylesheet" href="{% static 'dist/app.css' %}">
 <link rel="stylesheet" href="{% static 'allmighty-autocomplete/style/autocomplete.css' %}">
+<link rel="stylesheet" href="{% static 'dist/app.css' %}">
 <!-- 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
  -->
@@ -39,7 +38,9 @@
     <script src="{% static 'filesaver/FileSaver.js' %}"></script>
     <script src="{% static 'djng/js/django-angular.js' %}"></script>
     <script src="{% static 'allmighty-autocomplete/script/autocomplete.js' %}"></script>
-    <script src="{% static 'allmighty-autocomplete/script/app.js' %}"></script>
+    <script src="{% static 'moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'moment/locale/ru.js' %}"></script>
+    <script src="{% static 'angular-moment/angular-moment.min.js' %}"></script>
     <!-- 
         This app compiled
      -->
