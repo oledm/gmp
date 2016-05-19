@@ -26,7 +26,7 @@
         <p>Номер чертежа:&nbsp;{{vm.report.device.scheme}}</p>
         <p>Год изготовления:&nbsp;{{vm.report.device.manufactured_year}}</p>
         <p>Год ввода в эксплуатацию:&nbsp;{{vm.report.device.started_year}}</p>
-        <p>Место установки:&nbsp;{{vm.report.device.location}}{{vm.report.obj_data.plant ? ' ' + vm.report.obj_data.plant : ''}}{{vm.report.obj_data.ks ? ' ' + vm.report.obj_data.ks : ''}}{{vm.report.obj_data.lpu ? ', ' + vm.report.obj_data.lpu : ''}}</p>
+        <p>Место установки:&nbsp;{{vm.report.device.location}}{{vm.report.obj_data.plant ? ' ' + vm.report.obj_data.plant : ''}}{{vm.report.obj_data.ks ? ' ' + vm.report.obj_data.ks : ''}}{{vm.report.obj_data.lpu ? ', ' + vm.report.obj_data.lpu.name : ''}}</p>
     </div>
 
     <div class="form-group">
@@ -36,7 +36,7 @@
                   <select class="form-control" placeholder="Организация"
                       ng-change="vm.getLPUs(vm.report.obj_data.org)" required
                       ng-model="vm.report.obj_data.org" name="org" id="org"
-                      ng-options="org as org.name for org in vm.orgs"
+                      ng-options="org as org.name for org in vm.orgs track by org.id"
                   >
                       <!-- 
                           <option ng-repeat="org in vm.orgs">{{org.name}}</option>
@@ -50,8 +50,8 @@
             <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.lpu.$touched && vm.deviceForm.lpu.$invalid }">
                   <label class="control-label" for="lpu">ЛПУ МГ</label>
                   <select class="form-control" placeholder="ЛПУ МГ" required
-                      ng-model="vm.report.obj_data.lpu" name="lpu" id="lpu">
-                      <option ng-repeat="lpu in vm.lpus">{{lpu.name}}</option>
+                      ng-model="vm.report.obj_data.lpu" name="lpu" id="lpu"
+                      ng-options="lpu as lpu.name for lpu in vm.report.lpus track by lpu.id">
                   </select>
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.lpu.$error" ng-if="vm.deviceForm.lpu.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>

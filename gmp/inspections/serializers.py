@@ -13,4 +13,4 @@ class LPUSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LPU
-        fields = ('name',)
+        fields = ('id', 'name',)

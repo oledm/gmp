@@ -12,6 +12,7 @@
         uibDatepickerPopupConfig.closeText = 'Закрыть';
         uibDatepickerPopupConfig.currentText = 'Сегодня';
         uibDatepickerPopupConfig.clearText = 'Очистить';
+        uibDatepickerPopupConfig.type = 'month';
 
         vm.dateOptions = {
             startingDay: 1

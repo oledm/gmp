@@ -25,7 +25,7 @@
         }
     }
 
-    function ReportContainerController($scope, $timeout, $state, ServerData, orgs, allEmployees, allDevices, measurers, History) 
+    function ReportContainerController($scope, $timeout, $state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History) 
     {
         'ngInject';
 
@@ -349,7 +349,6 @@
         vm.device_conditions = device_conditions;
         vm.createPassport = createPassport;
         vm.devices = devices;
-        vm.lpus = [];
         vm.orgs = orgs;
         vm.pages = pages;
         vm.procKeyPress = procKeyPress;
@@ -360,28 +359,30 @@
             files: {},
             info: info,
             schemes: schemes,
-            measurers: vm.measurers.selected,
+            measurers: [],
+            lpus: [],
             results: results,
             type: $state.current.data.type,
+            order: {},
         };
-        
         vm.setSelected = setSelected;
-
+        vm.reportId = $stateParams.id;
 
         function createPassport() {
             console.log('report:', JSON.stringify(vm.report));
-//            Passport.createPassport(vm.report);
             ServerData.report({'report_data': vm.report});
         }
 
         function getLPUs(org) {
-            if (org !== undefined) {
-                vm.lpus = ServerData.query({
+            if (angular.isDefined(org)) {
+                vm.report.lpus = ServerData.query({
                     category: 'organization',
                     categoryId: org.id,
                     subcategory: 'lpu'});
             }
         }
+//        $timeout(() => vm.report.order.date = new Date('2016-05-07T00:00:00.000Z'), 5000);
+        
 
         ///////////////////////////////////////////////////////////////////////
         // TODO create directive for reusing this funcs
@@ -404,6 +405,8 @@
                 item.selected = true;
                 selected.push(id);
             }
+
+            $timeout(() => angular.element('#mainForm').trigger('change'), 0);
         }
 
         function procKeyPress(clickEvent, arr) {

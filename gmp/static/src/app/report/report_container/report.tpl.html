@@ -1,22 +1,24 @@
-<div save-history="vm.report" ng-cloak>
-    <h3 class="block text-center">Формирование отчета по сосудам</h3>
+<ng-form id="mainForm" name='vm.mainForm' save-history="vm.report" report-id="{{vm.reportId}}">
+    <div ng-cloak>
+        <h3 class="block text-center">Формирование отчета по сосудам</h3>
+        
+         <autocomplete ng-model="vm.yourchoice" data="vm.movies" click-activation="true"
+               attr-placeholder="" attr-input-class="form-control" attr-class="block"></autocomplete>
+        
+        <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
+        
+        <div class="block text-center" ng-cloak>
+            <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
+                > Создать отчет
+            </button>    
+        </div>
     
-     <autocomplete ng-model="vm.yourchoice" data="vm.movies" click-activation="true"
-           attr-placeholder="" attr-input-class="form-control" attr-class="block"></autocomplete>
-    
-    <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
-    
-    <div class="block text-center" ng-cloak>
-        <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
-            > Создать отчет
-        </button>    
+        <div class="block"></div>
+         
+        <a target="_self" ng-href="/report/">
+        </a>
     </div>
-
-    <div class="block"></div>
-     
-    <a target="_self" ng-href="/report/">
-    </a>
-</div>
+</ng-form>
         <!-- 
                 ng-disabled="
                 vm.deviceForm.$invalid ||

@@ -25,11 +25,26 @@
         }
 
         function update(id, data) {
-            return $http.put(`${URL_HISTORY_API}${id}/`, data);
+            if (angular.isDefined(id) && angular.isNumber(id)) {
+                return $http.put(`${URL_HISTORY_API}${id}/`, data);
+            } else {
+                console.warn('Неверно указан id для выполнения запроса History.update:',
+                             `${URL_HISTORY_API}<id>/`,
+                             `(получено значение ${id})`);
+                return undefined;
+            }
         }
 
         function get(id) {
-            return $http.get(`${URL_HISTORY_API}${id}/`);
+            if (angular.isDefined(id) && angular.isNumber(id)) {
+                return $http.get(`${URL_HISTORY_API}${id}/`)
+                    .then(response => response.data);
+            } else {
+                console.warn('Неверно указан id для выполнения запроса History.get:',
+                             `${URL_HISTORY_API}<id>/`,
+                             `(получено значение ${id})`);
+                return undefined;
+            }
         }
 
         function list() {

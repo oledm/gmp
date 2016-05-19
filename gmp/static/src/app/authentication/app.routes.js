@@ -67,7 +67,7 @@
                 templateUrl: '/static/src/app/report/report/report.tpl.html'
             })
             .state('report-container', {
-                url: '/report-container',
+                url: '/report-container/:id',
                 controller: 'ReportContainerController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/report/report_container/report.tpl.html',

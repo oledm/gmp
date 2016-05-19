@@ -1,4 +1,5 @@
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 
@@ -13,12 +14,7 @@ class InputSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Input
-        fields = ('obj_model', 'date', 'report_type')
+        fields = ('id', 'obj_model', 'date', 'report_type')
 
     def get_report_type(self, obj):
-        try:
-            rep = str(Report.objects.get(url=obj.obj_model.get('type')))
-        except AttributeError:
-            rep = ''
-        return rep
-
+        return str(Report.objects.get(url=obj.obj_model.get('type')))
