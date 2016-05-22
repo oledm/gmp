@@ -1,5 +1,5 @@
 <ng-form name="vm.orderForm" novalidate>
-    <p>{{vm.orderForm.vm.report.order.date.$invalid}}</p>
+    <p>{{vm.orderForm.order_date.$error}}</p>
     <h4 checkmark>Данные приказа о создании бригады</h4>
 
     <div class="form-group">
@@ -35,7 +35,7 @@
                 name="order_date" 
              -->
 
-        <date-picker class="col-sm-3" label="Новая дата" 
+        <date-picker class="col-sm-6" label="Новая дата"
             ng-model="vm.report.order.date" name="order_date" />
         </div>
 

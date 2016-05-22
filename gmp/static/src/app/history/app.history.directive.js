@@ -20,7 +20,7 @@
                     secondsWaitForModelChange = 2;
 
                 elem.on('change', () => {
-                    console.log('Form on change');
+                    console.log(`Form on change. Wait ${secondsWaitForModelChange} seconds`);
                     angular.copy(scope.model, oldVal);
                     updateHistory(scope.model);
                 });
@@ -59,10 +59,11 @@
                     timeout = $timeout(() => {
 //                        console.log('write new model to DB');
                         if (!history_id) {
-                            console.log('write history:', newVal);
+                            console.log('Write history:', newVal);
                             History.create({obj_model: newVal})
                                 .then(response => history_id = response.data.id);
                         } else {
+                            console.log('History update');
                             History.update(history_id, {obj_model: newVal});
                         }
                     }, secondsWaitForModelChange * 1000);
@@ -79,6 +80,9 @@
                         .then(history_data => {
                             if (history_data.hasOwnProperty('obj_model')) {
                                 let data = history_data.obj_model;
+                                // Deep search model object and convert all datetime
+                                // string values to Date instance for correct display
+                                // by date-picker widget.
                                 fromStringToDate(data);
                                 angular.copy(data, scope.model);
                             }
