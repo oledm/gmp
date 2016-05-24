@@ -2,7 +2,97 @@
     'use strict';
 
     angular.module('app.report')
-        .directive('datePicker', DatePicker);
+        .directive('datePicker', DatePicker2);
+
+//            '<input type="text" ng-model="vm.model" name="vm.inputname" />' + 
+//            '<div ng-messages="vm.$error" role="alert">' +
+//              '<div ng-messages-include="/static/src/assets/messages.html"></div>' +
+//            '</div>',
+    function DatePicker2(uibDatepickerPopupConfig) {
+      function link(scope, elem, attrs, ctrls) {
+          var ngModel = ctrls[0];
+          var datePicker = ctrls[1];
+          datePicker.inputname = attrs.inputname;
+          datePicker.label = attrs.label;
+          datePicker.setModel(ngModel);
+      }
+
+      return {
+        restrict: 'E',
+        template: `
+                    <label ng-class="{ 'has-error': true }" class="control-label" for="vm.inputname">{{vm.label}}</label>
+                      <p class="input-group">
+                    
+                          <input type="text" ng-model="vm.model" id="vm.inputname" name="vm.inputname"
+                          class="form-control" ng-model-options="{timezone: 'UTC'}"
+                            datepicker-options="dc.dateOptions"  uib-datepicker-popup="dd MMMM yyyy"
+                          is-open="vm.popup.opened" />
+                    
+                          <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.open()">
+                            <i class="glyphicon glyphicon-calendar"></i></button>
+                          </span>
+                    
+                      </p>
+                      
+                        <div ng-messages="vm.$error" ng-if="vm.$touched" role="alert">
+                          <div ng-messages-include="/static/src/assets/messages.html"></div>
+                        </div>
+                  `,
+        transclude: true,
+        scope: {},
+        require: ['ngModel', 'datePicker'],
+        link: link,
+        controllerAs: 'vm',
+        controller: function($scope) {
+            var vm = this;
+            
+            vm.model = null;
+            vm.setModel = setModel;
+
+            function setModel(ngModel) {
+                vm.$error = ngModel.$error;
+                vm.$touched = ngModel.$touched;
+                
+                ngModel.$render = function() {
+                    vm.model = ngModel.$viewValue;
+                };
+                
+                $scope.$watch('vm.model', function(newval) {
+                    ngModel.$setViewValue(newval);
+                });
+
+                //////////////////////////////////////////
+
+                uibDatepickerPopupConfig.closeText = 'Закрыть';
+                uibDatepickerPopupConfig.currentText = 'Сегодня';
+                uibDatepickerPopupConfig.clearText = 'Очистить';
+                uibDatepickerPopupConfig.type = 'month';
+
+                vm.dateOptions = {
+                    startingDay: 1
+                };
+
+                vm.yearOptions = {
+                    datepickerMode: 'year',
+                    maxMode: 'year',
+                    minMode: 'year',
+                    formatYear: 'yyyy'
+                };
+
+                vm.open = function() {
+                    console.log('open');
+                  vm.popup.opened = true;
+                };
+
+                vm.popup = {
+                  opened: false
+                };
+            }
+        }
+    }
+
+    }
 
     function DatePicker($compile, $timeout, uibDatepickerPopupConfig) {
         'ngInject';
@@ -37,18 +127,38 @@
 
         function link (scope, elem, attrs, formController) {
             var field = formController.$name + '.' + scope.name;
+            var divMessages = angular.element(elem.find('.contttttttt'));
 
             scope.$parent.$watch(`${field}.$invalid && ${field}.$touched`, function(newValue) {
                 elem.toggleClass('has-error', newValue);
+                toggleMessages(newValue);
             });
 
-//            scope.$parent.$watch(`${field}.$error`, function(newValue) {
-//                console.log('watch', newValue);
-//                var messages = '<div class="help-block" role="alert" ng-messages="{{' + field + '.$error}}">' +
-//                      '<div ng-messages-include="/static/src/assets/messages.html"></div>' +
-//                  '</div>';
-//                elem.append(angular.element($compile(messages)(scope)));
-//            }, true);
+//            scope.$parent.$watch(`${field}.$touched`, function(newValue) {
+//                toggleMessages(newValue);
+//            });
+
+            scope.$parent.$watch(`${field}.$error`, function(newValue) {
+                var val = JSON.stringify(newValue);
+                console.log('error', val);
+                var messages = `<div class='help-block' role='alert' ng-messages='{required: true}'>
+                    <div ng-messages-include="/static/src/assets/messages.html"></div>
+                </div>`;
+//                divMessages.empty();
+//                divMessages.html(angular.element($compile(messages)(scope)));
+//                divMessages.empty();
+
+//                var newDiv = divMessages.clone();
+//                newDiv.html(angular.element($compile(messages)(scope)));
+//                divMessages.html(newDiv);
+
+                var newDiv = angular.element($compile(messages)(scope));
+                divMessages.replaceWith(newDiv);
+
+//                divMessages.append(angular.element($compile(messages)(scope)));
+//                $compile(divMessages)(scope);
+            }, true);
+
             scope.$watch(() => scope.model, (newVal, oldVal) => {
                 if (newVal !== oldVal) {
                     // Trigger change event for potential listener - saveHistory directive
@@ -56,21 +166,20 @@
                 }
             });
 
-            console.dir(formController[scope.name]);
-            console.log(JSON.stringify(formController[scope.name].$error.required));
-            console.dir(scope.$parent.$eval((`${field}.$error`)));
-//            scope.$watch(formController[scope.name].$error, function(newValue) {
-//                console.log(`error: ${JSON.stringify(newValue)}`);
-//            });
-
+            function toggleMessages(value) {
+                if (value === true) {
+                    divMessages.show();
+                } else {
+                    divMessages.hide();
+                }
+            }
         }
 
         return {
             controller: controller,
             controllerAs: 'vm',
             restrict: 'E',
-//            priority: -1,
-//            terminal: true,
+            priority: 1,
             require: '^form',
             scope: {
                 name: '@',
@@ -80,7 +189,7 @@
                   <label class="control-label" for="{{name}}"></label>
                   <p class="input-group">
 
-                      <input type="text" required ng-minlength="5" ng-model="model" id="{{name}}" name="{{name}}"
+                      <input type="text" required ng-model="model" id="{{name}}" name="{{name}}"
                       class="form-control" ng-model-options="{timezone: 'UTC'}"
                       is-open="vm.popup.opened" />
 
@@ -88,6 +197,8 @@
                         <button type="button" class="btn btn-default" ng-click="vm.open()">
                         <i class="glyphicon glyphicon-calendar"></i></button>
                       </span>
+
+                      <div class="contttttttt"></div>
 
 
                   </p>

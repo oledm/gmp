@@ -1,5 +1,5 @@
 <ng-form name="vm.orderForm" novalidate>
-    <p>{{vm.orderForm.order_date.$error}}</p>
+    <p>{{vm.orderForm.order_date.$error}} touched:{{vm.orderForm.order_date.$touched}}</p>
     <h4 checkmark>Данные приказа о создании бригады</h4>
 
     <div class="form-group">
@@ -16,9 +16,6 @@
             </div>
             <!-- 
                 <div class="col-sm-6" ng-controller="DatepickerController as dc"
-             -->
-            <!-- 
-                <div class="col-sm-3" ng-controller="DatepickerController as dc"
                      ng-class="{ 'has-error': vm.orderForm.order_date.$touched && vm.orderForm.order_date.$invalid }"
                     >
                       <label class="control-label" for="order_date">Дата создания приказа</label>
@@ -35,7 +32,7 @@
                 name="order_date" 
              -->
 
-        <date-picker class="col-sm-6" label="Новая дата"
+         <date-picker class="col-sm-6" label="Новая дата" ng-required="true"
             ng-model="vm.report.order.date" name="order_date" />
         </div>
 
