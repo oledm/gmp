@@ -2,9 +2,29 @@
     'use strict';
 
     angular.module('app.report')
+        .directive('watcher', Watcher)
         .directive('datePicker', DatePicker2);
 
-//            '<input type="text" ng-model="vm.model" name="vm.inputname" />' + 
+    function Watcher() {
+        return {
+            restrict: 'A',
+            link: function(scope, elem, attrs) {
+                var target = attrs.ngModel ? attrs.ngModel : attrs.watcher;
+
+                if (target === undefined) {
+                    return;
+                }
+
+                scope.$watch(target, (newVal) => {
+                    if (newVal) {
+                        elem.trigger('change');
+                    }
+                });
+            }
+        }
+    }
+
+//            '<input type="text" ng-model="vm.model" name="vm.name" />' + 
 //            '<div ng-messages="vm.$error" role="alert">' +
 //              '<div ng-messages-include="/static/src/assets/messages.html"></div>' +
 //            '</div>',
@@ -12,7 +32,7 @@
       function link(scope, elem, attrs, ctrls) {
           var ngModel = ctrls[0];
           var datePicker = ctrls[1];
-          datePicker.inputname = attrs.inputname;
+          datePicker.name = attrs.name;
           datePicker.label = attrs.label;
           datePicker.setModel(ngModel);
       }
@@ -20,10 +40,10 @@
       return {
         restrict: 'E',
         template: `
-                    <label ng-class="{ 'has-error': true }" class="control-label" for="vm.inputname">{{vm.label}}</label>
+                    <label ng-class="{ 'has-error': true }" class="control-label" for="vm.name">{{vm.label}}</label>
                       <p class="input-group">
                     
-                          <input type="text" ng-model="vm.model" id="vm.inputname" name="vm.inputname"
+                          <input type="text" ng-model="vm.model" id="vm.name" name="vm.name"
                           class="form-control" ng-model-options="{timezone: 'UTC'}"
                             datepicker-options="dc.dateOptions"  uib-datepicker-popup="dd MMMM yyyy"
                           is-open="vm.popup.opened" />
@@ -35,7 +55,7 @@
                     
                       </p>
                       
-                        <div ng-messages="vm.$error" ng-if="vm.$touched" role="alert">
+                        <div ng-messages="vm.$error" role="alert">
                           <div ng-messages-include="/static/src/assets/messages.html"></div>
                         </div>
                   `,
@@ -53,6 +73,7 @@
             function setModel(ngModel) {
                 vm.$error = ngModel.$error;
                 vm.$touched = ngModel.$touched;
+                console.log('touched:', vm.$touched);
                 
                 ngModel.$render = function() {
                     vm.model = ngModel.$viewValue;
@@ -60,6 +81,10 @@
                 
                 $scope.$watch('vm.model', function(newval) {
                     ngModel.$setViewValue(newval);
+                });
+
+                $scope.$watch('ngModel.$touched', function(newval) {
+                    console.log('touched:', vm.$touched);
                 });
 
                 //////////////////////////////////////////

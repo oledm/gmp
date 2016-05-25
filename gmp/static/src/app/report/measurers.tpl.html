@@ -1,7 +1,7 @@
 <ng-form>
     <p>{{vm.report.measurers | json}}</p>
     <h4 checkmark valid-on="{{vm.measurers.selected.length > 0}}">&nbsp;Выберите используемые приборы</h4>
-    <table class="table selectable">
+    <table wacther="vm.report.measurers" class="table selectable">
         <thead>
           <tr>
             <th></th>

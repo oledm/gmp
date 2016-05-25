@@ -1,6 +1,9 @@
+import environ
 import os
+import mimetypes
 
 from django.conf import settings
+from django.http import HttpResponse
 
 from rest_framework import views, viewsets, permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -12,6 +15,25 @@ from .models import FileStorage
 from .serializers import FileSerializer
 from gmp.authentication.models import Employee
 
+
+def file_response(request):
+    dir_ = str(environ.Path(settings.MEDIA_ROOT) - 1)
+    full_filename = os.path.join(dir_, request.path[1:])
+    file_ = open(full_filename, 'rb')
+    response = HttpResponse(file_.read())
+
+    verbose_name = request.GET.get('name')
+    if verbose_name:
+        response['Content-Disposition'] = 'attachment; filename="%s"' % verbose_name
+        type_, encoding = mimetypes.guess_type(verbose_name)
+        response['Content-Type'] = type_
+        response['Content-Encoding'] = encoding
+    else:
+        response['Content-Disposition'] = 'attachment'
+        response['Content-Type'] = 'application/octet-stream'
+    return response
+
+
 class FileUploadView(views.APIView):
     parser_classes = (FormParser, MultiPartParser, )
 
@@ -20,11 +42,12 @@ class FileUploadView(views.APIView):
         print('file_obj', file_obj)
         up_file = request.FILES['fileupload']
         #self.proc_file(up_file)
-        fname = self.save_to_db(up_file)
+        file_ = self.save_to_db(request, up_file)
         return Response({
             'status': 'Created', 
             'message': 'File upload success',
-            'id': fname
+            'id': file_['id'],
+            'url': file_['fileupload']
             }, status=status.HTTP_201_CREATED)
 
     def proc_file(self, fname):
@@ -33,10 +56,10 @@ class FileUploadView(views.APIView):
             for chunk in fname.chunks():
                 dest.write(chunk)
 
-    def save_to_db(self, fname):
-        print('self.request.user', self.request.user)
+    def save_to_db(self, request, fname):
         f = FileStorage.objects.create(fileupload=fname, uploader=self.request.user)
-        return str(f.id)
+        files_serialized = FileSerializer(f, context={'request': request})
+        return files_serialized.data
 
 class FileViewset(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
@@ -51,7 +74,7 @@ class FileViewset(viewsets.ModelViewSet):
     def list(self, request):
         user = Employee.objects.get(email=self.request.user)
         files = FileStorage.objects.filter(uploader=user)
-        files_serialized = FileSerializer(files, many=True)
+        files_serialized = FileSerializer(files, context={'request': request}, many=True)
         return Response(files_serialized.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):

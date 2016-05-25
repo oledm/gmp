@@ -63,7 +63,7 @@
                             History.create({obj_model: newVal})
                                 .then(response => history_id = response.data.id);
                         } else {
-                            console.log('History update');
+                            console.log('History update', newVal);
                             History.update(history_id, {obj_model: newVal});
                         }
                     }, secondsWaitForModelChange * 1000);

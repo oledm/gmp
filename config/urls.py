@@ -87,6 +87,8 @@ urlpatterns = [
     # /api/file/
     url(r'^api/', include(files.urls)),
 
+    url(r'^media/', filestorage_views.file_response, name='file_download'),
+
     # /api/organization/
     url(r'^api/', include(organizations.urls)),
 
