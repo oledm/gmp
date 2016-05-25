@@ -24,12 +24,12 @@ def file_response(request):
 
     verbose_name = request.GET.get('name')
     if verbose_name:
-        response['Content-Disposition'] = 'attachment; filename="%s"' % verbose_name
+        response['Content-Disposition'] = 'filename="%s"' % verbose_name
         type_, encoding = mimetypes.guess_type(verbose_name)
         response['Content-Type'] = type_
         response['Content-Encoding'] = encoding
     else:
-        response['Content-Disposition'] = 'attachment'
+        #response['Content-Disposition'] = 'attachment'
         response['Content-Type'] = 'application/octet-stream'
     return response
 

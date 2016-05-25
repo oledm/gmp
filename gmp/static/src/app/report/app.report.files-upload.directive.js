@@ -38,7 +38,11 @@
                             // Save last model condition
                             values = ngModel.$viewValue;
                         }
-                        values.push({id: response.data.id, name: file.name});
+                        values.push({
+                            id: response.data.id,
+                            name: file.name,
+                            url: response.data.url
+                        });
                         ngModel.$setViewValue(values);
                         ngModel.$setValidity(attrs.ngModel, ngModel.$viewValue.length > 0);
 
