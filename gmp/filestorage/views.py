@@ -49,12 +49,14 @@ class FileUploadView(views.APIView):
                 'message': 'File upload success',
                 'id': file_['id'],
                 'url': file_['fileupload']
-                }, status=status.HTTP_201_CREATED)
+                }, status=status.HTTP_201_CREATED
+            )
         else:
             return Response({
                 'status': 'Error', 
                 'message': 'Слишком длинное имя файла: <small>&laquo;{}&raquo;<small>'.format(up_file)
-                }, status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
+                }, status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+            )
 
     def save_to_db(self, request, fname):
         try:

@@ -225,6 +225,7 @@ BOWER_INSTALLED_APPS = (
     #'https://github.com/JustGoscha/allmighty-autocomplete.git'
     'moment',
     'angular-moment',
+    'lodash',
 )
 
 

@@ -7,20 +7,19 @@
     function FileUploadDirective(Upload) {
         'ngInject';
         function link(scope, el, attrs, ngModel) {
-            console.log('Initial files:', ngModel.$modelValue);
-            var div = angular.element(el.find('div')),
-                buttonText = div.find('span');
+            var div = angular.element(el.find('div'));
+//                buttonText = div.find('span');
 
             scope.files = [];
 
-            ngModel.$parsers.push((value) => {
-                console.log('value:', value);
+            ngModel.$formatters.push((value) => {
+                if (angular.isDefined(value)) {
+                    scope.files = value;
+                }
             });
 
             ngModel.$viewChangeListeners.push(() => {
                 scope.files = ngModel.$viewValue;
-                console.log('Files changes:', ngModel.$viewValue);
-//                console.log('Files changes:', scope.$eval('vm.report.files.licenses'));
             });
 
             scope.$watch('files', () => {
@@ -35,11 +34,11 @@
                         data: {fileupload: file}
                     }).
                     then(response => {
-                        console.log('Response status:', response.status)
-                        // Update button text for single-file uploader
-                        if (attrs.multiple === undefined) {
-                            buttonText.html(`<small>${file.name}</small>`);
-                        }
+                        console.log('Successful response with status', response.status)
+//                        // Update button text for single-file uploader
+//                        if (attrs.multiple === undefined) {
+//                            buttonText.html(`<small>${file.name}</small>`);
+//                        }
 
                         let values = [];
                         if (attrs.multiple !== undefined && ngModel.$viewValue !== undefined) {
@@ -55,8 +54,7 @@
                         ngModel.$setValidity(attrs.ngModel, ngModel.$viewValue.length > 0);
 
                     }, response => {
-                        console.log('Error status: ' + response.status);
-                        console.log('Error data: ' + response.data.message);
+                        console.log('Response error status: ' + response.status);
                         el.append(`
 			    <div class="alert alert-danger alert-dismissible" role="alert">
 			      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -88,6 +86,7 @@
                     buttonText = div.find('span'),
                     fileInput = div.find('input');
 
+
                 if (tAttrs.label) {
                     let fileLabel = angular.element('<label/>')
                         .addClass('control-label fileUploadLabel')
@@ -96,14 +95,14 @@
                     tElem.prepend(fileLabel);
                 }
 
+                let filesList = angular.element('<files-list />');
+                filesList.attr('files', 'files');
                 if (angular.isDefined(tAttrs.multiple)) {
-                    let filesList = angular.element('<files-list />');
-                    filesList.attr('files', 'files');
-
-                    tElem.append(filesList);
                     fileInput.attr('multiple', '');
                     buttonText.html('Выбрать файлы');
+                    filesList.attr('multiple', '');
                 }
+                tElem.append(filesList);
 
                 return link;
             }
