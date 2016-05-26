@@ -20,7 +20,7 @@
                     secondsWaitForModelChange = 2;
 
                 elem.on('change', () => {
-                    console.log(`Form on change. Wait ${secondsWaitForModelChange} seconds`);
+                    console.log(`Form changes. Wait ${secondsWaitForModelChange} seconds before saving`);
                     angular.copy(scope.model, oldVal);
                     updateHistory(scope.model);
                 });

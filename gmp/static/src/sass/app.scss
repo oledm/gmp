@@ -82,8 +82,13 @@ a:focus {
 .fileUpload {
     position: relative;
     overflow: hidden;
-//    margin: 10px;
+    margin-bottom: 20px;
 }
+
+.fileUploadLabel {
+    margin-bottom: 20px;
+}
+
 .fileUpload input.upload {
     position: absolute;
     top: -15px;

@@ -2,8 +2,8 @@
     'use strict';
 
     angular.module('app.report')
-        .directive('watcher', Watcher)
-        .directive('datePicker', DatePicker2);
+        .directive('watcher', Watcher);
+//        .directive('datePicker', DatePicker2);
 
     function Watcher() {
         return {
@@ -11,7 +11,7 @@
             link: function(scope, elem, attrs) {
                 var target = attrs.ngModel ? attrs.ngModel : attrs.watcher;
 
-                if (target === undefined) {
+                if (angular.isUndefined(target)) {
                     return;
                 }
 

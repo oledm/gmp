@@ -4,6 +4,7 @@ import mimetypes
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.db import DataError
 
 from rest_framework import views, viewsets, permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -39,27 +40,29 @@ class FileUploadView(views.APIView):
 
     def post(self, request, format=None):
         file_obj = request.data
-        print('file_obj', file_obj)
+        print('Загружается файл', file_obj)
         up_file = request.FILES['fileupload']
-        #self.proc_file(up_file)
         file_ = self.save_to_db(request, up_file)
-        return Response({
-            'status': 'Created', 
-            'message': 'File upload success',
-            'id': file_['id'],
-            'url': file_['fileupload']
-            }, status=status.HTTP_201_CREATED)
-
-    def proc_file(self, fname):
-        saved_file = os.path.join(settings.MEDIA_ROOT, fname.name)
-        with open(saved_file, 'wb+') as dest:
-            for chunk in fname.chunks():
-                dest.write(chunk)
+        if file_:
+            return Response({
+                'status': 'Created', 
+                'message': 'File upload success',
+                'id': file_['id'],
+                'url': file_['fileupload']
+                }, status=status.HTTP_201_CREATED)
+        else:
+            return Response({
+                'status': 'Error', 
+                'message': 'Слишком длинное имя файла: <small>&laquo;{}&raquo;<small>'.format(up_file)
+                }, status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
 
     def save_to_db(self, request, fname):
-        f = FileStorage.objects.create(fileupload=fname, uploader=self.request.user)
-        files_serialized = FileSerializer(f, context={'request': request})
-        return files_serialized.data
+        try:
+            f = FileStorage.objects.create(fileupload=fname, uploader=self.request.user)
+            files_serialized = FileSerializer(f, context={'request': request})
+            return files_serialized.data
+        except DataError:
+            return None
 
 class FileViewset(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
