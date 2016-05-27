@@ -1,4 +1,4 @@
-<ng-form id="mainForm" name='vm.mainForm' save-history="vm.report" report-id="{{vm.reportId}}">
+<ng-form name="vm.mainForm" save-history="vm.report" report-id="{{vm.reportId}}">
     <div ng-cloak>
         <h3 class="block text-center">Формирование отчета по сосудам</h3>
         
@@ -7,7 +7,7 @@
         
         <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
         
-        <div class="block text-center" ng-cloak>
+        <div class="block text-center">
             <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
                 > Создать отчет
             </button>    
@@ -19,6 +19,11 @@
         </a>
     </div>
 </ng-form>
+
+<!-- 
+    <div id="overlay"></div>
+ -->
+
         <!-- 
                 ng-disabled="
                 vm.deviceForm.$invalid ||

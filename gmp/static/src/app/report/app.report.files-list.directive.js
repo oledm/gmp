@@ -11,7 +11,7 @@
             replace: true,
             scope: {},
             bindToController: {
-                inputFiles: '&files',
+                files: '&',
                 onFilesChange: '&'
             },
             controller: function() {
@@ -20,9 +20,8 @@
                 ctrl.isPdf = name => _(name).split('.').last().toLowerCase() === 'pdf';
 
                 ctrl.delete = function(id) {
-                    let files = ctrl.inputFiles().filter(file => file.id !== id);
+                    let files = ctrl.files().filter(file => file.id !== id);
                     ctrl.onFilesChange({newFilesList: files});
-                    ServerData.delete({category: 'file', categoryId: id});
                 };
             },
             controllerAs: 'ctrl',
@@ -30,10 +29,10 @@
                 var title = angular.isDefined(tAttrs.multiple) ? 'Выбранные файлы' : 'Выбран файл';
 
                 return `
-                <ul class="list-group" ng-class="{hide: ctrl.inputFiles().length === 0}">
+                <ul class="list-group" ng-class="{hide: ctrl.files().length === 0}">
                 <h5>${title}</h5>
                 <li class="list-group-item" 
-                    ng-repeat="file in ctrl.inputFiles() track by $index">{{file.name}}
+                    ng-repeat="file in ctrl.files() track by $index">{{file.name}}
                     <span class="deleteCrossIcon glyphicon glyphicon-remove" aria-hidden="true"
                     ng-click="ctrl.delete(file.id)"></span>
                     <a ng-href="{{file.url}}?name={{file.name}}"

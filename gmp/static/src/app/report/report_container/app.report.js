@@ -381,8 +381,6 @@
                     subcategory: 'lpu'});
             }
         }
-//        $timeout(() => vm.report.order.date = new Date('2016-05-07T00:00:00.000Z'), 5000);
-        
 
         ///////////////////////////////////////////////////////////////////////
         // TODO create directive for reusing this funcs

@@ -5,6 +5,22 @@
         .module('app.report')
         .directive('saveHistory', SaveHistory);
 
+    function DisableInput($timeout) {
+        return {
+            link: function(scope, elem, attrs) {
+                var inputs = elem.find('input');
+                console.log('inputssssss:', inputs);
+
+                $timeout(() => {
+                    inputs.each(val => {
+                        console.log(val);
+                    });
+
+                }, 3000);
+            }
+        }
+    }
+
     function SaveHistory(History, $timeout, moment) {
         'ngInject';
 
@@ -19,23 +35,6 @@
                     oldVal = undefined,
                     secondsWaitForModelChange = 2;
 
-                elem.on('change', () => {
-                    console.log(`Form changes. Wait ${secondsWaitForModelChange} seconds before saving`);
-                    angular.copy(scope.model, oldVal);
-                    updateHistory(scope.model);
-                });
-
-
-//                scope.$watch(() => FormController.$dirty, newValue => {
-//                    console.log('Form dirty: ' + newValue);
-//                });
-//                scope.$on('FormReady', event => {
-//                    console.log('FormReady received');
-//                });
-//                scope.$watch(FormController.$name + '.$dirty', newValue => {
-//                    console.log('Form dirty: ' + newValue);
-//                });
-
                 // Deep watch for changes in every in-object's properties
 //                scope.$watch(
 //                    () => scope.model,
@@ -49,33 +48,32 @@
 //                    true
 //                );
 
-                loadHistory(scope.reportId);
+                activate(scope.reportId);
                 //////////////////////////////////////////////////
 
-                function updateHistory(newVal) {
-                    if (timeout) {
-                        $timeout.cancel(timeout);
+                function activate(id) {
+                    var id = parseInt(id);
+                    if(!_.isFinite(id)) {
+                        // History id not provided. New report mode
+                        console.log('addListener');
+                        addChangeListener();
+                    } else {
+                        // Load history data into model
+                        console.log('READ-ONLY MODE!!!!!!');
+                        loadHistory(id);
+                        showOverlay();
                     }
-                    timeout = $timeout(() => {
-//                        console.log('write new model to DB');
-                        if (!history_id) {
-                            console.log('Write history:', newVal);
-                            History.create({obj_model: newVal})
-                                .then(response => history_id = response.data.id);
-                        } else {
-                            console.log('History update', newVal);
-                            History.update(history_id, {obj_model: newVal});
-                        }
-                    }, secondsWaitForModelChange * 1000);
+                }
+
+                function addChangeListener() {
+                    elem.on('change', () => {
+                        console.log(`Form changes. Wait ${secondsWaitForModelChange} seconds before saving`);
+                        angular.copy(scope.model, oldVal);
+                        updateHistory(scope.model);
+                    });
                 }
 
                 function loadHistory(id) {
-                    id = parseInt(id);
-                    if(!isFinite(id)) {
-                        return;
-                    }
-//                    console.log('Load history ' + JSON.stringify(id));
-
                     History.get(id)
                         .then(history_data => {
                             if (history_data.hasOwnProperty('obj_model')) {
@@ -87,6 +85,27 @@
                                 angular.copy(data, scope.model);
                             }
                         });
+                }
+
+                function showOverlay() {
+                    elem.append(angular.element('<div id="overlay"></div>'))
+                }
+
+
+                function updateHistory(newVal) {
+                    clearTimeout();
+
+                    timeout = $timeout(() => {
+//                        console.log('write new model to DB');
+                        if (!history_id) {
+                            console.log('Write history:', newVal);
+                            History.create({obj_model: newVal})
+                                .then(response => history_id = response.data.id);
+                        } else {
+                            console.log('History update', newVal);
+                            History.update(history_id, {obj_model: newVal});
+                        }
+                    }, secondsWaitForModelChange * 1000);
                 }
 
                 function fromStringToDate(data) {
@@ -103,6 +122,12 @@
                                 fromStringToDate(item);
                             }
                         }
+                    }
+                }
+
+                function clearTimeout() {
+                    if (timeout) {
+                        $timeout.cancel(timeout);
                     }
                 }
             }

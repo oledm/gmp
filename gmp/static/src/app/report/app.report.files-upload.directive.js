@@ -8,7 +8,6 @@
         'ngInject';
         function link(scope, el, attrs, ngModel) {
             var div = angular.element(el.find('div'));
-//                buttonText = div.find('span');
 
             scope.files = [];
 
@@ -34,15 +33,10 @@
                         data: {fileupload: file}
                     }).
                     then(response => {
-                        console.log('Successful response with status', response.status)
-//                        // Update button text for single-file uploader
-//                        if (attrs.multiple === undefined) {
-//                            buttonText.html(`<small>${file.name}</small>`);
-//                        }
-
+                        console.log('Successful upload with status', response.status)
                         let values = [];
                         if (attrs.multiple !== undefined && ngModel.$viewValue !== undefined) {
-                            // Save last model condition
+                            // Save last model value
                             values = ngModel.$viewValue;
                         }
                         values.push({
