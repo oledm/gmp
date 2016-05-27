@@ -74,11 +74,22 @@
                 multiple: '@',
                 label: '@'
             },
+            controller: function($scope) {
+                var ctrl = this;
+
+                ctrl.updateFiles = updateFiles;
+
+                function updateFiles(newFilesList) {
+                    $scope.files = newFilesList;
+                }
+            },
+            controllerAs: 'ctrl',
             template: `
             <div class="fileUpload btn btn-default">
                 <span>Выбрать файл</span>
                 <input type="file" class="upload" id="{{ngModel}}" name="{{ngModel}}" />
             </div>
+            <files-list files="files" on-files-change="ctrl.updateFiles(newFilesList)" />
             `,
             
             compile: function(tElem, tAttrs) {
@@ -95,14 +106,12 @@
                     tElem.prepend(fileLabel);
                 }
 
-                let filesList = angular.element('<files-list />');
-                filesList.attr('files', 'files');
+                let filesList = angular.element(tElem.find('files-list'));
                 if (angular.isDefined(tAttrs.multiple)) {
                     fileInput.attr('multiple', '');
                     buttonText.html('Выбрать файлы');
                     filesList.attr('multiple', '');
                 }
-                tElem.append(filesList);
 
                 return link;
             }

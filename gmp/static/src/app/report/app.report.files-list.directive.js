@@ -9,38 +9,41 @@
         return {
             restrict: 'E',
             replace: true,
-            scope: {
-                files: '='
+            scope: {},
+            bindToController: {
+                inputFiles: '&files',
+                onFilesChange: '&'
             },
-            template: `<ul class="list-group" ng-class="{hide: files.length === 0}">
-                <h5></h5>
+            controller: function() {
+                var ctrl = this;
+
+                ctrl.isPdf = name => _(name).split('.').last().toLowerCase() === 'pdf';
+
+                ctrl.delete = function(id) {
+                    let files = ctrl.inputFiles().filter(file => file.id !== id);
+                    ctrl.onFilesChange({newFilesList: files});
+                    ServerData.delete({category: 'file', categoryId: id});
+                };
+            },
+            controllerAs: 'ctrl',
+            template: function(tElem, tAttrs) {
+                var title = angular.isDefined(tAttrs.multiple) ? 'Выбранные файлы' : 'Выбран файл';
+
+                return `
+                <ul class="list-group" ng-class="{hide: ctrl.inputFiles().length === 0}">
+                <h5>${title}</h5>
                 <li class="list-group-item" 
-                    ng-repeat="file in files track by $index">{{file.name}}
+                    ng-repeat="file in ctrl.inputFiles() track by $index">{{file.name}}
                     <span class="deleteCrossIcon glyphicon glyphicon-remove" aria-hidden="true"
-                    ng-click="delete(file.id)"></span>
+                    ng-click="ctrl.delete(file.id)"></span>
                     <a ng-href="{{file.url}}?name={{file.name}}"
                         class="thumbnail" target="_blank"
-                        ng-switch="isPdf(file.name)"
+                        ng-switch="ctrl.isPdf(file.name)"
                     >
                         <img ng-switch-when="true" ng-src="{{file.url}}" alt="PDF preview" />
                         <img ng-switch-when="false" ng-src="{{file.url}}" alt="Preview" />
                     </a>
-                </li></ul>`,
-            compile: function(tElem, tAttrs) {
-                var header = angular.element(tElem.find('h5')),
-                    title = angular.isDefined(tAttrs.multiple) ? 'Выбранные файлы' : 'Выбран файл';
-                header.html(title);
-
-                return function(scope, el, attrs) {
-                    scope._ = _;
-
-                    scope.isPdf = name => _(name).split('.').last().toLowerCase() === 'pdf';
-
-                    scope.delete = function(id) {
-                        scope.files = scope.files.filter(file => file.id !== id);
-                        ServerData.delete({category: 'file', categoryId: id});
-                    };
-                }
+                </li></ul>`;
             }
         };
     }
