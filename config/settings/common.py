@@ -226,6 +226,7 @@ BOWER_INSTALLED_APPS = (
     'moment',
     'angular-moment',
     'lodash',
+    'angular-local-storage',
 )
 
 

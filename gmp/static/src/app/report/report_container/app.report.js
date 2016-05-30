@@ -25,7 +25,7 @@
         }
     }
 
-    function ReportContainerController($scope, $timeout, $state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History) 
+    function ReportContainerController($scope, $state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History) 
     {
         'ngInject';
 
@@ -375,7 +375,6 @@
         function activate() {
             var modeldata = History.getCurrentModelValue();
             if(angular.isDefined(modeldata)) {
-                console.log('Copy previous report data:', modeldata);
                 angular.copy(modeldata, vm.report);
                 History.clearCurrentModelValue();
             }
@@ -383,6 +382,7 @@
 
         function createPassport() {
             console.log('report:', JSON.stringify(vm.report));
+            History.saveNow(vm.report);
             ServerData.report({'report_data': vm.report});
         }
 
@@ -394,6 +394,13 @@
                     subcategory: 'lpu'});
             }
         }
+//
+//	$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+//            console.log('stateChangeStart');
+//            History.saveNow(vm.report);
+//	});
+
+
 
         ///////////////////////////////////////////////////////////////////////
         // TODO create directive for reusing this funcs
@@ -416,8 +423,7 @@
                 item.selected = true;
                 selected.push(id);
             }
-
-            $timeout(() => angular.element('#mainForm').trigger('change'), 0);
+            History.save(vm.report);
         }
 
         function procKeyPress(clickEvent, arr) {

@@ -5,12 +5,12 @@
         .module('app.report')
         .directive('saveHistory', SaveHistory);
 
-    function SaveHistory(History, $timeout, moment, $compile, $state) {
+    function SaveHistory(History, moment, $compile, $state) {
         'ngInject';
 
         return {
             scope: {
-                model: '=',
+                model: '=saveHistory',
                 reportId: '@'
             },
             controller: function($scope) {
@@ -24,33 +24,16 @@
                 }
             },
             controllerAs: 'ctrl',
-            link: function(scope, elem, attrs) {
-                var timeout = undefined,
-                    history_id = undefined,
-                    oldVal = undefined,
-                    secondsWaitForModelChange = 2;
-
-                // Deep watch for changes in every in-object's properties
-//                scope.$watch(
-//                    () => scope.model,
-//                    (newVal, oldVal) => {
-////                        console.log('old val: ' + JSON.stringify(oldVal));
-////                        console.log('new val: ' + JSON.stringify(newVal));
-//                        if (newVal !== oldVal) {
-//                            updateHistory(newVal);
-//                        }
-//                    },
-//                    true
-//                );
+            link: function(scope, elem) {
 
                 activate(scope.reportId);
+
                 //////////////////////////////////////////////////
 
                 function activate(id) {
                     var id = parseInt(id);
                     if(!_.isFinite(id)) {
                         // History id not provided. New report mode
-                        console.log('addListener');
                         addChangeListener();
                     } else {
                         // Load history data into model
@@ -61,9 +44,7 @@
 
                 function addChangeListener() {
                     elem.on('change', () => {
-                        console.log(`Form changes. Wait ${secondsWaitForModelChange} seconds before saving`);
-                        angular.copy(scope.model, oldVal);
-                        updateHistory(scope.model);
+                        History.save(scope.model);
                     });
                 }
 
@@ -94,22 +75,6 @@
                     elem.prepend($compile(msg)(scope));
                 }
 
-                function updateHistory(newVal) {
-                    clearTimeout();
-
-                    timeout = $timeout(() => {
-//                        console.log('write new model to DB');
-                        if (!history_id) {
-                            console.log('Write history:', newVal);
-                            History.create({obj_model: newVal})
-                                .then(response => history_id = response.data.id);
-                        } else {
-                            console.log('History update', newVal);
-                            History.update(history_id, {obj_model: newVal});
-                        }
-                    }, secondsWaitForModelChange * 1000);
-                }
-
                 function fromStringToDate(data) {
                     for (let prop in data) {
                         if (data.hasOwnProperty(prop)) {
@@ -124,12 +89,6 @@
                                 fromStringToDate(item);
                             }
                         }
-                    }
-                }
-
-                function clearTimeout() {
-                    if (timeout) {
-                        $timeout.cancel(timeout);
                     }
                 }
             }
