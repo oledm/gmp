@@ -353,13 +353,13 @@
         vm.pages = pages;
         vm.procKeyPress = procKeyPress;
         vm.getLPUs = getLPUs;
-        vm.measurers = {all: measurers, selected: []};
+//        vm.measurers = {all: measurers, selected: []};
         vm.report = {
             team: {},
             files: {},
             info: info,
             schemes: schemes,
-            measurers: [],
+            measurers: {all: measurers, selected: []},
             lpus: [],
             results: results,
             type: $state.current.data.type,

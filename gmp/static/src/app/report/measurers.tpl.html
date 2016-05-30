@@ -1,6 +1,6 @@
 <ng-form>
     <p>{{vm.report.measurers | json}}</p>
-    <h4 checkmark valid-on="{{vm.measurers.selected.length > 0}}">&nbsp;Выберите используемые приборы</h4>
+    <h4 checkmark valid-on="{{vm.report.measurers.selected.length > 0}}">&nbsp;Выберите используемые приборы</h4>
     <table watcher="vm.report.measurers" class="table selectable">
         <thead>
           <tr>
@@ -14,8 +14,8 @@
         </thead>
         <tbody>
             <tr ng-class="{success: measurer.selected}"
-                ng-click="vm.setSelected(vm.report.measurers, measurer)"
-                ng-repeat="measurer in vm.measurers.all">
+                ng-click="vm.setSelected(vm.report.measurers.selected, measurer)"
+                ng-repeat="measurer in vm.report.measurers.all">
                 <td><input type="checkbox" ng-model="measurer.selected" ng-checked="measurer.selected"></td>
                 <td>{{measurer.name}}</td>
                 <td>{{measurer.model}}</td>

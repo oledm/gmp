@@ -10,7 +10,7 @@
 
         return {
             scope: {
-                model: '=saveHistory',
+                model: '=',
                 reportId: '@'
             },
             controller: function($scope) {

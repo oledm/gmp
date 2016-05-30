@@ -27,7 +27,7 @@
                 >
                   <label class="control-label" for="license_date">Дата заключения договора</label>
                     <p class="input-group">
-                  <input type="text" ng-model="vm.report.info.license_date" id="license_date" name="license_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" required datepicker-options="dc.dateOptions" required />
+                  <input type="text" watcher ng-model="vm.report.info.license_date" id="license_date" name="license_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" required datepicker-options="dc.dateOptions" required />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>
@@ -62,7 +62,7 @@
                 >
                   <label class="control-label" for="investigation_date">Дата проведения обследования</label>
                     <p class="input-group">
-                  <input type="text" ng-model="vm.report.info.investigation_date" id="investigation_date" name="investigation_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" required datepicker-options="dc.dateOptions" required />
+                  <input type="text" watcher ng-model="vm.report.info.investigation_date" id="investigation_date" name="investigation_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" required datepicker-options="dc.dateOptions" required />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>
