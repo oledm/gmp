@@ -89,7 +89,6 @@
                 data: {
                     type: 'report-container'
                 }
-
             });
 
         $urlRouterProvider.otherwise('/');
