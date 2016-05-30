@@ -5,23 +5,7 @@
         .module('app.report')
         .directive('saveHistory', SaveHistory);
 
-    function DisableInput($timeout) {
-        return {
-            link: function(scope, elem, attrs) {
-                var inputs = elem.find('input');
-                console.log('inputssssss:', inputs);
-
-                $timeout(() => {
-                    inputs.each(val => {
-                        console.log(val);
-                    });
-
-                }, 3000);
-            }
-        }
-    }
-
-    function SaveHistory(History, $timeout, moment) {
+    function SaveHistory(History, $timeout, moment, $compile, $state) {
         'ngInject';
 
         return {
@@ -29,6 +13,17 @@
                 model: '=saveHistory',
                 reportId: '@'
             },
+            controller: function($scope) {
+                var ctrl = this;
+
+                ctrl.createNewReport = createNewReport;
+
+                function createNewReport() {
+                    History.setCurrentModelValue($scope.model)
+                    $state.go('report-container', {id: undefined});
+                }
+            },
+            controllerAs: 'ctrl',
             link: function(scope, elem, attrs) {
                 var timeout = undefined,
                     history_id = undefined,
@@ -59,9 +54,8 @@
                         addChangeListener();
                     } else {
                         // Load history data into model
-                        console.log('READ-ONLY MODE!!!!!!');
                         loadHistory(id);
-                        showOverlay();
+                        showReadOnlyWarning();
                     }
                 }
 
@@ -87,10 +81,18 @@
                         });
                 }
 
-                function showOverlay() {
-                    elem.append(angular.element('<div id="overlay"></div>'))
+                function showReadOnlyWarning() {
+                    var msg = 
+                    `
+                    <div class="alert alert-warning" role="alert">
+                    <strong>Внимание!</strong><span> Вы находитесь в режиме просмотра истории. Все внесенные изменения не будут сохранены. Вы можете создать новую форму отчета с такими же исходными данными.</span>
+                    <div class="block text-center alert__button">
+                        <button ng-click="ctrl.createNewReport()" class="btn btn-primary"> Создать </button>    
+                    </div>
+                    `;
+                    
+                    elem.prepend($compile(msg)(scope));
                 }
-
 
                 function updateHistory(newVal) {
                     clearTimeout();

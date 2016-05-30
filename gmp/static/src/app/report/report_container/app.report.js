@@ -368,6 +368,19 @@
         vm.setSelected = setSelected;
         vm.reportId = $stateParams.id;
 
+        activate(); 
+
+        ///////////////////////////////////////////////////
+
+        function activate() {
+            var modeldata = History.getCurrentModelValue();
+            if(angular.isDefined(modeldata)) {
+                console.log('Copy previous report data:', modeldata);
+                angular.copy(modeldata, vm.report);
+                History.clearCurrentModelValue();
+            }
+        }
+
         function createPassport() {
             console.log('report:', JSON.stringify(vm.report));
             ServerData.report({'report_data': vm.report});

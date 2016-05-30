@@ -13,12 +13,17 @@
             create: create,
             update: update,
             get: get,
-            list: list
+            list: list,
+            setCurrentModelValue: setCurrentModelValue,
+            getCurrentModelValue: getCurrentModelValue,
+            clearCurrentModelValue: clearCurrentModelValue,
         };
 
         return history;
 
         ////////////////////////////
+
+        var modelValue = undefined;
 
         function create(data) {
             return $http.post(URL_HISTORY_API, data);
@@ -50,6 +55,18 @@
         function list() {
             return $http.get(`${URL_HISTORY_API}`)
                 .then(response => response.data);
+        }
+
+        function setCurrentModelValue(value) {
+            modelValue = value;
+        }
+
+        function getCurrentModelValue() {
+            return modelValue;
+        }
+
+        function clearCurrentModelValue() {
+            modelValue = undefined;
         }
     }
 })();
