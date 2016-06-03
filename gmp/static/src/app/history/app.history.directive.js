@@ -46,6 +46,11 @@
                     elem.on('change', () => {
                         History.save(scope.model);
                     });
+
+                    scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+                        console.log('stateChangeStart');
+                        History.saveNow(scope.model);
+                    });
                 }
 
                 function loadHistory(id) {

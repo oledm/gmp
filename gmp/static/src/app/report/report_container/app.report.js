@@ -394,11 +394,6 @@
                     subcategory: 'lpu'});
             }
         }
-//
-//	$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-//            console.log('stateChangeStart');
-//            History.saveNow(vm.report);
-//	});
 
 
 
