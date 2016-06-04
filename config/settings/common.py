@@ -14,6 +14,7 @@ import environ
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('gmp')
+BASE_DIR = str(ROOT_DIR)
 
 env = environ.Env()
 
@@ -35,13 +36,14 @@ DJANGO_APPS = (
     'django.contrib.admin',
 )
 THIRD_PARTY_APPS = (
-    'crispy_forms',  # Form layouts
+    #'crispy_forms',  # Form layouts
     #'allauth',  # registration
     #'allauth.account',  # registration
     #'allauth.socialaccount',  # registration
     'rest_framework',
-    'djangobower',
-    'djng',
+    #'djangobower',
+    'systemjs',
+    #'djng',
 )
 
 # Apps specific for this project go here.
@@ -185,6 +187,8 @@ STATIC_ROOT = str(ROOT_DIR('staticfiles'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
+#SYSTEMJS_ENABLED = True
+#print('SYSTEMJS_ENABLED', SYSTEMJS_ENABLED)
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
@@ -195,7 +199,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
+    'systemjs.finders.SystemFinder',
 )
 
 BOWER_COMPONENTS_ROOT = str(APPS_DIR.path('static/vendor'))

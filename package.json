@@ -1,18 +1,27 @@
 {
+  "name": "gmp",
+  "version": "0.3.0",
+  "description": "",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oledm/gmp.git"
+  },
   "jspm": {
+    "directories": {
+      "baseURL": "gmp/static/vendor"
+    },
+    "configFile": "gmp/static/src/app/config.js",
     "dependencies": {
       "babel-polyfill": "npm:babel-polyfill@^6.9.1",
-      "bootstrap": "github:twbs/bootstrap@^3.3.6",
       "classnames": "npm:classnames@^2.2.5",
       "isomorphic-fetch": "npm:isomorphic-fetch@^2.2.1",
-      "jsonp": "npm:jsonp@^0.2.0",
       "lru-memoize": "npm:lru-memoize@^1.0.1",
       "react": "npm:react@^15.1.0",
       "react-dom": "npm:react-dom@^15.1.0",
       "react-redux": "npm:react-redux@^4.4.5",
-      "react-redux-form": "npm:react-redux-form@^0.13.3",
       "redux": "npm:redux@^3.5.2",
-      "redux-devtools": "npm:redux-devtools@^3.3.1",
       "redux-form": "npm:redux-form@^5.2.5",
       "redux-thunk": "npm:redux-thunk@^2.1.0"
     },
@@ -21,8 +30,5 @@
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "core-js": "npm:core-js@^1.1.4"
     }
-  },
-  "devDependencies": {
-    "jspm": "^0.16.36"
   }
 }

@@ -48,6 +48,7 @@ redis>=2.10.0
 # Your custom requirements go here
 djangorestframework==3.3.2
 django-bower
+django-systemjs
 drf-nested-routers
 reportlab
 pdfrw

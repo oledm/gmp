@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% load staticfiles i18n %}
+{% load system_tags %}
 
 {% block css %}
-<base href="/">
-<link rel="stylesheet" href="{% static 'allmighty-autocomplete/style/autocomplete.css' %}">
 <link rel="stylesheet" href="{% static 'dist/app.css' %}">
 <!-- 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
@@ -16,11 +15,9 @@
 {% endblock %}
 
 {% block javascript  %}
-        <script src="{% static 'dist/jspm_packages/system.js' %}"></script>
-        <script src="{% static 'dist/config.js' %}"></script>
-        <script>
-            System.import('lib/main')
-        </script>
+        <script src="{% static 'vendor/jspm_packages/system.js' %}"></script>
+        <script src="{% static 'src/app/config.js' %}"></script>
+        {% systemjs_import '../static/src/lib/main' %}
 {% endblock %}
 
 {% block content %}

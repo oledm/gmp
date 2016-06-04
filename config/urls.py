@@ -111,7 +111,8 @@ urlpatterns = [
     #url(r'^report/$', report_views.create_report_debug, name="report"),
 
     # Pass-through route
-    url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
+    url(r'^$', TemplateView.as_view(template_name='home.html'), name="home"),
+    #url(r'^.*$', TemplateView.as_view(template_name='home.html'), name="home"),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
