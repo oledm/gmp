@@ -16,8 +16,8 @@
 
 {% block javascript  %}
         <script src="{% static 'vendor/jspm_packages/system.js' %}"></script>
-        <script src="{% static 'src/app/config.js' %}"></script>
-        {% systemjs_import '../static/src/lib/main' %}
+        <script src="{% static 'config.js' %}"></script>
+        {% systemjs_import 'src/lib/main' %}
 {% endblock %}
 
 {% block content %}

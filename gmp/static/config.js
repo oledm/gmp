@@ -1,6 +1,5 @@
 System.config({
-//  baseURL: "gmp/static/",
-  baseURL: "static/vendor/",
+  baseURL: "/static/",
   defaultJSExtensions: true,
   transpiler: "babel",
   babelOptions: {
@@ -10,11 +9,13 @@ System.config({
     ]
   },
   paths: {
-    "github:*": "jspm_packages/github/*",
-    "npm:*": "jspm_packages/npm/*"
+    "github:*": "vendor/jspm_packages/github/*",
+    "npm:*": "vendor/jspm_packages/npm/*",
+    "ic": "/static/*"
   },
 
   map: {
+    "/static/src/lib/main": "./gmp/static/src/lib/main",
     "babel": "npm:babel-core@5.8.38",
     "babel-polyfill": "npm:babel-polyfill@6.9.1",
     "babel-runtime": "npm:babel-runtime@5.8.38",

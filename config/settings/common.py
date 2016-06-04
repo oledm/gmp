@@ -41,7 +41,6 @@ THIRD_PARTY_APPS = (
     #'allauth.account',  # registration
     #'allauth.socialaccount',  # registration
     'rest_framework',
-    #'djangobower',
     'systemjs',
     #'djng',
 )
@@ -187,8 +186,6 @@ STATIC_ROOT = str(ROOT_DIR('staticfiles'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
-#SYSTEMJS_ENABLED = True
-#print('SYSTEMJS_ENABLED', SYSTEMJS_ENABLED)
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
@@ -201,38 +198,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'systemjs.finders.SystemFinder',
 )
-
-BOWER_COMPONENTS_ROOT = str(APPS_DIR.path('static/vendor'))
-BOWER_PATH = '/usr/bin/bower'
-BOWER_INSTALLED_APPS = ( 
-    'angular',
-    'angular-i18n',
-    'angular-resource',
-    'angular-ui-router',
-    'angular-cookies',
-    'angular-messages',
-    'angular-animate',
-    'angular-sanitize',
-    #'angular-material',
-    #'angular-material-data-table',
-    'angular-cookies',
-    #'ionicons',
-    'ng-file-upload-shim',
-    'ng-file-upload',
-    'bootstrap-sass',
-    #'bootstrap-table',
-    #'angular-selection-model',
-    #'material-design-icons',
-    'angular-ui-bootstrap-bower',
-    'angular-datepicker',
-    #'angular-ui-select',
-    #'https://github.com/JustGoscha/allmighty-autocomplete.git'
-    'moment',
-    'angular-moment',
-    'lodash',
-    'angular-local-storage',
-)
-
 
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -279,3 +244,5 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 DECIMAL_SEPARATOR=','
+
+SYSTEMJS_ENABLED = True # Load single app bundle

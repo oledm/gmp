@@ -3,16 +3,18 @@
   "version": "0.3.0",
   "description": "",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "jspm": "^0.16.36"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oledm/gmp.git"
   },
   "jspm": {
     "directories": {
-      "baseURL": "gmp/static/vendor"
+      "baseURL": "gmp/static",
+      "packages": "gmp/static/vendor/jspm_packages"
     },
-    "configFile": "gmp/static/src/app/config.js",
     "dependencies": {
       "babel-polyfill": "npm:babel-polyfill@^6.9.1",
       "classnames": "npm:classnames@^2.2.5",
