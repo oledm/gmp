@@ -245,4 +245,5 @@ ADMIN_URL = r'^admin/'
 # Your common stuff: Below this line define 3rd party library settings
 DECIMAL_SEPARATOR=','
 
-SYSTEMJS_ENABLED = True # Load single app bundle
+SYSTEMJS_ENABLED = False # True - load single app's bundle
+SYSTEMJS_OUTPUT_DIR = 'dist'

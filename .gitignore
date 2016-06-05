@@ -62,6 +62,7 @@ vendor/
 gmp/media/
 # Build
 gmp/static/dist/
+staticfiles/
 
 # Hitch directory
 tests/.hitch
