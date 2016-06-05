@@ -38,12 +38,7 @@ export const receiveDepartments = response => ({
 //    http://127.0.0.1:8000/api/department/1/
 export const fetchDepartments = () => dispatch => {
     dispatch(requestDepartments())
-    return fetch('https://www.reddit.com/subreddits.json', {
-        credentials: 'same-origin',
-//        headers: {
-//            'X-Requested-With': 'XMLHttpRequest'
-//        }
-    })
+    return fetch('http://127.0.0.1:8000/api/department/1/')
         .then(response => response.json(), error => console.log(error))
         .then(json => {
             console.log('Departments received:', json)

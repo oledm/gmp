@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
-import InputText from '../inputs/text'
+import InputText from '../inputs/InputText'
 import LoginValidation from './LoginValidation'
 
 const fields = [ 'username', 'email', 'age' ]
