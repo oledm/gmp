@@ -2,22 +2,23 @@ import React from 'react';
 import Input from './Input'
 import uuid from 'uuid'
 
-
-const InputText = (props) => {
+const Select = (props) => {
     const id = uuid.v1()
 
     return (
         <Input {...props} id={id}>
-            <input
-                type="text"
+        <p>{props.options}</p>
+            <select
                 id={id}
                 className="form-control"
-                value={props.value}
+                value={props.value || ''}
                 onBlur={props.onBlur}
                 onChange={props.onChange}
-            />
+            >
+                {props.children}
+            </select>
         </Input>
     )
 }
 
-export default InputText
+export default Select

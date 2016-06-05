@@ -1,14 +1,16 @@
 import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
 import InputText from '../inputs/InputText'
+import DepartmentSelector from '../../containers/DepartmentSelector'
 import LoginValidation from './LoginValidation'
 
-const fields = [ 'username', 'email', 'age' ]
+const fields = [ 'username', 'email', 'age', 'department' ]
 const onSubmit = data => console.log('onSubmit:', data) 
 
 class LoginForm extends Component {
   render() {
-    const { fields: { username, email, age }, resetForm, valid, handleSubmit, submitting } = this.props
+    const { fields: { username, email, age, department },
+        resetForm, valid, handleSubmit, submitting } = this.props
 
     return (<form onSubmit={handleSubmit(onSubmit)}>
         {valid ? <p>Form is valid!</p> : <p>Form INVALID!</p> }
@@ -17,7 +19,8 @@ class LoginForm extends Component {
             <InputText className="col-xs-6" label="E-mail" {...email} />
         </div>
         <div className="row">
-            <InputText className="col-xs-3" label="Возраст" {...age} />
+            <InputText className="col-xs-6" label="Возраст" {...age} />
+            <DepartmentSelector className="col-xs-6" label="Отдел" {...department} />
         </div>
         <div>
           <button className="btn btn-primary" type="submit" disabled={submitting || !valid}>
