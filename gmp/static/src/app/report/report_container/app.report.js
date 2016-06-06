@@ -377,6 +377,7 @@
 
         function restore_initial_state() {
             angular.copy(vm.report_initial_state, vm.report);
+            $state.go($state.current, {}, {reload: true});
         }
 
         function activate() {
