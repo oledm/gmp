@@ -25,7 +25,7 @@
         }
     }
 
-    function ReportContainerController($scope, $state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History) 
+    function ReportContainerController($scope, $state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History, localStorageService) 
     {
         'ngInject';
 
@@ -376,6 +376,7 @@
         ///////////////////////////////////////////////////
 
         function restore_initial_state() {
+            localStorageService.remove('model');
             angular.copy(vm.report_initial_state, vm.report);
             $state.go($state.current, {}, {reload: true});
         }

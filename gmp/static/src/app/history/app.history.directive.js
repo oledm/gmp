@@ -5,7 +5,7 @@
         .module('app.report')
         .directive('saveHistory', SaveHistory);
 
-    function SaveHistory(History, moment, $compile, $state, localStorageService) {
+    function SaveHistory(History, moment, $compile, $state, localStorageService, $stateParams) {
         'ngInject';
 
         return {
@@ -20,7 +20,8 @@
 
                 function createNewReport() {
                     History.setCurrentModelValue($scope.model)
-                    $state.go('report-container', {id: undefined});
+                    localStorageService.remove('model')
+                    $state.go($state.current, {id: undefined}, {reload: true});
                 }
             },
             controllerAs: 'ctrl',
@@ -53,7 +54,7 @@
                         localStorageService.set('model', scope.model);
                     });
 
-                    window.onbeforeunload = function (e) {
+                    window.onbeforeunload = function(e) {
                         localStorageService.set('model', scope.model);
                     };
                 }
@@ -72,9 +73,10 @@
                 }
 
                 function loadLocalStorage() {
-                    var data = localStorageService.get('model')
-                    if (angular.isDefined(data)) {
-//                        console.log('Загрузка из local storage');
+                    let keys = localStorageService.keys();
+                    if (keys.indexOf('model') !== -1) {
+//                        console.log('Загрузка из local storage:', data);
+                        let data = localStorageService.get('model');
                         load(data);
                     }
                 }
