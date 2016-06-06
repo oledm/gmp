@@ -9,14 +9,14 @@
             restrict: 'A',
             link: function(scope, elem, attrs) {
                 var target = attrs.ngModel ? attrs.ngModel : attrs.watcher;
-                console.log('watching for', target);
+//                console.log('watching for', target);
 
                 if (angular.isUndefined(target)) {
                     return;
                 }
 
                 scope.$watch(target, (newVal, oldVal) => {
-                    console.log('watch trigger');
+//                    console.log('watch trigger');
                     if (newVal !== oldVal) {
                         elem.trigger('change');
                     }

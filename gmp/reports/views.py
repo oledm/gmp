@@ -3,6 +3,9 @@ import pprint
 
 from django.http import HttpResponse
 
+from rest_framework.response import Response
+from rest_framework import status
+
 from .utils.reportmaker import ReportMaker
 
 def create_report(request):
@@ -14,6 +17,10 @@ def create_report(request):
     ReportMaker(data['report_data'], response)
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
     return response
+    # TODO case when report making failed
+    #response = HttpResponse('Report not created')
+    #response.status_code = 200
+    #return response
 
 def create_report_debug(request):
     fake_passport = {'docs': [{'name': 'Журнал ремонта электродвигателя', 'value': True},

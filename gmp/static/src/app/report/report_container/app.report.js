@@ -365,12 +365,19 @@
             type: $state.current.data.type,
             order: {},
         };
+
+        vm.report_initial_state = angular.copy(vm.report)
+        vm.restore_initial_state = restore_initial_state; 
         vm.setSelected = setSelected;
         vm.reportId = $stateParams.id;
 
         activate(); 
 
         ///////////////////////////////////////////////////
+
+        function restore_initial_state() {
+            angular.copy(vm.report_initial_state, vm.report);
+        }
 
         function activate() {
             var modeldata = History.getCurrentModelValue();
@@ -394,8 +401,6 @@
                     subcategory: 'lpu'});
             }
         }
-
-
 
         ///////////////////////////////////////////////////////////////////////
         // TODO create directive for reusing this funcs

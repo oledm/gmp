@@ -5,7 +5,7 @@
         .module('app.report')
         .directive('saveHistory', SaveHistory);
 
-    function SaveHistory(History, moment, $compile, $state) {
+    function SaveHistory(History, moment, $compile, $state, localStorageService) {
         'ngInject';
 
         return {
@@ -35,6 +35,7 @@
                     if(!_.isFinite(id)) {
                         // History id not provided. New report mode
                         addChangeListener();
+                        loadLocalStorage();
                     } else {
                         // Load history data into model
                         loadHistory(id);
@@ -48,9 +49,13 @@
                     });
 
                     scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-                        console.log('stateChangeStart');
-                        History.saveNow(scope.model);
+//                        console.log('Сохранение в local storage');
+                        localStorageService.set('model', scope.model);
                     });
+
+                    window.onbeforeunload = function (e) {
+                        localStorageService.set('model', scope.model);
+                    };
                 }
 
                 function loadHistory(id) {
@@ -61,10 +66,22 @@
                                 // Deep search model object and convert all datetime
                                 // string values to Date instance for correct display
                                 // by date-picker widget.
-                                fromStringToDate(data);
-                                angular.copy(data, scope.model);
+                                load(data);
                             }
                         });
+                }
+
+                function loadLocalStorage() {
+                    var data = localStorageService.get('model')
+                    if (angular.isDefined(data)) {
+//                        console.log('Загрузка из local storage');
+                        load(data);
+                    }
+                }
+
+                function load(data) {
+                    fromStringToDate(data);
+                    angular.copy(data, scope.model);
                 }
 
                 function showReadOnlyWarning() {
