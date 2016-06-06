@@ -102,7 +102,8 @@ class ReportContainer(ReportMixin):
         obj = ', '.join([
             self.data['obj_data']['lpu']['name'],
             self.data['obj_data']['ks'],
-            self.data['obj_data']['plant']
+            self.data['obj_data']['plant'],
+            self.data['obj_data']['provod']
         ])
         para_style = (
             ('Heading 1 Big Bold', ),

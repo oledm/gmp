@@ -26,7 +26,7 @@
         <p>Номер чертежа:&nbsp;{{vm.report.device.scheme}}</p>
         <p>Год изготовления:&nbsp;{{vm.report.device.manufactured_year}}</p>
         <p>Год ввода в эксплуатацию:&nbsp;{{vm.report.device.started_year}}</p>
-        <p>Место установки:&nbsp;{{vm.report.device.location}}{{vm.report.obj_data.plant ? ' ' + vm.report.obj_data.plant : ''}}{{vm.report.obj_data.ks ? ' ' + vm.report.obj_data.ks : ''}}{{vm.report.obj_data.lpu ? ', ' + vm.report.obj_data.lpu.name : ''}}</p>
+        <p>Место установки:&nbsp;{{vm.report.device.location}}{{vm.report.obj_data.plant ? ' ' + vm.report.obj_data.plant : ''}}{{vm.report.obj_data.ks ? ' ' + vm.report.obj_data.ks : ''}}{{vm.report.obj_data.lpu ? ', ' + vm.report.obj_data.lpu.name : ''}}{{vm.report.obj_data.provod ? ', ' + vm.report.obj_data.provod : ''}}</p>
     </div>
 
     <div class="form-group">
@@ -38,9 +38,6 @@
                       ng-model="vm.report.obj_data.org" name="org" id="org"
                       ng-options="org as org.name for org in vm.orgs track by org.id"
                   >
-                      <!-- 
-                          <option ng-repeat="org in vm.orgs">{{org.name}}</option>
-                       -->
                   </select>
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.org.$error" ng-if="vm.deviceForm.org.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
@@ -84,7 +81,15 @@
 
     <div class="form-group">
         <div class="row">
-            <div class="col-sm-12"
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.provod.$touched && vm.deviceForm.provod.$invalid }">
+                  <label class="control-label" for="provod">Наименование газопровода</label>
+                  <input class="form-control" type="text" id="provod" required
+                      name="provod" ng-maxlength="50" ng-model="vm.report.obj_data.provod" />
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.provod.$error" ng-if="vm.deviceForm.provod.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            <div class="col-sm-6"
                  ng-class="{ 'has-error': vm.deviceForm.condition.$touched && vm.deviceForm.condition.$invalid }"
                 >
               <label class="control-label" for="condition">Состояние объекта диагностирования</label>
