@@ -2,8 +2,10 @@
     <div ng-cloak>
         <h3 class="block text-center">Формирование отчета по сосудам</h3>
         
-         <autocomplete ng-model="vm.yourchoice" data="vm.movies" click-activation="true"
+         <!-- 
+             <autocomplete ng-model="vm.yourchoice" data="vm.movies" click-activation="true"
                attr-placeholder="" attr-input-class="form-control" attr-class="block"></autocomplete>
+          -->
         
         <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
         

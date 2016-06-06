@@ -99,7 +99,11 @@ class ReportContainer(ReportMixin):
             ['<strong>Место установки:</strong> филиал {obj_data[org][name]} '
                 '{obj}'''],
         ]
-        obj = ', '.join([self.data['obj_data']['lpu'], self.data['obj_data']['ks'], self.data['obj_data']['plant']])
+        obj = ', '.join([
+            self.data['obj_data']['lpu']['name'],
+            self.data['obj_data']['ks'],
+            self.data['obj_data']['plant']
+        ])
         para_style = (
             ('Heading 1 Big Bold', ),
             ('Heading 1 Big Bold', ),
@@ -445,7 +449,7 @@ class ReportContainer(ReportMixin):
         self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
         ######################################
         for measurer in Measurer.objects.filter(
-                Q(id__in=self.data.get('measurers')),
+                Q(id__in=self.data.get('measurers').get('selected')),
                 Q(name__icontains='визуальн') |
                 Q(name__icontains='люксметр') |
                 Q(name__icontains='дальномер')
@@ -487,7 +491,7 @@ class ReportContainer(ReportMixin):
         self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
         ######################################
         for measurer in Measurer.objects.filter(
-                Q(id__in=self.data.get('measurers')),
+                Q(id__in=self.data.get('measurers').get('selected')),
                 Q(name__icontains='толщиномер ультразвуковой') |
                 Q(name__icontains='стандартный образец предприятия') |
                 Q(name__icontains='образец шероховатости поверхности')
@@ -551,7 +555,7 @@ class ReportContainer(ReportMixin):
         self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
         ######################################
         for measurer in Measurer.objects.filter(
-                Q(id__in=self.data.get('measurers')),
+                Q(id__in=self.data.get('measurers').get('selected')),
                 Q(name__icontains='дефектоскоп ультразвуковой') |
                 Q(name__icontains='контрольный образец') |
                 Q(name__icontains='образец шероховатости поверхности') |
@@ -628,7 +632,7 @@ class ReportContainer(ReportMixin):
         self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
         ######################################
         for measurer in Measurer.objects.filter(
-                Q(id__in=self.data.get('measurers')),
+                Q(id__in=self.data.get('measurers').get('selected')),
                 Q(name__icontains='твердомер') |
                 Q(name__icontains='меры твердости') |
                 Q(name__icontains='образец шероховатости поверхности')
@@ -696,7 +700,7 @@ class ReportContainer(ReportMixin):
         self.put('Применяемое оборудование:', 'Text Simple Bold', .2)
         ######################################
         for measurer in Measurer.objects.filter(
-                Q(id__in=self.data.get('measurers')),
+                Q(id__in=self.data.get('measurers').get('selected')),
                 Q(name__icontains='устройство намагничивающее') |
                 Q(name__icontains='магнитопорошкового контроля') |
                 Q(name__icontains='магнитопорошковой дефектоскопии') |
@@ -774,7 +778,9 @@ class ReportContainer(ReportMixin):
             ['№ п/п', 'Наименование', 'Зав. №', '№ свидетельства о поверке', 'Действительно до']
         ]
         ######################################
-        for num, measurer in enumerate(Measurer.objects.filter(id__in=self.data['measurers']), start=1):
+        for num, measurer in enumerate(
+                Measurer.objects.filter(id__in=self.data.get('measurers').get('selected')),
+                start=1):
             m = [str(num)]
             if measurer.model:
                 m.append(' '.join([measurer.name, measurer.model]))
