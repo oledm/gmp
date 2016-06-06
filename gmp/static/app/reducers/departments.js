@@ -2,7 +2,7 @@ import { REQUEST_DEPARTMENTS, RECEIVE_DEPARTMENTS } from '../constants/index'
 
 const departments = (state = {
     isFetching: false,
-    departments: {}
+    departments: []
 }, action) => {
     switch(action.type) {
         case REQUEST_DEPARTMENTS:

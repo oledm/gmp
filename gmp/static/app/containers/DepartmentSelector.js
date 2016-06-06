@@ -6,28 +6,28 @@ import Select from '../components/inputs/Select'
 class DepartmentSelector extends Component {
     constructor(props) {
         super(props)
-        props.dispatch(fetchDepartments())
-        console.log('DepartmentSelector constructor')
     }
 
     componentDidMount() {
-//        const { dispatch } = this.props
-//        dispatch(fetchDepartments())
-        console.log('componentDidMount')
-        console.log(this.props.options)
+        this.props.dispatch(fetchDepartments())
     }
 
     render() {
+        const { options, ...rest } = this.props
         return (
-            <Select>
+            <Select {...rest}>
                 <option value=""></option>
+                {options.map(item => <option key={item.id} value={item.name}>{item.name}</option>)}
             </Select>
         )
     }
 }
 
+DepartmentSelector.propTypes = {
+    options: React.PropTypes.array.isRequired
+}
+
 const mapStateToProps = (state) => ({
-//    options: [{id:1, name: '323232'}, {id:2, name:'fdfsfds'}]
     options: state.departments.departments
 })
 

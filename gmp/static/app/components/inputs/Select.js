@@ -7,7 +7,6 @@ const Select = (props) => {
 
     return (
         <Input {...props} id={id}>
-        <p>{props.options}</p>
             <select
                 id={id}
                 className="form-control"
