@@ -43,3 +43,17 @@ export const fetchDepartments = () => dispatch => {
             dispatch(receiveDepartments(json))
         })
 }
+
+export const login = () => dispatch => {
+    // loginRequired
+    
+    return fetch('http://127.0.0.1:8000/api/login/', {
+            method: 'POST',
+            body: new FormData({
+                email: 'oleynik@mosgmp.ru',
+                password: 123
+            })
+        })
+        .then(response => response.json(), error => console.log('login error:' , error))
+        .then(json => console.log('Login data', json))
+}

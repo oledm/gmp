@@ -3,8 +3,8 @@ import {createValidator, required, integer, maxLength, email} from '../../utils/
 
 const rules = createValidator({
     username: [required, maxLength(10)],
-    email: [required, email],
-    age: [required, integer],
+//    email: [required, email],
+//    age: [required, integer],
     department: [required],
 });
 
