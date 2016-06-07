@@ -508,9 +508,9 @@ class ReportContainer(ReportMixin):
             ('№<br />точки', 'Толщина<br />паспортная,<br />мм', 
             'Толщина<br />фактическая,<br />мм',) * 2,
         )
-        data = enumerate(self.data['results']['UT']['common'], start=1)
-        data = self.proc_UT_results_data(data)
-        template = template + (*data,)
+        #data = enumerate(self.data['results']['UT']['common'], start=1)
+        #data = self.proc_UT_results_data(data)
+        #template = template + (*data,)
         para_style = (
             ('Text Simple Center Dense',),
         )
@@ -876,9 +876,10 @@ class ReportContainer(ReportMixin):
         return b
 
     def append_UT_results_data(self, group, header):
-        data = enumerate(self.data['results']['UT'][group], start=1)
-        if data:
+        #print('append_UT_results_data', header, group)
+        if not self.data['results']['UT'][group]:
             return
+        data = enumerate(self.data['results']['UT'][group], start=1)
         data = self.proc_UT_results_data(data)
         template = ((header,), ) + (*data,)
         para_style = (
