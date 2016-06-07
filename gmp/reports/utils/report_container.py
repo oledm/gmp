@@ -508,9 +508,6 @@ class ReportContainer(ReportMixin):
             ('№<br />точки', 'Толщина<br />паспортная,<br />мм', 
             'Толщина<br />фактическая,<br />мм',) * 2,
         )
-        #data = enumerate(self.data['results']['UT']['common'], start=1)
-        #data = self.proc_UT_results_data(data)
-        #template = template + (*data,)
         para_style = (
             ('Text Simple Center Dense',),
         )
@@ -523,11 +520,22 @@ class ReportContainer(ReportMixin):
             table_style, styleTable=True
         )
         ######################################
-        self.append_UT_results_data('top_bottom', 'Верхнее днище')
-        self.append_UT_results_data('ring', 'Обечайка')
-        self.append_UT_results_data('bottom_bottom', 'Днище нижнее')
-        self.append_UT_results_data('top_cap', 'Люк верхний')
-        self.append_UT_results_data('bottom_cap', 'Люк нижний')
+        for measure in self.data['results']['UT']['measures']:
+            data = enumerate(measure.get('data'), start=1)
+            data = self.proc_UT_results_data(data)
+            template = ((measure.get('title'),), ) + (*data,)
+            para_style = (
+                ('Text Simple Center Dense',),
+            )
+            table_style = (
+                ('SPAN', (0,0), (-1,0)),
+                ('TOPPADDING', (0,0), (-1,-1), 0),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            )
+            self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
+                table_style, styleTable=True
+            )
         ######################################
         self.put('<strong>Заключение: </strong>', 'Text', .2)
         a = enumerate(map(lambda x: x['value'], self.data['results']['UT']['results']), start=1)
@@ -874,26 +882,6 @@ class ReportContainer(ReportMixin):
         a = tuple(zip(data[::2], data[1::2])) or data
         b = tuple(map(lambda x: tuple(chain.from_iterable(x)), a))
         return b
-
-    def append_UT_results_data(self, group, header):
-        #print('append_UT_results_data', header, group)
-        if not self.data['results']['UT'][group]:
-            return
-        data = enumerate(self.data['results']['UT'][group], start=1)
-        data = self.proc_UT_results_data(data)
-        template = ((header,), ) + (*data,)
-        para_style = (
-            ('Text Simple Center Dense',),
-        )
-        table_style = (
-            ('SPAN', (0,0), (-1,0)),
-            ('TOPPADDING', (0,0), (-1,-1), 0),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        )
-        self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
-            table_style, styleTable=True
-        )
 
     def add_specialist(self, category, abbr):
         person_id = self.data['team'][category]

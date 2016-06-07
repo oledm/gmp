@@ -1,7 +1,12 @@
 <div class="form-group">
     <div class="panel panel-default">
-      <!-- Default panel contents -->
-      <div class="panel-heading">Результаты контроля</div>
+      <div class="panel-heading">Результаты контроля
+          <button type="button" class="btn btn-sm btn-primary"
+                ng-click="vm.report.results.UT.measures.push({title: '', data: [{passport: '', real: ''}]})">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              Добавить элемент сосуда
+          </button>
+      </div>
       <table class="table table-bordered table-condensed">
           <thead>
               <tr>
@@ -11,147 +16,39 @@
                   <th class="text-center">Толщина фактическая, мм</th>
               </tr>
           </thead>
-          <tbody>
-            <!-- 
-                Верхнее днище  
-             -->
-              <tr>
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm"
-                          ng-click="vm.report.results.UT.top_bottom.push({passport: '', real: ''})">
-                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                          Добавить
-                      </button>
-                  </td>
-                  <td class="text-center" colspan="3">Днище верхнее</td>
-              </tr>
-              <tr ng-repeat="value in vm.report.results.UT.top_bottom">
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm btn-danger"
-                          ng-click="vm.report.results.UT.top_bottom.splice($index, 1)">
-                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                      </button>
-                  </td>
-                  <td class="text-center">{{$index + 1}}</td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.passport" />
-                  </td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.real" />
-                  </td>
-              </tr>
-            <!-- 
-                Обечайка
-             -->
-              <tr>
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm"
-                          ng-click="vm.report.results.UT.ring.push({passport: '', real: ''})">
-                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                          Добавить
-                      </button>
-                  </td>
-                  <td class="text-center" colspan="3">Обечайка</td>
-              </tr>
-              <tr ng-repeat="value in vm.report.results.UT.ring">
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm btn-danger"
-                          ng-click="vm.report.results.UT.ring.splice($index, 1)">
-                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                      </button>
-                  </td>
-                  <td class="text-center">{{$index + 1}}</td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.passport" />
-                  </td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.real" />
-                  </td>
-              </tr>
-            <!-- 
-                Днище нижнее
-             -->
-              <tr>
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm"
-                          ng-click="vm.report.results.UT.bottom_bottom.push({passport: '', real: ''})">
-                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                          Добавить
-                      </button>
-                  </td>
-                  <td class="text-center" colspan="3">Днище нижнее</td>
-              </tr>
-              <tr ng-repeat="value in vm.report.results.UT.bottom_bottom">
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm btn-danger"
-                          ng-click="vm.report.results.UT.bottom_bottom.splice($index, 1)">
-                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                      </button>
-                  </td>
-                  <td class="text-center">{{$index + 1}}</td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.passport" />
-                  </td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.real" />
-                  </td>
-              </tr>
-            <!-- 
-                Люк верхний
-             -->
-              <tr>
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm"
-                          ng-click="vm.report.results.UT.top_cap.push({passport: '', real: ''})">
-                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                          Добавить
-                      </button>
-                  </td>
-                  <td class="text-center" colspan="3">Люк верхний</td>
-              </tr>
-              <tr ng-repeat="value in vm.report.results.UT.top_cap">
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm btn-danger"
-                          ng-click="vm.report.results.UT.top_cap.splice($index, 1)">
-                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                      </button>
-                  </td>
-                  <td class="text-center">{{$index + 1}}</td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.passport" />
-                  </td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.real" />
-                  </td>
-              </tr>
-            <!-- 
-                Люк нижний
-             -->
-              <tr>
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm"
-                          ng-click="vm.report.results.UT.bottom_cap.push({passport: '', real: ''})">
-                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                          Добавить
-                      </button>
-                  </td>
-                  <td class="text-center" colspan="3">Люк нижний</td>
-              </tr>
-              <tr ng-repeat="value in vm.report.results.UT.bottom_cap">
-                  <td class="text-center">
-                      <button type="button" class="btn btn-sm btn-danger"
-                          ng-click="vm.report.results.UT.bottom_cap.splice($index, 1)">
-                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                      </button>
-                  </td>
-                  <td class="text-center">{{$index + 1}}</td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.passport" />
-                  </td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.real" />
-                  </td>
-              </tr>
+          <tbody ng-repeat="measure in vm.report.results.UT.measures">
+                  <tr>
+                      <td class="text-center">
+                          <button type="button" class="btn btn-sm btn-primary"
+                              ng-click="measure.data.push({passport: '', real: ''})">
+                              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                              Добавить точку
+                          </button>
+                              <button type="button" class="btn btn-sm btn-danger"
+                                  ng-click="vm.report.results.UT.measures.splice($index, 1)">
+                                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                  Удалить элемент
+                              </button>
+                      </td>
+                      <td class="text-center" colspan="3">
+                          <input class="form-control" type="text" ng-model="measure.title" />
+                      </td>
+                  </tr>
+                  <tr ng-repeat="value in measure.data">
+                      <td class="text-center">
+                          <button type="button" class="btn btn-sm btn-danger"
+                              ng-click="measure.data.splice($index, 1)">
+                              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                          </button>
+                      </td>
+                      <td class="text-center">{{$index + 1}}</td>
+                      <td><input class="form-control" type="text"
+                              ng-model="value.passport" />
+                      </td>
+                      <td><input class="form-control" type="text"
+                              ng-model="value.real" />
+                      </td>
+                  </tr>
           </tbody>
       </table>
 
