@@ -1,18 +1,22 @@
 from django.db import models
 
 class Container(models.Model):
-    name = models.CharField('Тип оборудования', max_length=50)
+    name = models.CharField('Обозначение сосуда', max_length=50)
+    _type = models.OneToOneField(
+        'ContainerType',
+        verbose_name='Тип сосуда'
+    )
     factory = models.OneToOneField(
         'Factory',
         verbose_name='Завод-изготовитель'
     )
-    serial_number = models.CharField('Заводской номер', max_length=50)
-    scheme = models.CharField('Номер чертежа', max_length=50)
-    reg_number = models.CharField('Регистрационный номер', max_length=50)
-    inv_number = models.CharField('Инвентарный номер', max_length=50)
-    manufactured_year = models.PositiveSmallIntegerField('Год изготовления')
-    started_year = models.PositiveSmallIntegerField('Год ввода в эксплуатацию')
-    location = models.CharField('Место установки', max_length=200)
+    #serial_number = models.CharField('Заводской номер', max_length=50, null=True, blank=True)
+    #scheme = models.CharField('Номер чертежа', max_length=50, null=True, blank=True)
+    #reg_number = models.CharField('Регистрационный номер', max_length=50, null=True, blank=True)
+    #inv_number = models.CharField('Инвентарный номер', max_length=50, null=True, blank=True)
+    #manufactured_year = models.PositiveSmallIntegerField('Год изготовления', null=True, blank=True)
+    #started_year = models.PositiveSmallIntegerField('Год ввода в эксплуатацию', null=True, blank=True)
+    #location = models.CharField('Место установки', max_length=200, null=True, blank=True)
     # Working conditions
     p_work = models.FloatField('Давление рабочее, МПа')
     p_test = models.FloatField('Давление пробное, МПа')
@@ -53,16 +57,27 @@ class Container(models.Model):
     )
 
     def __str__(self):
-        return '{} зав.№ {}, рег.№ {}, инв.№ {}'.format(
-            self.name.lower(),
-            self.serial_number,
-            self.reg_number,
-            self.inv_number,
-        )
+        return self.name
+        #return '{} зав.№ {}, рег.№ {}, инв.№ {}'.format(
+        #    self.name.lower(),
+        #    self.serial_number,
+        #    self.reg_number,
+        #    self.inv_number,
+        #)
 
     class Meta:
         verbose_name = 'Сосуд'
         verbose_name_plural = 'Сосуды'
+
+class ContainerType(models.Model):
+    _type = models.CharField('Тип сосуда', max_length=100)
+
+    def __str__(self):
+        return self._type
+
+    class Meta:
+        verbose_name = 'Тип сосуда'
+        verbose_name_plural = 'Типы сосудов'
 
 class Factory(models.Model):
     name = models.CharField('Наименование завода', unique=True, max_length=200)

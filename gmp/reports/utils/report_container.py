@@ -97,7 +97,7 @@ class ReportContainer(ReportMixin):
             ['<strong>{device[full_desc_capital]}</strong>'],
             ['<strong>Предприятие владелец:</strong> {obj_data[org][name]}'],
             ['<strong>Место установки:</strong> филиал {obj_data[org][name]} '
-                '{obj}'''],
+                '{obj}'],
         ]
         obj = ', '.join([
             self.data['obj_data']['lpu']['name'],

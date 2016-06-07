@@ -374,7 +374,8 @@ def create_report_debug(request):
  'obj_data': {'ks': 'defe',
               'lpu': {'id': 6, 'name': 'Алмазное ЛПУ МГ'},
               'org': {'id': 2, 'name': 'ООО "Газпром трансгаз Чайковский"'},
-              'plant': 'fdsfds'},
+              'plant': 'fdsfds',
+              'provod': 'МГ такой-то'},
  'order': {'date': '2016-06-11T00:00:00.000Z', 'number': 'dsad'},
  'results': {'HYDRA': {'conclusion': 'Проведено гидравлическое испытание '
                                      'сосуда, пробным давлением 1,25 х Р раб. '

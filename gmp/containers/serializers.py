@@ -50,14 +50,14 @@ class ContainerSerializer(serializers.ModelSerializer):
     material_bottom = MaterialSerializer()
     welding = WeldingSerializer()
     control = ControlSerializer()
-    full_desc = serializers.SerializerMethodField()
-    full_desc_capital = serializers.SerializerMethodField()
+    #full_desc = serializers.SerializerMethodField()
+    #full_desc_capital = serializers.SerializerMethodField()
 
-    def get_full_desc(self, obj):
-        return str(obj)
+    #def get_full_desc(self, obj):
+    #    return str(obj)
 
-    def get_full_desc_capital(self, obj):
-        return str(obj).capitalize()
+    #def get_full_desc_capital(self, obj):
+    #    return str(obj).capitalize()
 
     class Meta:
         model = Container

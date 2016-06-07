@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Container, Factory, Carrier, Material, Welding, Control
+from .models import Container, ContainerType, Factory, Carrier, Material, Welding, Control
 from gmp.authentication.behaviors import SuperUserAccessMixin
 
 class ContainerAdmin(SuperUserAccessMixin, admin.ModelAdmin):
@@ -32,7 +32,11 @@ class WeldingAdmin(ContainerAdmin, admin.ModelAdmin):
 class ControlAdmin(ContainerAdmin, admin.ModelAdmin):
     pass
 
+class ContainerTypeAdmin(ContainerAdmin, admin.ModelAdmin):
+    pass
+
 admin.site.register(Container, ContainerAdmin)
+admin.site.register(ContainerType, ContainerTypeAdmin)
 admin.site.register(Factory, FactoryAdmin)
 admin.site.register(Carrier, CarrierAdmin)
 admin.site.register(Material, MaterialAdmin)
