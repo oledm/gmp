@@ -4,26 +4,16 @@ import { bindActionCreators } from 'redux'
 import InputText from '../inputs/InputText'
 import DepartmentSelector from '../../containers/DepartmentSelector'
 import LoginValidation from './LoginValidation'
-import login from '../../actions/index'
+import { login } from '../../actions/index'
 
 //const fields = [ 'username', 'email', 'age', 'department' ]
 const fields = [ 'username', 'department' ]
-//const onSubmit = data => console.log('onSubmit:', data) 
 
 const submit = (values, dispatch) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-        dispatch(login());
-//      if (![ 'john', 'paul', 'george', 'ringo' ].includes(values.username)) {
-//        reject({ username: 'User does not exist', _error: 'Login failed!' })
-//      } else if (values.password !== 'redux-form') {
-//        reject({ password: 'Wrong password', _error: 'Login failed!' })
-//      } else {
-//        dispatch(showResults(values))
-//        resolve()
-//      }
-    }, 1000) // simulate server latency
-  })
+    console.log(values)
+    return new Promise((resolve, reject) => {
+        dispatch(login()).then(response)
+    })
 }
 
 
@@ -32,9 +22,8 @@ class LoginForm extends Component {
 //    const { fields: { username, email, age, department },
     const { fields: { username, department },
         resetForm, valid, handleSubmit, submitting } = this.props
-    console.log(this.props)
 
-    return (<form onSubmit={handleSubmit(submit)}>
+    return (<form onSubmit={handleSubmit(this.props.createPost.bind(this))}>
         {valid ? <p>Form is valid!</p> : <p>Form INVALID!</p> }
         <div className="row">
             <InputText className="col-xs-6" label="Имя пользователя" {...username} />
@@ -63,18 +52,16 @@ LoginForm.propTypes = {
   resetForm: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired
 }
-const mapDispatchToProps = dispatch => bindActionCreators({
-    onSubmit: login
-}, dispatch)
+
+const mapDispatchToProps = dispatch => ({
+    createPost: submit
+})
 
 export default reduxForm({
-  form: 'Login',
-  fields,
-  validate: LoginValidation,
+    form: 'Login',
+    fields,
+    validate: LoginValidation,
 },
-null,
-mapDispatchToProps
+    null,
+    mapDispatchToProps
 )(LoginForm)
-
-
-

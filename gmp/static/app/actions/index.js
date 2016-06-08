@@ -37,7 +37,7 @@ export const receiveDepartments = response => ({
 
 export const fetchDepartments = () => dispatch => {
     dispatch(requestDepartments())
-    return fetch('http://127.0.0.1:8000/api/department/')
+    return fetch('/api/department/')
         .then(response => response.json(), error => console.log(error))
         .then(json => {
             dispatch(receiveDepartments(json))
@@ -47,13 +47,17 @@ export const fetchDepartments = () => dispatch => {
 export const login = () => dispatch => {
     // loginRequired
     
-    return fetch('http://127.0.0.1:8000/api/login/', {
+    return fetch('/api/login/', {
             method: 'POST',
-            body: new FormData({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 email: 'oleynik@mosgmp.ru',
-                password: 123
+                password: '123'
             })
         })
-        .then(response => response.json(), error => console.log('login error:' , error))
+        .then(response => response.json(), error => console.log('Login error:' , error))
         .then(json => console.log('Login data', json))
 }

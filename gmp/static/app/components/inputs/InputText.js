@@ -1,10 +1,9 @@
 import React from 'react';
 import Input from './Input'
-import uuid from 'uuid'
-
+import v4 from 'node-uuid'
 
 const InputText = (props) => {
-    const id = uuid.v1()
+    const id = v4()
 
     return (
         <Input {...props} id={id}>

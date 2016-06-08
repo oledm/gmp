@@ -23,6 +23,7 @@ System.config({
     "core-js": "npm:core-js@1.2.6",
     "isomorphic-fetch": "npm:isomorphic-fetch@2.2.1",
     "lru-memoize": "npm:lru-memoize@1.0.1",
+    "node-uuid": "npm:node-uuid@1.4.7",
     "react": "npm:react@15.1.0",
     "react-dom": "npm:react-dom@15.1.0",
     "react-redux": "npm:react-redux@4.4.5",
@@ -340,6 +341,10 @@ System.config({
       "url": "github:jspm/nodelibs-url@0.1.0",
       "util": "github:jspm/nodelibs-util@0.1.0",
       "zlib": "github:jspm/nodelibs-zlib@0.1.0"
+    },
+    "npm:node-uuid@1.4.7": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "crypto": "github:jspm/nodelibs-crypto@0.1.0"
     },
     "npm:os-browserify@0.1.2": {
       "os": "github:jspm/nodelibs-os@0.1.0"
