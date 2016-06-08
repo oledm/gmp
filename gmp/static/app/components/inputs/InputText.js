@@ -8,7 +8,7 @@ const InputText = (props) => {
     return (
         <Input {...props} id={id}>
             <input
-                type="text"
+                type={props.type || "text"}
                 id={id}
                 className="form-control"
                 value={props.value}

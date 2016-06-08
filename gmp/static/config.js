@@ -26,6 +26,7 @@ System.config({
     "node-uuid": "npm:node-uuid@1.4.7",
     "react": "npm:react@15.1.0",
     "react-dom": "npm:react-dom@15.1.0",
+    "react-notification": "npm:react-notification@5.0.4",
     "react-redux": "npm:react-redux@4.4.5",
     "redux": "npm:redux@3.5.2",
     "redux-form": "npm:redux-form@5.2.5",
@@ -406,6 +407,11 @@ System.config({
     },
     "npm:react-lazy-cache@3.0.1": {
       "deep-equal": "npm:deep-equal@1.0.1"
+    },
+    "npm:react-notification@5.0.4": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:react-redux@4.4.5": {
       "hoist-non-react-statics": "npm:hoist-non-react-statics@1.0.6",

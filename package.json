@@ -23,6 +23,7 @@
       "node-uuid": "npm:node-uuid@^1.4.7",
       "react": "npm:react@^15.1.0",
       "react-dom": "npm:react-dom@^15.1.0",
+      "react-notification": "npm:react-notification@^5.0.4",
       "react-redux": "npm:react-redux@^4.4.5",
       "redux": "npm:redux@^3.5.2",
       "redux-form": "npm:redux-form@^5.2.5",

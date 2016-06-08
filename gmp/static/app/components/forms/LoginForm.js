@@ -7,12 +7,13 @@ import LoginValidation from './LoginValidation'
 import { login } from '../../actions/index'
 
 //const fields = [ 'username', 'email', 'age', 'department' ]
-const fields = [ 'username', 'department' ]
+const fields = [ 'email', 'password' ]
 
 const submit = (values, dispatch) => {
     console.log(values)
     return new Promise((resolve, reject) => {
-        dispatch(login()).then(response)
+        dispatch(login(values))
+        resolve()
     })
 }
 
@@ -20,16 +21,14 @@ const submit = (values, dispatch) => {
 class LoginForm extends Component {
   render() {
 //    const { fields: { username, email, age, department },
-    const { fields: { username, department },
+    const { fields: { email, password },
         resetForm, valid, handleSubmit, submitting } = this.props
 
     return (<form onSubmit={handleSubmit(this.props.createPost.bind(this))}>
         {valid ? <p>Form is valid!</p> : <p>Form INVALID!</p> }
         <div className="row">
-            <InputText className="col-xs-6" label="Имя пользователя" {...username} />
-        </div>
-        <div className="row">
-            <DepartmentSelector className="col-xs-6" label="Отдел" {...department} />
+            <InputText className="col-xs-6" label="Email" type="email" {...email} />
+            <InputText className="col-xs-6" label="Пароль" type="password" {...password} />
         </div>
         <div>
           <button className="btn btn-primary" type="submit" disabled={submitting || !valid}>
@@ -45,6 +44,9 @@ class LoginForm extends Component {
 }
 //            <InputText className="col-xs-6" label="E-mail" {...email} />
 //            <InputText className="col-xs-6" label="Возраст" {...age} />
+//        <div className="row">
+//            <DepartmentSelector className="col-xs-6" label="Отдел" {...department} />
+//        </div>
 
 LoginForm.propTypes = {
   fields: PropTypes.object.isRequired,

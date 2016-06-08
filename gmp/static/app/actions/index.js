@@ -5,6 +5,9 @@ import {
     SET_VISIBILITY_FILTER,
     REQUEST_DEPARTMENTS,
     RECEIVE_DEPARTMENTS,
+    AUTH_START,
+    AUTH_SUCCESS,
+    AUTH_FAILED,
 } from '../constants/index'
 
 let nextId = 0;
@@ -34,6 +37,19 @@ export const receiveDepartments = response => ({
     departments: response
 });
 
+export const authStart = () => ({
+    type: AUTH_START
+})
+
+export const authSuccess = () => ({
+    type: AUTH_SUCCESS,
+// TODO    token: token
+})
+
+export const authFailed = (error) => ({
+    type: AUTH_FAILED,
+    error: error
+})
 
 export const fetchDepartments = () => dispatch => {
     dispatch(requestDepartments())
@@ -44,8 +60,8 @@ export const fetchDepartments = () => dispatch => {
         })
 }
 
-export const login = () => dispatch => {
-    // loginRequired
+export const login = (values) => dispatch => {
+    dispatch(authStart())
     
     return fetch('/api/login/', {
             method: 'POST',
@@ -54,10 +70,13 @@ export const login = () => dispatch => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: 'oleynik@mosgmp.ru',
-                password: '123'
+                email: values.email,
+                password: values.password
             })
         })
-        .then(response => response.json(), error => console.log('Login error:' , error))
-        .then(json => console.log('Login data', json))
+        .then(response => response.json(), error => console.log('Network error:' , error))
+        .then(json => {
+            console.log('Login data', json)
+            dispatch(authSuccess())
+        })
 }
