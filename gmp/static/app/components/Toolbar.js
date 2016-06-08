@@ -1,7 +1,9 @@
 import React from 'react'
 
-const Toolbar = () => (
-    <nav className="navbar navbar-default">
+const Toolbar = ({ isAuthenticated }) => (
+    !isAuthenticated
+        ? null
+        : <nav className="navbar navbar-default">
       <div className="container-fluid">
 	    <div className="navbar-header">
 	      <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -18,7 +20,7 @@ const Toolbar = () => (
 	   <ul className="nav navbar-nav">
 	       <li data-target="#bs-example-navbar-collapse-1">
 		    <a href="#">
-		    link 1
+		    Link
 		    </a>
 	       </li>
 	   </ul>

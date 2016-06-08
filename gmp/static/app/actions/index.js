@@ -5,9 +5,9 @@ import {
     SET_VISIBILITY_FILTER,
     REQUEST_DEPARTMENTS,
     RECEIVE_DEPARTMENTS,
-    AUTH_START,
-    AUTH_SUCCESS,
-    AUTH_FAILED,
+    LOGIN_REQUEST,
+    LOGIN_SUCCESS,
+    LOGIN_FAILED,
 } from '../constants/index'
 
 let nextId = 0;
@@ -37,17 +37,17 @@ export const receiveDepartments = response => ({
     departments: response
 });
 
-export const authStart = () => ({
-    type: AUTH_START
+export const loginRequest = () => ({
+    type: LOGIN_REQUEST
 })
 
-export const authSuccess = () => ({
-    type: AUTH_SUCCESS,
+export const loginSuccess = () => ({
+    type: LOGIN_SUCCESS,
 // TODO    token: token
 })
 
-export const authFailed = (error) => ({
-    type: AUTH_FAILED,
+export const loginFailed = (error) => ({
+    type: LOGIN_FAILED,
     error: error
 })
 
@@ -61,7 +61,7 @@ export const fetchDepartments = () => dispatch => {
 }
 
 export const login = (values) => dispatch => {
-    dispatch(authStart())
+    dispatch(loginRequest())
     
     return fetch('/api/login/', {
             method: 'POST',
@@ -77,6 +77,6 @@ export const login = (values) => dispatch => {
         .then(response => response.json(), error => console.log('Network error:' , error))
         .then(json => {
             console.log('Login data', json)
-            dispatch(authSuccess())
+            dispatch(loginSuccess())
         })
 }

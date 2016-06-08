@@ -1,10 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Toolbar from '../components/Toolbar'
 import LoginForm from '../components/forms/LoginForm'
 
-const App = () => (
+const App = ({ isAuthenticated }) => (
     <div>
-        <Toolbar />
+        <Toolbar isAuthenticated={isAuthenticated} />
         <LoginForm />
          <div className="tabbable">
             <ul className="nav nav-tabs">
@@ -23,4 +24,8 @@ const App = () => (
     </div>
 )
 
-export default App
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+})
+
+export default connect(mapStateToProps)(App)

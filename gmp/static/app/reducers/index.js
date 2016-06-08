@@ -1,13 +1,11 @@
 import { combineReducers } from 'redux'
-import todos from './todos'
-import visibilityFilter from './visibilityFilter'
+import { reducer as formReducer } from 'redux-form';
 import departments from './departments'
-import {reducer as formReducer} from 'redux-form';
+import auth from './auth'
 
 const rootReducer = combineReducers({
-    todos,
-    visibilityFilter,
     departments,
+    auth,
     form: formReducer,
 })
 
