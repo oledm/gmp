@@ -28,6 +28,7 @@ System.config({
     "react-dom": "npm:react-dom@15.1.0",
     "react-notification": "npm:react-notification@5.0.4",
     "react-redux": "npm:react-redux@4.4.5",
+    "react-router": "npm:react-router@2.4.1",
     "redux": "npm:redux@3.5.2",
     "redux-form": "npm:redux-form@5.2.5",
     "redux-thunk": "npm:redux-thunk@2.1.0",
@@ -293,6 +294,13 @@ System.config({
     "npm:hash.js@1.0.3": {
       "inherits": "npm:inherits@2.0.1"
     },
+    "npm:history@2.1.2": {
+      "deep-equal": "npm:deep-equal@1.0.1",
+      "invariant": "npm:invariant@2.2.1",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "query-string": "npm:query-string@3.0.3",
+      "warning": "npm:warning@2.1.0"
+    },
     "npm:https-browserify@0.0.0": {
       "http": "github:jspm/nodelibs-http@1.7.1"
     },
@@ -397,6 +405,9 @@ System.config({
     "npm:punycode@1.3.2": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:query-string@3.0.3": {
+      "strict-uri-encode": "npm:strict-uri-encode@1.1.0"
+    },
     "npm:randombytes@2.0.3": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
@@ -421,6 +432,14 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "react": "npm:react@15.1.0",
       "redux": "npm:redux@3.5.2"
+    },
+    "npm:react-router@2.4.1": {
+      "history": "npm:history@2.1.2",
+      "hoist-non-react-statics": "npm:hoist-non-react-statics@1.0.6",
+      "invariant": "npm:invariant@2.2.1",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "react": "npm:react@15.1.0",
+      "warning": "npm:warning@2.1.0"
     },
     "npm:react@15.1.0": {
       "fbjs": "npm:fbjs@0.8.3",
@@ -513,6 +532,10 @@ System.config({
     },
     "npm:vm-browserify@0.0.4": {
       "indexof": "npm:indexof@0.0.1"
+    },
+    "npm:warning@2.1.0": {
+      "loose-envify": "npm:loose-envify@1.2.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
     }
   }
 });

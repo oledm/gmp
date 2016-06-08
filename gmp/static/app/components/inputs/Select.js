@@ -1,12 +1,12 @@
 import React from 'react';
-import Input from './Input'
-import uuid from 'uuid'
+import InputWrapper from './InputWrapper'
+import v4 from 'node-uuid'
 
 const Select = (props) => {
-    const id = uuid.v1()
+    const id = v4()
 
     return (
-        <Input {...props} id={id}>
+        <InputWrapper {...props} id={id}>
             <select
                 id={id}
                 className="form-control"
@@ -16,7 +16,7 @@ const Select = (props) => {
             >
                 {props.children}
             </select>
-        </Input>
+        </InputWrapper>
     )
 }
 

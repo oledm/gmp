@@ -1,9 +1,9 @@
 import React from 'react';
 import classNames from 'classnames'
 import Label from './Label'
-import Messages from './messages'
+import Messages from './Messages'
 
-const Input = ({
+const InputWrapper = ({
     valid, error, touched, value, onBlur, onChange,
     className, id, label, children
 }) => {
@@ -23,4 +23,4 @@ const Input = ({
         </div>
     )
 }
-export default Input
+export default InputWrapper
