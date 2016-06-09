@@ -2,10 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Toolbar from '../components/Toolbar'
 import LoginForm from '../components/forms/LoginForm'
+import { logout } from '../actions/index'
 
-const App = ({ isAuthenticated, dispatch }) => (
+const App = ({ isAuthenticated, handleClick }) => (
     <div>
-        <Toolbar isAuthenticated={isAuthenticated} dispatch={dispatch} />
+        <Toolbar isAuthenticated={isAuthenticated} handleClick={handleClick} />
         <LoginForm />
          <div className="tabbable">
             <ul className="nav nav-tabs">
@@ -28,4 +29,8 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
 })
 
-export default connect(mapStateToProps)(App)
+const mapDispatchToProps = dispatch => ({
+    handleClick: () => dispatch(logout())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

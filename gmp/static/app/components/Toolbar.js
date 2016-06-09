@@ -1,10 +1,6 @@
 import React from 'react'
-import { logout } from '../actions/index'
 
-const Toolbar = ({ isAuthenticated, dispatch }) =>{
-
-    const handleClick = () => dispatch(logout())
-
+const Toolbar = ({ isAuthenticated, handleClick }) =>{
     return (
     !isAuthenticated
         ? null
