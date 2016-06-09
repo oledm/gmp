@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import Toolbar from '../components/Toolbar'
 import LoginForm from '../components/forms/LoginForm'
 
-const App = ({ isAuthenticated }) => (
+const App = ({ isAuthenticated, dispatch }) => (
     <div>
-        <Toolbar isAuthenticated={isAuthenticated} />
+        <Toolbar isAuthenticated={isAuthenticated} dispatch={dispatch} />
         <LoginForm />
          <div className="tabbable">
             <ul className="nav nav-tabs">

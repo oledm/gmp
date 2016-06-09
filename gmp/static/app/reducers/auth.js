@@ -1,4 +1,8 @@
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILED } from '../actions/index'
+import {
+    LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILED,
+    LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILED,
+
+} from '../constants/index'
 
 const auth = (state = {
     isAuthenticated: false,
@@ -6,10 +10,9 @@ const auth = (state = {
     error: '',
     token: ''
 }, action) => {
-    console.log('auth reducer with action', action.type)
     switch(action.type) {
         case LOGIN_REQUEST:
-            console.log('LOGIN_REQUEST')
+        case LOGOUT_REQUEST:
             return {...state,
                 isPending: true
             }
@@ -19,8 +22,15 @@ const auth = (state = {
                 isAuthenticated: true
             }
         case LOGIN_FAILED:
+        case LOGOUT_FAILED:
             return {...state,
+                isPending: false,
                 error: action.error
+            }
+        case LOGOUT_SUCCESS:
+            return {...state,
+                isPending: false,
+                isAuthenticated: false
             }
         default:
             return state

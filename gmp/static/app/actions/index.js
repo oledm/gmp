@@ -8,6 +8,9 @@ import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILED,
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILED,
 } from '../constants/index'
 
 let nextId = 0;
@@ -38,7 +41,7 @@ export const receiveDepartments = response => ({
 });
 
 export const loginRequest = () => ({
-    type: LOGIN_REQUEST
+    type: LOGIN_REQUEST,
 })
 
 export const loginSuccess = () => ({
@@ -48,6 +51,19 @@ export const loginSuccess = () => ({
 
 export const loginFailed = (error) => ({
     type: LOGIN_FAILED,
+    error: error
+})
+
+export const logoutRequest = () => ({
+    type: LOGOUT_REQUEST
+})
+
+export const logoutSuccess = () => ({
+    type: LOGOUT_SUCCESS
+})
+
+export const logoutFailed = () => ({
+    type: LOGOUT_FAILED,
     error: error
 })
 
@@ -78,5 +94,29 @@ export const login = (values) => dispatch => {
         .then(json => {
             console.log('Login data', json)
             dispatch(loginSuccess())
+        })
+}
+
+export const logout = () => dispatch => {
+    dispatch(logoutRequest())
+    console.log('logout')
+    
+    return fetch('/api/logout/', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Cookie': 'email: oleynik@mosgmp.ru'
+            }
+        })
+        .then(response =>
+            {
+                console.log('response')
+                response.json()
+            }, error => console.log('Network error:' , error))
+        .then(json => {
+            console.log('Login data', json)
+            dispatch(logoutSuccess())
         })
 }

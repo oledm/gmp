@@ -1,6 +1,11 @@
 import React from 'react'
+import { logout } from '../actions/index'
 
-const Toolbar = ({ isAuthenticated }) => (
+const Toolbar = ({ isAuthenticated, dispatch }) =>{
+
+    const handleClick = () => dispatch(logout())
+
+    return (
     !isAuthenticated
         ? null
         : <nav className="navbar navbar-default">
@@ -29,14 +34,13 @@ const Toolbar = ({ isAuthenticated }) => (
 
 	  <div className="navbar-text hidden-sm hidden-xs">ФИО</div>
 	    <li className="danger">
-		<a href="#">
-		 Выход
-		</a>
+            <button className="btn" onClick={handleClick}>Выход</button>
 	    </li>
 	  </ul>
 	</div>
       </div>
     </nav>
 )
+}
 
 export default Toolbar
