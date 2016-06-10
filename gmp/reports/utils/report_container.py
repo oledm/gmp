@@ -538,19 +538,20 @@ class ReportContainer(ReportMixin):
             )
         ######################################
         self.put('<strong>Заключение: </strong>', 'Text', .2)
-        a = enumerate(map(lambda x: x['value'], self.data['results']['UT']['results']), start=1)
-        template = tuple(map(lambda x: (str(x[0]), x[1]), a))
-        para_style = (
-            ('Text Simple Height',),
-        )
-        table_style = (
-            ('TOPPADDING', (0,0), (-1,-1), 0),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        )
-        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
-            table_style, spacer=8.2
-        )
+        self.calc_UT_korr()
+        #a = enumerate(map(lambda x: x['value'], self.data['results']['UT']['results']), start=1)
+        #template = tuple(map(lambda x: (str(x[0]), x[1]), a))
+        #para_style = (
+        #    ('Text Simple Height',),
+        #)
+        #table_style = (
+        #    ('TOPPADDING', (0,0), (-1,-1), 0),
+        #    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        #    ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        #)
+        #self.add(template, [0.4, 9.6], self.get_style(para_style, template),
+        #    table_style, spacer=8.2
+        #)
         self.add_specialist('Ультразвуковая толщинометрия элементов сосуда', 'УК')
 
     def appendixE(self):
@@ -894,6 +895,15 @@ class ReportContainer(ReportMixin):
         a = tuple(zip(data[::2], data[1::2])) or data
         b = tuple(map(lambda x: tuple(chain.from_iterable(x)), a))
         return b
+
+    def calc_UT_korr(self):
+        for measure in self.data['results']['UT']['measures']:
+            title = measure['title']
+            min_value = min(measure['data'], key=lambda x: float(x['real'].replace(',','.')))
+            res = 'Минимальная измеренная толщина стенки элемента \"{}\" – {} мм, скорость коррозии \
+составляет X мм/год'.format(title, min_value['real'].replace('.',','))
+            print(res)
+            # Formula: (Тощина_пасспортная - Толщина_измеренная)/(год_пуска_в_эксп. - год_проведения_диагностирования)
 
     def add_specialist(self, category, abbr):
         person_id = self.data['team'][category]
