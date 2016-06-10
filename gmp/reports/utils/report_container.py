@@ -679,8 +679,11 @@ class ReportContainer(ReportMixin):
             table_style, styleTable=True
         )
         p = Paragraph('Результаты контроля', self.styles['Text Simple Center Bold'])
-        self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), table]))
-        self.spacer(1)
+        if self.data['results']['T']['values']:
+            self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), table]))
+            self.spacer(1)
+        else:
+            self.Story.append(p)
         ######################################
         self.put('<strong>Заключение: </strong>', 'Text', .2)
         a = enumerate(map(lambda x: x['value'], self.data['results']['T']['results']), start=1)
@@ -752,8 +755,11 @@ class ReportContainer(ReportMixin):
             table_style, styleTable=True
         )
         p = Paragraph('Результаты контроля', self.styles['Text Simple Center Bold'])
-        self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), table]))
-        self.spacer(1)
+        if self.data['results']['MK']['values']:
+            self.Story.append(KeepTogether([p, Spacer(0, .7 * cm), table]))
+            self.spacer(1)
+        else:
+            self.Story.append(p)
         ######################################
         self.put('<strong>Заключение: </strong>' +
             self.data['results']['MK']['conclusion'],
