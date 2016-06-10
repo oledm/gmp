@@ -610,23 +610,25 @@ class ReportContainer(ReportMixin):
         ])
         
         p = Paragraph('Результаты контроля', self.styles['Text Simple Center Bold'])
-        tab = Table(data, colWidths=self.columnize(.8,.6,1,1,1,1.5,1,1.6,1.5), style=style)
+        header = Table(data, colWidths=self.columnize(.8,.6,1,1,1,1.5,1,1.6,1.5), style=style)
         ############################################
         # Data
         ############################################
-        results = []
-        results.extend(self.append_UT_defect('top_bottom', 'Днище верхнее'))
-        results.extend(self.append_UT_defect('ring', 'Обечайка'))
-        results.extend(self.append_UT_defect('bottom_bottom', 'Днище нижнее'))
-        self.spacer(1)
-        ######################################
+        results = self.append_UT_defect()
         zakl = Paragraph('<strong>Заключение: </strong>' +
             self.data['results']['UK']['conclusion'], self.styles['Text'])
-        self.Story.append(KeepTogether([
-            p, Spacer(1 * cm, .7 * cm), tab, *results,
-            Spacer(1 * cm, 1 * cm),
-            zakl, Spacer(1 * cm, 5.2 * cm)
-        ]))
+        if results:
+            self.Story.append(KeepTogether([
+                p, Spacer(1 * cm, .7 * cm), header, *results,
+                Spacer(1 * cm, 1 * cm),
+                zakl, Spacer(1 * cm, 5.2 * cm)
+            ]))
+        else:
+            self.Story.append(KeepTogether([
+                p, 
+                Spacer(1 * cm, 1 * cm),
+                zakl, Spacer(1 * cm, 5.2 * cm)
+            ]))
         self.add_specialist('Ультразвуковой контроль качества сварных соединений', 'УК')
 
     def appendixG(self):
@@ -841,7 +843,8 @@ class ReportContainer(ReportMixin):
     ######################################
     # Helpers
     ######################################
-    def append_UT_defect(self, key, name):
+    def append_UT_defect(self):
+        res = []
         para_style = (
             ('Text Simple Center',),
         )
@@ -850,29 +853,32 @@ class ReportContainer(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 2),
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         )
-        template = ((name,),)
-        tables = [self.get(template, [10], self.get_style(para_style, template),
-            table_style, styleTable=True
-        )]
-        num = 0
-        for defect in self.data['results']['UK'][key]:
-            data = defaultdict(str)
-            data.update(defect)
-            other_keys = set(defect.keys()) - {'site'}
-            if other_keys:
-                num += 1
-                template = (
-                    ('{site}', str(num), '{area}', '{depth}', '{length}', '{type}',
-                    '{position}', '{info}', '{result}'),
-                )
-                table = self.add(template, [.8,.6,1,1,1,1.5,1,1.6,1.5], self.get_style(para_style, template),
-                    table_style, data=data, styleTable=True)
-            else:
-                template = ((data.get('site'), 'Дефектов не обнаружено', '', 'Годен'),)
-                table = self.get(template, [.8, 6.1, 1.6, 1.5], self.get_style(para_style, template),
-                    table_style, data=data, styleTable=True)
-            tables.append(table)
-        return tables
+        for point in self.data['results']['UK']['measures']:
+            template = ((point['title'],),)
+            tables = [self.get(template, [10], self.get_style(para_style, template),
+                table_style, styleTable=True
+            )]
+            num = 0
+            for data in point['data']:
+                defects_data = data.copy()
+                defect_site = defects_data.pop('site')
+                if any(defects_data.values()):
+                    num += 1
+                    template = (
+                        ('{site}', str(num), '{area}', '{depth}', '{length}', '{type}',
+                        '{position}', '{info}', '{result}'),
+                    )
+                    table = self.get(template, [.8,.6,1,1,1,1.5,1,1.6,1.5], self.get_style(para_style, template),
+                        table_style, data=data, styleTable=True)
+                elif defect_site and not any(defects_data.values()):
+                    template = ((defect_site, 'Дефектов не обнаружено', '', 'Годен'),)
+                    table = self.get(template, [.8, 6.1, 1.6, 1.5], self.get_style(para_style, template),
+                        table_style, styleTable=True)
+                else:
+                    continue
+                tables.append(table)
+            res.extend(tables)
+        return res
 
     def proc_UT_results_data(self, data):
         data = tuple(map(lambda x: (str(x[0]), x[1]['passport'], x[1]['real']), data))

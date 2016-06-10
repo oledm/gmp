@@ -12,6 +12,11 @@
 ///////////////////////////////////////////////
 
 
+/* To fit text input with delete button be fully spanned in table cell */
+div.input-group {
+    width: 100%;
+}
+/////////////////////////////////////////////////////////////////
 
 .block + .block {
     margin-top: 3em;
@@ -19,6 +24,10 @@
 
 label, th {
     font-weight: 600;
+}
+
+th {
+    font-size: 90%;
 }
 h3 {
     font-weight: 300;
