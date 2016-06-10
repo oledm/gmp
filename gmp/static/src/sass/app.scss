@@ -2,10 +2,11 @@
 @import "fonts";
 @import "../../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
 
-/* Styles for correct display autocomplete input */
-* {
-    padding: 0px;
+/* * - for correct display autocomplete input */
+*, .small-field {
+    padding: 0;
 }
+
 .autocomplete input{
   font-size: 1em;
 }

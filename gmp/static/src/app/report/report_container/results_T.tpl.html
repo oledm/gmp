@@ -5,11 +5,11 @@
       <table class="table table-bordered table-condensed">
           <thead>
               <tr>
+                  <th></th>
                   <th class="text-center">№ п/п</th>
-                  <th class="text-center"><button type="button" class="btn btn-sm"
+                  <th class="text-center"><button type="button" class="btn btn-sm btn-primary"
                           ng-click="vm.report.results.T.values.push({})">
                           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                          Добавить
                       </button>
                       <br />Элемент контроля</th>
                   <th class="text-center">№ точки</th>
@@ -20,9 +20,19 @@
           </thead>
           <tbody>
               <tr ng-repeat="value in vm.report.results.T.values">
+                  <td>
+                      <button type="button" class="btn btn-sm btn-danger"
+                          ng-click="vm.report.results.T.values.splice($index, 1)">
+                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                      </button>
+                  </td>
                   <td class="text-center">{{$index + 1}}</td>
-                  <td><input class="form-control" type="text"
-                          ng-model="value.element" />
+                  <td>
+                          <input class="form-control" type="text" ng-model="value.element" />
+                      <!-- 
+                          <input class="form-control" type="text"
+                              ng-model="value.element" />
+                       -->
                   </td>
                   <td><input class="form-control" type="text"
                           ng-model="value.point" />

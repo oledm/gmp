@@ -1,7 +1,6 @@
 <div class="form-group">
     <div class="panel panel-default">
       <!-- Default panel contents -->
-      <p>{{vm.report.results.UK | json}}</p>
       <div class="panel-heading">Результаты контроля
           <button type="button" class="btn btn-sm btn-primary"
                 ng-click="vm.report.results.UK.measures.push({
@@ -73,7 +72,7 @@
 			      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 			  </button>
 		      </span>
-                      <input class="form-control" type="text"
+                      <input class="form-control small-field" type="text"
                           ng-model="value.site" />
 		    </div>
                   </td>

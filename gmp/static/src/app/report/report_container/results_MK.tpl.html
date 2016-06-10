@@ -5,10 +5,10 @@
       <table class="table table-bordered table-condensed">
           <thead class="row">
               <tr>
-                  <th class="text-center col-sm-7"><button type="button" class="btn btn-sm"
+                  <th></th>
+                  <th class="text-center col-sm-7"><button type="button" class="btn btn-sm btn-primary"
                           ng-click="vm.report.results.MK.values.push({})">
                           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                          Добавить
                       </button>
                       <br />Объект контроля</th>
                   <th class="text-center col-sm-1">Обозначение на схеме контроля</th>
@@ -19,6 +19,12 @@
           </thead>
           <tbody class="row">
               <tr ng-repeat="value in vm.report.results.MK.values">
+                  <td>
+                      <button type="button" class="btn btn-sm btn-danger"
+                          ng-click="vm.report.results.MK.values.splice($index, 1)">
+                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                      </button>
+                  </td>
                   <td><input class="form-control col-sm-7" type="text"
                           ng-model="value.element" />
                   </td>
