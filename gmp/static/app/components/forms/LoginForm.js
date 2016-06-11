@@ -11,15 +11,18 @@ const submit = (values, dispatch) => {
     console.log(values)
     return new Promise((resolve, reject) => {
         dispatch(login(values))
-//            .then(reject({email: 'failed'}))
         resolve()
     })
 }
 
 class LoginForm extends Component {
   render() {
-    const { fields: { email, password },
+    const { isAuthenticated, fields: { email, password },
         valid, handleSubmit, submitting } = this.props
+
+    if (isAuthenticated) {
+        return null
+    }
 
     return (
         <form onSubmit={handleSubmit(this.props.createPost.bind(this))}>
@@ -58,9 +61,10 @@ class LoginForm extends Component {
 }
 
 LoginForm.propTypes = {
-  fields: PropTypes.object.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  submitting: PropTypes.bool.isRequired
+    isAuthenticated: PropTypes.bool.isRequired,
+    fields: PropTypes.object.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    submitting: PropTypes.bool.isRequired
 }
 
 const mapDispatchToProps = dispatch => ({

@@ -9,6 +9,8 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 from rest_framework_nested import routers
+from rest_framework_jwt.views import obtain_jwt_token
+
 
 from gmp.authentication import views as user_views
 from gmp.filestorage import views as filestorage_views
@@ -102,8 +104,10 @@ urlpatterns = [
     url(r'^api/', include(containers.urls)),
 
     # Additional routes
-    url(r'^api/login', user_views.LoginView.as_view(), name='login'),
-    url(r'^api/logout', user_views.LogoutView.as_view(), name='logout'),
+    #url(r'^api/login', user_views.LoginView.as_view(), name='login'),
+    # Obtain JWT token
+    url(r'^api/login/$', obtain_jwt_token),
+    #url(r'^api/logout', user_views.LogoutView.as_view(), name='logout'),
     url(r'^api/upload', filestorage_views.FileUploadView.as_view(), name='files'),
 
     # Report route

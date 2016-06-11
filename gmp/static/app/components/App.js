@@ -7,7 +7,7 @@ import { logout } from '../actions/index'
 const App = ({ isAuthenticated, handleClick }) => (
     <div>
         <Toolbar isAuthenticated={isAuthenticated} handleClick={handleClick} />
-        <LoginForm />
+        <LoginForm isAuthenticated={isAuthenticated} />
          <div className="tabbable">
             <ul className="nav nav-tabs">
                 <li data-toggle="tab" ui-sref-active="active" className="active item" role="presentation">

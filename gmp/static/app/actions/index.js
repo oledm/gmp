@@ -40,18 +40,19 @@ export const receiveDepartments = response => ({
     departments: response
 });
 
-export const loginRequest = () => ({
+export const loginRequest = (creds) => ({
     type: LOGIN_REQUEST,
+    creds
 })
 
-export const loginSuccess = () => ({
+export const loginSuccess = (token) => ({
     type: LOGIN_SUCCESS,
-// TODO    token: token
+    token
 })
 
 export const loginFailed = (error) => ({
     type: LOGIN_FAILED,
-    error: error
+    error
 })
 
 export const logoutRequest = () => ({
@@ -77,7 +78,7 @@ export const fetchDepartments = () => dispatch => {
 }
 
 export const login = (values) => dispatch => {
-    dispatch(loginRequest())
+    dispatch(loginRequest(values))
     
     return fetch('/api/login/', {
             method: 'POST',
@@ -90,33 +91,44 @@ export const login = (values) => dispatch => {
                 password: values.password
             })
         })
-        .then(response => response.json(), error => console.log('Network error:' , error))
-        .then(json => {
-            console.log('Login data', json)
-            dispatch(loginSuccess())
-        })
+        .then(response => response.json().then(data => ({data, response}))
+            .then(({data, response}) => {
+                if (!response.ok) {
+                    dispatch(loginFailed('ERROR!'))
+                    return Promise.reject(data)
+                } else {
+                    console.log('Login data', data)
+                    let token = data.token
+                    localStorage.setItem('auth_token', token)
+                    dispatch(loginSuccess(token))
+                }
+            })
+        )
+        .catch(error => console.error('Error:', error))
 }
 
 export const logout = () => dispatch => {
     dispatch(logoutRequest())
-    console.log('logout')
-    
-    return fetch('/api/logout/', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Cookie': 'email: oleynik@mosgmp.ru'
-            }
-        })
-        .then(response =>
-            {
-                console.log('response')
-                response.json()
-            }, error => console.log('Network error:' , error))
-        .then(json => {
-            console.log('Login data', json)
-            dispatch(logoutSuccess())
-        })
+    localStorage.removeItem('auth_token')
+    dispatch(logoutSuccess())
+//    console.log('logout')
+//    
+//    return fetch('/api/logout/', {
+//            method: 'POST',
+//            credentials: 'same-origin',
+//            headers: {
+//                'Accept': 'application/json',
+//                'Content-Type': 'application/json',
+//                'Cookie': 'email: oleynik@mosgmp.ru'
+//            }
+//        })
+//        .then(response =>
+//            {
+//                console.log('response')
+//                response.json()
+//            }, error => console.log('Network error:' , error))
+//        .then(json => {
+//            console.log('Login data', json)
+//            dispatch(logoutSuccess())
+//        })
 }

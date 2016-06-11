@@ -5,16 +5,14 @@ import {
 } from '../constants/index'
 
 const auth = (state = {
-    isAuthenticated: false,
-    isPending: false,
-    error: '',
-    token: ''
+    isAuthenticated: localStorage.getItem('auth_token') ? true : false,
+    isPending: false
 }, action) => {
     switch(action.type) {
         case LOGIN_REQUEST:
-        case LOGOUT_REQUEST:
             return {...state,
-                isPending: true
+                isPending: true,
+                creds: action.creds
             }
         case LOGIN_SUCCESS:
             return {...state,
@@ -26,6 +24,10 @@ const auth = (state = {
             return {...state,
                 isPending: false,
                 error: action.error
+            }
+        case LOGOUT_REQUEST:
+            return {...state,
+                isPending: true
             }
         case LOGOUT_SUCCESS:
             return {...state,
