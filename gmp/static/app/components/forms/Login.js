@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
 import InputText from '../inputs/InputText'
-import DepartmentSelector from '../../containers/DepartmentSelector'
 import LoginValidation from './LoginValidation'
 import { login } from '../../actions/index'
 
@@ -15,14 +14,10 @@ const submit = (values, dispatch) => {
     })
 }
 
-class LoginForm extends Component {
+class Login extends Component {
   render() {
-    const { isAuthenticated, fields: { email, password },
+    const { fields: { email, password },
         valid, handleSubmit, submitting } = this.props
-
-    if (isAuthenticated) {
-        return null
-    }
 
     return (
         <form onSubmit={handleSubmit(this.props.createPost.bind(this))}>
@@ -60,8 +55,7 @@ class LoginForm extends Component {
   }
 }
 
-LoginForm.propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired,
+Login.propTypes = {
     fields: PropTypes.object.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired
@@ -78,4 +72,4 @@ export default reduxForm({
 },
     null,
     mapDispatchToProps
-)(LoginForm)
+)(Login)
