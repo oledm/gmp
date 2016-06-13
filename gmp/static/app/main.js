@@ -12,7 +12,7 @@ const store = configureStore()
 render(
     <Provider store={store}>
         <Router history={browserHistory}>
-	    <Route path='/' component={App}>
+	    <Route path='/' component={App} onEnter={App.onEnter}>
                 <Route path='/login' component={Login} />
                 <Route path='/register' component={Login} />
 	    </Route>
