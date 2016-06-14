@@ -237,7 +237,7 @@ class ReportContainer(ReportMixin):
             ('Заводской номер', '{serial_number}'),
             ('Номер чертежа', '{scheme}'),
             ('Год ввода в эксплуатацию', '{started_year}'),
-            ('Место установки', '{location} {plant} {ks}, {lpu}'),
+            ('Место установки', '{location} {plant} {ks}, {lpu[name]}'),
             ('Условия эксплуатации:', ''),
             ('- давление рабочее, МПа', '{p_work}'),
             ('- давление пробное, МПа', '{p_test}'),
@@ -507,54 +507,57 @@ class ReportContainer(ReportMixin):
         self.put('Объем контроля – см. в Приложении Б., Рис. 2', 'Text Simple', .2)
         ######################################
         self.put('Результаты контроля', 'Text Simple Center Bold', .2)
-        template = (
-            ('№<br />точки', 'Толщина<br />паспортная,<br />мм', 
-            'Толщина<br />фактическая,<br />мм',) * 2,
-        )
-        para_style = (
-            ('Text Simple Center Dense',),
-        )
-        table_style = (
-            ('TOPPADDING', (0,0), (-1,-1), 0),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        )
-        self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
-            table_style, styleTable=True
-        )
-        zakl = self.calc_UT_korr()
-        ######################################
-        for measure in self.data['results']['UT']['measures']:
-            data = enumerate(measure.get('data'), start=1)
-            data = self.proc_UT_results_data(data)
-            template = ((measure.get('title'),), ) + (*data,)
+        if self.data['results']['UT'].get('measures'):
+            zakl = self.calc_UT_korr()
+            if zakl:
+                template = (
+                    ('№<br />точки', 'Толщина<br />паспортная,<br />мм', 
+                    'Толщина<br />фактическая,<br />мм',) * 2,
+                )
+                para_style = (
+                    ('Text Simple Center Dense',),
+                )
+                table_style = (
+                    ('TOPPADDING', (0,0), (-1,-1), 0),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                    ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                )
+                self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
+                    table_style, styleTable=True
+                )
+                ######################################
+                for measure in self.data['results']['UT']['measures']:
+                    data = enumerate(measure.get('data'), start=1)
+                    data = self.proc_UT_results_data(data)
+                    template = ((measure.get('title'),), ) + (*data,)
+                    para_style = (
+                        ('Text Simple Center Dense',),
+                    )
+                    table_style = (
+                        ('SPAN', (0,0), (-1,0)),
+                        ('TOPPADDING', (0,0), (-1,-1), 0),
+                        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                    )
+                    self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
+                        table_style, styleTable=True
+                    )
+            ######################################
+            self.put('<strong>Заключение: </strong>', 'Text', .2)
+            a = enumerate(zakl, start=1)
+            template = tuple(map(lambda x: (str(x[0]), x[1]), a))
             para_style = (
-                ('Text Simple Center Dense',),
+                ('Text Simple Height',),
             )
             table_style = (
-                ('SPAN', (0,0), (-1,0)),
                 ('TOPPADDING', (0,0), (-1,-1), 0),
                 ('BOTTOMPADDING', (0,0), (-1,-1), 4),
                 ('VALIGN', (0,0), (-1,-1), 'TOP'),
             )
-            self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
-                table_style, styleTable=True
-            )
-        ######################################
-        self.put('<strong>Заключение: </strong>', 'Text', .2)
-        a = enumerate(zakl, start=1)
-        template = tuple(map(lambda x: (str(x[0]), x[1]), a))
-        para_style = (
-            ('Text Simple Height',),
-        )
-        table_style = (
-            ('TOPPADDING', (0,0), (-1,-1), 0),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        )
-        self.add(template, [0.4, 9.6], self.get_style(para_style, template),
-            table_style, spacer=8.2
-        )
+            if template:
+                self.add(template, [0.4, 9.6], self.get_style(para_style, template),
+                    table_style, spacer=8.2
+                )
         self.add_specialist('Ультразвуковая толщинометрия элементов сосуда', 'УК')
 
     def appendixE(self):
@@ -908,6 +911,8 @@ class ReportContainer(ReportMixin):
         res = []
         for measure in self.data['results']['UT']['measures']:
             title = measure['title']
+            if len(measure['data']) == 0:
+                continue
             min_value = min(measure['data'], key=lambda x: float(x['real'].replace(',','.')))
             try:
                 fvalue = (float(min_value['passport'].replace(',','.')) - \
@@ -947,7 +952,7 @@ class ReportContainer(ReportMixin):
         template = [
             ['ООО «ГАЗМАШПРОЕКТ»', '', '{obj_data[org][name]}'],
             ['(предприятие-исполнитель)', '', '(предприятие-Заказчик)'],
-            ['г. Москва, ул. Нагатинская, д. 5', '', '{obj_data[lpu]},'
+            ['г. Москва, ул. Нагатинская, д. 5', '', '{obj_data[lpu][name]},'
                 '<br />{obj_data[ks]}, {obj_data[plant]}'],
             ['(место осуществления лицензируемого вида деятельности)', '', '(место нахождения оборудования)'],
             ['', '', '{device[name]}'],

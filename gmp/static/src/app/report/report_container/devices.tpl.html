@@ -23,7 +23,7 @@
             <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.serial_number.$touched && vm.deviceForm.serial_number.$invalid }">
                   <label class="control-label" for="serial_number">Заводской номер</label>
                   <input class="form-control" type="text" id="serial_number" required
-                      name="serial_number" ng-maxlength="50" ng-model="vm.report.obj_data.serial_number" />
+                      name="serial_number" ng-maxlength="200" ng-model="vm.report.obj_data.serial_number" />
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.serial_number.$error" ng-if="vm.deviceForm.serial_number.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -31,7 +31,7 @@
             <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.reg_number.$touched && vm.deviceForm.reg_number.$invalid }">
                   <label class="control-label" for="reg_number">Регистрационный номер</label>
                   <input class="form-control" type="text" id="reg_number" required
-                      name="reg_number" ng-maxlength="50" ng-model="vm.report.obj_data.reg_number" />
+                      name="reg_number" ng-maxlength="200" ng-model="vm.report.obj_data.reg_number" />
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.reg_number.$error" ng-if="vm.deviceForm.reg_number.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -44,7 +44,7 @@
             <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.inv_number.$touched && vm.deviceForm.inv_number.$invalid }">
                   <label class="control-label" for="inv_number">Инвентарный номер</label>
                   <input class="form-control" type="text" id="inv_number" required
-                      name="inv_number" ng-maxlength="50" ng-model="vm.report.obj_data.inv_number" />
+                      name="inv_number" ng-maxlength="200" ng-model="vm.report.obj_data.inv_number" />
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.inv_number.$error" ng-if="vm.deviceForm.inv_number.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -52,7 +52,7 @@
             <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.scheme.$touched && vm.deviceForm.scheme.$invalid }">
                   <label class="control-label" for="scheme">Номер чертежа</label>
                   <input class="form-control" type="text" id="scheme" required
-                      name="scheme" ng-maxlength="50" ng-model="vm.report.obj_data.scheme" />
+                      name="scheme" ng-maxlength="200" ng-model="vm.report.obj_data.scheme" />
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.scheme.$error" ng-if="vm.deviceForm.scheme.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -102,7 +102,7 @@
             <div class="col-sm-12" ng-class="{ 'has-error': vm.deviceForm.location.$touched && vm.deviceForm.location.$invalid }">
                   <label class="control-label" for="location">Место установки (например, &laquo;Установка подготовки пускового, топливного и импульсного газа&raquo;)</label>
                   <input class="form-control" type="text" id="location" required
-                      name="location" ng-maxlength="50" ng-model="vm.report.obj_data.location" />
+                      name="location" ng-maxlength="500" ng-model="vm.report.obj_data.location" />
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.location.$error" ng-if="vm.deviceForm.location.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -146,16 +146,16 @@
             <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.ks.$touched && vm.deviceForm.ks.$invalid }">
                   <label class="control-label" for="ks">Наименование КС или установки</label>
                   <input class="form-control" type="text" id="ks" required
-                      name="ks" ng-maxlength="50" ng-model="vm.report.obj_data.ks" />
+                      name="ks" ng-maxlength="200" ng-model="vm.report.obj_data.ks" />
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.ks.$error" ng-if="vm.deviceForm.ks.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>
             
             <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.plant.$touched && vm.deviceForm.plant.$invalid }">
-                  <label class="control-label" for="plant">Название цеха</label>
+                  <label class="control-label" for="plant">Номер цеха</label>
                   <input class="form-control" type="text" id="plant" required
-                      name="plant" ng-maxlength="50" ng-model="vm.report.obj_data.plant" />
+                      name="plant" ng-maxlength="200" ng-model="vm.report.obj_data.plant" />
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.plant.$error" ng-if="vm.deviceForm.plant.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -168,7 +168,7 @@
             <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.provod.$touched && vm.deviceForm.provod.$invalid }">
                   <label class="control-label" for="provod">Наименование газопровода</label>
                   <input class="form-control" type="text" id="provod" required
-                      name="provod" ng-maxlength="50" ng-model="vm.report.obj_data.provod" />
+                      name="provod" ng-maxlength="200" ng-model="vm.report.obj_data.provod" />
                   <div class="help-block" role="alert" ng-messages="vm.deviceForm.provod.$error" ng-if="vm.deviceForm.provod.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>

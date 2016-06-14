@@ -1,7 +1,9 @@
 <ng-form name="vm.mainForm" save-history="vm.report" report-id="{{vm.reportId}}">
     <div ng-cloak>
         <h3 class="text-center">Формирование отчета по сосудам</h3>
-        <button class="btn btn-sm btn-danger" ng-click="vm.restore_initial_state()">Сброс формы</button>
+        <button class="btn btn-sm btn-danger" ng-click="vm.restore_initial_state()">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Сброс формы</button>
         
          <!-- 
              <autocomplete ng-model="vm.yourchoice" data="vm.movies" click-activation="true"

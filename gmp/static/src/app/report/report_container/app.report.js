@@ -128,17 +128,6 @@
                 },
                 UT: {
                     measures: [],
-                    results: [
-                        {value: 'Минимальная измеренная толщина стенки верхнего днища –' + 
-                                '   мм, скорость коррозии составляет  мм/год'
-                        },
-                        {value: 'Минимальная измеренная толщина стенки обечайки –' + 
-                                '   мм, скорость коррозии составляет  мм/год'
-                        },
-                        {value: 'Минимальная измеренная толщина стенки нижнего днища –' + 
-                                '   мм, скорость коррозии составляет  мм/год'
-                        },
-                    ],
                     conclusion: 'Минимальные измеренные толщины стенок элементов сосуда,' + 
                                 ' находятся в пределах паспортных значений. Недопустимых' + 
                                 ' утонений стенок основных элементов сосуда в зонах ' + 
@@ -329,6 +318,7 @@
 
 
         vm.addToCollection = addToCollection;
+        vm.addUTPoint = addUTPoint;
         vm.allEmployees = allEmployees;
         vm.control_types = control_types;
         vm.device_conditions = device_conditions;
@@ -424,5 +414,17 @@
         ///////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
+
+        function addUTPoint(measure) {
+            var item = undefined;
+            if (measure.title.toLowerCase().search(/днище/i) !== -1) {
+                item = {'passport': vm.report.device.dimensions_side_bottom.toString(), 'real': ''};
+            } else if (measure.title.toLowerCase().search(/обечайка/i) !== -1) {
+                item = {'passport': vm.report.device.dimensions_side_ring.toString(), 'real': ''};
+            } else {
+                item = {'passport': '', 'real': ''};
+            }
+            measure.data.push(item);
+        }
     }
 })();

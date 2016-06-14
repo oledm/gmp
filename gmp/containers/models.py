@@ -35,8 +35,8 @@ class Container(models.Model):
     dimensions_height_ring = models.PositiveSmallIntegerField('Высота обечайки, мм')
     dimensions_height_bottom = models.PositiveSmallIntegerField('Высота днища, мм')
     dimensions_height_total = models.PositiveSmallIntegerField('Высота сосуда (общая)')
-    dimensions_side_ring = models.PositiveSmallIntegerField('Толщина стенок обечайки (проектная), мм')
-    dimensions_side_bottom = models.PositiveSmallIntegerField('Толщина стенок днища (проектная), мм')
+    dimensions_side_ring = models.FloatField('Толщина стенок обечайки (проектная), мм')
+    dimensions_side_bottom = models.FloatField('Толщина стенок днища (проектная), мм')
     material_ring = models.OneToOneField(
         'Material',
         verbose_name='Материал обечайки',
