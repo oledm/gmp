@@ -83,12 +83,17 @@
                 'report_container/devices.tpl.html',
                 'report_container/report_info.tpl.html',
                 'report_container/order.tpl.html',
-                'report_container/team2.tpl.html',
+                'report_container/team.tpl.html',
                 'measurers.tpl.html',
                 'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
                 'report_container/results.tpl.html',
                 'report_container/licenses.tpl.html',
+            ],
+            ranks = [
+                'руководитель бригады',
+                'зам. руководителя бригады',
+                'член бригады'
             ],
             results = {
                 VIK: {
@@ -139,71 +144,7 @@
                                 'околошовных зонах не обнаружено.'
                 },
                 T: {
-                    values: [
-//                        {
-//                            element: 'Днище верхнее',
-//                            point: '1, 2',
-//                            zone: 'Основной металл',
-//                            width: '20,0',
-//                            hardness: '149-166'
-//                        },
-//                        {
-//                            element: 'Обечайка',
-//                            point: '5, 6',
-//                            zone: 'Основной металл',
-//                            width: '20,0',
-//                            hardness: '149-166'
-//                        },
-//                        {
-//                            element: 'Обечайка',
-//                            point: '1-4 ,7,8',
-//                            zone: 'Сварной шов',
-//                            width: '',
-//                            hardness: '190-204'
-//                        },
-//                        {
-//                            element: 'Днище нижнее',
-//                            point: '1, 2',
-//                            zone: 'Основной металл',
-//                            width: '20,0',
-//                            hardness: '143-164'
-//                        },
-//                        {
-//                            element: 'Вход газа',
-//                            point: '1',
-//                            zone: 'Основной металл',
-//                            width: '',
-//                            hardness: '147-170'
-//                        },
-//                        {
-//                            element: 'Выход газа',
-//                            point: '1',
-//                            zone: 'Основной металл',
-//                            width: '',
-//                            hardness: '145-158'
-//                        },
-//                        {
-//                            element: 'Люк верхний',
-//                            point: '1',
-//                            zone: 'Основной металл',
-//                            width: '',
-//                            hardness: '150-168'
-//                        },
-//                        {
-//                            element: 'Люк нижний',
-//                            point: '1',
-//                            zone: 'Основной металл',
-//                            width: '',
-//                            hardness: '153-169'
-//                        },
-//                        {
-//                            element: 'Патрубок дренажа',
-//                            point: '1',
-//                            zone: 'Основной металл',
-//                            width: '',
-//                            hardness: '150-170'
-//                        },
-                    ],
+                    values: [],
                     results: [
                         {value: 'Средняя фактическая твердость основного металла ' + 
                             'контролируемых элементов сосуда, находится в пределах ' + 
@@ -317,6 +258,7 @@
         vm.yourchoice = '';
 
 
+        vm.addEmployee = addEmployee;
         vm.addToCollection = addToCollection;
         vm.addUTPoint = addUTPoint;
         vm.allEmployees = allEmployees;
@@ -331,7 +273,6 @@
         vm.getLPUs = getLPUs;
 //        vm.measurers = {all: measurers, selected: []};
         vm.report = {
-            team: {},
             files: {},
             info: info,
             schemes: schemes,
@@ -339,9 +280,11 @@
             lpus: [],
             results: results,
             type: $state.current.data.type,
+            team: [{'name': '', 'required': true}],
             order: {},
         };
 
+        vm.ranks = ranks;
         vm.report_initial_state = angular.copy(vm.report)
         vm.restore_initial_state = restore_initial_state; 
         vm.setSelected = setSelected;
@@ -357,12 +300,19 @@
             $state.go($state.current, {}, {reload: true});
         }
 
+        function addEmployee() {
+            vm.report.team.push({
+                'name': '', 'required': false
+            });
+        }
+
         function activate() {
             var modeldata = History.getCurrentModelValue();
             if(angular.isDefined(modeldata)) {
                 angular.copy(modeldata, vm.report);
                 History.clearCurrentModelValue();
             }
+            console.log('team', vm.report.team )
         }
 
         function createPassport() {
