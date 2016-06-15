@@ -418,11 +418,11 @@
         function addUTPoint(measure) {
             var item = undefined;
             if (measure.title.toLowerCase().search(/днище/i) !== -1) {
-                item = {'passport': vm.report.device.dimensions_side_bottom.toString(), 'real': ''};
+                item = {'passport': vm.report.device.dimensions_side_bottom, 'real': null};
             } else if (measure.title.toLowerCase().search(/обечайка/i) !== -1) {
-                item = {'passport': vm.report.device.dimensions_side_ring.toString(), 'real': ''};
+                item = {'passport': vm.report.device.dimensions_side_ring, 'real': null};
             } else {
-                item = {'passport': '', 'real': ''};
+                item = {'passport': null, 'real': null};
             }
             measure.data.push(item);
         }

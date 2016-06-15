@@ -25,7 +25,16 @@ from gmp.filestorage.models import FileStorage
 from .helpers import ReportMixin
 
 locale.setlocale(locale.LC_ALL, "")
-loc = partial(locale.format, "%.3f")
+#loc = partial(locale.format, "%.3f")
+
+def localize(precision, value):
+    if isinstance(value, float) or isinstance(value, int):
+        return locale.format("%.{}f".format(precision), value)
+    else:
+        return '&ndash;'
+
+loc1 = partial(localize, 1)
+loc = partial(localize, 3)
 
 class RotededText(Flowable): #TableTextRotate
     def __init__(self, text, style):
@@ -509,15 +518,32 @@ class ReportContainer(ReportMixin):
         self.put('Результаты контроля', 'Text Simple Center Bold', .2)
         if self.data['results']['UT'].get('measures'):
             zakl = self.calc_UT_korr()
-            if zakl:
-                template = (
-                    ('№<br />точки', 'Толщина<br />паспортная,<br />мм', 
-                    'Толщина<br />фактическая,<br />мм',) * 2,
-                )
+            ######################################
+            template = (
+                ('№<br />точки', 'Толщина<br />паспортная,<br />мм', 
+                'Толщина<br />фактическая,<br />мм',) * 2,
+            )
+            para_style = (
+                ('Text Simple Center Dense',),
+            )
+            table_style = (
+                ('TOPPADDING', (0,0), (-1,-1), 0),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            )
+            self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
+                table_style, styleTable=True
+            )
+            ######################################
+            for measure in self.data['results']['UT']['measures']:
+                data = enumerate(measure.get('data'), start=1)
+                data = self.proc_UT_results_data(data)
+                template = ((measure.get('title'),), ) + (*data,)
                 para_style = (
                     ('Text Simple Center Dense',),
                 )
                 table_style = (
+                    ('SPAN', (0,0), (-1,0)),
                     ('TOPPADDING', (0,0), (-1,-1), 0),
                     ('BOTTOMPADDING', (0,0), (-1,-1), 4),
                     ('VALIGN', (0,0), (-1,-1), 'TOP'),
@@ -525,39 +551,23 @@ class ReportContainer(ReportMixin):
                 self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
                     table_style, styleTable=True
                 )
-                ######################################
-                for measure in self.data['results']['UT']['measures']:
-                    data = enumerate(measure.get('data'), start=1)
-                    data = self.proc_UT_results_data(data)
-                    template = ((measure.get('title'),), ) + (*data,)
-                    para_style = (
-                        ('Text Simple Center Dense',),
-                    )
-                    table_style = (
-                        ('SPAN', (0,0), (-1,0)),
-                        ('TOPPADDING', (0,0), (-1,-1), 0),
-                        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-                        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                    )
-                    self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
-                        table_style, styleTable=True
-                    )
             ######################################
-            self.put('<strong>Заключение: </strong>', 'Text', .2)
-            a = enumerate(zakl, start=1)
-            template = tuple(map(lambda x: (str(x[0]), x[1]), a))
-            para_style = (
-                ('Text Simple Height',),
-            )
-            table_style = (
-                ('TOPPADDING', (0,0), (-1,-1), 0),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-            )
-            if template:
-                self.add(template, [0.4, 9.6], self.get_style(para_style, template),
-                    table_style, spacer=8.2
+            if zakl:
+                self.put('<strong>Заключение: </strong>', 'Text', .2)
+                a = enumerate(zakl, start=1)
+                template = tuple(map(lambda x: (str(x[0]), x[1]), a))
+                para_style = (
+                    ('Text Simple Height',),
                 )
+                table_style = (
+                    ('TOPPADDING', (0,0), (-1,-1), 0),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                    ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                )
+                if template:
+                    self.add(template, [0.4, 9.6], self.get_style(para_style, template),
+                        table_style, spacer=8.2
+                    )
         self.add_specialist('Ультразвуковая толщинометрия элементов сосуда', 'УК')
 
     def appendixE(self):
@@ -894,10 +904,15 @@ class ReportContainer(ReportMixin):
         return res
 
     def proc_UT_results_data(self, data):
-        data = tuple(map(lambda x: (
-            str(x[0]),
-            x[1]['passport'].replace('.',','),
-            x[1]['real'].replace('.',','),)
+        #print('before:', list(data))
+        data = tuple(map(lambda x:
+            (str(x[0]),
+            str(loc1(x[1]['passport'])),
+            '<strong>{}</strong>'.format(str(loc1(x[1]['real']))))
+            if x[1].get('minimum') else
+            (str(x[0]),
+            str(loc1(x[1]['passport'])),
+            str(loc1(x[1]['real'])))
             , data)
         )
         # If data-tuple contains odd number of tuples, add one tuple with the same length
@@ -910,23 +925,32 @@ class ReportContainer(ReportMixin):
     def calc_UT_korr(self):
         res = []
         for measure in self.data['results']['UT']['measures']:
-            title = measure['title']
             if len(measure['data']) == 0:
                 continue
-            min_value = min(measure['data'], key=lambda x: float(x['real'].replace(',','.')))
+
+            data = list(filter(lambda x: x.get('real'), measure['data']))
+            if not data:
+                continue
+
+            min_value = min(data, key=lambda x: float(x['real']))
+            if not min_value:
+                continue
+
             try:
-                fvalue = (float(min_value['passport'].replace(',','.')) - \
-                            float(min_value['real'].replace(',','.'))) / \
-                        (int(self.data['info']['investigation_date'].split()[2]) - \
-                          int(self.data['obj_data']['manufactured_year'][:4]))
-                res.append('Минимальная измеренная толщина стенки элемента \"{}\" &ndash; {} мм, скорость коррозии составляет {} мм/год'.format(title, min_value['real'].replace('.',','), loc(fvalue)))
-            except ValueError:
+                val_passport = float(min_value['passport'])
+                val_real = float(min_value['real'])
+                year1 = int(self.data['info']['investigation_date'].split()[2])
+                year2 = int(self.data['obj_data']['manufactured_year'][:4])
+                korr = (val_passport - val_real) / (year1 - year2)
+                res.append('Минимальная измеренная толщина стенки элемента \"{}\" &ndash; {} мм, скорость коррозии составляет {} мм/год'.format(measure['title'], loc1(min_value['real']), loc(korr)))
+            except (ValueError, TypeError) as e:
                 continue
             finally:
                 # Update data to mark minimal value with bold font
-                for data in measure['data']:
-                    if data == min_value:
-                        data.update({'real': '<strong>{}</strong>'.format(data['real'])})
+                for v in data:
+                    if v == min_value:
+                        v.update({'minimum': True})
+                        break
         return res
 
     def add_specialist(self, category, abbr):
