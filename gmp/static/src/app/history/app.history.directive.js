@@ -52,10 +52,12 @@
                     scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 //                        console.log('Сохранение в local storage');
                         localStorageService.set('model', scope.model);
+                        History.clearHistoryId();
                     });
 
                     window.onbeforeunload = function(e) {
                         localStorageService.set('model', scope.model);
+                        History.clearHistoryId();
                     };
                 }
 

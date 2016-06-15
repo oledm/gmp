@@ -17,6 +17,7 @@
             setCurrentModelValue: setCurrentModelValue,
             getCurrentModelValue: getCurrentModelValue,
             clearCurrentModelValue: clearCurrentModelValue,
+            clearHistoryId: clearHistoryId,
         };
 
         const secondsWaitForModelChange = 2;
@@ -90,6 +91,11 @@
 
         function setCurrentModelValue(value) {
             modelValue = value;
+            clearHistoryId();
+        }
+
+        function clearHistoryId() {
+            history_id = undefined;
         }
 
         function getCurrentModelValue() {
