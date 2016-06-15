@@ -689,6 +689,7 @@ class ReportContainer(ReportMixin):
         for num, value in enumerate(self.data['results']['T']['values'], start=1):
             d = defaultdict(str)
             d.update(value)
+            d.update({'width': loc1(d['width'])})
             data = self.values([[str(num), '{element}', '{point}', '{zone}', '{width}', '{hardness}']], d)
             template.extend(data)
 

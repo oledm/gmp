@@ -14,6 +14,16 @@
         
         <div class="block text-center">
             <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
+                ng-disabled="
+                vm.deviceForm.$invalid ||
+                vm.reportInfoForm.$invalid ||
+                vm.orderForm.$invalid ||
+                vm.teamForm.$invalid ||
+                vm.signersForm.$invalid ||
+                vm.schemesForm.$invalid ||
+                vm.licensesForm.$invalid ||
+                vm.resultsTableForm.$invalid
+                "
                 > Создать отчет
             </button>    
         </div>

@@ -28,11 +28,8 @@
                   </td>
                   <td class="text-center">{{$index + 1}}</td>
                   <td>
-                          <input class="form-control" type="text" ng-model="value.element" />
-                      <!-- 
-                          <input class="form-control" type="text"
-                              ng-model="value.element" />
-                       -->
+                      <input class="form-control" type="text" ng-change="vm.checkElementName(value)"
+                          ng-model="value.element" />
                   </td>
                   <td><input class="form-control" type="text"
                           ng-model="value.point" />
@@ -40,7 +37,7 @@
                   <td><input class="form-control" type="text"
                           ng-model="value.zone" />
                   </td>
-                  <td><input class="form-control" type="text"
+                  <td><input class="form-control" type="number"
                           ng-model="value.width" />
                   </td>
                   <td><input class="form-control" type="text"

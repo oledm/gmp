@@ -140,69 +140,69 @@
                 },
                 T: {
                     values: [
-                        {
-                            element: 'Днище верхнее',
-                            point: '1, 2',
-                            zone: 'Основной металл',
-                            width: '20,0',
-                            hardness: '149-166'
-                        },
-                        {
-                            element: 'Обечайка',
-                            point: '5, 6',
-                            zone: 'Основной металл',
-                            width: '20,0',
-                            hardness: '149-166'
-                        },
-                        {
-                            element: 'Обечайка',
-                            point: '1-4 ,7,8',
-                            zone: 'Сварной шов',
-                            width: '',
-                            hardness: '190-204'
-                        },
-                        {
-                            element: 'Днище нижнее',
-                            point: '1, 2',
-                            zone: 'Основной металл',
-                            width: '20,0',
-                            hardness: '143-164'
-                        },
-                        {
-                            element: 'Вход газа',
-                            point: '1',
-                            zone: 'Основной металл',
-                            width: '',
-                            hardness: '147-170'
-                        },
-                        {
-                            element: 'Выход газа',
-                            point: '1',
-                            zone: 'Основной металл',
-                            width: '',
-                            hardness: '145-158'
-                        },
-                        {
-                            element: 'Люк верхний',
-                            point: '1',
-                            zone: 'Основной металл',
-                            width: '',
-                            hardness: '150-168'
-                        },
-                        {
-                            element: 'Люк нижний',
-                            point: '1',
-                            zone: 'Основной металл',
-                            width: '',
-                            hardness: '153-169'
-                        },
-                        {
-                            element: 'Патрубок дренажа',
-                            point: '1',
-                            zone: 'Основной металл',
-                            width: '',
-                            hardness: '150-170'
-                        },
+//                        {
+//                            element: 'Днище верхнее',
+//                            point: '1, 2',
+//                            zone: 'Основной металл',
+//                            width: '20,0',
+//                            hardness: '149-166'
+//                        },
+//                        {
+//                            element: 'Обечайка',
+//                            point: '5, 6',
+//                            zone: 'Основной металл',
+//                            width: '20,0',
+//                            hardness: '149-166'
+//                        },
+//                        {
+//                            element: 'Обечайка',
+//                            point: '1-4 ,7,8',
+//                            zone: 'Сварной шов',
+//                            width: '',
+//                            hardness: '190-204'
+//                        },
+//                        {
+//                            element: 'Днище нижнее',
+//                            point: '1, 2',
+//                            zone: 'Основной металл',
+//                            width: '20,0',
+//                            hardness: '143-164'
+//                        },
+//                        {
+//                            element: 'Вход газа',
+//                            point: '1',
+//                            zone: 'Основной металл',
+//                            width: '',
+//                            hardness: '147-170'
+//                        },
+//                        {
+//                            element: 'Выход газа',
+//                            point: '1',
+//                            zone: 'Основной металл',
+//                            width: '',
+//                            hardness: '145-158'
+//                        },
+//                        {
+//                            element: 'Люк верхний',
+//                            point: '1',
+//                            zone: 'Основной металл',
+//                            width: '',
+//                            hardness: '150-168'
+//                        },
+//                        {
+//                            element: 'Люк нижний',
+//                            point: '1',
+//                            zone: 'Основной металл',
+//                            width: '',
+//                            hardness: '153-169'
+//                        },
+//                        {
+//                            element: 'Патрубок дренажа',
+//                            point: '1',
+//                            zone: 'Основной металл',
+//                            width: '',
+//                            hardness: '150-170'
+//                        },
                     ],
                     results: [
                         {value: 'Средняя фактическая твердость основного металла ' + 
@@ -320,6 +320,7 @@
         vm.addToCollection = addToCollection;
         vm.addUTPoint = addUTPoint;
         vm.allEmployees = allEmployees;
+        vm.checkElementName = checkElementName;
         vm.control_types = control_types;
         vm.device_conditions = device_conditions;
         vm.createPassport = createPassport;
@@ -425,6 +426,15 @@
                 item = {'passport': null, 'real': null};
             }
             measure.data.push(item);
+        }
+
+        function checkElementName(value) {
+            var name = value.element;
+            if (name.search(/днище/i) !== -1) {
+                value.width = vm.report.device.dimensions_side_bottom;
+            } else if (name.search(/обечайка/i) !== -1) {
+                value.width = vm.report.device.dimensions_side_ring;
+            }
         }
     }
 })();
