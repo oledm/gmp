@@ -4,12 +4,29 @@
     angular
         .module('app.report')
         .config(ReportConfig)
+        .filter('searchIdInObject', SearchIdInObject)
         .controller('FormController', FormController)
         .controller('ReportContainerController', ReportContainerController);
 
     function ReportConfig($httpProvider) {
         'ngInject';
         $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    }
+
+    function SearchIdInObject() {
+        return function(inputArr, matchArr) {
+            let matchIds = [], output = [];
+            angular.forEach(matchArr, function(value) {
+                matchIds.push(value.id);
+            });
+
+            angular.forEach(inputArr, function(value) {
+                if (matchIds.indexOf(value.id) !== -1) {
+                    output.push(value);
+                }
+            });
+            return output;
+        }
     }
 
     function FormController($scope, $http) {
@@ -280,7 +297,7 @@
             lpus: [],
             results: results,
             type: $state.current.data.type,
-            team: [{'name': '', 'required': true}],
+            team: [{'id': '', 'required': true}],
             order: {},
         };
 
@@ -302,7 +319,7 @@
 
         function addEmployee() {
             vm.report.team.push({
-                'name': '', 'required': false
+                'id': '', 'required': false
             });
         }
 
