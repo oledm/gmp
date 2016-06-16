@@ -33,7 +33,6 @@
         'ngInject';
 
         $scope.submit = function() {
-            console.log('submitted ' + $scope.subject);
             var in_data = { subject: $scope.subject };
             $http.post('/contact/', in_data)
                 .success(function(out_data) {
@@ -102,7 +101,6 @@
                 'report_container/order.tpl.html',
                 'report_container/team.tpl.html',
                 'measurers.tpl.html',
-                'report_container/signers.tpl.html',
                 'report_container/schemes.tpl.html',
                 'report_container/results.tpl.html',
                 'report_container/licenses.tpl.html',
@@ -297,10 +295,14 @@
             lpus: [],
             results: results,
             type: $state.current.data.type,
-            team: [{'id': '', 'required': true}],
+            team: {
+                spec: {},
+                all: [{'id': '', 'required': true}]
+            },
             order: {},
         };
 
+//        vm.uuid = uuid.v4();
         vm.ranks = ranks;
         vm.report_initial_state = angular.copy(vm.report)
         vm.restore_initial_state = restore_initial_state; 
@@ -318,7 +320,8 @@
         }
 
         function addEmployee() {
-            vm.report.team.push({
+//            newUUID();
+            vm.report.team.all.push({
                 'id': '', 'required': false
             });
         }
@@ -330,7 +333,13 @@
                 History.clearCurrentModelValue();
             }
             console.log('team', vm.report.team )
+//            console.log('uuid', vm.uuid)
         }
+
+//        function newUUID() {
+//            vm.uuid = uuid.v4();
+//            console.log('uuid', vm.uuid)
+//        }
 
         function createPassport() {
             console.log('report:', JSON.stringify(vm.report));

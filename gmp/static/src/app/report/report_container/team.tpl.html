@@ -1,27 +1,25 @@
 <ng-form name="vm.teamForm" novalidate>
     <h4 checkmark>Выберите членов бригады</h4>
-    <p>Team: {{vm.report.team | json}}</p>
-    <p>All: {{vm.allEmployees | json}}</p>
     <div>
-        <div class="form-group" ng-repeat="emp in vm.report.team">
+        <div class="form-group" ng-repeat="emp in vm.report.team.all track by $index">
             <div class="row">
                 <div class="col-sm-6"
                      ng-class="{ 'has-error':
                          vm.teamForm.employee.$touched &&
                          vm.teamForm.employee.$invalid }">
-                      <label class="control-label" for="employee">Работник</label>
+                    <label class="control-label">Работник</label>
                       <select class="form-control" required ng-model="emp.id"
                           ng-options="employee.id as employee.full_fio for employee in vm.allEmployees"
                           name="employee"
-                          id="employee">
+                          >
                       </select>
                       <div class="help-block" role="alert" ng-messages="vm.teamForm.employee.$error" ng-if="vm.teamForm.employee.$touched">
                           <div ng-messages-include="/static/src/assets/messages.html"></div>
                       </div>
                 </div>
                 <div class="col-sm-6">
-                      <label class="control-label" for="rank">Должность</label>
-                      <select class="form-control" ng-required="emp.required" ng-model="emp.rank" name="rank" id="rank">
+                    <label class="control-label">Должность</label>
+                    <select class="form-control" ng-required="emp.required" ng-model="emp.rank" name="rank">
                           <option ng-repeat="rank in vm.ranks">{{rank}}</option>
                       </select>
                 </div>
@@ -42,27 +40,24 @@
         >
         <div class="row"
             ng-class="{ 'has-error':
-                vm.teamForm2[control_type.name].$touched &&
-                vm.teamForm2[control_type.name].$invalid }"
+                vm.teamForm2[control_type.chapter].$touched &&
+                vm.teamForm2[control_type.chapter].$invalid }"
             >
             <div class="col-sm-4">
-                <label class="control-label" for="{{control_type.name}}">
+                <label class="control-label" for="{{control_type.chapter}}">
                     {{control_type.chapter}}
                 </label>
             </div>
             <div class="col-sm-6">
-              <select class="form-control" required ng-model="vm.report.team[control_type.chapter]"
-                ng-options="employee.id as employee.full_fio for employee in vm.allEmployees | filter:{control_types: control_type.full_name} | searchIdInObject:vm.report.team"
-                  name="{{control_type.name}}"
-                  id="{{control_type.name}}">
+              <select class="form-control" required ng-model="vm.report.team.spec[control_type.chapter]"
+                ng-options="employee.id as employee.full_fio for employee in vm.allEmployees | filter:{control_types: control_type.full_name} | searchIdInObject:vm.report.team.all"
+                  name="{{control_type.chapter}}"
+                  id="{{control_type.chapter}}">
               </select>
-                <div class="help-block" role="alert" ng-messages="vm.teamForm2[control_type.name].$error" ng-if="vm.teamForm2[control_type.name].$touched">
+                <div class="help-block" role="alert" ng-messages="vm.teamForm2[control_type.chapter].$error" ng-if="vm.teamForm2[control_type.chapter].$touched">
                     <div ng-messages-include="/static/src/assets/messages.html"></div>
                 </div>
             </div>
         </div>
     </div>
 </ng-form>
-                <!-- 
-                    ng-options="employee.id as employee.full_fio for employee in vm.report.team | filter:{control_types: control_type.full_name}"
-                 -->
