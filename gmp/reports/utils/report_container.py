@@ -211,7 +211,7 @@ class ReportContainer(ReportMixin):
 
         # For each person generate separate table for ability to span 
         # certain fields
-        for person in set(self.data.get('team').values()):
+        for person in set(self.data.get('team').get('spec').values()):
             emp = Employee.objects.get(pk=person)
             fio = emp.get_full_name().replace(' ', '<br />')
             cert = Certificate.objects.filter(employee=emp)
@@ -369,15 +369,17 @@ class ReportContainer(ReportMixin):
             table_style, data=data, spacer=4
         )
         #
+        signer = list(filter(lambda x: x['rank'] == 'руководитель бригады',
+            self.data.get('team').get('all')))[0]
+        emp = Employee.objects.get(pk=signer['id'])
+        #print('Подписант', emp.fio())
         template = [[
-            '{rank}', '{fio}'
+            'Руководитель диагностической группы', emp.fio()
         ]]
         para_style = (
             ('Text Simple Center',),
         )
-        self.add(template, [7, 3], self.get_style(para_style, template),
-            table_style, data=self.data['signers']['create']
-        )
+        self.add(template, [7, 3], self.get_style(para_style, template), table_style)
     
     def appendixA(self):
         self.new_page()
@@ -955,7 +957,7 @@ class ReportContainer(ReportMixin):
         return res
 
     def add_specialist(self, category, abbr):
-        person_id = self.data['team'][category]
+        person_id = self.data['team']['spec'][category]
         emp = Employee.objects.get(pk=person_id)
         template = (
             (emp.get_cert_details(abbr), emp.fio(), ),
