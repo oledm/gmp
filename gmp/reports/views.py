@@ -1,3 +1,4 @@
+import io
 import json
 import pprint
 
@@ -13,9 +14,13 @@ def create_report(request):
     data = json.loads(request.body.decode('utf-8'))
     print('\nПолучены данные для формирования паспорта\n')
     pprint.pprint(data['report_data'])
-    response = HttpResponse(content_type='application/pdf')
-    ReportMaker(data['report_data'], response)
+    file_ = io.BytesIO()
+
+    ReportMaker(data['report_data'], file_)
+    response = HttpResponse(file_.getvalue(), content_type='application/pdf')
+    file_.close()
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    print('reponse', response)
     return response
     # TODO case when report making failed
     #response = HttpResponse('Report not created')

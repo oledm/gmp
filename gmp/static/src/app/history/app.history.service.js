@@ -71,7 +71,7 @@
 
         function save(data) {
             clearTimeout();
-            console.log(`Model changes. Wait ${secondsWaitForModelChange} seconds before saving`);
+//            console.log(`Model changes. Wait ${secondsWaitForModelChange} seconds before saving`);
 
             timeout = $timeout(() => {
                 saveNow(data);
@@ -80,11 +80,11 @@
 
         function saveNow(data) {
             if (!history_id) {
-                console.log('Write history:', data);
+//                console.log('Write history:', data);
                 create({obj_model: data})
                     .then(response => history_id = response.data.id);
             } else {
-                console.log('History update', data);
+//                console.log('History update', data);
                 update(history_id, {obj_model: data});
             }
         }

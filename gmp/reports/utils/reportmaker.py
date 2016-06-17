@@ -4,6 +4,9 @@ from .report_container import ReportContainer
 
 from gmp.containers.models import ContainerType
 
+def upperFirstLetter(word):
+    return word[0].upper() + word[1:]
+
 class ReportMaker():
     def __init__(self, data, report):
         if data['type'] == 'passport':
@@ -20,7 +23,7 @@ class ReportMaker():
             )
             data['device'].update({
                 'full_desc': desc,
-                'full_desc_capital': desc.capitalize(),
+                'full_desc_capital': upperFirstLetter(desc),
                 'serial_number': data['obj_data']['serial_number'],
                 'reg_number': data['obj_data']['reg_number'],
                 'inv_number': data['obj_data']['inv_number'],

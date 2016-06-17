@@ -332,8 +332,6 @@
                 angular.copy(modeldata, vm.report);
                 History.clearCurrentModelValue();
             }
-            console.log('team', vm.report.team )
-//            console.log('uuid', vm.uuid)
         }
 
 //        function newUUID() {

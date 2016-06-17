@@ -21,6 +21,7 @@ from gmp.certificate.models import Certificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
 from gmp.filestorage.models import FileStorage
+from gmp.containers.models import ContainerType
 
 from .helpers import ReportMixin
 
@@ -57,6 +58,7 @@ class ReportContainer(ReportMixin):
 
         self.format_locale_JS_dates(self.data['order'], ('date',))
         self.format_locale_JS_dates(self.data['info'], ('investigation_date',))
+        self.format_JS_dates(self.data['device'], ('manufactured_year', 'started_year'), '%Y')
         self.format_JS_dates(self.data['info'], ('license_date',))
         self.data.update({'report_code': 'ГМП-{}/{}/ТО/{}'.format(
             self.data['info']['license_number'].replace('-', '/'),
@@ -232,12 +234,12 @@ class ReportContainer(ReportMixin):
         self.spacer(.5)
 
     def device(self):
-        data = self.data['device'].copy()
+        data = self.data['obj_data'].copy()
+        data.update(self.data['device'])
         self.paragraph('5 Характеристика и назначение объекта диагностирования',
             'report_container_5.txt', data=data)
         #
         self.put('Таблица 5.1', 'Text', .1)
-        data.update(self.data['obj_data'])
         template = (
             ('Параметр', 'Характеристика'),
             ('Наименование объекта экспертизы', 'Сосуд, работающий под избыточным давлением ({full_desc})'),
@@ -551,7 +553,7 @@ class ReportContainer(ReportMixin):
                     ('VALIGN', (0,0), (-1,-1), 'TOP'),
                 )
                 self.add(template, [1,2,2,1,2,2], self.get_style(para_style, template),
-                    table_style, styleTable=True
+                    table_style, styleTable=True, spacer=1
                 )
             ######################################
             if zakl:
@@ -645,7 +647,7 @@ class ReportContainer(ReportMixin):
         else:
             self.Story.append(KeepTogether([
                 p, 
-                Spacer(1 * cm, 1 * cm),
+                Spacer(1 * cm, .7 * cm),
                 zakl, Spacer(1 * cm, 5.2 * cm)
             ]))
         self.add_specialist('Ультразвуковой контроль качества сварных соединений', 'УК')
@@ -943,7 +945,7 @@ class ReportContainer(ReportMixin):
                 val_passport = float(min_value['passport'])
                 val_real = float(min_value['real'])
                 year1 = int(self.data['info']['investigation_date'].split()[2])
-                year2 = int(self.data['obj_data']['manufactured_year'][:4])
+                year2 = int(self.data['device']['manufactured_year'][:4])
                 korr = (val_passport - val_real) / (year1 - year2)
                 res.append('Минимальная измеренная толщина стенки элемента \"{}\" &ndash; {} мм, скорость коррозии составляет {} мм/год'.format(measure['title'], loc1(min_value['real']), loc(korr)))
             except (ValueError, TypeError) as e:
@@ -975,7 +977,8 @@ class ReportContainer(ReportMixin):
 
     def appendix_header(self):
         data = self.data.copy()
-        data['device']['name'] = data['device']['name'].capitalize()
+        container_type = ContainerType.objects.get(pk=data['device']['_type'] )
+        data['device']['name'] = str(container_type).capitalize()
         template = [
             ['ООО «ГАЗМАШПРОЕКТ»', '', '{obj_data[org][name]}'],
             ['(предприятие-исполнитель)', '', '(предприятие-Заказчик)'],

@@ -6,7 +6,7 @@ var babel = require('gulp-babel');
 var ngAnnotate = require('gulp-ng-annotate')
 var sourcemaps = require('gulp-sourcemaps')
 var templateCache = require('gulp-angular-templatecache');
-var sleep = require('sleep');
+//var sleep = require('sleep');
 var exec = require('gulp-exec');
 exec = require('child_process').exec;
 
@@ -39,11 +39,11 @@ gulp.task('js', () => {
         .pipe(gulp.dest('gmp/static/dist'));
 });
 
-gulp.task('report', function() {
-    sleep.usleep(1500000);
-    exec('curl "http://127.0.0.1:8000/report/" > ~/passport.pdf && ' + 
-         'chromium ~/passport.pdf');
-});
+//gulp.task('report', function() {
+//    sleep.usleep(1500000);
+//    exec('curl "http://127.0.0.1:8000/report/" > ~/passport.pdf && ' + 
+//         'chromium ~/passport.pdf');
+//});
 
 gulp.task('build', ['js', 'templates']);
 
