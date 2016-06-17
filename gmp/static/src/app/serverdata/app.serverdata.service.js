@@ -34,10 +34,12 @@
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
                 responseType: 'arraybuffer',
-                transformResponse: (data, headers) => {
-                    var file = new Blob([data], {type: 'application/pdf'});
-                    saveAs(file, 'report.pdf');
-                    return headers;
+                transformResponse: (data, headers, status) => {
+                    if (status === 200) {
+                        var file = new Blob([data], {type: 'application/pdf'});
+                        saveAs(file, 'report.pdf');
+                        return headers;
+                    }
                 }
             }
         });

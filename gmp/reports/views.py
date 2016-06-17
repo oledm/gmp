@@ -11,21 +11,24 @@ from .utils.reportmaker import ReportMaker
 
 def create_report(request):
     #if request.method == "POST":
-    data = json.loads(request.body.decode('utf-8'))
-    print('\nПолучены данные для формирования паспорта\n')
-    pprint.pprint(data['report_data'])
-    file_ = io.BytesIO()
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        print('\nПолучены данные для формирования паспорта\n')
+        pprint.pprint(data['report_data'])
+        file_ = io.BytesIO()
 
-    ReportMaker(data['report_data'], file_)
-    response = HttpResponse(file_.getvalue(), content_type='application/pdf')
-    file_.close()
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    print('reponse', response)
-    return response
-    # TODO case when report making failed
-    #response = HttpResponse('Report not created')
-    #response.status_code = 200
-    #return response
+        ReportMaker(data['report_data'], file_)
+        response = HttpResponse(file_.getvalue(), content_type='application/pdf')
+        file_.close()
+        response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+        return response
+    except Exception as e:
+        #e = sys.exc_info()[0]
+        print('---->>>> Unhandled exception:', str(e))
+        response = HttpResponse('Ошибка! Отчет не был создан')
+        response.status_code = 400
+        raise
+        return response
 
 def create_report_debug(request):
     fake_passport = {'docs': [{'name': 'Журнал ремонта электродвигателя', 'value': True},
