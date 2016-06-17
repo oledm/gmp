@@ -370,14 +370,16 @@ class ReportContainer(ReportMixin):
         self.add(template, [10], self.get_style(para_style, template),
             table_style, data=data, spacer=4
         )
-        #
-        signer = list(filter(lambda x: x['rank'] == 'руководитель бригады',
-            self.data.get('team').get('all')))[0]
-        emp = Employee.objects.get(pk=signer['id'])
-        #print('Подписант', emp.fio())
-        template = [[
-            'Руководитель диагностической группы', emp.fio()
-        ]]
+        #####################################################################
+        try:
+            signer = list(filter(lambda x: x['rank'] == 'руководитель бригады',
+                self.data.get('team').get('all')))[0]
+            emp = Employee.objects.get(pk=signer['id'])
+            lead = emp.fio()
+        except IndexError:
+            lead = 'Не указан'
+
+        template = [['Руководитель диагностической группы', lead]]
         para_style = (
             ('Text Simple Center',),
         )

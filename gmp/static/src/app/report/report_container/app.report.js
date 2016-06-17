@@ -334,15 +334,22 @@
             }
         }
 
-//        function newUUID() {
-//            vm.uuid = uuid.v4();
-//            console.log('uuid', vm.uuid)
-//        }
-
         function createPassport() {
-            console.log('report:', JSON.stringify(vm.report));
-            History.saveNow(vm.report);
-            ServerData.report({'report_data': vm.report});
+//            console.log('report:', JSON.stringify(vm.report));
+//            let lead = vm.report.team.all.filter(m => m.rank === 'руководитель бригады');
+//            if (lead.length === 0) {
+//                let message = `
+//<div class="alert alert-danger alert-dismissible" role="alert">
+//<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+//<strong>Ошибка!</strong> Не выбран руководитель бригады
+//</div>
+//                `
+//		let angularMessage = angular.element(message);
+//                angular.element(document).find('#messageBox').append(angularMessage);
+//            } else {
+                History.saveNow(vm.report);
+                ServerData.report({'report_data': vm.report});
+//            }
         }
 
         function getLPUs(org) {

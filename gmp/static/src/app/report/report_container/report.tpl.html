@@ -11,6 +11,8 @@
           -->
         
         <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
+
+        <div id="messageBox"></div>
         
         <div class="block text-center">
             <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
