@@ -16,25 +16,32 @@ const submit = (values, dispatch) => {
 }
 
 class LoginRegisterForm extends Component {
-  render() {
-    const { isAuthenticated, fields: { email, password },
-        valid, handleSubmit, submitting } = this.props
 
-    if (isAuthenticated) {
-        return null
+    componentWillReceiveProps(nextProps) {
+        if (this.props.isAuthenticated) {
+            this.context.router.push('/')
+        }
     }
 
-    return (
-        <div>
-            <ul className="nav nav-tabs">
-                <TabLink to="/login">Вход</TabLink>
-                <TabLink to="/register">Регистрация</TabLink>
-            </ul>
-
-            {this.props.children}
-        </div>
-    )
-  }
+    render() {
+        const { isAuthenticated, fields: { email, password },
+            valid, handleSubmit, submitting } = this.props
+      
+        if (isAuthenticated) {
+            return null
+        }
+      
+        return (
+            <div>
+                <ul className="nav nav-tabs">
+                    <TabLink to="/login">Вход</TabLink>
+                    <TabLink to="/register">Регистрация</TabLink>
+                </ul>
+      
+                {this.props.children}
+            </div>
+        )
+    }
 }
 
 LoginRegisterForm.propTypes = {
@@ -42,6 +49,10 @@ LoginRegisterForm.propTypes = {
     fields: PropTypes.object.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired
+}
+
+LoginRegisterForm.contextTypes = {
+    router: PropTypes.object.isRequired
 }
 
 const mapDispatchToProps = dispatch => ({
