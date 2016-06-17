@@ -22,16 +22,17 @@ def file_response(request):
     full_filename = os.path.join(dir_, request.path[1:])
     file_ = open(full_filename, 'rb')
     response = HttpResponse(file_.read())
+    response['Content-Type'] = 'image/jpeg'
 
-    verbose_name = request.GET.get('name')
-    if verbose_name:
-        response['Content-Disposition'] = 'filename="%s"' % verbose_name
-        type_, encoding = mimetypes.guess_type(verbose_name)
-        response['Content-Type'] = type_
-        response['Content-Encoding'] = encoding
-    else:
-        #response['Content-Disposition'] = 'attachment'
-        response['Content-Type'] = 'application/octet-stream'
+    #verbose_name = request.GET.get('name')
+    #if verbose_name:
+    #    response['Content-Disposition'] = 'filename="%s"' % verbose_name
+    #    type_, encoding = mimetypes.guess_type(verbose_name)
+    #    response['Content-Type'] = type_
+    #    response['Content-Encoding'] = encoding
+    #else:
+    #    #response['Content-Disposition'] = 'attachment'
+    #    response['Content-Type'] = 'application/octet-stream'
     return response
 
 

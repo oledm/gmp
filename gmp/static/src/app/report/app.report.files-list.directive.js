@@ -35,7 +35,7 @@
                     ng-repeat="file in ctrl.files() track by $index">{{file.name}}
                     <span class="deleteCrossIcon glyphicon glyphicon-remove" aria-hidden="true"
                     ng-click="ctrl.delete(file.id)"></span>
-                    <a ng-href="{{file.url}}?name={{file.name}}"
+                    <a ng-href="{{file.url}}"
                         class="thumbnail" target="_blank"
                         ng-switch="ctrl.isPdf(file.name)"
                     >

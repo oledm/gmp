@@ -18,8 +18,9 @@ class MediaFileSystemStorage(FileSystemStorage):
 
 
 def get_hash_path(instance, filename):
+    print('get_hash_path', filename)
     h = instance.md5_sum
-    return '{}/{}/{}'.format(h[:2], h[2:4], h)
+    return '{}/{}/{}/{}'.format(h[:2], h[2:4], h, filename)
 
 
 class FileStorage(models.Model):
