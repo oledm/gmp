@@ -58,7 +58,29 @@
                 url: '/passport',
                 controller: 'PassportController',
                 controllerAs: 'vm',
-                templateUrl: '/static/src/app/report/passport.tpl.html'
+                templateUrl: '/static/src/app/report/passport.tpl.html',
+                resolve: {
+                    ServerData: 'ServerData',
+                    orgs: function(ServerData) {
+                        return ServerData.query({category: 'organization'});
+                    },
+                    allEmployees: function(ServerData) {
+                        return ServerData.users().$promise;
+                    },
+                    allDevices: function(ServerData) {
+                        return ServerData.query({category: 'engine'}).$promise;
+                    },
+                    measurers: function(ServerData) {
+                        return ServerData.measurers().$promise;
+                    },
+                    allTClasses: function(ServerData) {
+                        return ServerData.query({category: 'tclass'}).$promise;
+                    }
+
+                },
+                data: {
+                    type: 'passport'
+                }
             })
             .state('report', {
                 url: '/report',

@@ -1,9 +1,9 @@
 <h4>Последние созданные отчеты</h4>
 <p>Всего {{vm.list.length}} отчетов</p>
 <ul class="list-group">
-    <a ui-sref="report-container({id: entry.id})" class="list-group-item" ng-repeat="entry in vm.list">
+    <a ui-sref="{{entry.report_data.url}}({id: entry.id})" class="list-group-item" ng-repeat="entry in vm.list">
       <h4 class="list-group-item-heading">
-          {{entry.report_type !== '' ? entry.report_type : 'Неизвестый вид отчета'}}
+          {{entry.report_data.name !== '' ? entry.report_data.name : 'Неизвестый вид отчета'}}
       </h4>
       <p class="list-group-item-text">
       <span am-time-ago="entry.date"></span>

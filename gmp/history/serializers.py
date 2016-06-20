@@ -5,16 +5,18 @@ from rest_framework import serializers
 
 from .models import Input
 from gmp.reports.models import Report
+from gmp.reports.serializers import ReportSerializer
 
 class InputSerializer(serializers.ModelSerializer):
     obj_model = serializers.JSONField()
     date = serializers.DateTimeField(required=False)
-    report_type = serializers.SerializerMethodField()
+    report_data = serializers.SerializerMethodField()
 
 
     class Meta:
         model = Input
-        fields = ('id', 'obj_model', 'date', 'report_type')
+        fields = ('id', 'obj_model', 'date', 'report_data')
 
-    def get_report_type(self, obj):
-        return str(Report.objects.get(url=obj.obj_model.get('type')))
+    def get_report_data(self, obj):
+        report_data = Report.objects.get(url=obj.obj_model.get('type'))
+        return ReportSerializer(report_data).data

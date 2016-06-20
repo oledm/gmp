@@ -17,8 +17,6 @@
         'app.toolbar',
         'app.upload',
         'app.upload.service',
-        'app.passport',
-        'app.passport.service',
         'app.report',
         'app.dashboard',
     ]);

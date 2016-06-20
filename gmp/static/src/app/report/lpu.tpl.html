@@ -3,25 +3,26 @@
 
     <div class="form-group">
         <div class="row">
-            <div class="col-sm-6" ng-class="{ 'has-error': vm.LPUForm.org.$touched && vm.LPUForm.org.$invalid }">
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.org.$touched && vm.deviceForm.org.$invalid }">
                   <label class="control-label" for="org">Организация</label>
                   <select class="form-control" placeholder="Организация"
                       ng-change="vm.getLPUs(vm.report.obj_data.org)" required
-                      ng-model="vm.report.obj_data.org" name="org" id="org">
-                      <option ng-repeat="org in vm.orgs">{{org.name}}</option>
+                      ng-model="vm.report.obj_data.org" name="org" id="org"
+                      ng-options="org as org.name for org in vm.orgs track by org.id"
+                  >
                   </select>
-                  <div class="help-block" role="alert" ng-messages="vm.LPUForm.org.$error" ng-if="vm.LPUForm.org.$touched">
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.org.$error" ng-if="vm.deviceForm.org.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>
             
-            <div class="col-sm-6" ng-class="{ 'has-error': vm.LPUForm.lpu.$touched && vm.LPUForm.lpu.$invalid }">
+            <div class="col-sm-6" ng-class="{ 'has-error': vm.deviceForm.lpu.$touched && vm.deviceForm.lpu.$invalid }">
                   <label class="control-label" for="lpu">ЛПУ МГ</label>
                   <select class="form-control" placeholder="ЛПУ МГ" required
-                      ng-model="vm.report.obj_data.lpu" name="lpu" id="lpu">
-                      <option ng-repeat="lpu in vm.lpus">{{lpu.name}}</option>
+                      ng-model="vm.report.obj_data.lpu" name="lpu" id="lpu"
+                      ng-options="lpu as lpu.name for lpu in vm.report.lpus track by lpu.id">
                   </select>
-                  <div class="help-block" role="alert" ng-messages="vm.LPUForm.lpu.$error" ng-if="vm.LPUForm.lpu.$touched">
+                  <div class="help-block" role="alert" ng-messages="vm.deviceForm.lpu.$error" ng-if="vm.deviceForm.lpu.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>

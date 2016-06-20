@@ -3,15 +3,8 @@
 
     angular
         .module('app.report')
-        .config(ReportConfig)
         .filter('searchIdInObject', SearchIdInObject)
-        .controller('FormController', FormController)
         .controller('ReportContainerController', ReportContainerController);
-
-    function ReportConfig($httpProvider) {
-        'ngInject';
-        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-    }
 
     function SearchIdInObject() {
         return function(inputArr, matchArr) {
@@ -29,19 +22,7 @@
         }
     }
 
-    function FormController($scope, $http) {
-        'ngInject';
-
-        $scope.submit = function() {
-            var in_data = { subject: $scope.subject };
-            $http.post('/contact/', in_data)
-                .success(function(out_data) {
-                    console.log('out: ' + out_data);
-                });
-        }
-    }
-
-    function ReportContainerController($scope, $state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History, localStorageService) 
+    function ReportContainerController($state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History, localStorageService) 
     {
         'ngInject';
 
@@ -286,7 +267,6 @@
         vm.pages = pages;
         vm.procKeyPress = procKeyPress;
         vm.getLPUs = getLPUs;
-//        vm.measurers = {all: measurers, selected: []};
         vm.report = {
             files: {},
             info: info,

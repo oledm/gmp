@@ -18,7 +18,7 @@
                 'lpu.tpl.html',
                 'report/dates.tpl.html',
                 'engines.tpl.html',
-                'order.tpl.html',
+                'report/order.tpl.html',
                 'report/photos.tpl.html',
 //                'values.tpl.html',
 //                'docs.tpl.html',
