@@ -55,7 +55,7 @@
                 templateUrl: '/static/src/app/filestorage/upload.tpl.html'
             })
             .state('passport', {
-                url: '/passport',
+                url: '/passport/:id',
                 controller: 'PassportController',
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/report/passport.tpl.html',

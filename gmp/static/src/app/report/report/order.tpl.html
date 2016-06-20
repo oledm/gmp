@@ -18,7 +18,7 @@
                 >
                   <label class="control-label" for="order_date">Дата создания приказа</label>
                     <p class="input-group">
-                  <input type="text" ng-model="vm.report.order.date" id="order_date" name="order_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" required datepicker-options="dc.dateOptions" required />
+                  <input type="text" watcher ng-model="vm.report.order.date" id="order_date" name="order_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" required datepicker-options="dc.dateOptions" required />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>

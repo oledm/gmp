@@ -5,13 +5,14 @@
         .module('app.toolbar')
         .controller('ToolbarController', ToolbarController);
 
-    ToolbarController.$inject = ['Authentication'];
 
-    function ToolbarController(Authentication) {
+    function ToolbarController(Authentication, localStorageService) {
+        'ngInject';
         var vm = this;
 
         vm.logout = function() {
-            Authentication.logout();
+            Authentication.logout()
+                .then(() => localStorageService.remove('model'));
         };
     }
 })();

@@ -1,5 +1,5 @@
 (function() {
     'use strict';
 
-    angular.module('app.toolbar', []);
+    angular.module('app.toolbar', ['LocalStorageModule']);
 })();

@@ -88,21 +88,39 @@
         }
 
         function addEmployee() {
-            console.log('addEmployee');
             vm.report.team.push({
                 'id': '', 'required': false
             });
         }
+
+//        function createPassport() {
+//            console.log('report:', JSON.stringify(vm.report));
+//            delete vm.report.team[0].required;
+////            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
+//            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
+//                return el.name === vm.tclasses.selected;
+//            })[0].id;
+////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
+//            Passport.createPassport(vm.report);
+//        }
+
+        function showError(msg, title='Ошибка!') {
+            let message = `
+<div class="alert alert-danger alert-dismissible" role="alert">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<strong>${title}</strong> ${msg}
+</div>
+            `
+            let angularMessage = angular.element(message);
+            angular.element(document).find('#messageBox').append(angularMessage);
+        }
+
         function createPassport() {
             console.log('report:', JSON.stringify(vm.report));
-//            return;
-            delete vm.report.team[0].required;
-//            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
-            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
-                return el.name === vm.tclasses.selected;
-            })[0].id;
-//            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-            Passport.createPassport(vm.report);
+            History.saveNow(vm.report);
+            ServerData.report({'report_data': vm.report})
+                .$promise.then(null,
+                    data => showError('Паспорт не создан. Обратитесь за помощью к разработчику'));
         }
 
         function getLPUs(org) {
@@ -130,6 +148,7 @@
                 item.selected = true;
                 selected.push(id);
             }
+            History.save(vm.report);
         }
     }
 })();

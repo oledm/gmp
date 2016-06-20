@@ -5,7 +5,7 @@
         .module('app.report')
         .directive('saveHistory', SaveHistory);
 
-    function SaveHistory(History, moment, $compile, $state, localStorageService, $stateParams) {
+    function SaveHistory(History, moment, $compile, $state, localStorageService, $stateParams, Authentication) {
         'ngInject';
 
         return {
@@ -49,15 +49,12 @@
                         History.save(scope.model);
                     });
 
-                    scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-//                        console.log('Сохранение в local storage');
-                        localStorageService.set('model', scope.model);
-                        History.clearHistoryId();
+                    scope.$on('$stateChangeStart', function(){
+                        save();
                     });
 
                     window.onbeforeunload = function(e) {
-                        localStorageService.set('model', scope.model);
-                        History.clearHistoryId();
+                        save();
                     };
                 }
 
@@ -86,6 +83,13 @@
                 function load(data) {
                     fromStringToDate(data);
                     angular.copy(data, scope.model);
+                }
+
+                function save() {
+                    if (Authentication.isAuthenticated) {
+                        localStorageService.set('model', scope.model);
+                        History.clearHistoryId();
+                    }
                 }
 
                 function showReadOnlyWarning() {

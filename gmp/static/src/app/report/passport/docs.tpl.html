@@ -2,8 +2,11 @@
     <h4 checkmark valid-on="{{true}}">Предоставленая документация</h4>
     <table class="table selectable">
     <tbody>
-        <tr ng-class="{success: doc.value}" ng-click="doc.value=!doc.value" ng-repeat="doc in vm.report.docs">
-            <td><input type="checkbox" ng-model="doc.value" ng-checked="doc.value" ng-click="doc.value=!doc.value"><td>
+        <tr
+            ng-class="{success: doc.value}"
+            ng-click="doc.value=!doc.value"
+            ng-repeat="doc in vm.report.docs">
+            <td><input type="checkbox" watcher ng-model="doc.value" ng-checked="doc.value" ng-click="doc.value=!doc.value"><td>
             <td>{{doc.name}}</td>
       </tr>
     </tbody>

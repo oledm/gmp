@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from .models import Input
 from .serializers import InputSerializer
+from gmp.departments.models import Department
 
 class InputViewset(viewsets.ModelViewSet):
     queryset = Input.objects.all()
@@ -13,9 +14,13 @@ class InputViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        report_types = Department.objects.get(employee__email=self.request.user).report_types
+        report_urls = tuple(map(lambda x: x.get('url'), report_types.values()))
+
         return Input.objects.filter(
             employee=self.request.user,
-            obj_model__has_key='type'
+            obj_model__has_key='type',
+            obj_model__type__in=report_urls
         ).order_by('-date')
 
     def create(self, request):
@@ -33,7 +38,11 @@ class InputViewset(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         try:
             id_ = int(pk)
-            history = Input.objects.get(pk=id_, obj_model__has_key='type')
+            history = Input.objects.get(
+                pk=id_,
+                employee=self.request.user,
+                obj_model__has_key='type'
+            )
             return Response(model_to_dict(history),
                 status=status.HTTP_200_OK)
         except (ValueError, ObjectDoesNotExist):

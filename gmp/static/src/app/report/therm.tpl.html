@@ -6,8 +6,11 @@
                  ng-class="{ 'has-error': vm.thermForm.tclass.$touched && vm.thermForm.tclass.$invalid }"
                 >
               <label class="control-label" for="tclass">Температурный класс</label>
-              <select class="form-control" required ng-model="vm.tclasses.selected" name="tclass" id="tclass">
-                  <option ng-repeat="cls in vm.tclasses.all">{{cls.name}}</option>
+              <select class="form-control" required ng-model="vm.report.therm.tclass "
+                  ng-options="tclass.id as tclass.name for tclass in vm.tclasses.all"
+                  name="tclass"
+                  id="tclass"
+                  >
               </select>
               <div class="help-block" role="alert" ng-messages="vm.thermForm.tclass.$error" ng-if="vm.thermForm.tclass.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
