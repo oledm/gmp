@@ -344,23 +344,23 @@ class ReportMixin():
         image = self.get_photo(filename, width=0, height=0)
         self.Story.append(image)
 
-    def get_photo(self, filename, width=0, height=0):
-        if hasattr(filename, 'name'):
-            if filename.name.rsplit('.', 1)[1].lower() == 'pdf':
+    def get_photo(self, file_, width=0, height=0):
+        if hasattr(file_, 'name'):
+            if str(file_.name).rsplit('.', 1)[1].lower() == 'pdf':
                 max_height = self.full_height - 2.4 * cm
-                file_ = self.get_file(filename)
-                image = PdfImage(file_, height=max_height/1.2)
+                f = self.get_file(file_)
+                image = PdfImage(f, height=max_height/1.2)
             else:
-                image = self.fetch_image(filename, width, height)
+                image = self.fetch_image(file_, width, height)
         else:
-            image = self.fetch_static_image(filename, width, height)
+            image = self.fetch_static_image(file_, width, height)
         image.hAlign = 'CENTER'
         return image
 
     def get_file(self, file_obj):
         MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
         print('file_obj', file_obj.name)
-        file_ = str(MEDIA_ROOT.path(str(file_obj.fileupload)))
+        file_ = str(MEDIA_ROOT.path(str(file_obj.name)))
         return file_
 
     def fetch_image(self, image, width=0, height=0):

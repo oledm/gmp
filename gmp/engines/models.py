@@ -4,6 +4,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 from .utils import EngineDataGenerator
+from gmp.filestorage.models import MediaFileSystemStorage
 
 #from django.core.validators import MaxValueValidator
 #from django.contrib.postgres.fields import IntegerRangeField
@@ -24,8 +25,8 @@ class Engine(EngineDataGenerator, models.Model):
     #    default='(-40, 40)'
     #)
 
-    scheme = models.ImageField('Конструктивная схема')
-    meters = models.ImageField('Толщинометрия')
+    scheme = models.ImageField('Конструктивная схема', storage=MediaFileSystemStorage())
+    meters = models.ImageField('Толщинометрия', storage=MediaFileSystemStorage())
 
     ex = models.ForeignKey('ExClass',
         verbose_name='Исполнение по взрывозащите'
@@ -203,7 +204,7 @@ class Connection(models.Model):
             'Название соединения',
             unique=True,
             choices=CONNECTION_TYPES)
-    scheme = models.ImageField('Схема соединения')
+    scheme = models.ImageField('Схема соединения', storage=MediaFileSystemStorage())
     
     def __str__(self):
         return self.get_connection_type_display()

@@ -6,4 +6,4 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = FileStorage
-        fields = ('id', 'url', 'name', 'fileupload')
+        fields = ('id', 'url', 'fileupload')

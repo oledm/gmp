@@ -492,8 +492,7 @@ class Passport(ReportMixin):
         self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
 
         image = FileStorage.objects.get(pk=int(self.data['files']['main'][0]['id']))
-        print('image:', image)
-        self.put_photo(image)
+        self.put_photo(image.fileupload)
         self.Story.append(Spacer(1, 1 * cm))
 
     def page11(self):
@@ -514,11 +513,11 @@ class Passport(ReportMixin):
         self.formular('7 Тепловизионный контроль. Определение соответствия электродвигателя температурному классу')
 
         image1 = self.fetch_image(
-            FileStorage.objects.get(pk=self.data['files']['therm1']),
+            FileStorage.objects.get(pk=self.data['files']['therm1'][0]['id']).fileupload,
             height=10, width=10
         )
         image2 = self.fetch_image(
-            FileStorage.objects.get(pk=self.data['files']['therm2']),
+            FileStorage.objects.get(pk=self.data['files']['therm2'][0]['id']).fileupload,
             height=10, width=10
         )
         table_data = [[image1, image2]]
