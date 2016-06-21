@@ -11,6 +11,11 @@ class MediaFileSystemStorage(FileSystemStorage):
         return name
 
     def _save(self, name, content):
+        h = hashlib.md5()
+        for chunk in content.chunks():
+            h.update(chunk)
+        md5_sum = h.hexdigest()
+        print('md5_sum:', md5_sum)
         if self.exists(name):
             #print('file', name, 'already exists')
             return name

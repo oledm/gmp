@@ -359,6 +359,7 @@ class ReportMixin():
 
     def get_file(self, file_obj):
         MEDIA_ROOT = environ.Path(settings.MEDIA_ROOT)
+        print('file_obj', file_obj.name)
         file_ = str(MEDIA_ROOT.path(str(file_obj.fileupload)))
         return file_
 

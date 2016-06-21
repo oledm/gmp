@@ -79,6 +79,8 @@
 
         activate();
 
+        /////////////////////////////////////////////////////////////////
+
         function activate() {
             var modeldata = History.getCurrentModelValue();
             if(angular.isDefined(modeldata)) {
@@ -89,20 +91,9 @@
 
         function addEmployee() {
             vm.report.team.push({
-                'id': '', 'required': false
+                'id': '', 'required': true
             });
         }
-
-//        function createPassport() {
-//            console.log('report:', JSON.stringify(vm.report));
-//            delete vm.report.team[0].required;
-////            console.dir('vm.tclasses.all: ' + JSON.stringify(vm.tclasses.all));
-//            vm.report.therm.tclass = vm.tclasses.all.filter(function(el) {
-//                return el.name === vm.tclasses.selected;
-//            })[0].id;
-////            console.dir('selected class: ' + JSON.stringify(vm.report.therm));
-//            Passport.createPassport(vm.report);
-//        }
 
         function showError(msg, title='Ошибка!') {
             let message = `

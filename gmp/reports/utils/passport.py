@@ -23,7 +23,7 @@ class Passport(ReportMixin):
 
         # Filter empty team members appeared after accident click on 'Add'
         # team's member button
-        self.data['team'] = list(filter(lambda x: x['name'], self.data['team']))
+        self.data['team'] = list(filter(lambda x: x.get('id') and x.get('rank'), self.data['team']))
 
         self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
         self.format_JS_dates(self.data['engine'], ('new_date',))
@@ -180,7 +180,7 @@ class Passport(ReportMixin):
         self.formular('1 Регистрация работ')
 
         ptext = '<b>Фамилия И.О.</b><br/>' + '<br/>'.join(
-                [Employee.objects.get_by_full_name(x['name']).fio() for x in self.data.get('team')]
+                [Employee.objects.get(pk=x['id']).fio() for x in self.data.get('team')]
         )
         left = Paragraph(ptext, self.styles['Table Content']) 
         ptext = '<b>Должность</b><br/>' + '<br/>'.join(
@@ -200,7 +200,7 @@ class Passport(ReportMixin):
         ])
         team_table.setStyle(style)
 
-        text = '<br />'.join(['____________________' + Employee.objects.get_by_full_name(x['name']).fio() for x in self.data.get('team')])
+        text = '<br />'.join(['____________________' + Employee.objects.get(pk=x['id']).fio() for x in self.data.get('team')])
         table2 = Table([[Paragraph(text, self.styles['Signature Left'])]])
         table2.hAlign = 'LEFT'
         table2.setStyle(style)
@@ -264,7 +264,7 @@ class Passport(ReportMixin):
         # For each person generate separate table for ability to span 
         # certain fields
         for num, person in enumerate(self.data.get('team'), start=1):
-            emp = Employee.objects.get_by_full_name(person['name'])
+            emp = Employee.objects.get(pk=person['id'])
             try:
                 eb_cert = emp.ebcertificate.get_group_display()
             except EBcertificate.DoesNotExist:
@@ -309,7 +309,7 @@ class Passport(ReportMixin):
                 'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
             ]
         ]
-        for num, measurer in enumerate(self.data.get('measurers'), start=1):
+        for num, measurer in enumerate(self.data.get('measurers').get('selected'), start=1):
             meas = Measurer.objects.get(id=measurer)
             data = [num, *meas.details()]
             template.append(list(map(lambda x: str(x), data)))
@@ -491,8 +491,8 @@ class Passport(ReportMixin):
         self.formular('5 Общий вид электродвигателя')
         self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
 
-        print(self.data['files']['main'])
-        image = FileStorage.objects.get(pk=self.data['files']['main'])
+        image = FileStorage.objects.get(pk=int(self.data['files']['main'][0]['id']))
+        print('image:', image)
         self.put_photo(image)
         self.Story.append(Spacer(1, 1 * cm))
 
