@@ -1,4 +1,5 @@
 from functools import partial
+from datetime import datetime
 
 from reportlab.platypus import Paragraph, Spacer, Image, Table, TableStyle, PageBreak, NextPageTemplate
 from reportlab.lib.pagesizes import A4
@@ -69,15 +70,15 @@ class Passport(ReportMixin):
         self.Story.append(Spacer(1, 0.5 * cm))
 
         signers = self.data['signers']['approve']
-        date_string = '"____"{:_>21}'.format('_') + '201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;г'
-        fio_string = '{fio:_>32}'
+        date_string = '"___"{:_>15}'.format('_') + '{} г.'.format(datetime.now().year)
+        fio_string = '{fio:_>25}'
         first_col = ['"Согласовано"', '{rank}', fio_string,
              date_string    
         ]
         second_col = [
             '"Утверждаю"',
             'Директор филиала<br/>ООО «ГАЗМАШПРОЕКТ» «НАГАТИНСКИЙ»',
-            fio_string.format(fio='А.Н. Бондаренко'),
+            fio_string.format(fio='Р.Ю. Ерин'),
             date_string    
         ]
         template = list(zip(first_col, ['&nbsp;'] * len(first_col), second_col))
