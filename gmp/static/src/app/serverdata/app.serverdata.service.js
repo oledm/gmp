@@ -16,7 +16,7 @@
                 isArray: true,
                 params: {
                     category: 'department',
-                    categoryId: Cookies.get().department.id,
+                    categoryId: () => Cookies.get().department.id,
                     subcategory: 'measurer',
                 }
             },
@@ -25,7 +25,7 @@
                 isArray: true,
                 params: {
                     category: 'department',
-                    categoryId: Cookies.get().department.id,
+                    categoryId: () => Cookies.get().department.id,
                     subcategory: 'user',
                 }
             },
@@ -44,4 +44,6 @@
             }
         });
     }
+
+
 })();

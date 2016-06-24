@@ -2,6 +2,7 @@ from functools import partial
 from datetime import datetime
 
 from reportlab.platypus import Paragraph, Spacer, Image, Table, TableStyle, PageBreak, NextPageTemplate
+from reportlab.lib.styles import ParagraphStyle as PS
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
@@ -19,6 +20,9 @@ from .helpers import ReportMixin, DoubledLine
 
 
 class Passport(ReportMixin):
+    def __init__(self, data, report, title):
+        super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5)
+
     def create(self):
         self.setup_page_templates(self.doc)
 
@@ -70,8 +74,8 @@ class Passport(ReportMixin):
         self.Story.append(Spacer(1, 0.5 * cm))
 
         signers = self.data['signers']['approve']
-        date_string = '"___"{:_>15}'.format('_') + '{} г.'.format(datetime.now().year)
-        fio_string = '{fio:_>25}'
+        date_string = '"___"{:_>20}'.format('_') + '{} г.'.format(datetime.now().year)
+        fio_string = '{fio:_>30}'
         first_col = ['"Согласовано"', '{rank}', fio_string,
              date_string    
         ]
@@ -89,7 +93,7 @@ class Passport(ReportMixin):
             *[['Regular'] * cols] * 2,
         ]
         table_data = self.values(template, signers)
-        table = self.table(table_data, styles, [4, 2, 4], styleTable=False)
+        table = self.table(table_data, styles, [4.3, 1.4, 4.3], styleTable=False)
         table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 15),
@@ -107,7 +111,7 @@ class Passport(ReportMixin):
             'ВЗРЫВОЗАЩИЩЁННОГО ЭЛЕКТРОДВИГАТЕЛЯ',
         ], 'MainTitle', 1)
 
-        text = '''ОБЪЕКТ: {org}<br/>{lpu}<br/>{ks}<br/>{plant}<br/>{location}<br/>
+        text = '''ОБЪЕКТ: {org[name]}<br/>{lpu[name]}<br/>{ks}<br/>{plant}<br/>{location}<br/>
             станционный № {station_number}<br/>
             ТИП: {type} зав.№ {serial_number}'''.format(
                 **self.data['obj_data'], **self.data.get('engine')
@@ -129,7 +133,7 @@ class Passport(ReportMixin):
             *[['Regular'] * cols] * 2,
         ]
         table_data = self.values(template, signers)
-        table = self.table(table_data, styles, [4, 2, 4], styleTable=False)
+        table = self.table(table_data, styles, [4.3, 1.4, 4.3], styleTable=False)
         table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('BOTTOMPADDING', (0,0), (-1,-1), 15),
@@ -170,7 +174,7 @@ class Passport(ReportMixin):
             *[['Regular12', 'Regular', 'Regular Right']] * rows
         ]
         table_data = self.values(data, {})
-        table = self.table(table_data, styles, [2, 7, 1])
+        table = self.table(table_data, styles, [2.3, 7.2, .5])
         table.setStyle(TableStyle([
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         ]))
@@ -501,7 +505,7 @@ class Passport(ReportMixin):
 
         self.formular('6 Конструктивная схема электродвигателя')
         engine = Engine.objects.get(name=self.data['engine']['type'])
-        self.put_photo(engine.scheme, height=13)
+        self.put_photo(engine.scheme, height=10)
         self.spacer(1)
 
         # Until paste into report only the first connection type's picture
@@ -515,11 +519,11 @@ class Passport(ReportMixin):
 
         image1 = self.fetch_image(
             FileStorage.objects.get(pk=self.data['files']['therm1'][0]['id']).fileupload,
-            height=10, width=10
+            height=10, width=9.7
         )
         image2 = self.fetch_image(
             FileStorage.objects.get(pk=self.data['files']['therm2'][0]['id']).fileupload,
-            height=10, width=10
+            height=10, width=9.7
         )
         table_data = [[image1, image2]]
         table = Table(table_data,colWidths=self.columnize(5, 5))
@@ -906,6 +910,8 @@ class Passport(ReportMixin):
         table.hAlign = 'LEFT'
         table.setStyle(TableStyle([
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            ('TOPPADDING', (0,0), (-1,-1), 0),
         ]))
         self.Story.append(table)
 
@@ -914,7 +920,7 @@ class Passport(ReportMixin):
         self.formular(title, header='Приложение')
         template = [
             columns,
-            *[list(map(lambda _: '&nbsp;', columns))] * 39
+            *[list(map(lambda _: '&nbsp;', columns))] * 37
         ]
         rows = len(template)
         cols = len(template[0])
@@ -940,7 +946,7 @@ class Passport(ReportMixin):
         frame_with_header = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height-2*cm,
                 bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=0,
                 id='with_header')
-        header_content = Paragraph('''{org} {lpu} {ks} {location} {plant}
+        header_content = Paragraph('''{org[name]} {lpu[name]} {ks} {location} {plant}
             станционный №{station_number} зав.№{serial_number}'''.format(
                 **self.data['obj_data'], **self.data['engine']
             ), self.styles["Page Header"]
@@ -952,7 +958,17 @@ class Passport(ReportMixin):
     @staticmethod
     def header(canvas, doc, content):
         canvas.saveState()
+
+        style = PS(
+            'Page Number',
+            fontName='Times',
+            fontSize=13)
+        pageNumber = Paragraph(str(canvas.getPageNumber()), style=style)
+        w, h = pageNumber.wrap(doc.width, doc.topMargin)
+        pageNumber.drawOn(canvas, doc.width + doc.leftMargin - 10, h + 10)
+
         w, h = content.wrap(doc.width, doc.topMargin)
         content.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
+
         canvas.restoreState()
 

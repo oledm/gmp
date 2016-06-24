@@ -142,7 +142,11 @@ class DoubledLine(Flowable):
         self.canv.line(0, self.height + 2, self.width, self.height + 2)
 
 class ReportMixin():
-    def __init__(self, data, report, title):
+    def __init__(self, data, report, title,
+                 leftMargin=3,
+                 rightMargin=.7,
+                 topMargin=1,
+                 bottomMargin=1):
         self.data = data
         self.report = report
         self.Story = []
@@ -151,17 +155,12 @@ class ReportMixin():
         self.setup_styles()
 
         self.doc = MyDocTemplate(self.report, pagesize=A4,
-                                rightMargin=.7*cm,leftMargin=3*cm,
-                                topMargin=1*cm,bottomMargin=1*cm,
-                                title=title,
-                                #showBoundary=1
+                                leftMargin=leftMargin * cm,
+                                rightMargin=rightMargin * cm,
+                                topMargin=topMargin * cm,
+                                bottomMargin=bottomMargin * cm,
+                                title=title
         )
-        #self.doc = MyDocTemplate(self.report, pagesize=A4,
-        #                        rightMargin=12,leftMargin=12,
-        #                        topMargin=12,bottomMargin=12,
-        #                        title=title,
-        #                        #showBoundary=1
-        #)
         self.toc = TableOfContents()
         self.toc.levelStyles = [
             self.styles['TOCHeading1'],
@@ -341,7 +340,7 @@ class ReportMixin():
         Functions for working with images
     '''
     def put_photo(self, filename, width=0, height=0):
-        image = self.get_photo(filename, width=0, height=0)
+        image = self.get_photo(filename, width, height)
         self.Story.append(image)
 
     def get_photo(self, file_, width=0, height=0):

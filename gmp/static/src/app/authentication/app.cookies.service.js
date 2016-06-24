@@ -19,6 +19,7 @@
 
         function get() {
             try {
+//                console.log('cookies', JSON.parse($cookies.get(cookieName)));
                 return JSON.parse($cookies.get(cookieName));
             }
             catch(e) {
@@ -37,7 +38,7 @@
         }
 
         function remove() {
-//            console.log('before delete ' + JSON.parse($cookies.get(cookieName)));
+//            console.dir('before delete ' + JSON.parse($cookies.get(cookieName)));
             $cookies.remove(cookieName);
 //            console.log('after delete ' + $cookies.get(cookieName));
         }
