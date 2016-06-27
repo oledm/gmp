@@ -70,11 +70,11 @@ class ReportContainer(ReportMixin):
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
-        self.frame_top_padding = self.content_top_padding
+        #self.frame_top_padding = self.content_top_padding
         self.put_toc()
         self.page2()
         self.Story.append(NextPageTemplate('Приложение А'))
-        self.frame_top_padding = self.appendix_top_padding
+        #self.frame_top_padding = self.appendix_top_padding
         self.appendixA()
         self.Story.append(NextPageTemplate('Приложение Б'))
         self.appendixB()
@@ -409,7 +409,7 @@ class ReportContainer(ReportMixin):
         text = 'СХЕМЫ ПРОВЕДЕНИЯ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ'
         title = self.add_to_toc_and_return(text, self.styles['TOC Appendix'])
         image = FileStorage.objects.get(pk=self.data['files']['legend'][0]['id'])
-        image = self.get_photo(image)
+        image = self.get_photo(image.fileupload)
         pack = [
             title,
             Spacer(0.1 * cm, 0.4 * cm),
@@ -419,7 +419,7 @@ class ReportContainer(ReportMixin):
         ####################
         self.new_page()
         image = FileStorage.objects.get(pk=self.data['files']['control_VIK'][0]['id'])
-        image = self.get_photo(image)
+        image = self.get_photo(image.fileupload)
         pack = [
             image,
             Spacer(0.1 * cm, 0.3 * cm),
@@ -429,7 +429,7 @@ class ReportContainer(ReportMixin):
         ####################
         self.new_page()
         image = FileStorage.objects.get(pk=self.data['files']['control_UK_container'][0]['id'])
-        image = self.get_photo(image)
+        image = self.get_photo(image.fileupload)
         pack = [
             image,
             Spacer(0.1 * cm, 0.3 * cm),
@@ -439,7 +439,7 @@ class ReportContainer(ReportMixin):
         ####################
         self.new_page()
         image = FileStorage.objects.get(pk=self.data['files']['control_UK_connections'][0]['id'])
-        image = self.get_photo(image)
+        image = self.get_photo(image.fileupload)
         pack = [
             image,
             Spacer(0.1 * cm, 0.3 * cm),
@@ -449,7 +449,7 @@ class ReportContainer(ReportMixin):
         ####################
         self.new_page()
         image = FileStorage.objects.get(pk=self.data['files']['control_magnit'][0]['id'])
-        image = self.get_photo(image)
+        image = self.get_photo(image.fileupload)
         pack = [
             image,
             Spacer(0.1 * cm, 0.3 * cm),
@@ -799,7 +799,7 @@ class ReportContainer(ReportMixin):
         #self.put_photo(image)
 
         image = FileStorage.objects.get(pk=self.data['files']['hydra'][0]['id'])
-        image = self.get_photo(image)
+        image = self.get_photo(image.fileupload)
         story = [
             Paragraph('КОПИЯ АКТА ГИДРАВЛИЧЕСКОГО ИСПЫТАНИЯ', self.styles['Text Simple Center Bold']),
             Spacer(0.1 * cm, .4 * cm),
@@ -854,7 +854,7 @@ class ReportContainer(ReportMixin):
         self.add_to_toc('Копии разрешительной документации', self.styles['TOC Appendix Hidden'])
         first, *rest_licenses = map(lambda x: int(x['id']), self.data['files']['licenses'])
         image = FileStorage.objects.get(pk=first)
-        image = self.get_photo(image)
+        image = self.get_photo(image.fileupload)
         pack = [
             Paragraph('КОПИИ РАЗРЕШИТЕЛЬНОЙ ДОКУМЕНТАЦИИ', self.styles['Text Simple Center Bold']),
             Spacer(0.1 * cm, 0.4 * cm),
@@ -863,12 +863,12 @@ class ReportContainer(ReportMixin):
         self.put_one_page(pack)
 
         for image in FileStorage.objects.filter(pk__in=rest_licenses):
-            self.put_photo(image, height=12)
+            self.put_photo(image.fileupload, height=12)
             #self.spacer(.3)
 
         #self.new_page()
         image = FileStorage.objects.get(pk=int(self.data['files']['warrant'][0]['id']))
-        self.put_photo(image)
+        self.put_photo(image.fileupload)
 
     ######################################
     # Helpers

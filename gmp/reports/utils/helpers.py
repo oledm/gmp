@@ -13,7 +13,7 @@ from reportlab.platypus.flowables import Flowable, KeepInFrame
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak
 from reportlab.platypus.doctemplate import BaseDocTemplate
-from reportlab.platypus.tableofcontents import TableOfContents
+from .tableofcontents import TableOfContents
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
@@ -115,10 +115,11 @@ class MyDocTemplate(BaseDocTemplate):
                 # Skip russain letter 'З' and 'Й'
                 if self.appendixLetter ==  'З' or self.appendixLetter ==  'Й':
                     self.appendixLetter = chr(ord(self.appendixLetter) + 1)
-                text = 'Приложение {} {}'.format(self.appendixLetter, text.capitalize())
+                text = 'Приложение&nbsp;&nbsp;&nbsp;{}&nbsp;&nbsp;&nbsp;{}'.format(self.appendixLetter, text.capitalize())
                 self.appendixLetter = chr(ord(self.appendixLetter) + 1)
             elif style == 'TOC':
                 level = 1
+                text = '<strong>ФОРМУЛЯР</strong>Приложение&nbsp;&nbsp;&nbsp;{}'.format(text.capitalize())
             else:
                 return
             E = [level, text, self.page]
@@ -183,6 +184,45 @@ class ReportMixin():
     def add_to_toc_and_return(self, text, sty):
         data = str(text + sty.name).encode()
         bn = sha1(data).hexdigest()
+        h = Paragraph(text + '<a name="%s"/>' % bn, sty)
+        # store the bookmark name on the flowable so afterFlowable can see this
+        h._bookmarkName = bn
+        return h
+
+    def add_table_to_toc_and_return(self, text, sty):
+        data = str(text + sty.name).encode()
+        bn = sha1(data).hexdigest()
+        data = (
+            ('ФОРМУЛЯР № 1', 'Регистрация работ', '3'),
+            ('ФОРМУЛЯР № 2', 'Документация, предоставленная заказчиком при выполнении работ', '7'),
+            ('ФОРМУЛЯР № 3', 'Паспортные данные', '8'),
+            ('ФОРМУЛЯР № 4', 'Данные заводских замеров и приёмо-сдаточных испытаний', '9'),
+            ('ФОРМУЛЯР № 5', 'Общий вид электродвигателя', '10'),
+            ('ФОРМУЛЯР № 6', 'Конструктивная схема электродвигателя. Электрическая схема подключения электродвигателя', '11'),
+            ('ФОРМУЛЯР № 7', 'Тепловизионный контроль. Определение соответствия электродвигателя температурному классу', '12'),
+            ('ФОРМУЛЯР № 8', 'Вибрационный контроль электродвигателя', '13'),
+            ('ФОРМУЛЯР № 9-1', 'Визуальный и измерительный контроль электродвигателя', '14'),
+            ('ФОРМУЛЯР № 9-2', 'Контроль параметров взрывозащиты', '16'),
+            ('ФОРМУЛЯР № 10', 'Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя', '17'),
+            ('ФОРМУЛЯР № 11', 'Измерение сопротивления обмотки статора постоянному току', '18'),
+            ('ФОРМУЛЯР № 12', 'Измерение сопротивления изоляции обмотки статора', '18'),
+            ('ФОРМУЛЯР № 13', 'Рекомендации по ремонту и эксплуатации', '19'),
+            ('ФОРМУЛЯР № 14', 'Заключение', '20'),
+            ('ФОРМУЛЯР № 14', 'Заключение', '20'),
+            ('ФОРМУЛЯР № 15', 'Выполненные мероприятия в процессе проведения работ', '21'),
+            ('ПРИЛОЖЕНИЕ 1', 'Сведения об эксплуатации электродвигателя', '22'),
+            ('ПРИЛОЖЕНИЕ 2', 'Сведения об испытаниях электродвигателя', '23'),
+            ('ПРИЛОЖЕНИЕ 3', 'Сведения о ремонтах электродвигателя', '24'),
+        )
+        rows = len(data)
+        styles = [
+            *[['Regular12', 'Regular', 'Regular Right']] * rows
+        ]
+        table_data = self.values(data, {})
+        table = self.table(table_data, styles, [2.3, 7.2, .5])
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ]))
         h = Paragraph(text + '<a name="%s"/>' % bn, sty)
         # store the bookmark name on the flowable so afterFlowable can see this
         h._bookmarkName = bn
@@ -688,6 +728,9 @@ class ReportMixin():
             fontSize=12,
             leading=18,
             firstLineIndent=1.25 * cm,
+            bulletFontName='Times',
+            bulletFontSize=15,
+            bulletIndent=30,
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='TOC Appendix',

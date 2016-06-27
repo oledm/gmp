@@ -37,6 +37,7 @@ class Passport(ReportMixin):
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
+        self.put_toc()
         self.page2()
         self.page3()
         self.page4()
@@ -65,6 +66,11 @@ class Passport(ReportMixin):
         self.appendix('3 Сведения о ремонтах электродвигателя',
             ['Дата', 'Вид', 'Содержание', 'Заключение'],
             [1, 2, 3, 4])
+
+    def put_toc(self):
+        self.new_page()
+        self.put('Содержание', 'Text Simple Center Bold', 0.5)
+        self.Story.append(self.toc)
 
     def page1(self):
         self.put('ПАО "ГАЗПРОМ"', 'Heading 1 Bold')
@@ -182,6 +188,7 @@ class Passport(ReportMixin):
 
     def page3(self):
         self.Story.append(PageBreak())
+        self.add_to_toc('Регистрация работ', self.styles['TOC'])
         self.formular('1 Регистрация работ')
 
         ptext = '<b>Фамилия И.О.</b><br/>' + '<br/>'.join(
