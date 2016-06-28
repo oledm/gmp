@@ -16,6 +16,35 @@
             </div>
 
             <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.engineForm.connection.$touched && vm.engineForm.location.$invalid }"
+                >
+              <label class="control-label" for="connection">Схема соединения</label>
+              <select class="form-control" required ng-model="vm.report.engine.connection"
+                  ng-options="connection.id as connection.name for connection in vm.connection_types"
+                  name="connection"
+                  >
+              </select>
+              <div class="help-block" role="alert" ng-messages="vm.engineForm.connection.$error" ng-if="vm.engineForm.connection.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+
+            <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.engineForm.location.$touched && vm.engineForm.location.$invalid }"
+                >
+              <label class="control-label" for="location">Место установки</label>
+              <input class="form-control" type="text" id="location" required
+                  name="location" ng-maxlength="50" ng-model="vm.report.obj_data.location" />
+              <div class="help-block" role="alert" ng-messages="vm.engineForm.location.$error" ng-if="vm.engineForm.location.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-4"
                  ng-class="{ 'has-error': vm.engineForm.serial_number.$touched && vm.engineForm.serial_number.$invalid }"
                 >
               <label class="control-label" for="serial_number">Заводской номер</label>
@@ -33,21 +62,6 @@
               <input class="form-control" type="text" id="station_number" required
                   name="station_number" ng-maxlength="50" ng-model="vm.report.engine.station_number" />
               <div class="help-block" role="alert" ng-messages="vm.engineForm.station_number.$error" ng-if="vm.engineForm.station_number.$touched">
-                  <div ng-messages-include="/static/src/assets/messages.html"></div>
-              </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="row">
-            <div class="col-sm-4"
-                 ng-class="{ 'has-error': vm.engineForm.location.$touched && vm.engineForm.location.$invalid }"
-                >
-              <label class="control-label" for="location">Место установки</label>
-              <input class="form-control" type="text" id="location" required
-                  name="location" ng-maxlength="50" ng-model="vm.report.obj_data.location" />
-              <div class="help-block" role="alert" ng-messages="vm.engineForm.location.$error" ng-if="vm.engineForm.location.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
             </div>
@@ -69,6 +83,11 @@
                   </div>
             </div>
 
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="row">
             <div class="col-sm-4"  ng-controller="DatepickerController as dc"
                  ng-class="{ 'has-error':
                      vm.engineForm.started_at.$touched &&
@@ -86,17 +105,12 @@
                   </div>
             </div>
 
-        </div>
-    </div>
-    
-    <div class="form-group">
-        <div class="row">
             <div class="col-sm-4"  ng-controller="DatepickerController as dc"
                  ng-class="{ 'has-error':
                      vm.engineForm.new_date.$touched &&
                      vm.engineForm.new_date.$invalid }"
                 >
-                  <label class="control-label" for="new_date">Дата проделения срока эксплуатации двигателя</label>
+                  <label class="control-label" for="new_date">Дата проделения срока эксплуатации</label>
                     <p class="input-group">
                   <input type="text" watcher ng-model="vm.report.engine.new_date" id="new_date" name="new_date" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required   />
                   <span class="input-group-btn">

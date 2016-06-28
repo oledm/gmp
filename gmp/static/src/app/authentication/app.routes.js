@@ -73,6 +73,9 @@
                     measurers: function(ServerData) {
                         return ServerData.measurers().$promise;
                     },
+                    connection_types: function(ServerData) {
+                        return ServerData.query({category: 'connection_types'}).$promise;
+                    },
                     allTClasses: function(ServerData) {
                         return ServerData.query({category: 'tclass'}).$promise;
                     }

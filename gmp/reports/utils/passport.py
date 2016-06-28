@@ -13,7 +13,7 @@ from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate, EBcertificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
-from gmp.engines.models import Engine, ThermClass
+from gmp.engines.models import Engine, ThermClass, Connection
 from gmp.filestorage.models import FileStorage
 
 from .helpers import ReportMixin, DoubledLine
@@ -34,6 +34,8 @@ class Passport(ReportMixin):
         self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
         self.format_JS_dates(self.data['engine'], ('new_date',))
         self.format_JS_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
+
+        self.connection = Connection.objects.get(pk=self.data['engine']['connection'])
 
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
@@ -149,43 +151,6 @@ class Passport(ReportMixin):
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
         ]))
         self.Story.append(table)
-
-    #def page2(self):
-    #    self.Story.append(PageBreak())
-    #    self.put('Содержание', 'Regular Bold Center', 0.5)
-
-    #    data = (
-    #        ('ФОРМУЛЯР № 1', 'Регистрация работ', '3'),
-    #        ('ФОРМУЛЯР № 2', 'Документация, предоставленная заказчиком при выполнении работ', '7'),
-    #        ('ФОРМУЛЯР № 3', 'Паспортные данные', '8'),
-    #        ('ФОРМУЛЯР № 4', 'Данные заводских замеров и приёмо-сдаточных испытаний', '9'),
-    #        ('ФОРМУЛЯР № 5', 'Общий вид электродвигателя', '10'),
-    #        ('ФОРМУЛЯР № 6', 'Конструктивная схема электродвигателя. Электрическая схема подключения электродвигателя', '11'),
-    #        ('ФОРМУЛЯР № 7', 'Тепловизионный контроль. Определение соответствия электродвигателя температурному классу', '12'),
-    #        ('ФОРМУЛЯР № 8', 'Вибрационный контроль электродвигателя', '13'),
-    #        ('ФОРМУЛЯР № 9-1', 'Визуальный и измерительный контроль электродвигателя', '14'),
-    #        ('ФОРМУЛЯР № 9-2', 'Контроль параметров взрывозащиты', '16'),
-    #        ('ФОРМУЛЯР № 10', 'Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя', '17'),
-    #        ('ФОРМУЛЯР № 11', 'Измерение сопротивления обмотки статора постоянному току', '18'),
-    #        ('ФОРМУЛЯР № 12', 'Измерение сопротивления изоляции обмотки статора', '18'),
-    #        ('ФОРМУЛЯР № 13', 'Рекомендации по ремонту и эксплуатации', '19'),
-    #        ('ФОРМУЛЯР № 14', 'Заключение', '20'),
-    #        ('ФОРМУЛЯР № 14', 'Заключение', '20'),
-    #        ('ФОРМУЛЯР № 15', 'Выполненные мероприятия в процессе проведения работ', '21'),
-    #        ('ПРИЛОЖЕНИЕ 1', 'Сведения об эксплуатации электродвигателя', '22'),
-    #        ('ПРИЛОЖЕНИЕ 2', 'Сведения об испытаниях электродвигателя', '23'),
-    #        ('ПРИЛОЖЕНИЕ 3', 'Сведения о ремонтах электродвигателя', '24'),
-    #    )
-    #    rows = len(data)
-    #    styles = [
-    #        *[['Regular12', 'Regular', 'Regular Right']] * rows
-    #    ]
-    #    table_data = self.values(data, {})
-    #    table = self.table(table_data, styles, [2.3, 7.2, .5])
-    #    table.setStyle(TableStyle([
-    #        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-    #    ]))
-    #    self.Story.append(table)
 
     def page3(self):
         self.Story.append(PageBreak())
@@ -387,6 +352,7 @@ class Passport(ReportMixin):
         engine = Engine.objects.get(name=data.get('type'))
         engine_data = engine.details()
         random_data = engine.random_data.get('moments')
+        data.update(engine_data, connection=str(self.connection))
 
         template = [
             ['Тип', '{name}'],
@@ -414,45 +380,9 @@ class Passport(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 5),
             ('TOPPADDING', (0,0), (-1,-1), 2),
         )
-        data.update(engine_data)
         self.add(template, [5, 5], self.get_style(para_style, template), table_style,
             data=data, styleTable=True
         )
-        #template = [
-        #    ['Тип', '{name}'],
-        #    ['Исполнение по взрывозащите', '{ex}'],
-        #    ['Допустимый диапазон температуры окружающей среды, °С', '{temp_low}ºС...+{temp_high}ºС'],
-        #    ['Заводской номер', '{serial_number}'],
-        #    ['Завод &ndash; изготовитель', '{factory}'],
-        #    ['Год изготовления', '{manufactured_at}'],
-        #    ['Год ввода в эксплуатацию', '{started_at}'],
-        #    ['Соединение фаз', '{connection}'],
-        #    ['Номинальная мощность, кВт', '{power}'],
-        #    ['Номинальное напряжение, В', '{voltage}'],
-        #    ['Номинальный ток статора, А', '{current}'],
-        #    ['Номинальная частота вращения, об/мин', '{freq}'],
-        #    ['Отношение номинального значения начального пускового момента к номинальному вращающему моменту', str(random_data.get('fraction_nominal_moment'))],
-        #    ['Отношение начального пускового тока к номинальному току', str(random_data.get('fraction_initial_current'))],
-        #    ['Отношение максимального вращающего момента к номинальному вращающему моменту', str(random_data.get('fraction_max_spin_moment'))],
-        #    ['Коэффициент полезного действия, %', '{kpd}'],
-        #    ['Коэффициент мощности, cosφ', '{coef_power}'],
-        #    ['Класс нагревостойкости изоляции', '{warming_class}'],
-        #    ['Масса двигателя, кг', '{weight}']
-        #]
-        #rows = len(template)
-        #styles = [
-        #    *[['Regular'] + ['Regular Center']] * rows
-        #]
-        #data.update(engine_data)
-        #table_data = self.values(template, data)
-        #table = self.table(table_data, styles, [5, 5], styleTable=True)
-        #table.setStyle(TableStyle([
-        #    ('BOTTOMPADDING', (0,0), (-1,-1), 5),
-        #    ('TOPPADDING', (0,0), (-1,-1), 2),
-        #]))
-        #table.hAlign = 'LEFT'
-        #self.Story.append(table)
-        #self.Story.append(Spacer(1, 0.5 * cm))
 
     def page9(self):
         self.Story.append(PageBreak())
@@ -523,7 +453,7 @@ class Passport(ReportMixin):
 
         # Until paste into report only the first connection type's picture
         self.formular('6-1 Электрическая схема подключения электродвигателя')
-        self.put_photo(engine.connection.all()[0].scheme, height=10)
+        self.put_photo(self.connection.scheme, height=10)
 
     def page12(self):
         self.Story.append(PageBreak())

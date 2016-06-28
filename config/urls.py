@@ -48,6 +48,9 @@ lpus.register(r'lpu', inspections_views.LPUViewset)
 tclasses = routers.SimpleRouter()
 tclasses.register('tclass', engine_views.TClassViewset)
 
+connection_types = routers.SimpleRouter()
+connection_types.register('connection_types', engine_views.ConnectionTypesViewset)
+
 containers = routers.SimpleRouter()
 containers.register('container', containers_views.ContainerViewset)
 
@@ -97,6 +100,9 @@ urlpatterns = [
 
     # /api/tclass/
     url(r'^api/', include(tclasses.urls)),
+
+    # /api/connection_types/
+    url(r'^api/', include(connection_types.urls)),
 
     # /api/containers/
     url(r'^api/', include(containers.urls)),

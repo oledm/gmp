@@ -6,7 +6,7 @@
         .controller('PassportController', PassportController);
 
 //    function Passportengine($scope, $state, UserData, Department, Engine, Passport, Upload) {
-    function PassportController($state, $stateParams, ServerData, orgs, allTClasses,
+    function PassportController($state, $stateParams, ServerData, orgs, allTClasses, connection_types,
                     allEmployees, allDevices, measurers, History, localStorageService) {
         'ngInject';
 
@@ -50,6 +50,7 @@
 
         vm.addEmployee = addEmployee;
         vm.allEmployees = allEmployees;
+        vm.connection_types = connection_types;
         vm.createPassport = createPassport;
         vm.engine = engine;
         vm.workBegin = undefined;

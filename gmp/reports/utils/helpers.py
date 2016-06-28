@@ -119,7 +119,6 @@ class MyDocTemplate(BaseDocTemplate):
                 self.appendixLetter = chr(ord(self.appendixLetter) + 1)
             elif style == 'TOC' or style == 'TOC Hidden':
                 level = 1
-                #text = '<strong>ФОРМУЛЯР</strong>Приложение&nbsp;&nbsp;&nbsp;{}'.format(text.capitalize())
             else:
                 return
             E = [level, text, self.page]
@@ -144,7 +143,7 @@ class DoubledLine(Flowable):
 
 class ReportMixin():
     def __init__(self, data, report, title,
-                 toc_styles,
+                 toc_styles=[],
                  leftMargin=3,
                  rightMargin=.7,
                  topMargin=1,

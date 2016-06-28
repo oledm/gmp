@@ -34,7 +34,6 @@ class EngineDataGenerator(models.Model):
             'power': loc(self.power),
             'resistance_isolation': self.resistance_isolation,
             'ex': self.ex,
-            'connection': self.connection.get(),
             'factory': self.factory,
             'warming_class': self.warming_class,
         }

@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .models import Engine, ThermClass
-from .serializers import EngineSerializer, TClassSerializer
+from .models import Engine, ThermClass, Connection
+from .serializers import EngineSerializer, TClassSerializer, ConnectionTypesSerializer
 
 class EngineViewset(viewsets.ModelViewSet):
     queryset = Engine.objects.all()
@@ -10,3 +10,7 @@ class EngineViewset(viewsets.ModelViewSet):
 class TClassViewset(viewsets.ModelViewSet):
     queryset = ThermClass.objects.all()
     serializer_class = TClassSerializer
+
+class ConnectionTypesViewset(viewsets.ModelViewSet):
+    queryset = Connection.objects.all()
+    serializer_class = ConnectionTypesSerializer

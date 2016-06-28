@@ -10,6 +10,7 @@ from gmp.filestorage.models import MediaFileSystemStorage
 #from django.contrib.postgres.fields import IntegerRangeField
 #from psycopg2.extras import NumericRange
 
+
 class Engine(EngineDataGenerator, models.Model):
     zones = (
         'подшипниковый щит со стороны привода',
@@ -59,10 +60,10 @@ class Engine(EngineDataGenerator, models.Model):
     weight = models.SmallIntegerField('Масса двигателя, кг')
     resistance_isolation = models.SmallIntegerField('Сопротивление изоляции, Мом')
 
-    connection = models.ManyToManyField(
-        'Connection', 
-        verbose_name='Соединение'
-    )
+    #connection = models.ManyToManyField(
+    #    'Connection', 
+    #    verbose_name='Соединение'
+    #)
 
     ###########################################################################
 
@@ -195,6 +196,7 @@ class Engine(EngineDataGenerator, models.Model):
         verbose_name = 'Двигатель'
         verbose_name_plural = 'Двигатели'
 
+
 class Connection(models.Model):
     CONNECTION_TYPES = (
         (1, 'Звезда'),
@@ -212,6 +214,7 @@ class Connection(models.Model):
     class Meta:
         verbose_name = 'Соединение'
         verbose_name_plural = 'Соединения'
+        ordering = ('connection_type',)
 
 
 class Factory(models.Model):
@@ -255,6 +258,7 @@ class WarmingClass(models.Model):
     class Meta:
         verbose_name = 'Класс нагревостойкости'
         verbose_name_plural = 'Классы нагревостойкости'
+
 
 class ThermClass(models.Model):
     therm_class_codes = tuple(map(lambda x: 'T' + str(x), range(1,7)))
