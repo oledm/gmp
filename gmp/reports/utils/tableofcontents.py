@@ -244,29 +244,62 @@ class TableOfContents(IndexingFlowable):
         def drawTOCEntryEnd(canvas, kind, label):
             '''Callback to draw dots and page numbers after each entry.'''
             label = label.split(',')
-            page, level, key = int(label[0]), int(label[1]), eval(label[2],{})
+            page, level, key, widthMul = int(label[0]), int(label[1]), eval(label[2],{}), float(label[3])
             style = self.getLevelStyle(level)
             if self.dotsMinLevel >= 0 and level >= self.dotsMinLevel:
                 dot = ' . '
             else:
                 dot = ''
-            drawPageNumbers(canvas, style, [(page, key)], availWidth, availHeight, dot)
+            drawPageNumbers(canvas, style, [(page, key)], availWidth * widthMul, availHeight, dot)
         self.canv.drawTOCEntryEnd = drawTOCEntryEnd
 
         tableData = []
         for (level, text, pageNum, key) in _tempEntries:
             style = self.getLevelStyle(level)
-            if key:
-                text = '<a href="#%s">%s</a>' % (key, text)
-                keyVal = repr(key).replace(',','\\x2c').replace('"','\\x2c')
-            else:
-                keyVal = None
-            para = Paragraph('%s<onDraw name="drawTOCEntryEnd" label="%d,%d,%s"/>' % (text, pageNum, level, keyVal), style)
-            if style.spaceBefore:
-                tableData.append([Spacer(1, style.spaceBefore),])
-            tableData.append([para,])
+            text_parts = text.split('|')
+            # Multiple-parts TOC entry
+            if len(text_parts) > 1:
+                if key:
+                    text1 = '<a href="#%s">%s</a>' % (key, text_parts[0])
+                    text2 = '<a href="#%s">%s</a>' % (key, text_parts[1])
+                    keyVal = repr(key).replace(',','\\x2c').replace('"','\\x2c')
+                else:
+                    keyVal = None
 
-        self._table = Table(tableData, colWidths=(availWidth,), style=self.tableStyle)
+                para1 = Paragraph('{}<label="{:d},{:d},{}"/>'.format(
+                    text1, pageNum, level, keyVal), style)
+                para2 = Paragraph('{}<onDraw name="drawTOCEntryEnd" label="{:d},{:d},{},{:f}"/>'.format(
+                    text2, pageNum, level, keyVal, .75), style)
+
+                if style.spaceBefore:
+                    tableData.append([Spacer(1, style.spaceBefore),])
+                tableData.append([para1, para2])
+                widths = (availWidth * .25, availWidth * .75)
+            # Single-part TOC entry
+            else:
+                if key:
+                    text = '<a href="#%s">%s</a>' % (key, text)
+                    keyVal = repr(key).replace(',','\\x2c').replace('"','\\x2c')
+                else:
+                    keyVal = None
+
+                para = Paragraph('{}<onDraw name="drawTOCEntryEnd" label="{:d},{:d},{},{:f}"/>'.format(
+                    text, pageNum, level, keyVal, 1), style)
+
+                if style.spaceBefore:
+                    tableData.append([Spacer(1, style.spaceBefore),])
+                tableData.append([para])
+                widths = (availWidth, )
+
+        self._table = Table(tableData, colWidths=widths, style=self.tableStyle)
+        #    para = Paragraph('%s<onDraw name="drawTOCEntryEnd" label="%d,%d,%s"/>' % (text, pageNum, level, keyVal), style)
+        #    if style.spaceBefore:
+        #        tableData.append([Spacer(1, style.spaceBefore),])
+        #    tableData.append([
+        #        Paragraph('%s<onDraw name="drawTOCEntryEnd" label="%d,%d,%s"/>' % ('Формуляр', pageNum, level, keyVal), style),
+        #        para])
+
+        #self._table = Table(tableData, colWidths=(availWidth * .2, availWidth * .8), style=self.tableStyle)
 
         self.width, self.height = self._table.wrapOn(self.canv,availWidth, availHeight)
         return (self.width, self.height)

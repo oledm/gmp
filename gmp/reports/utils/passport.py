@@ -21,7 +21,8 @@ from .helpers import ReportMixin, DoubledLine
 
 class Passport(ReportMixin):
     def __init__(self, data, report, title):
-        super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5)
+        toc_styles = ('TOCHeading3', 'TOCHeading3')
+        super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5, toc_styles=toc_styles)
 
     def create(self):
         self.setup_page_templates(self.doc)
@@ -36,9 +37,9 @@ class Passport(ReportMixin):
 
         self.Story.append(NextPageTemplate('Title'))
         self.page1()
-        self.Story.append(NextPageTemplate('Content'))
         self.put_toc()
-        self.page2()
+        self.Story.append(NextPageTemplate('Content'))
+        #self.page2()
         self.page3()
         self.page4()
         self.page5_6()
@@ -69,7 +70,7 @@ class Passport(ReportMixin):
 
     def put_toc(self):
         self.new_page()
-        self.put('Содержание', 'Text Simple Center Bold', 0.5)
+        self.put('Содержание', 'Regular Bold Center', 0.5)
         self.Story.append(self.toc)
 
     def page1(self):
@@ -149,46 +150,46 @@ class Passport(ReportMixin):
         ]))
         self.Story.append(table)
 
-    def page2(self):
-        self.Story.append(PageBreak())
-        self.put('Содержание', 'Regular Bold Center', 0.5)
+    #def page2(self):
+    #    self.Story.append(PageBreak())
+    #    self.put('Содержание', 'Regular Bold Center', 0.5)
 
-        data = (
-            ('ФОРМУЛЯР № 1', 'Регистрация работ', '3'),
-            ('ФОРМУЛЯР № 2', 'Документация, предоставленная заказчиком при выполнении работ', '7'),
-            ('ФОРМУЛЯР № 3', 'Паспортные данные', '8'),
-            ('ФОРМУЛЯР № 4', 'Данные заводских замеров и приёмо-сдаточных испытаний', '9'),
-            ('ФОРМУЛЯР № 5', 'Общий вид электродвигателя', '10'),
-            ('ФОРМУЛЯР № 6', 'Конструктивная схема электродвигателя. Электрическая схема подключения электродвигателя', '11'),
-            ('ФОРМУЛЯР № 7', 'Тепловизионный контроль. Определение соответствия электродвигателя температурному классу', '12'),
-            ('ФОРМУЛЯР № 8', 'Вибрационный контроль электродвигателя', '13'),
-            ('ФОРМУЛЯР № 9-1', 'Визуальный и измерительный контроль электродвигателя', '14'),
-            ('ФОРМУЛЯР № 9-2', 'Контроль параметров взрывозащиты', '16'),
-            ('ФОРМУЛЯР № 10', 'Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя', '17'),
-            ('ФОРМУЛЯР № 11', 'Измерение сопротивления обмотки статора постоянному току', '18'),
-            ('ФОРМУЛЯР № 12', 'Измерение сопротивления изоляции обмотки статора', '18'),
-            ('ФОРМУЛЯР № 13', 'Рекомендации по ремонту и эксплуатации', '19'),
-            ('ФОРМУЛЯР № 14', 'Заключение', '20'),
-            ('ФОРМУЛЯР № 14', 'Заключение', '20'),
-            ('ФОРМУЛЯР № 15', 'Выполненные мероприятия в процессе проведения работ', '21'),
-            ('ПРИЛОЖЕНИЕ 1', 'Сведения об эксплуатации электродвигателя', '22'),
-            ('ПРИЛОЖЕНИЕ 2', 'Сведения об испытаниях электродвигателя', '23'),
-            ('ПРИЛОЖЕНИЕ 3', 'Сведения о ремонтах электродвигателя', '24'),
-        )
-        rows = len(data)
-        styles = [
-            *[['Regular12', 'Regular', 'Regular Right']] * rows
-        ]
-        table_data = self.values(data, {})
-        table = self.table(table_data, styles, [2.3, 7.2, .5])
-        table.setStyle(TableStyle([
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ]))
-        self.Story.append(table)
+    #    data = (
+    #        ('ФОРМУЛЯР № 1', 'Регистрация работ', '3'),
+    #        ('ФОРМУЛЯР № 2', 'Документация, предоставленная заказчиком при выполнении работ', '7'),
+    #        ('ФОРМУЛЯР № 3', 'Паспортные данные', '8'),
+    #        ('ФОРМУЛЯР № 4', 'Данные заводских замеров и приёмо-сдаточных испытаний', '9'),
+    #        ('ФОРМУЛЯР № 5', 'Общий вид электродвигателя', '10'),
+    #        ('ФОРМУЛЯР № 6', 'Конструктивная схема электродвигателя. Электрическая схема подключения электродвигателя', '11'),
+    #        ('ФОРМУЛЯР № 7', 'Тепловизионный контроль. Определение соответствия электродвигателя температурному классу', '12'),
+    #        ('ФОРМУЛЯР № 8', 'Вибрационный контроль электродвигателя', '13'),
+    #        ('ФОРМУЛЯР № 9-1', 'Визуальный и измерительный контроль электродвигателя', '14'),
+    #        ('ФОРМУЛЯР № 9-2', 'Контроль параметров взрывозащиты', '16'),
+    #        ('ФОРМУЛЯР № 10', 'Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя', '17'),
+    #        ('ФОРМУЛЯР № 11', 'Измерение сопротивления обмотки статора постоянному току', '18'),
+    #        ('ФОРМУЛЯР № 12', 'Измерение сопротивления изоляции обмотки статора', '18'),
+    #        ('ФОРМУЛЯР № 13', 'Рекомендации по ремонту и эксплуатации', '19'),
+    #        ('ФОРМУЛЯР № 14', 'Заключение', '20'),
+    #        ('ФОРМУЛЯР № 14', 'Заключение', '20'),
+    #        ('ФОРМУЛЯР № 15', 'Выполненные мероприятия в процессе проведения работ', '21'),
+    #        ('ПРИЛОЖЕНИЕ 1', 'Сведения об эксплуатации электродвигателя', '22'),
+    #        ('ПРИЛОЖЕНИЕ 2', 'Сведения об испытаниях электродвигателя', '23'),
+    #        ('ПРИЛОЖЕНИЕ 3', 'Сведения о ремонтах электродвигателя', '24'),
+    #    )
+    #    rows = len(data)
+    #    styles = [
+    #        *[['Regular12', 'Regular', 'Regular Right']] * rows
+    #    ]
+    #    table_data = self.values(data, {})
+    #    table = self.table(table_data, styles, [2.3, 7.2, .5])
+    #    table.setStyle(TableStyle([
+    #        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+    #    ]))
+    #    self.Story.append(table)
 
     def page3(self):
         self.Story.append(PageBreak())
-        self.add_to_toc('Регистрация работ', self.styles['TOC'])
+        self.add_to_toc('ФОРМУЛЯР № 1|Регистрация работ', self.styles['TOC Hidden'])
         self.formular('1 Регистрация работ')
 
         ptext = '<b>Фамилия И.О.</b><br/>' + '<br/>'.join(
@@ -246,7 +247,7 @@ class Passport(ReportMixin):
             ('BOX', (0,0), (0,-1), 0.5, colors.black),
         ]))
         self.Story.append(table)
-        self.Story.append(Spacer(1, 1 * cm))
+        #self.Story.append(Spacer(1, 1 * cm))
 
     def page4(self):
         self.Story.append(PageBreak())
@@ -357,6 +358,7 @@ class Passport(ReportMixin):
     def page7(self):
         self.Story.append(PageBreak())
         self.formular('2 Документация, предоставленная заказчиком при выполнении работ')
+        self.add_to_toc('ФОРМУЛЯР № 2|Документация, предоставленная заказчиком при выполнении работ', self.styles['TOC Hidden'])
 
         data = self.data.get('docs')
         table_data = list(map(lambda x: [x['name'], 'ДА' if x['value'] else 'НЕТ'], data))
@@ -379,6 +381,7 @@ class Passport(ReportMixin):
     def page8(self):
         self.Story.append(PageBreak())
         self.formular('3 Паспортные данные')
+        self.add_to_toc('ФОРМУЛЯР № 3|Паспортные данные', self.styles['TOC Hidden'])
 
         data = self.data.get('engine')
         engine = Engine.objects.get(name=data.get('type'))
@@ -454,6 +457,7 @@ class Passport(ReportMixin):
     def page9(self):
         self.Story.append(PageBreak())
         self.formular('4 Данные заводских замеров и приёмо-сдаточных испытаний')
+        self.add_to_toc('ФОРМУЛЯР № 4|Данные заводских замеров и приёмо-сдаточных испытаний', self.styles['TOC Hidden'])
     
         resistance_isolation = self.data['values']['factory_values']['resistance_isolation']
         resistance_phase = self.data['values']['factory_values']['resistance_phase']
@@ -501,6 +505,7 @@ class Passport(ReportMixin):
         self.Story.append(PageBreak())
 
         self.formular('5 Общий вид электродвигателя')
+        self.add_to_toc('ФОРМУЛЯР № 5|Общий вид электродвигателя', self.styles['TOC Hidden'])
         self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
 
         image = FileStorage.objects.get(pk=int(self.data['files']['main'][0]['id']))
@@ -511,6 +516,7 @@ class Passport(ReportMixin):
         self.Story.append(PageBreak())
 
         self.formular('6 Конструктивная схема электродвигателя')
+        self.add_to_toc('ФОРМУЛЯР № 6|Конструктивная схема электродвигателя. Электрическая схема подключения электродвигателя', self.styles['TOC Hidden'])
         engine = Engine.objects.get(name=self.data['engine']['type'])
         self.put_photo(engine.scheme, height=10)
         self.spacer(1)
@@ -523,6 +529,7 @@ class Passport(ReportMixin):
         self.Story.append(PageBreak())
 
         self.formular('7 Тепловизионный контроль. Определение соответствия электродвигателя температурному классу')
+        self.add_to_toc('ФОРМУЛЯР № 7|Тепловизионный контроль. Определение соответствия электродвигателя температурному классу', self.styles['TOC Hidden'])
 
         image1 = self.fetch_image(
             FileStorage.objects.get(pk=self.data['files']['therm1'][0]['id']).fileupload,
@@ -565,6 +572,7 @@ class Passport(ReportMixin):
         self.Story.append(PageBreak())
 
         self.formular('8 Вибрационный контроль электродвигателя')
+        self.add_to_toc('ФОРМУЛЯР № 8|Вибрационный контроль электродвигателя', self.styles['TOC Hidden'])
         text = 'Среднеквадратичные значения виброскоростей  ротора в собственных опорах, мм/с'
         self.put(text, 'Regular Bold Center', 0.5)
 
@@ -614,6 +622,7 @@ class Passport(ReportMixin):
     def page14(self):
         self.Story.append(PageBreak())
         self.formular('9-1 Визуальный и измерительный контроль электродвигателя')
+        self.add_to_toc('ФОРМУЛЯР № 9-1|Визуальный и измерительный контроль электродвигателя', self.styles['TOC Hidden'])
 
         table_data = [[
             self.fetch_static_image('engine_details_scheme_1.jpg', 6.2),
@@ -721,6 +730,7 @@ class Passport(ReportMixin):
     def page16(self):
         self.Story.append(PageBreak())
         self.formular('9-2 Контроль параметров взрывозащиты')
+        self.add_to_toc('ФОРМУЛЯР № 9-2|Контроль параметров взрывозащиты', self.styles['TOC Hidden'])
 
         self.put('Взрывонепроницаемая оболочка', 'Regular Bold Center', 0.4)
         template = [
@@ -754,9 +764,10 @@ class Passport(ReportMixin):
     def page17(self):
         self.Story.append(PageBreak())
         self.formular('10 Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя')
+        self.add_to_toc('ФОРМУЛЯР № 10|Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя', self.styles['TOC Hidden'])
 
         engine = Engine.objects.get(name=self.data['engine']['type'])
-        self.put_photo(engine.meters, height=12.5)
+        self.put_photo(engine.meters, height=11)
         #self.Story.append(Spacer(1, 1 * cm))
 
         zones_data = engine.control_zones()
@@ -810,8 +821,9 @@ class Passport(ReportMixin):
     def page18(self):
         self.Story.append(PageBreak())
         self.formular('11 Измерение сопротивления обмотки статора постоянному току')
+        self.add_to_toc('ФОРМУЛЯР № 11|Измерение сопротивления обмотки статора постоянному току', self.styles['TOC Hidden'])
         self.put('Схема подключения прибора', 'Regular Center', 0.2)
-        img = self.fetch_static_image('meter_scheme.gif', 10)
+        img = self.fetch_static_image('meter_scheme.gif', height=5)
         img.hAlign = 'CENTER'
         self.Story.append(img)
         self.Story.append(Spacer(1, 0.5 * cm))
@@ -840,8 +852,9 @@ class Passport(ReportMixin):
         self.Story.append(Spacer(1, 1 * cm))
 
         self.formular('12 Измерение сопротивления изоляции обмотки статора')
+        self.add_to_toc('ФОРМУЛЯР № 12|Измерение сопротивления изоляции обмотки статора', self.styles['TOC Hidden'])
         self.put('Упрощенная схема подключения мегаомметра', 'Regular Center', 0.2)
-        img = self.fetch_static_image('megaommetr_scheme.jpg', 10)
+        img = self.fetch_static_image('megaommetr_scheme.jpg', height=3.5)
         img.hAlign = 'CENTER'
         self.Story.append(img)
         self.Story.append(Spacer(1, 0.5 * cm))
@@ -871,6 +884,7 @@ class Passport(ReportMixin):
     def page19(self):
         self.Story.append(PageBreak())
         self.formular('13 Рекомендации по ремонту и эксплуатации')
+        self.add_to_toc('ФОРМУЛЯР № 13|Рекомендации по ремонту и эксплуатации', self.styles['TOC Hidden'])
 
         self.put('В соответствии с требованиями нормативной документации и с результатами диагностики и исследований необходимо:', 'Paragraph Justified', 0.2)
 
@@ -889,6 +903,7 @@ class Passport(ReportMixin):
     def page20(self):
         self.Story.append(PageBreak())
         self.formular('14 Заключение')
+        self.add_to_toc('ФОРМУЛЯР № 14|Заключение', self.styles['TOC Hidden'])
 
         template = self.static_data_plain('decision.txt')
         cols = len(template[0])
@@ -906,6 +921,7 @@ class Passport(ReportMixin):
     def page21(self):
         self.Story.append(PageBreak())
         self.formular('15 Выполненные мероприятия в процессе проведения работ')
+        self.add_to_toc('ФОРМУЛЯР № 15|Выполненные мероприятия в процессе проведения работ', self.styles['TOC Hidden'])
 
         self.put('В процессе технического диагностирования были проведены следующие мероприятия:', 'Paragraph', 0.2)
         text = self.static_data_list('completed_tasks.txt')
@@ -925,9 +941,11 @@ class Passport(ReportMixin):
     def appendix(self, title, columns, widths):
         self.Story.append(PageBreak())
         self.formular(title, header='Приложение')
+        num, *tail = title.split()
+        self.add_to_toc('ПРИЛОЖЕНИЕ {}|{}'.format(num, ' '.join(tail)), self.styles['TOC Hidden'])
         template = [
             columns,
-            *[list(map(lambda _: '&nbsp;', columns))] * 37
+            *[['&nbsp;'] * len(columns)] * 36
         ]
         rows = len(template)
         cols = len(template[0])
@@ -943,7 +961,6 @@ class Passport(ReportMixin):
             ('BOTTOMPADDING', (0,0), (-1,-1), 6),
             ('TOPPADDING', (0,0), (-1,-1), 0),
         ]))
-        #table.hAlign = 'RIGHT'
         self.Story.append(table)
 
     def setup_page_templates(self, doc):
