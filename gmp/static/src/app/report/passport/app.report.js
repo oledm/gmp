@@ -5,12 +5,33 @@
         .module('app.report')
         .controller('PassportController', PassportController);
 
-//    function Passportengine($scope, $state, UserData, Department, Engine, Passport, Upload) {
     function PassportController($state, $stateParams, ServerData, orgs, allTClasses, connection_types,
                     allEmployees, allDevices, measurers, History, localStorageService) {
         'ngInject';
 
         var vm = this,
+            control_types = [
+                {
+                    name: 'ВИК',
+                    full_name: 'Визуальный и измерительный контроль'
+                },
+                {
+                    name: 'УК',
+                    full_name: 'Ультразвуковой контроль'
+                },
+                {
+                    name: 'ТК',
+                    full_name: 'Тепловой контроль'
+                },
+                {
+                    name: 'ВД',
+                    full_name: 'Вибродиагностический контроль'
+                },
+                {
+                    name: 'ЭЛ',
+                    full_name: 'Электрический контроль'
+                }
+            ],
             docs = [
                 {name: 'Журнал ремонта электродвигателя', value: true},
                 {name: 'Журнал эксплуатации электродвигателя', value: true},
@@ -33,10 +54,25 @@
                 'resistance.tpl.html',
                 'passport/signers.tpl.html'
             ],
+//                'report/team.tpl.html',
+//                'report/report_info.tpl.html',
+//                'report/dates.tpl.html',
+//                'report/order.tpl.html',
+//                'report/photos.tpl.html',
             ranks = [
                 'руководитель бригады',
                 'зам. руководителя бригады',
                 'член бригады'
+            ],
+            report_types = [
+                {
+                    alias: 'passport',
+                    name: 'Паспорт'
+                },
+                {
+                    alias: 'report',
+                    name: 'Заключение'
+                }
             ],
             engine = {
                 all: allDevices,
@@ -51,6 +87,7 @@
         vm.addEmployee = addEmployee;
         vm.allEmployees = allEmployees;
         vm.connection_types = connection_types;
+        vm.control_types = control_types;
         vm.createPassport = createPassport;
         vm.engine = engine;
         vm.workBegin = undefined;
@@ -69,11 +106,12 @@
             therm: {},
             vibro: {},
             order: {},
-            type: $state.current.data.type,
+//            type: $state.current.data.type,
             docs: docs,
             resistance: {}
         };
         vm.reportId = $stateParams.id;
+        vm.report_types = report_types;
         vm.report_initial_state = angular.copy(vm.report)
         vm.restore_initial_state = restore_initial_state; 
         vm.setSelected = setSelected;

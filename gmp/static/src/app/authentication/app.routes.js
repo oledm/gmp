@@ -79,17 +79,40 @@
                     allTClasses: function(ServerData) {
                         return ServerData.query({category: 'tclass'}).$promise;
                     }
-
                 },
-                data: {
-                    type: 'passport'
-                }
+//                data: {
+//                    type: 'passport'
+//                }
             })
             .state('report', {
                 url: '/report',
                 controller: 'ReportController',
                 controllerAs: 'vm',
-                templateUrl: '/static/src/app/report/report/report.tpl.html'
+                templateUrl: '/static/src/app/report/report/report.tpl.html',
+                resolve: {
+                    ServerData: 'ServerData',
+                    orgs: function(ServerData) {
+                        return ServerData.query({category: 'organization'});
+                    },
+                    allEmployees: function(ServerData) {
+                        return ServerData.users().$promise;
+                    },
+                    allDevices: function(ServerData) {
+                        return ServerData.query({category: 'engine'}).$promise;
+                    },
+                    measurers: function(ServerData) {
+                        return ServerData.measurers().$promise;
+                    },
+                    connection_types: function(ServerData) {
+                        return ServerData.query({category: 'connection_types'}).$promise;
+                    },
+                    allTClasses: function(ServerData) {
+                        return ServerData.query({category: 'tclass'}).$promise;
+                    }
+                },
+//                data: {
+//                    type: 'report'
+//                }
             })
             .state('report-container', {
                 url: '/report-container/:id',

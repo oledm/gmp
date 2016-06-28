@@ -1,9 +1,38 @@
 <ng-form name="vm.mainForm" save-history="vm.report" report-id="{{vm.reportId}}">
     <div ng-cloak>
         <h3 class="text-center">Формирование паспорта двигателя</h3>
-        <button class="btn btn-sm btn-danger" ng-click="vm.restore_initial_state()">
-              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            Сброс формы</button>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-3">
+                    <button class="btn btn-sm btn-danger" ng-click="vm.restore_initial_state()">
+                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        Сброс формы
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label" for="report_type">
+                        Тип отчета
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <select class="form-control"
+                        id="report_type"
+                        ng-model="vm.report.type"
+                        ng-options="type.alias as type.name for type in vm.report_types"
+                        >
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
 
         <div id="messageBox"></div>
