@@ -3,8 +3,14 @@
 
     <div class="form-group">
         <div class="row">
-            <div class="col-sm-4" ng-class="{ 'has-error': vm.imagesForm.main.$touched && vm.imagesForm.main.$invalid }">
+            <div class="col-sm-4" ng-class="{ 'has-error': vm.imagesForm.main.$touched && vm.imagesForm.main.$invalid }" ng-if="vm.report.type === 'passport'">
                   <files-upload ng-model="vm.report.files.main" label="Общий вид электродвигателя"></files-upload>
+                  <div class="help-block" role="alert" ng-messages="vm.imagesForm.main.$error" ng-if="vm.imagesForm.main.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+            <div class="col-sm-4" ng-class="{ 'has-error': vm.imagesForm.main.$touched && vm.imagesForm.main.$invalid }" ng-if="vm.report.type === 'report'">
+                  <files-upload ng-model="vm.report.files.main" multiple label="Фото экспертизы"></files-upload>
                   <div class="help-block" role="alert" ng-messages="vm.imagesForm.main.$error" ng-if="vm.imagesForm.main.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
@@ -18,6 +24,17 @@
             <div class="col-sm-4" ng-class="{ 'has-error': vm.imagesForm.therm2.$touched && vm.imagesForm.therm2.$invalid }">
                   <files-upload ng-model="vm.report.files.therm2" label="Фото термограммы 2"></files-upload>
                   <div class="help-block" role="alert" ng-messages="vm.imagesForm.therm2.$error" ng-if="vm.imagesForm.therm2.$touched">
+                      <div ng-messages-include="/static/src/assets/messages.html"></div>
+                  </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" ng-if="vm.report.type === 'report'">
+        <div class="row">
+            <div class="col-sm-4" ng-class="{ 'has-error': vm.imagesForm.licenses.$touched && vm.imagesForm.licenses.$invalid }">
+                  <files-upload ng-model="vm.report.files.licenses" multiple label="Копии лицензий на право проведения экспертизы, свидетельств об аккредитации, удостоверений экспертов"></files-upload>
+                  <div class="help-block" role="alert" ng-messages="vm.imagesForm.licenses.$error" ng-if="vm.imagesForm.licenses.$touched">
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>

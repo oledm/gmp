@@ -3,9 +3,11 @@
 
     <div class="form-group">
         <div class="row">
-            <div class="col-sm-4" ng-controller="DatepickerController as dc"
-                 ng-class="{ 'has-error': vm.datesForm.workBegin.$touched && vm.datesForm.workBegin.$invalid }"
-                >
+            <div ng-controller="DatepickerController as dc"
+                 ng-class="{
+                     'has-error': vm.datesForm.workBegin.$touched && vm.datesForm.workBegin.$invalid,
+                      'col-sm-4': vm.report.type === 'passport', 'col-sm-6': vm.report.type === 'report'
+                 }">
                   <label class="control-label" for="workBegin">Дата начала работ</label>
                     <p class="input-group">
                   <input type="text" watcher ng-model="vm.report.workBegin" id="workBegin" name="workBegin" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required />
@@ -17,7 +19,7 @@
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>
-            <div class="col-sm-4" ng-controller="DatepickerController as dc"
+            <div class="col-sm-4" ng-controller="DatepickerController as dc" ng-if="vm.report.type === 'passport'"
                  ng-class="{ 'has-error': vm.datesForm.investigationDate.$touched && vm.datesForm.investigationDate.$invalid }"
                 >
                   <label class="control-label" for="investigation_date">Дата обследования</label>
@@ -31,9 +33,11 @@
                       <div ng-messages-include="/static/src/assets/messages.html"></div>
                   </div>
             </div>
-            <div class="col-sm-4" ng-controller="DatepickerController as dc"
-                 ng-class="{ 'has-error': vm.datesForm.workEnd.$touched && vm.datesForm.workEnd.$invalid }"
-                >
+            <div ng-controller="DatepickerController as dc"
+                 ng-class="{
+                     'has-error': vm.datesForm.workEnd.$touched && vm.datesForm.workEnd.$invalid,
+                     'col-sm-4': vm.report.type === 'passport', 'col-sm-6': vm.report.type === 'report'
+                 }">
                   <label class="control-label" for="workEnd">Дата окончания работ</label>
                     <p class="input-group">
                   <input type="text" watcher ng-model="vm.report.workEnd" id="workEnd" name="workEnd" class="form-control" uib-datepicker-popup="dd MMMM yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.dateOptions" required />

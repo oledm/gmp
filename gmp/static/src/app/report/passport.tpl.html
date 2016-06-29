@@ -1,7 +1,8 @@
 <ng-form name="vm.mainForm" save-history="vm.report" report-id="{{vm.reportId}}">
     <div ng-cloak>
-        <h3 class="text-center">Формирование паспорта двигателя</h3>
-
+        <h3 class="text-center">
+          Формирование {{vm.report.type === 'passport' ? 'паспорта двигателя' : 'экспертного заключения'}}
+        </h3>
         <div class="form-group">
             <div class="row">
                 <div class="col-sm-3">
@@ -25,6 +26,7 @@
                 <div class="col-sm-3">
                     <select class="form-control"
                         id="report_type"
+                        ng-change="vm.reportTypeChange()"
                         ng-model="vm.report.type"
                         ng-options="type.alias as type.name for type in vm.report_types"
                         >
@@ -50,9 +52,12 @@
             vm.thermForm.$invalid ||
             vm.vibroForm.$invalid ||
             vm.resistanceForm.$invalid ||
+            vm.reportInfoForm.$invalid ||
+            vm.orderForm.$invalid ||
             vm.signersForm.$invalid
             "
-            > Создать паспорт
+            >
+          Создать {{vm.report.type === 'passport' ? 'паспорт' : 'заключение'}}
             </button>    
         </div>
     

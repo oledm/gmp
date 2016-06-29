@@ -42,10 +42,12 @@
             ],
             pages = [
                 'passport/team.tpl.html',
+                'report/report_info.tpl.html',
                 'measurers.tpl.html',
                 'lpu.tpl.html',
                 'passport/dates.tpl.html',
                 'engines.tpl.html',
+                'report/order.tpl.html',
                 'passport/values.tpl.html',
                 'passport/docs.tpl.html',
                 'passport/photos.tpl.html',
@@ -54,11 +56,6 @@
                 'resistance.tpl.html',
                 'passport/signers.tpl.html'
             ],
-//                'report/team.tpl.html',
-//                'report/report_info.tpl.html',
-//                'report/dates.tpl.html',
-//                'report/order.tpl.html',
-//                'report/photos.tpl.html',
             ranks = [
                 'руководитель бригады',
                 'зам. руководителя бригады',
@@ -106,12 +103,13 @@
             therm: {},
             vibro: {},
             order: {},
-//            type: $state.current.data.type,
             docs: docs,
-            resistance: {}
+            resistance: {},
+            type: report_types[0].alias,
         };
         vm.reportId = $stateParams.id;
         vm.report_types = report_types;
+        vm.reportTypeChange = reportTypeChange;
         vm.report_initial_state = angular.copy(vm.report)
         vm.restore_initial_state = restore_initial_state; 
         vm.setSelected = setSelected;
@@ -166,6 +164,24 @@
             localStorageService.remove('model');
             angular.copy(vm.report_initial_state, vm.report);
             $state.go($state.current, {}, {reload: true});
+        }
+
+        function reportTypeChange() {
+            switch (vm.report.type) {
+                case 'passport':
+                    vm.report.files = {"main": [], "licenses": [], "therm1": [], "therm2": []};
+                    vm.report.team = [{'id': '', 'required': true}];
+                    vm.report.docs = docs;
+                    break;
+                case 'report':
+                    vm.report.files = {"main": [], "therm1": [], "therm2": []};
+                    vm.report.team = {};
+                    vm.report.docs = [];
+                    vm.report.info = {
+                        license: 'Договор №          от          на выполнение работ по экспертизе промышленной безопасности.'
+                    };
+                    break;
+            }
         }
 
         function setSelected(selected, item) {
