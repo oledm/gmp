@@ -11,6 +11,7 @@ import {
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
     LOGOUT_FAILED,
+    ROUTING,
 } from '../constants/index'
 
 let nextId = 0;
@@ -77,6 +78,14 @@ export const fetchDepartments = () => dispatch => {
         })
 }
 
+export const redirectTo = url => dispatch => {
+    dispatch({
+        type: ROUTING,
+        method: 'push',
+        nextUrl: url
+    })
+}
+
 export const login = (values) => dispatch => {
     dispatch(loginRequest(values))
     
@@ -101,6 +110,7 @@ export const login = (values) => dispatch => {
                     let token = data.token
                     localStorage.setItem('auth_token', token)
                     dispatch(loginSuccess(token))
+                    dispatch(redirectTo('/'))
                 }
             })
         )
@@ -132,3 +142,4 @@ export const logout = () => dispatch => {
 //            dispatch(logoutSuccess())
 //        })
 }
+

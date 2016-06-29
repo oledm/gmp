@@ -7,14 +7,14 @@ import { login } from '../../actions/index'
 const fields = [ 'email', 'password' ]
 
 const submit = (values, dispatch) => {
-    console.log(values)
     return new Promise((resolve, reject) => {
         dispatch(login(values))
         resolve()
     })
 }
 
-class Login extends Component {
+class LoginForm extends Component {
+
   render() {
     const { fields: { email, password },
         valid, handleSubmit, submitting } = this.props
@@ -55,7 +55,7 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
+LoginForm.propTypes = {
     fields: PropTypes.object.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired
@@ -72,4 +72,4 @@ export default reduxForm({
 },
     null,
     mapDispatchToProps
-)(Login)
+)(LoginForm)
