@@ -4,7 +4,7 @@
     angular
         .module('app.report')
         .filter('searchIdInObject', SearchIdInObject)
-        .controller('ReportContainerController', ReportContainerController);
+        .controller('ContainerController', ContainerController);
 
     function SearchIdInObject() {
         return function(inputArr, matchArr) {
@@ -22,7 +22,7 @@
         }
     }
 
-    function ReportContainerController($state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History, localStorageService) 
+    function ContainerController($state, $stateParams, ServerData, orgs, allEmployees, allDevices, measurers, History, localStorageService) 
     {
         'ngInject';
 
@@ -77,14 +77,14 @@
                 'license_more': ''
             },
             pages = [
-                'report_container/devices.tpl.html',
-                'report_container/report_info.tpl.html',
-                'report_container/order.tpl.html',
-                'report_container/team.tpl.html',
+                'container/devices.tpl.html',
+                'container/report_info.tpl.html',
+                'container/order.tpl.html',
+                'container/team.tpl.html',
                 'measurers.tpl.html',
-                'report_container/schemes.tpl.html',
-                'report_container/results.tpl.html',
-                'report_container/licenses.tpl.html',
+                'container/schemes.tpl.html',
+                'container/results.tpl.html',
+                'container/licenses.tpl.html',
             ],
             ranks = [
                 'руководитель бригады',

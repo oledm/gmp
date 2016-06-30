@@ -3,9 +3,9 @@
 
     angular
         .module('app.report')
-        .controller('PassportController', PassportController);
+        .controller('EngineController', EngineController);
 
-    function PassportController($state, $stateParams, ServerData, orgs, allTClasses, connection_types,
+    function EngineController($state, $stateParams, ServerData, orgs, allTClasses, connection_types,
                     allEmployees, allDevices, measurers, History, localStorageService) {
         'ngInject';
 
@@ -41,20 +41,20 @@
                 {name: 'Схема электроснабжения электродвигателя', value: true}
             ],
             pages = [
-                'passport/team.tpl.html',
-                'report/report_info.tpl.html',
+                'engine/team.tpl.html',
+                'engine/report_info.tpl.html',
                 'measurers.tpl.html',
-                'lpu.tpl.html',
-                'passport/dates.tpl.html',
-                'engines.tpl.html',
-                'report/order.tpl.html',
-                'passport/values.tpl.html',
-                'passport/docs.tpl.html',
-                'passport/photos.tpl.html',
-                'therm.tpl.html',
-                'vibro.tpl.html',
-                'resistance.tpl.html',
-                'passport/signers.tpl.html'
+                'engine/lpu.tpl.html',
+                'engine/dates.tpl.html',
+                'engine/engines.tpl.html',
+                'engine/order.tpl.html',
+                'engine/values.tpl.html',
+                'engine/docs.tpl.html',
+                'engine/photos.tpl.html',
+                'engine/therm.tpl.html',
+                'engine/vibro.tpl.html',
+                'engine/resistance.tpl.html',
+                'engine/signers.tpl.html'
             ],
             ranks = [
                 'руководитель бригады',
@@ -92,6 +92,7 @@
         vm.investigationDate = undefined;
         vm.orgs = orgs;
         vm.pages = pages;
+        vm.procKeyPress = procKeyPress;
         vm.tclasses = {all: allTClasses, selected: ''};
         vm.getLPUs = getLPUs;
         vm.ranks = ranks;
@@ -132,13 +133,21 @@
             });
         }
 
+        function procKeyPress(clickEvent, arr) {
+            // Check for Return (Enter) key pressed
+            if (clickEvent.which === 13) {
+                clickEvent.preventDefault();
+                addToCollection(arr, clickEvent.target.value);
+                clickEvent.target.value = '';
+            }
+        }
+
         function showError(msg, title='Ошибка!') {
             let message = `
 <div class="alert alert-danger alert-dismissible" role="alert">
 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 <strong>${title}</strong> ${msg}
-</div>
-            `
+</div>`
             let angularMessage = angular.element(message);
             angular.element(document).find('#messageBox').append(angularMessage);
         }
@@ -146,9 +155,18 @@
         function createPassport() {
             console.log('report:', JSON.stringify(vm.report));
             History.saveNow(vm.report);
+
+            var report_create_error = undefined;
+            if (vm.report.type === 'passport') {
+                report_create_error = 'Паспорт не создан';
+            } else if (vm.report.type === 'report') {
+                report_create_error = 'Заключение не создано';
+            }
+            console.log('report type:', vm.report.type)
+
             ServerData.report({'report_data': vm.report})
                 .$promise.then(null,
-                    data => showError('Паспорт не создан. Обратитесь за помощью к разработчику'));
+                    data => showError(`${report_create_error}. Обратитесь за помощью к разработчику`));
         }
 
         function getLPUs(org) {

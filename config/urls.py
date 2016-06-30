@@ -55,7 +55,7 @@ containers = routers.SimpleRouter()
 containers.register('container', containers_views.ContainerViewset)
 
 history = routers.SimpleRouter()
-history.register(r'history_input', history_views.InputViewset)
+history.register(r'history_input', history_views.InputViewset, base_name='input')
 
 urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),

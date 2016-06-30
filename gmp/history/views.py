@@ -9,19 +9,16 @@ from .serializers import InputSerializer
 from gmp.departments.models import Department
 
 class InputViewset(viewsets.ModelViewSet):
-    queryset = Input.objects.all()
+    #queryset = Input.objects.all()
     serializer_class = InputSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        report_types = Department.objects.get(employee__email=self.request.user).report_types
-        report_urls = tuple(map(lambda x: x.get('url'), report_types.values()))
+        #report_types = Department.objects.get(employee__email=self.request.user).report_types
+        #report_urls = tuple(map(lambda x: x.get('url'), report_types.values()))
+        #print('report_urls', report_urls)
 
-        return Input.objects.filter(
-            employee=self.request.user,
-            obj_model__has_key='type',
-            obj_model__type__in=report_urls
-        ).order_by('-date')
+        return Input.objects.filter(employee=self.request.user).order_by('-date')
 
     def create(self, request):
         data = request.data
@@ -65,5 +62,6 @@ class InputViewset(viewsets.ModelViewSet):
     #def update(self, request, pk=None):
     #    print('update history', pk)
     #    print('data', request.data)
+    #    print('set', self.get_queryset())
     #    return Response('OK',
     #            status=status.HTTP_403_FORBIDDEN)

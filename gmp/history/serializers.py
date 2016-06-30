@@ -16,6 +16,7 @@ class InputSerializer(serializers.ModelSerializer):
     class Meta:
         model = Input
         fields = ('id', 'obj_model', 'date', 'report_data')
+        #fields = ('id', 'obj_model', 'date')
 
     def get_report_data(self, obj):
         report_data = Report.objects.get(url=obj.obj_model.get('type'))

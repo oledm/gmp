@@ -54,41 +54,11 @@
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/filestorage/upload.tpl.html'
             })
-            .state('passport', {
-                url: '/passport/:id',
-                controller: 'PassportController',
-                controllerAs: 'vm',
-                templateUrl: '/static/src/app/report/passport.tpl.html',
-                resolve: {
-                    ServerData: 'ServerData',
-                    orgs: function(ServerData) {
-                        return ServerData.query({category: 'organization'});
-                    },
-                    allEmployees: function(ServerData) {
-                        return ServerData.users().$promise;
-                    },
-                    allDevices: function(ServerData) {
-                        return ServerData.query({category: 'engine'}).$promise;
-                    },
-                    measurers: function(ServerData) {
-                        return ServerData.measurers().$promise;
-                    },
-                    connection_types: function(ServerData) {
-                        return ServerData.query({category: 'connection_types'}).$promise;
-                    },
-                    allTClasses: function(ServerData) {
-                        return ServerData.query({category: 'tclass'}).$promise;
-                    }
-                },
-//                data: {
-//                    type: 'passport'
-//                }
-            })
             .state('report', {
-                url: '/report',
-                controller: 'ReportController',
+                url: '/report-engine/:id',
+                controller: 'EngineController',
                 controllerAs: 'vm',
-                templateUrl: '/static/src/app/report/report/report.tpl.html',
+                templateUrl: '/static/src/app/report/engine/report.tpl.html',
                 resolve: {
                     ServerData: 'ServerData',
                     orgs: function(ServerData) {
@@ -110,15 +80,12 @@
                         return ServerData.query({category: 'tclass'}).$promise;
                     }
                 },
-//                data: {
-//                    type: 'report'
-//                }
             })
             .state('report-container', {
                 url: '/report-container/:id',
-                controller: 'ReportContainerController',
+                controller: 'ContainerController',
                 controllerAs: 'vm',
-                templateUrl: '/static/src/app/report/report_container/report.tpl.html',
+                templateUrl: '/static/src/app/report/container/report.tpl.html',
                 resolve: {
                     ServerData: 'ServerData',
                     orgs: function(ServerData) {
