@@ -81,7 +81,6 @@
 
         function saveIfExist(data) {
             if (history_id) {
-                console.log('history_id is', history_id);
                 update(history_id, {obj_model: data});
             }
         }

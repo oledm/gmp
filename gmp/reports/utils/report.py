@@ -7,8 +7,9 @@ from django.forms.models import model_to_dict
 from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table, Spacer
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
-from reportlab.lib.units import cm
 from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.lib.styles import ParagraphStyle as PS
 
 from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
@@ -697,18 +698,29 @@ class Report(ReportMixin):
         template_title = PageTemplate(id='Title', frames=frame_with_header, onPage=partial(self.header, content=header_content))
 
         frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='no_header')
-        template_content = PageTemplate(id='Content', frames=frame_full)
+        template_content = PageTemplate(id='Content', frames=frame_full, onPage=self.header)
 
         doc.addPageTemplates([template_title, template_content])
 
     @staticmethod
-    def header(canvas, doc, content):
+    def header(canvas, doc, content=None):
         canvas.saveState()
-        w, h = content[0].wrap(doc.width, doc.topMargin)
-        content[0].drawOn(canvas, (doc.width + w)/2 - doc.leftMargin, 120)
 
-        w, h = content[1].wrap(doc.width, doc.topMargin)
-        content[1].drawOn(canvas, doc.leftMargin + doc.width - w/2, h + 30)
+        if not content:
+            style = PS(
+                'Page Number',
+                fontName='Times',
+                fontSize=13)
+            pageNumber = Paragraph(str(canvas.getPageNumber()), style=style)
+            w, h = pageNumber.wrap(doc.width, doc.topMargin)
+            pageNumber.drawOn(canvas, doc.width + doc.leftMargin - 10, h + 10)
+        else: 
+            w, h = content[0].wrap(doc.width, doc.topMargin)
+            content[0].drawOn(canvas, (doc.width + w)/2 - doc.leftMargin, 120)
+
+            w, h = content[1].wrap(doc.width, doc.topMargin)
+            content[1].drawOn(canvas, doc.leftMargin + doc.width - w/2, h + 30)
+
         canvas.restoreState()
 
     def header_content(self):
