@@ -274,7 +274,7 @@
             measurers: {all: measurers, selected: []},
             lpus: [],
             results: results,
-            type: $state.current.data.type,
+            url: 'report-container',
             team: {
                 spec: {},
                 all: [{'id': '', 'required': true}]
@@ -331,7 +331,8 @@
             if (lead.length === 0) {
                 showError('Не выбран руководитель бригады')
             } else {
-                History.saveNow(vm.report);
+                History.saveIfExist(vm.report);
+
                 ServerData.report({'report_data': vm.report})
                     .$promise.then(null,
                         data => showError('Отчет не создан. Обратитесь за помощью к разработчику'));

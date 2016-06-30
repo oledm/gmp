@@ -100,9 +100,6 @@
                     measurers: function(ServerData) {
                         return ServerData.measurers().$promise;
                     }
-                },
-                data: {
-                    type: 'report-container'
                 }
             });
 

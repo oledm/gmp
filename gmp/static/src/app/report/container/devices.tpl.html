@@ -69,7 +69,7 @@
                 >
                   <label class="control-label" for="manufactured_year">Год изготовления</label>
                     <p class="input-group">
-                    <input type="text" ng-model="vm.report.obj_data.manufactured_year" id="manufactured_year" name="manufactured_year" class="form-control" uib-datepicker-popup="yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.yearOptions" required />
+                    <input type="text" watcher ng-model="vm.report.obj_data.manufactured_year" id="manufactured_year" name="manufactured_year" class="form-control" uib-datepicker-popup="yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.yearOptions" required />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>
@@ -85,7 +85,7 @@
                 >
                   <label class="control-label" for="started_year">Год ввода в эксплуатацию</label>
                     <p class="input-group">
-                    <input type="text" ng-model="vm.report.obj_data.started_year" id="started_year" name="started_year" class="form-control" uib-datepicker-popup="yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.yearOptions" required />
+                    <input type="text"watcher  ng-model="vm.report.obj_data.started_year" id="started_year" name="started_year" class="form-control" uib-datepicker-popup="yyyy" ng-model-options="{timezone: 'UTC'}" is-open="dc.popup.opened" ng-required="true" datepicker-options="dc.yearOptions" required />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="dc.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>
