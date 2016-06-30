@@ -11,7 +11,7 @@ from reportlab.lib import colors
 
 from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate, EBcertificate
-from gmp.inspections.models import Organization, LPU
+#from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass, Connection
 from gmp.filestorage.models import FileStorage

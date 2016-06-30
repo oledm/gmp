@@ -74,8 +74,8 @@
             engine = {
                 all: allDevices,
                 selected: {
-                    'type': '',
-                    'serial_number': 0
+                    type: '',
+                    serial_number: 0
                 },
                 sortOrder: 'name'
             };
@@ -106,7 +106,8 @@
             order: {},
             docs: docs,
             resistance: {},
-            type: report_types[0].alias,
+            type: report_types[0],
+            url: 'report-engine',
         };
         vm.reportId = $stateParams.id;
         vm.report_types = report_types;
@@ -157,12 +158,12 @@
             History.saveNow(vm.report);
 
             var report_create_error = undefined;
-            if (vm.report.type === 'passport') {
+            if (vm.report.type.alias === 'passport') {
                 report_create_error = 'Паспорт не создан';
-            } else if (vm.report.type === 'report') {
+            } else if (vm.report.type.alias === 'report') {
                 report_create_error = 'Заключение не создано';
             }
-            console.log('report type:', vm.report.type)
+            console.log('report type:', vm.report.type.alias)
 
             ServerData.report({'report_data': vm.report})
                 .$promise.then(null,
@@ -185,7 +186,7 @@
         }
 
         function reportTypeChange() {
-            switch (vm.report.type) {
+            switch (vm.report.type.alias) {
                 case 'passport':
                     vm.report.files = {"main": [], "licenses": [], "therm1": [], "therm2": []};
                     vm.report.team = [{'id': '', 'required': true}];

@@ -1,7 +1,7 @@
 <ng-form name="vm.mainForm" save-history="vm.report" report-id="{{vm.reportId}}">
     <div ng-cloak>
         <h3 class="text-center">
-          Формирование {{vm.report.type === 'passport' ? 'паспорта двигателя' : 'экспертного заключения'}}
+          Формирование {{vm.report.type.alias === 'passport' ? 'паспорта двигателя' : 'экспертного заключения'}}
         </h3>
         <div class="form-group">
             <div class="row">
@@ -14,6 +14,9 @@
             </div>
         </div>
 
+        <!-- 
+            <p>{{vm.report.type | json}}</p>
+         -->
         <div class="form-group">
             <div class="row">
                 <div class="col-sm-3">
@@ -28,7 +31,7 @@
                         id="report_type"
                         ng-change="vm.reportTypeChange()"
                         ng-model="vm.report.type"
-                        ng-options="type.alias as type.name for type in vm.report_types"
+                        ng-options="type as type.name for type in vm.report_types track by type.alias"
                         >
                     </select>
                 </div>
@@ -41,22 +44,22 @@
         
         <div class="block text-center">
             <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
-            ng-disabled="
-            vm.teamForm.$invalid ||
-            vm.engines.selected.length === 0 ||
-            vm.LPUForm.$invalid ||
-            vm.datesForm.$invalid ||
-            vm.engineForm.$invalid ||
-            vm.valuesForm.$invalid ||
-            vm.imagesForm.$invalid ||
-            vm.thermForm.$invalid ||
-            vm.vibroForm.$invalid ||
-            vm.resistanceForm.$invalid ||
-            vm.orderForm.$invalid ||
-            vm.signersForm.$invalid
-            "
+                ng-disabled="
+                vm.teamForm.$invalid ||
+                vm.engines.selected.length === 0 ||
+                vm.LPUForm.$invalid ||
+                vm.datesForm.$invalid ||
+                vm.engineForm.$invalid ||
+                vm.valuesForm.$invalid ||
+                vm.imagesForm.$invalid ||
+                vm.thermForm.$invalid ||
+                vm.vibroForm.$invalid ||
+                vm.resistanceForm.$invalid ||
+                vm.orderForm.$invalid ||
+                vm.signersForm.$invalid
+                "
             >
-          Создать {{vm.report.type === 'passport' ? 'паспорт' : 'заключение'}}
+          Создать {{vm.report.type.alias === 'passport' ? 'паспорт' : 'заключение'}}
             </button>    
         </div>
     
@@ -66,3 +69,19 @@
         </a>
     </div>
 </ng-form>
+            <!-- 
+                ng-disabled="
+                vm.teamForm.$invalid ||
+                vm.engines.selected.length === 0 ||
+                vm.LPUForm.$invalid ||
+                vm.datesForm.$invalid ||
+                vm.engineForm.$invalid ||
+                vm.valuesForm.$invalid ||
+                vm.imagesForm.$invalid ||
+                vm.thermForm.$invalid ||
+                vm.vibroForm.$invalid ||
+                vm.resistanceForm.$invalid ||
+                vm.orderForm.$invalid ||
+                vm.signersForm.$invalid
+                "
+             -->

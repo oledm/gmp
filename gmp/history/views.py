@@ -38,7 +38,7 @@ class InputViewset(viewsets.ModelViewSet):
             history = Input.objects.get(
                 pk=id_,
                 employee=self.request.user,
-                obj_model__has_key='type'
+                obj_model__has_key='url'
             )
             return Response(model_to_dict(history),
                 status=status.HTTP_200_OK)

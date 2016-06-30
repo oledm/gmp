@@ -4,6 +4,7 @@
     <a ui-sref="{{entry.report_data.url}}({id: entry.id})" class="list-group-item" ng-repeat="entry in vm.list">
       <h4 class="list-group-item-heading">
           {{entry.report_data.name !== '' ? entry.report_data.name : 'Неизвестый вид отчета'}}
+          {{entry.obj_model.type.name !== undefined ? '(' + entry.obj_model.type.name.toLowerCase() + ')' : ''}}
       </h4>
       <p class="list-group-item-text">
       <span am-time-ago="entry.date"></span>

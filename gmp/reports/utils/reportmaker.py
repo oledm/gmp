@@ -9,11 +9,13 @@ def upperFirstLetter(word):
 
 class ReportMaker():
     def __init__(self, data, report):
-        if data['type'] == 'passport':
-            Passport(data, report, 'Паспорт двигателя ' + data['engine']['type'])
-        if data['type'] == 'report':
-            Report(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])
-        if data['type'] == 'report-container':
+        if data['url'] == 'report-engine':
+            if data['type']['alias'] == 'report':
+                Report(data, report, 'Заключение экспертизы двигателя ' + data['engine']['type'])
+            elif data['type']['alias'] == 'passport':
+                Passport(data, report, 'Паспорт двигателя ' + data['engine']['type'])
+
+        if data['url'] == 'report-container':
             container_type = ContainerType.objects.get(pk=data['device']['_type'])
             desc = '{} зав.№ {}, рег.№ {}, инв.№ {}'.format(
                 container_type,

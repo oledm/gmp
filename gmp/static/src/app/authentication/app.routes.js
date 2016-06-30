@@ -54,7 +54,7 @@
                 controllerAs: 'vm',
                 templateUrl: '/static/src/app/filestorage/upload.tpl.html'
             })
-            .state('report', {
+            .state('report-engine', {
                 url: '/report-engine/:id',
                 controller: 'EngineController',
                 controllerAs: 'vm',

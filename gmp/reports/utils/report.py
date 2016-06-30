@@ -129,7 +129,7 @@ class Report(ReportMixin):
 
         ## 3
         template = self.get_csv('report_main_content3.csv')
-        org_name = self.data['obj_data']['org']
+        org_name = self.data['obj_data']['org']['name']
         org = Organization.objects.get(name=org_name)
         self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
             data=model_to_dict(org), spacer=0.5)
