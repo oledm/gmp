@@ -112,7 +112,6 @@
                             if (angular.isString(item)) {
                                 let dateOnly = item.split('T')[0];
                                 if (moment(dateOnly, 'YYYY-MM-DD', true).isValid()) {
-//                                    console.log(`${prop}:`, item, '-->', JSON.stringify(date));
                                     data[prop] = new Date(item);
                                 }
                             } else {

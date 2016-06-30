@@ -83,6 +83,7 @@
 
         vm.addEmployee = addEmployee;
         vm.allEmployees = allEmployees;
+        vm.addToCollection = addToCollection;
         vm.connection_types = connection_types;
         vm.control_types = control_types;
         vm.createPassport = createPassport;
@@ -104,6 +105,9 @@
             therm: {},
             vibro: {},
             order: {},
+            obj_data: {
+                detail_info: []
+            },
             docs: docs,
             resistance: {},
             type: report_types[0],
@@ -134,6 +138,14 @@
             });
         }
 
+        function addToCollection(arr, value) {
+            var value = value.trim();
+            // Test for absence of a new value in array 
+            if (value !== '' && arr.indexOf(value) === -1 ) {
+                arr.push(value);
+            }
+        }
+
         function procKeyPress(clickEvent, arr) {
             // Check for Return (Enter) key pressed
             if (clickEvent.which === 13) {
@@ -154,8 +166,8 @@
         }
 
         function createPassport() {
-            console.log('report:', JSON.stringify(vm.report));
-            History.saveNow(vm.report);
+//            console.log('report:', JSON.stringify(vm.report));
+            History.saveIfExist(vm.report);
 
             var report_create_error = undefined;
             if (vm.report.type.alias === 'passport') {
@@ -163,7 +175,6 @@
             } else if (vm.report.type.alias === 'report') {
                 report_create_error = 'Заключение не создано';
             }
-            console.log('report type:', vm.report.type.alias)
 
             ServerData.report({'report_data': vm.report})
                 .$promise.then(null,

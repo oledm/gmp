@@ -13,6 +13,7 @@
             get: get,
             list: list,
             save: save,
+            saveIfExist: saveIfExist,
             saveNow: saveNow,
             setCurrentModelValue: setCurrentModelValue,
             getCurrentModelValue: getCurrentModelValue,
@@ -76,6 +77,13 @@
             timeout = $timeout(() => {
                 saveNow(data);
             }, secondsWaitForModelChange * 1000);
+        }
+
+        function saveIfExist(data) {
+            if (history_id) {
+                console.log('history_id is', history_id);
+                update(history_id, {obj_model: data});
+            }
         }
 
         function saveNow(data) {

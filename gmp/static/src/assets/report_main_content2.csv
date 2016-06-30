@@ -1,2 +1,2 @@
 <strong>2</strong>;<strong>Объект экспертизы</strong>
-;"   Объектом экспертизы является взрывозащищённый электродвигатель {engine[type]},   зав.№&nbsp;{engine[serial_number]}, станционный&nbsp;№&nbsp;{engine[station_number]}, установленный в {obj_data[org]}, {obj_data[lpu]}, {obj_data[ks]}, {obj_data[plant]}, {obj_data[location]}."
+;"   Объектом экспертизы является взрывозащищённый электродвигатель {engine[type]},   зав.№&nbsp;{engine[serial_number]}, станционный&nbsp;№&nbsp;{engine[station_number]}, установленный в {obj_data[org][name]}, {obj_data[lpu][name]}, {obj_data[ks]}, {obj_data[plant]}, {obj_data[location]}."

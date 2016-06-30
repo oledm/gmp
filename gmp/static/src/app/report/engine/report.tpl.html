@@ -40,8 +40,8 @@
 
         <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
 
+        <div class="block"></div>
         <div id="messageBox"></div>
-        
         <div class="block text-center">
             <button ng-click="vm.createPassport()" class="btn btn-primary btn-lg"
                 ng-disabled="
@@ -62,9 +62,7 @@
           Создать {{vm.report.type.alias === 'passport' ? 'паспорт' : 'заключение'}}
             </button>    
         </div>
-    
-        <div class="block"></div>
-         
+
         <a target="_self" ng-href="/report/">
         </a>
     </div>

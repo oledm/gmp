@@ -4,7 +4,7 @@ from itertools import chain
 
 from django.forms.models import model_to_dict
 
-from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table
+from reportlab.platypus import Paragraph, Image, NextPageTemplate, TableStyle, KeepTogether, Preformatted, Table, Spacer
 from reportlab.platypus.frames import Frame
 from reportlab.platypus.doctemplate import PageTemplate
 from reportlab.lib.units import cm
@@ -14,13 +14,17 @@ from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
 from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
-from gmp.engines.models import Engine, ThermClass
+from gmp.engines.models import Engine, ThermClass, Connection
 from gmp.filestorage.models import FileStorage
 
 from .helpers import ReportMixin
 
 
 class Report(ReportMixin):
+    def __init__(self, data, report, title):
+        #toc_styles = ('TOCHeading3', 'TOCHeading3')
+        super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5)
+
     def create(self):
         self.setup_page_templates(self.doc, self.header_content())
 
@@ -55,15 +59,15 @@ class Report(ReportMixin):
                 ЭКСПЛУАТИРУЕМОЕ НА ОПАСНОМ ПРОИЗВОДСТВЕННОМ ОБЪЕКТЕ'''],
             ['<strong>Объект:</strong> Взрывозащищённый электродвигатель {engine[type]}'],
             ['станционный № {engine[station_number]} зав.№ {engine[serial_number]}'],
-            ['<strong>Владелец:</strong> {obj_data[org]}'],
-            ['''<strong>Место установки:</strong> {obj_data[lpu]}, {obj_data[ks]},
+            ['<strong>Владелец:</strong> {obj_data[org][name]}'],
+            ['''<strong>Место установки:</strong> {obj_data[lpu][name]}, {obj_data[ks]},
                 {obj_data[plant]}, {obj_data[location]}'''],
             ['№_____________________________________']
         ]
         rows = len(template)
         para_style = [
             *[['Heading 1 Bold']] * 2,
-            *[['Regular Center']] * (rows - 2),
+            *[['Regular Center Tall']] * (rows - 2),
         ]
         table_style = (('BOTTOMPADDING', (0,0), (-1,-1), 10), )
         self.add(template, [8], para_style, table_style,
@@ -103,10 +107,10 @@ class Report(ReportMixin):
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
         )
         para_style_full = (
-            ('Regular Center', 'Regular Center'),
-            ('Regular Center', 'Regular Justified'),
+            ('Regular Center Tall', 'Regular Center Tall'),
+            ('Regular Center Tall', 'Regular Justified'),
         )
-        para_style = (('Regular Center', 'Regular Justified'), )
+        para_style = (('Regular Center Tall', 'Regular Justified'), )
         # 1, 1.1
         template = self.get_csv('report_main_content11.csv')
         self.add(template, [1, 9], self.get_style(para_style_full, template), table_style,
@@ -176,13 +180,15 @@ class Report(ReportMixin):
         ## 9
         template = self.get_csv('report_main_content9.csv')
         first_N_rows = template[:-1]
-        self.add(first_N_rows, [1, 9], self.get_style(para_style_full, first_N_rows), table_style[1:],
-            data=self.data, spacer=0.5)
+        text = self.get(first_N_rows, [1, 9], self.get_style(para_style_full, first_N_rows), table_style[1:],
+            data=self.data)
 
         table_style = ()
         para_style = (('Regular', 'Regular Right'), )
         last_row = template[-1:]
-        self.add(last_row, [5, 5], self.get_style(para_style, last_row), table_style)
+        expert = self.get(last_row, [5, 5], self.get_style(para_style, last_row), table_style)
+
+        self.Story.append(KeepTogether([text, Spacer(0, .5 * cm), expert]))
 
     def appendix1(self):
         self.new_page()
@@ -198,9 +204,9 @@ class Report(ReportMixin):
         para_style_full = (
             ('Regular Right Italic',),
             ('Regular Bold Center',),
-            ('Regular Center', 'Regular Justified',),
+            ('Regular Center Tall', 'Regular Justified',),
         )
-        para_style = (('Regular Center', 'Regular Justified'), )
+        para_style = (('Regular Center Tall', 'Regular Justified'), )
         template = self.static_data_plain('report_appendix1.txt')
         numbered_list = enumerate(chain.from_iterable(template[2:]), start=1)
         stringified_numbered_list = list(map(lambda x: [str(x[0]), x[1]], numbered_list))
@@ -212,9 +218,9 @@ class Report(ReportMixin):
 
         self.put('Приложение 2', 'Regular Right Italic', 0.5)
 
-        for img_id in self.data['files']['main']:
-            image = FileStorage.objects.get(pk=img_id)
-            self.put_photo(image)
+        for img in self.data['files']['main']:
+            image = FileStorage.objects.get(pk=img['id'])
+            self.put_photo(image.fileupload)
             self.spacer(0.5)
 
     def appendix3(self):
@@ -222,6 +228,9 @@ class Report(ReportMixin):
         data = self.data.get('engine')
         engine = Engine.objects.get(name=data.get('type'))
         engine_data = engine.details()
+        connection = Connection.objects.get(pk=data['connection'])
+        data.update(engine_data, connection=str(connection))
+
         random_data = engine.random_data.get('moments')
 
         self.put('Приложение 3', 'Regular Right Italic', 0.5)
@@ -248,12 +257,11 @@ class Report(ReportMixin):
             ['Класс нагревостойкости изоляции', '{warming_class}'],
             ['Масса двигателя, кг', '{weight}']
         ]
-        para_style = (('Regular', 'Regular Center'), )
+        para_style = (('Regular', 'Regular Center Tall'), )
         table_style = (
             ('BOTTOMPADDING', (0,0), (-1,-1), 5),
             ('TOPPADDING', (0,0), (-1,-1), 2),
         )
-        data.update(engine_data)
         self.add(template, [5, 5], self.get_style(para_style, template), table_style,
             data=data, styleTable=True
         )
@@ -265,7 +273,7 @@ class Report(ReportMixin):
         self.measurers('визуальн')
         
         res = 'КОНТРОЛЬ ПАРАМЕТРОВ ВЗРЫВОЗАЩИТЫ'
-        self.put(res, 'Regular Center', 0.2)
+        self.put(res, 'Regular Center Tall', 0.2)
 
         # Measure data
         table_data = [[
@@ -289,7 +297,7 @@ class Report(ReportMixin):
             ('TOPPADDING', (0,0), (-1,-1), 0),
         )
         para_style = (
-            ('Regular Bold Center', ), ('Regular Center', ),
+            ('Regular Bold Center', ), ('Regular Center Tall', ),
         )
         self.add(template, [1, 4, 1, 1, 1, 1, 1], self.get_style(para_style, template), table_style,
             data=data, styleTable=True, spacer=.5
@@ -335,7 +343,7 @@ class Report(ReportMixin):
             ['Отсутствие антикоррозионной смазки  на взрывонепроницаемых поверхностях', 'нет'],
             ['Наличие повреждений уплотнительного кольца кабельного ввода', 'нет'],
         ]
-        para_style = (('Regular', 'Regular Center'),)
+        para_style = (('Regular', 'Regular Center Tall'),)
         table_style = (
             ('BOTTOMPADDING', (0,0), (-1,-1), 4),
             ('TOPPADDING', (0,0), (-1,-1), 0),
@@ -352,9 +360,9 @@ class Report(ReportMixin):
         ]
         para_style = (
             ('Regular Bold', ),
-            ('Regular', 'Regular Center'),
+            ('Regular', 'Regular Center Tall'),
             ('Regular Bold', ),
-            ('Regular', 'Regular Center'),
+            ('Regular', 'Regular Center Tall'),
         )
         table_style = table_style + (
             ('BOTTOMPADDING', (0,0), (0,0), 0),
@@ -363,7 +371,7 @@ class Report(ReportMixin):
             ('SPAN', (0,2), (-1,2)),
         )
         self.add(template, [8, 2], self.get_style(para_style, template), table_style,
-            styleTable=True, spacer=.5
+            styleTable=True, spacer=.3
         )
         self.category_controller('ВИК')
 
@@ -394,7 +402,7 @@ class Report(ReportMixin):
         para_style = (
             ('Regular Bold Center',),
             ('Regular Bold Center',),
-            ['Regular', *['Regular Center'] * 5],
+            ['Regular', *['Regular Center Tall'] * 5],
         )
         table_style = (
             ('BOTTOMPADDING', (0,0), (-1,-1), 5),
@@ -439,11 +447,11 @@ class Report(ReportMixin):
         self.spacer(.3)
 
         image1 = self.fetch_image(
-            FileStorage.objects.get(pk=self.data['files']['therm1'][0]),
+            FileStorage.objects.get(pk=self.data['files']['therm1'][0]['id']).fileupload,
             height=7, width=7
         )
         image2 = self.fetch_image(
-            FileStorage.objects.get(pk=self.data['files']['therm2'][0]),
+            FileStorage.objects.get(pk=self.data['files']['therm2'][0]['id']).fileupload,
             height=7, width=7
         )
         table_data = [[image1, image2]]
@@ -474,7 +482,7 @@ class Report(ReportMixin):
             ['Соответствие норме', '{correct}'],
         ]
         para_style = (
-            ('Regular', 'Regular Center'),
+            ('Regular', 'Regular Center Tall'),
         )
         self.add(template, [8,2], self.get_style(para_style, template), table_style,
             data=therm_data, styleTable=True, spacer=.5
@@ -496,7 +504,7 @@ class Report(ReportMixin):
         ]
         para_style = [
             ['Regular Bold Center', ],
-            *[['Regular'] + ['Regular Center'] * 3]
+            *[['Regular'] + ['Regular Center Tall'] * 3]
         ]
         table_style = (
             ('BOTTOMPADDING', (0,0), (-1,-1), 6),
@@ -521,7 +529,7 @@ class Report(ReportMixin):
         self.spacer(.5)
         self.put('а) Измерения сопротивления обмотки статора постоянному току:', 'Regular Bold')
         self.measurers('микроомметр')
-        self.put('Сопротивление обмотки статора, Ом', 'Regular Center', .2)
+        self.put('Сопротивление обмотки статора, Ом', 'Regular Center Tall', .2)
 
         template = [
             ['А-В', 'B-C', 'C-A'],
@@ -529,20 +537,19 @@ class Report(ReportMixin):
         ]
         para_style = [
             ['Regular Bold Center'],
-            ['Regular Center']
+            ['Regular Center Tall']
         ]
         table_style = (
             ('BOTTOMPADDING', (0,0), (-1,0), 6),
             ('TOPPADDING', (0,0), (-1,0), 2),
         )
         self.add(template, [3, 4, 3], self.get_style(para_style, template), table_style,
-            data=self.data['resistance'], styleTable=True, spacer=.5
+            data=self.data['resistance'], styleTable=True, spacer=.3
         )
-        self.spacer(.3)
 
         self.put('б)  Измерения сопротивления изоляции обмотки статора:', 'Regular Bold')
         self.measurers('сопротивления изоляции')
-        self.put('Сопротивление изоляции, МОм', 'Regular Center', .2)
+        self.put('Сопротивление изоляции, МОм', 'Regular Center Tall', .2)
         template = [
             ['Фаза', 'А-0', 'B-0', 'C-0', 'А-В', 'B-C', 'C-A'],
             ['Сопротивление изоляции, Мом', '{isolation}', '{isolation}', '{isolation}', '&ndash;', '&ndash;', '&ndash;'],
@@ -569,7 +576,7 @@ class Report(ReportMixin):
                 'Свидетельство о<br/>поверке', 'Дата следующей<br/>поверки' 
             ]
         ]
-        all_measurers = Measurer.objects.filter(id__in=self.data.get('measurers'))
+        all_measurers = Measurer.objects.filter(id__in=self.data.get('measurers').get('selected'))
         for num, measurer in enumerate(all_measurers, start=1):
             template.append([str(num), *measurer.details()])
         table_style = (
@@ -581,7 +588,7 @@ class Report(ReportMixin):
         )
         para_style = (
             ('Regular Bold Center', ),
-            ('Regular Center', ),
+            ('Regular Center Tall', ),
         )
         self.add(template, [1, 3, 2, 2, 2], self.get_style(para_style, template), table_style,
             styleTable=True, spacer=.5
@@ -592,9 +599,9 @@ class Report(ReportMixin):
 
         self.put('Приложение 11', 'Regular Right Italic', 0.5)
 
-        for img_id in self.data['files']['licenses']:
-            image = FileStorage.objects.get(pk=img_id)
-            self.put_photo(image)
+        for img in self.data['files']['licenses']:
+            image = FileStorage.objects.get(pk=img['id'])
+            self.put_photo(image.fileupload)
             self.spacer(0.5)
 
 
@@ -614,8 +621,8 @@ class Report(ReportMixin):
         table_style = (
             ('SPAN', (0,0), (-1,0)),
             ('SPAN', (0,-1), (-1,-1)),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 10),
-            ('TOPPADDING', (0,-1), (-1,-1), 10),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+            ('TOPPADDING', (0,-1), (-1,-1), 5),
             ('ALIGN', (-1,1), (-1,1), 'RIGHT')
         )
 
@@ -660,7 +667,7 @@ class Report(ReportMixin):
             ]
         ]
         all_measurers = Measurer.objects.filter(
-            id__in=self.data.get('measurers')
+            id__in=self.data.get('measurers').get('selected')
         ).filter(
             name__icontains=approx_category
         )
@@ -670,7 +677,7 @@ class Report(ReportMixin):
             ('TOPPADDING', (0,0), (-1,-1), 0),
             ('BOTTOMPADDING', (0,0), (-1,-1), 2),
         )
-        para_style = (('Regular Center', ),)
+        para_style = (('Regular Center Tall', ),)
         self.add(template, [1, 3, 2, 2, 2], self.get_style(para_style, template), table_style,
             styleTable=True, spacer=.5
         )
@@ -698,23 +705,23 @@ class Report(ReportMixin):
     def header(canvas, doc, content):
         canvas.saveState()
         w, h = content[0].wrap(doc.width, doc.topMargin)
-        content[0].drawOn(canvas, doc.width - w, 120)
+        content[0].drawOn(canvas, (doc.width + w)/2 - doc.leftMargin, 120)
 
         w, h = content[1].wrap(doc.width, doc.topMargin)
-        content[1].drawOn(canvas, (doc.width) / 2, h + 30)
+        content[1].drawOn(canvas, doc.leftMargin + doc.width - w/2, h + 30)
         canvas.restoreState()
 
     def header_content(self):
-        date_string = '"____"{:_>21}'.format('_') + '201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;г'
-        fio_string = '{fio:_>32}'
+        date_string = '"____"{:_>15}'.format('_') + '201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;г'
+        fio_string = '{fio:_>25}'
         template = [
             ['Директор филиала<br/>ООО «ГАЗМАШПРОЕКТ» «НАГАТИНСКИЙ»'],
-            [fio_string.format(fio='А.Н. Бондаренко')],
+            [fio_string.format(fio='Р.Ю. Ерин')],
             [date_string]   
         ]
         rows = len(template)
         styles = [
-            *[['Regular Center']] * rows,
+            *[['Regular Center Tall']] * rows,
         ]
         table_data = self.values(template, {})
         table = self.table(table_data, styles, [4], styleTable=False)

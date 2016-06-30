@@ -16,13 +16,14 @@
       <label class="control-label">Документация, предоставленная заказчиком</label>
         <div class="row" ng-repeat="x in vm.report.docs">
             <div class="col-sm-12">
-                <div class="alert alert-success alert-dismissible" role="alert"
-                    ng-model="vm.report.docs[$index]">
-                  {{vm.report.docs[$index]}}
-                  <button type="button" ng-click="vm.report.docs.splice($index, 1)"
-                      class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
+                <div watcher ng-model="vm.report.docs">
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                      {{vm.report.docs[$index]}}
+                      <button type="button" ng-click="vm.report.docs.splice($index, 1)"
+                          class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,13 +47,14 @@
       <label class="control-label">Краткая характеристика и назначение объекта экспертизы</label>
         <div class="row" ng-repeat="x in vm.report.obj_data.detail_info">
             <div class="col-sm-12">
-                <div class="alert alert-success alert-dismissible" role="alert"
-                    ng-model="vm.report.obj_data.detail_info[$index]">
-                  {{vm.report.obj_data.detail_info[$index]}}
-                  <button type="button" ng-click="vm.report.obj_data.detail_info.splice($index, 1)"
-                      class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
+                <div watcher ng-model="vm.report.obj_data.detail_info">
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                      {{vm.report.obj_data.detail_info[$index]}}
+                      <button type="button" ng-click="vm.report.obj_data.detail_info.splice($index, 1)"
+                          class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
                 </div>
             </div>
         </div>
