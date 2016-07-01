@@ -63,7 +63,6 @@ class Report(ReportMixin):
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
         self.put_toc()
-        self.page2()
         self.page3()
         self.toc_entry = [
             {
@@ -128,30 +127,6 @@ class Report(ReportMixin):
         self.add(template, [8], para_style, table_style,
             data=self.data, hAlign='CENTER')
 
-    def page2(self):
-        # Main content
-        self.new_page()
-        self.put('Содержание', 'Regular Bold Center', 0.5)
-        csv_data = self.get_csv('report_TOC.csv')
-        template = csv_data[:9]
-        rows = len(template)
-        para_style = [
-            *[['Regular Bold Center', 'Regular Justified Bold', 'Regular Right Bold']] * rows
-        ]
-        table_style = (
-            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        )
-        self.add(template, [1, 8, 1], para_style, table_style)
-
-        # Appendix content
-        template = csv_data[9:]
-        rows = len(template)
-        para_style = [
-            *[['Regular Bold Center', 'Regular Justified', 'Regular Right Bold']] * rows
-        ]
-        self.add(template, [2, 7, 1], para_style, table_style)
-    
     def add_to_toc(self, *entries):
         toc_entry = []
         for num, item in enumerate(self.toc_entry):
@@ -607,7 +582,7 @@ class Report(ReportMixin):
         self.put('Приложение 9', 'Regular Right Italic', 0.5)
         self.zakl_header('электрических измерений')
 
-        self.spacer(.5)
+        self.spacer(.4)
         self.put('а) Измерения сопротивления обмотки статора постоянному току:', 'Regular Bold')
         self.measurers('микроомметр')
         self.put('Сопротивление обмотки статора, Ом', 'Regular Center Tall', .2)
@@ -636,8 +611,8 @@ class Report(ReportMixin):
             ['Сопротивление изоляции, Мом', '{isolation}', '{isolation}', '{isolation}', '&ndash;', '&ndash;', '&ndash;'],
         ]
         table_style = table_style + (
-            ('BOTTOMPADDING', (0,1), (-1,1), 10),
-            ('TOPPADDING', (0,1), (-1,1), 8),
+            ('BOTTOMPADDING', (0,1), (-1,1), 8),
+            ('TOPPADDING', (0,1), (-1,1), 6),
         )
         self.add(template, [4, 1, 1, 1, 1, 1, 1], self.get_style(para_style, template), table_style,
             data=self.data['resistance'], styleTable=True, spacer=.3
