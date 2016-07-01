@@ -119,6 +119,8 @@ class MyDocTemplate(BaseDocTemplate):
                 self.appendixLetter = chr(ord(self.appendixLetter) + 1)
             elif style == 'TOC' or style == 'TOC Hidden':
                 level = 1
+            elif style == 'TOC Hidden wo dots':
+                level = 0
             else:
                 return
             E = [level, text, self.page]
@@ -189,45 +191,6 @@ class ReportMixin():
         # store the bookmark name on the flowable so afterFlowable can see this
         h._bookmarkName = bn
         return h
-
-    #def add_table_to_toc_and_return(self, text, sty):
-    #    data = str(text + sty.name).encode()
-    #    bn = sha1(data).hexdigest()
-    #    data = (
-    #        ('ФОРМУЛЯР № 1', 'Регистрация работ', '3'),
-    #        ('ФОРМУЛЯР № 2', 'Документация, предоставленная заказчиком при выполнении работ', '7'),
-    #        ('ФОРМУЛЯР № 3', 'Паспортные данные', '8'),
-    #        ('ФОРМУЛЯР № 4', 'Данные заводских замеров и приёмо-сдаточных испытаний', '9'),
-    #        ('ФОРМУЛЯР № 5', 'Общий вид электродвигателя', '10'),
-    #        ('ФОРМУЛЯР № 6', 'Конструктивная схема электродвигателя. Электрическая схема подключения электродвигателя', '11'),
-    #        ('ФОРМУЛЯР № 7', 'Тепловизионный контроль. Определение соответствия электродвигателя температурному классу', '12'),
-    #        ('ФОРМУЛЯР № 8', 'Вибрационный контроль электродвигателя', '13'),
-    #        ('ФОРМУЛЯР № 9-1', 'Визуальный и измерительный контроль электродвигателя', '14'),
-    #        ('ФОРМУЛЯР № 9-2', 'Контроль параметров взрывозащиты', '16'),
-    #        ('ФОРМУЛЯР № 10', 'Ультразвуковая дефектоскопия и толщинометрия взрывозащищённой оболочки электродвигателя', '17'),
-    #        ('ФОРМУЛЯР № 11', 'Измерение сопротивления обмотки статора постоянному току', '18'),
-    #        ('ФОРМУЛЯР № 12', 'Измерение сопротивления изоляции обмотки статора', '18'),
-    #        ('ФОРМУЛЯР № 13', 'Рекомендации по ремонту и эксплуатации', '19'),
-    #        ('ФОРМУЛЯР № 14', 'Заключение', '20'),
-    #        ('ФОРМУЛЯР № 14', 'Заключение', '20'),
-    #        ('ФОРМУЛЯР № 15', 'Выполненные мероприятия в процессе проведения работ', '21'),
-    #        ('ПРИЛОЖЕНИЕ 1', 'Сведения об эксплуатации электродвигателя', '22'),
-    #        ('ПРИЛОЖЕНИЕ 2', 'Сведения об испытаниях электродвигателя', '23'),
-    #        ('ПРИЛОЖЕНИЕ 3', 'Сведения о ремонтах электродвигателя', '24'),
-    #    )
-    #    rows = len(data)
-    #    styles = [
-    #        *[['Regular12', 'Regular', 'Regular Right']] * rows
-    #    ]
-    #    table_data = self.values(data, {})
-    #    table = self.table(table_data, styles, [2.3, 7.2, .5])
-    #    table.setStyle(TableStyle([
-    #        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-    #    ]))
-    #    h = Paragraph(text + '<a name="%s"/>' % bn, sty)
-    #    # store the bookmark name on the flowable so afterFlowable can see this
-    #    h._bookmarkName = bn
-    #    return h
 
     def create(self):
         raise NotImplementedError('Define method "create"')
@@ -542,8 +505,6 @@ class ReportMixin():
             fontName='Times',
             fontSize=13,
             leading=16,
-            #borderWidth=0.5,
-            #borderColor=colors.black,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
             name='Regular Center Small',
@@ -760,6 +721,12 @@ class ReportMixin():
             textColor=colors.white,
             alignment=TA_CENTER))
         self.styles.add(ParagraphStyle(
+            name='TOC Hidden wo dots',
+            fontName='Times Bold',
+            fontSize=0.1,
+            textColor=colors.white,
+            alignment=TA_CENTER))
+        self.styles.add(ParagraphStyle(
             name='TOCHeading1',
             fontName='Times Bold',
             fontSize=12,
@@ -775,6 +742,15 @@ class ReportMixin():
             alignment=TA_LEFT))
         self.styles.add(ParagraphStyle(
             name='TOCHeading3',
+            fontName='Times',
+            fontSize=13,
+            leading=18,
+            #firstLineIndent=-3.25 * cm,
+            #leftIndent=3.25 * cm,
+            alignment=TA_LEFT))
+        self.styles.add(ParagraphStyle(
+            name='TOCHeading4',
+            #fontName='Times Bold',
             fontName='Times',
             fontSize=13,
             leading=18,

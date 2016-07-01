@@ -43,6 +43,7 @@ constant named delta. If one entry spans more than one line, all
 lines after the first are indented by the same constant named
 epsilon.
 """
+from json import loads, JSONDecodeError
 
 from reportlab.lib import enums
 from reportlab.lib.units import cm
@@ -55,12 +56,13 @@ from reportlab.platypus.flowables import Spacer, Flowable
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 from base64 import encodestring, decodestring
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-dumps = pickle.dumps
-loads = pickle.loads
+
+#try:
+#    import cPickle as pickle
+#except ImportError:
+#    import pickle
+#dumps = pickle.dumps
+#loads = pickle.loads
 
 def unquote(txt):
     from xml.sax.saxutils import unescape
@@ -241,6 +243,14 @@ class TableOfContents(IndexingFlowable):
         else:
             _tempEntries = self._lastEntries
 
+        def getParagraphStyle(style):
+            return ParagraphStyle(
+                name=style['name'],
+                fontName=style['fontName'],
+                fontSize=style['fontSize'],
+                leading=style['leading'],
+                alignment=style['alignment'])
+
         def drawTOCEntryEnd(canvas, kind, label):
             '''Callback to draw dots and page numbers after each entry.'''
             label = label.split(',')
@@ -256,27 +266,30 @@ class TableOfContents(IndexingFlowable):
         tableData = []
         for (level, text, pageNum, key) in _tempEntries:
             style = self.getLevelStyle(level)
-            text_parts = text.split('|')
-            # Multiple-parts TOC entry
-            if len(text_parts) > 1:
+            # JSON-encoded TOC entry
+            try:
+                entry = loads(text)
+                first_col_width = entry[0]['width']
+                last_col_width = entry[1]['width']
+                style1 = getParagraphStyle(entry[0]['font'])
+                style2 = getParagraphStyle(entry[1]['font'])
+
                 if key:
-                    text1 = '<a href="#%s">%s</a>' % (key, text_parts[0])
-                    text2 = '<a href="#%s">%s</a>' % (key, text_parts[1])
+                    text1 = '<a href="#%s">%s</a>' % (key, entry[0]['text'])
+                    text2 = '<a href="#%s">%s</a>' % (key, entry[1]['text'])
                     keyVal = repr(key).replace(',','\\x2c').replace('"','\\x2c')
                 else:
                     keyVal = None
 
                 para1 = Paragraph('{}<label="{:d},{:d},{}"/>'.format(
-                    text1, pageNum, level, keyVal), style)
+                    text1, pageNum, level, keyVal), style1)
                 para2 = Paragraph('{}<onDraw name="drawTOCEntryEnd" label="{:d},{:d},{},{:f}"/>'.format(
-                    text2, pageNum, level, keyVal, .75), style)
+                    text2, pageNum, level, keyVal, last_col_width), style2)
 
-                if style.spaceBefore:
-                    tableData.append([Spacer(1, style.spaceBefore),])
                 tableData.append([para1, para2])
-                widths = (availWidth * .25, availWidth * .75)
-            # Single-part TOC entry
-            else:
+                widths = (availWidth * first_col_width , availWidth * last_col_width)
+            # Plain TOC entry
+            except JSONDecodeError:
                 if key:
                     text = '<a href="#%s">%s</a>' % (key, text)
                     keyVal = repr(key).replace(',','\\x2c').replace('"','\\x2c')

@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import partial
 from itertools import chain
+from json import dumps
 
 from django.forms.models import model_to_dict
 
@@ -10,6 +11,7 @@ from reportlab.platypus.doctemplate import PageTemplate
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.lib.styles import ParagraphStyle as PS
+from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 
 from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate
@@ -23,8 +25,8 @@ from .helpers import ReportMixin
 
 class Report(ReportMixin):
     def __init__(self, data, report, title):
-        #toc_styles = ('TOCHeading3', 'TOCHeading3')
-        super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5)
+        toc_styles = ('TOCHeading4', 'TOCHeading4')
+        super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5, toc_styles=toc_styles)
 
     def create(self):
         self.setup_page_templates(self.doc, self.header_content())
@@ -35,10 +37,57 @@ class Report(ReportMixin):
         self.format_JS_dates(self.data['order'], ('date',))
 
         self.Story.append(NextPageTemplate('Title'))
+        self.toc_entry = [
+            {
+                'width': 0.2,
+                'font':  {
+                    'name': 'Regular Bold',
+                    'fontName': 'Times Bold',
+                    'fontSize': 13,
+                    'leading': 14,
+                    'alignment': TA_CENTER
+                }
+            },
+            {
+                'width': 0.8,
+                'font':  {
+                    'name': 'Regular',
+                    'fontName': 'Times Bold',
+                    'fontSize': 13,
+                    'leading': 14,
+                    'alignment': TA_LEFT
+                }
+            }
+
+        ]
         self.page1()
         self.Story.append(NextPageTemplate('Content'))
+        self.put_toc()
         self.page2()
         self.page3()
+        self.toc_entry = [
+            {
+                'width': 0.2,
+                'font':  {
+                    'name': 'Regular Bold',
+                    'fontName': 'Times Bold',
+                    'fontSize': 13,
+                    'leading': 14,
+                    'alignment': TA_CENTER
+                }
+            },
+            {
+                'width': 0.8,
+                'font':  {
+                    'name': 'Regular',
+                    'fontName': 'Times',
+                    'fontSize': 13,
+                    'leading': 14,
+                    'alignment': TA_LEFT
+                }
+            }
+
+        ]
         self.appendix1()
         self.appendix2()
         self.appendix3()
@@ -49,6 +98,11 @@ class Report(ReportMixin):
         self.appendix9()
         self.appendix10()
         self.appendix11()
+
+    def put_toc(self):
+        self.new_page()
+        self.put('Содержание', 'Regular Bold Center', 0.5)
+        self.Story.append(self.toc)
 
     def page1(self):
         self.put_photo('zakl_header_img.jpg')
@@ -97,9 +151,17 @@ class Report(ReportMixin):
             *[['Regular Bold Center', 'Regular Justified', 'Regular Right Bold']] * rows
         ]
         self.add(template, [2, 7, 1], para_style, table_style)
+    
+    def add_to_toc(self, *entries):
+        toc_entry = []
+        for num, item in enumerate(self.toc_entry):
+            toc_entry.append({ **item, 'text': entries[num]})
+        json_toc_entry = dumps(toc_entry)
+        super().add_to_toc(json_toc_entry, self.styles['TOC Hidden'])
 
     def page3(self):
         self.new_page()
+        self.add_to_toc('1', 'Вводная часть')
         table_style = (
             ('BOTTOMPADDING', (0,1), (-1,1), 10),
             ('BOTTOMPADDING', (0,0), (-1,0), 10),
@@ -128,11 +190,13 @@ class Report(ReportMixin):
             data=self.data['order'], spacer=0.5)
 
         ## 2
+        self.add_to_toc('2', 'Объект экспертизы')
         template = self.get_csv('report_main_content2.csv')
         self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
             data=self.data, spacer=0.5)
 
         ## 3
+        self.add_to_toc('3', 'Данные о заказчике')
         template = self.get_csv('report_main_content3.csv')
         org_name = self.data['obj_data']['org']['name']
         org = Organization.objects.get(name=org_name)
@@ -140,11 +204,13 @@ class Report(ReportMixin):
             data=model_to_dict(org), spacer=0.5)
 
         ## 4
+        self.add_to_toc('4', 'Цель экспертизы промышленной безопасности')
         template = self.get_csv('report_main_content4.csv')
         self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
             data=self.data['engine'], spacer=0.5)
 
         ### 5
+        self.add_to_toc('5', 'Сведения о рассмотренных документах')
         template = self.get_csv('report_main_content5.csv')
         chapter_number = int(''.join(filter(lambda x: x.isdigit(), template[0][0])))
 
@@ -157,6 +223,7 @@ class Report(ReportMixin):
             spacer=0.5)
 
         ### 6
+        self.add_to_toc('6', 'Краткая характеристика и назначение объекта экспертизы')
         template = self.get_csv('report_main_content6.csv')
         chapter_number = int(''.join(filter(lambda x: x.isdigit(), template[0][0])))
 
@@ -169,16 +236,19 @@ class Report(ReportMixin):
             spacer=0.5)
 
         ## 7
+        self.add_to_toc('7', 'Перечень работ, выполненных при проведении экспертизы промышленной безопасности')
         template = self.get_csv('report_main_content7.csv')
         self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
             spacer=0.5)
 
         ## 8
+        self.add_to_toc('8', 'Результаты экспертизы промышленной безопасности')
         template = self.get_csv('report_main_content8.csv')
         self.add(template, [1, 9], self.get_style(para_style_full, template), table_style[1:],
             data=self.data, spacer=0.5)
 
         ## 9
+        self.add_to_toc('9', 'Выводы заключения экспертизы')
         template = self.get_csv('report_main_content9.csv')
         first_N_rows = template[:-1]
         text = self.get(first_N_rows, [1, 9], self.get_style(para_style_full, first_N_rows), table_style[1:],
@@ -193,6 +263,7 @@ class Report(ReportMixin):
 
     def appendix1(self):
         self.new_page()
+        self.add_to_toc('Приложение 1', 'Руководящая нормативно-техническая документация')
         table_style = (
             ('BOTTOMPADDING', (0,0), (-1,0), 10),
             ('BOTTOMPADDING', (0,1), (-1,1), 20),
@@ -217,6 +288,7 @@ class Report(ReportMixin):
     def appendix2(self):
         self.new_page()
 
+        self.add_to_toc('Приложение 2', 'Программа проведения экспертизы промышленной безопасности по продлению срока безопасной эксплуатации взрывозащищённого электродвигателя')
         self.put('Приложение 2', 'Regular Right Italic', 0.5)
 
         for img in self.data['files']['main']:
@@ -226,6 +298,8 @@ class Report(ReportMixin):
 
     def appendix3(self):
         self.new_page()
+        self.add_to_toc('Приложение 3', 'Технические данные объекта')
+
         data = self.data.get('engine')
         engine = Engine.objects.get(name=data.get('type'))
         engine_data = engine.details()
@@ -269,6 +343,7 @@ class Report(ReportMixin):
 
     def appendix4(self):
         self.new_page()
+        self.add_to_toc('Приложение 4', 'Протокол визуального и измерительного контроля')
         self.put('Приложение 4', 'Regular Right Italic', 0.5)
         self.zakl_header('визуального и измерительного контроля')
         self.measurers('визуальн')
@@ -385,6 +460,7 @@ class Report(ReportMixin):
 
     def appendix5(self, zones_data):
         self.new_page()
+        self.add_to_toc('Приложение 5', 'Протокол ультразвукового контроля')
         self.put('Приложение 5', 'Regular Right Italic', 0.5)
         self.zakl_header('ультразвукового контроля')
         self.measurers('ультразвук')
@@ -419,6 +495,7 @@ class Report(ReportMixin):
 
     def appendix6(self, zones_data):
         self.new_page()
+        self.add_to_toc('Приложение 6', 'Схема ультразвукового контроля')
         self.put('Приложение 6', 'Regular Right Italic', 0.5)
         self.put('Схема ультразвукового контроля', 'Regular Bold Center', 0.5)
 
@@ -442,6 +519,7 @@ class Report(ReportMixin):
 
     def appendix7(self):
         self.new_page()
+        self.add_to_toc('Приложение 7', 'Протокол теплового контроля')
         self.put('Приложение 7', 'Regular Right Italic', 0.5)
         self.zakl_header('теплового контроля')
         self.measurers('инфракрас')
@@ -492,6 +570,7 @@ class Report(ReportMixin):
 
     def appendix8(self):
         self.new_page()
+        self.add_to_toc('Приложение 8', 'Протокол вибродиагностического контроля')
         self.put('Приложение 8', 'Regular Right Italic', 0.5)
         self.zakl_header('вибродиагностического контроля')
         self.measurers('вибр')
@@ -524,6 +603,7 @@ class Report(ReportMixin):
 
     def appendix9(self):
         self.new_page()
+        self.add_to_toc('Приложение 9', 'Протокол  электрических измерений')
         self.put('Приложение 9', 'Regular Right Italic', 0.5)
         self.zakl_header('электрических измерений')
 
@@ -567,6 +647,7 @@ class Report(ReportMixin):
 
     def appendix10(self):
         self.new_page()
+        self.add_to_toc('Приложение 10', 'Перечень приборов и инструментов')
         self.put('Приложение 10', 'Regular Right Italic', 0.5)
 
         self.spacer(.5)
@@ -598,6 +679,7 @@ class Report(ReportMixin):
     def appendix11(self):
         self.new_page()
 
+        self.add_to_toc('Приложение 11', 'Копии лицензий экспертной организации на право проведения экспертизы промышленной безопасности, копии свидетельств об аккредитации в системе экспертизы промышленной безопасности, копии удостоверений экспертов и специалистов по неразрушающему контролю')
         self.put('Приложение 11', 'Regular Right Italic', 0.5)
 
         for img in self.data['files']['licenses']:
