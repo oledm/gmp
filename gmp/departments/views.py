@@ -8,6 +8,9 @@ class DepartmentViewset(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
 
+    def list(self, request):
+        print('get Department')
+
 class MeasurerViewset(viewsets.ViewSet):
     queryset = Measurer.objects.all()
     serializer_class = MeasurerSerializer

@@ -12,4 +12,8 @@ const LoginRegisterForm = ({ children }) => (
     </div>
 )
 
+LoginRegisterForm.propTypes = {
+    children: React.PropTypes.element.isRequired
+}
+
 export default LoginRegisterForm

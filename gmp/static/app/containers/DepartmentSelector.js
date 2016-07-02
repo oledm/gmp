@@ -20,9 +20,9 @@ class DepartmentSelector extends Component {
     }
 }
 
-DepartmentSelector.propTypes = {
-    options: React.PropTypes.array.isRequired
-}
+//DepartmentSelector.propTypes = {
+//    options: React.PropTypes.array.isRequired
+//}
 
 const mapStateToProps = (state) => ({
     options: state.departments.departments

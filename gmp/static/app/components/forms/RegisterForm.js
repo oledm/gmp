@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
 import InputText from '../inputs/InputText'
 import LoginValidation from './LoginValidation'
+import DepartmentSelector from '../../containers/DepartmentSelector'
 import { login } from '../../actions/index'
 
 const fields = [ 'email', 'password' ]
@@ -22,6 +23,9 @@ class LoginForm extends Component {
     return (
         <form onSubmit={handleSubmit(this.props.createPost.bind(this))}>
             <div className="form-group">
+                <div className="row">
+                    <DepartmentSelector />
+                </div>
                 <div className="row">
                     <InputText
                         className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8"
@@ -45,7 +49,7 @@ class LoginForm extends Component {
                 <div className="row">
                   <div className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
                       <button className="btn btn-primary" type="submit" disabled={submitting || !valid}>
-                        {submitting ? <i/> : <i/>} Войти
+                        {submitting ? <i/> : <i/>} Отправить
                       </button>
                   </div>
                 </div>
