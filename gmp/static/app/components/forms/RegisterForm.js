@@ -5,7 +5,7 @@ import LoginValidation from './LoginValidation'
 import DepartmentSelector from '../../containers/DepartmentSelector'
 import { login } from '../../actions/index'
 
-const fields = [ 'email', 'password' ]
+const fields = [ 'department', 'email', 'password' ]
 
 const submit = (values, dispatch) => {
     return new Promise((resolve, reject) => {
@@ -17,14 +17,14 @@ const submit = (values, dispatch) => {
 class LoginForm extends Component {
 
   render() {
-    const { fields: { email, password },
+    const { fields: { department, email, password },
         valid, handleSubmit, submitting } = this.props
 
     return (
         <form onSubmit={handleSubmit(this.props.createPost.bind(this))}>
             <div className="form-group">
                 <div className="row">
-                    <DepartmentSelector />
+                    <DepartmentSelector className="col-xs-6" label="Отдел" {...department} />
                 </div>
                 <div className="row">
                     <InputText
