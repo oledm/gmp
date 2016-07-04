@@ -7,7 +7,12 @@
                      ng-class="{ 'has-error':
                          vm.teamForm.employee.$touched &&
                          vm.teamForm.employee.$invalid }">
-                      <label class="control-label">Работник</label>
+                      <label class="control-label">Работник&nbsp;&nbsp;
+                          <a href="#"
+                              ng-if="vm.report.team.all.length > 1"
+                              ng-click="vm.removeEmployee($index)">(Удалить)
+                          </a>
+                      </label>
                       <select class="form-control" required ng-model="emp.id"
                           ng-options="employee.id as employee.full_fio for employee in vm.allEmployees"
                           name="employee"

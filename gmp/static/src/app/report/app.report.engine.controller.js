@@ -113,6 +113,7 @@
             type: report_types[0],
             url: 'report-engine',
         };
+        vm.removeEmployee = removeEmployee;
         vm.reportId = $stateParams.id;
         vm.report_types = report_types;
         vm.reportTypeChange = reportTypeChange;
@@ -179,6 +180,12 @@
             ServerData.report({'report_data': vm.report})
                 .$promise.then(null,
                     data => showError(`${report_create_error}. Обратитесь за помощью к разработчику`));
+        }
+
+        function removeEmployee(index) {
+            if (vm.report.team.length > 1) {
+                vm.report.team.splice(index, 1);
+            }
         }
 
         function getLPUs(org) {

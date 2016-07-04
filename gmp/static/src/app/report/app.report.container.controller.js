@@ -284,6 +284,7 @@
 
 //        vm.uuid = uuid.v4();
         vm.ranks = ranks;
+        vm.removeEmployee = removeEmployee;
         vm.report_initial_state = angular.copy(vm.report)
         vm.restore_initial_state = restore_initial_state; 
         vm.setSelected = setSelected;
@@ -356,6 +357,12 @@
             // Test for absence of a new value in array 
             if (value !== '' && arr.indexOf(value) === -1 ) {
                 arr.push({'value': value});
+            }
+        }
+
+        function removeEmployee(index) {
+            if (vm.report.team.all.length > 1) {
+                vm.report.team.all.splice(index, 1);
             }
         }
 
