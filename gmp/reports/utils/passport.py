@@ -67,7 +67,7 @@ class Passport(ReportMixin):
 
         ]
         self.Story.append(NextPageTemplate('Content'))
-        self.procExcelData()
+        #self.procExcelData()
         self.page3()
         self.page4()
         self.page5_6()
@@ -95,6 +95,7 @@ class Passport(ReportMixin):
         self.appendix('3 Сведения о ремонтах электродвигателя',
             ['Дата', 'Вид', 'Содержание', 'Заключение'],
             [1, 2, 3, 4])
+
     def procExcelData(self):
         excel_importer = ExcelImporter()
         header, rows = excel_importer.read(name)

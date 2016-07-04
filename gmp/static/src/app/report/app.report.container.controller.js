@@ -91,6 +91,8 @@
                 'зам. руководителя бригады',
                 'член бригады'
             ],
+            reportId = $stateParams.id,
+            readOnlyMode = _.isFinite(parseInt(reportId)),
             results = {
                 VIK: {
                     results: [
@@ -288,7 +290,7 @@
         vm.report_initial_state = angular.copy(vm.report)
         vm.restore_initial_state = restore_initial_state; 
         vm.setSelected = setSelected;
-        vm.reportId = $stateParams.id;
+        vm.reportId = reportId;
 
         activate(); 
 
@@ -376,7 +378,10 @@
                 item.selected = true;
                 selected.push(id);
             }
-            History.save(vm.report);
+
+            if (!readOnlyMode) {
+                History.save(vm.report);
+            }
         }
 
         function procKeyPress(clickEvent, arr) {

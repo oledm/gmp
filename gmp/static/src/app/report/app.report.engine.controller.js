@@ -78,7 +78,9 @@
                     serial_number: 0
                 },
                 sortOrder: 'name'
-            };
+            },
+            reportId = $stateParams.id,
+            readOnlyMode = _.isFinite(parseInt(reportId));
 
 
         vm.addEmployee = addEmployee;
@@ -114,7 +116,7 @@
             url: 'report-engine',
         };
         vm.removeEmployee = removeEmployee;
-        vm.reportId = $stateParams.id;
+        vm.reportId = reportId;
         vm.report_types = report_types;
         vm.reportTypeChange = reportTypeChange;
         vm.report_initial_state = angular.copy(vm.report)
@@ -126,6 +128,8 @@
         /////////////////////////////////////////////////////////////////
 
         function activate() {
+            console.log('reportId:', reportId);
+            console.log('readOnlyMode:', readOnlyMode);
             var modeldata = History.getCurrentModelValue();
             if(angular.isDefined(modeldata)) {
                 angular.copy(modeldata, vm.report);
@@ -231,7 +235,10 @@
                 item.selected = true;
                 selected.push(id);
             }
-            History.save(vm.report);
+
+            if (!readOnlyMode) {
+                History.save(vm.report);
+            }
         }
     }
 })();
