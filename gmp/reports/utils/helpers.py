@@ -263,15 +263,15 @@ class ReportMixin():
         return list(map(lambda row: list(map(lambda cell: cell.format(**data), row)), template))
 
     @staticmethod
-    def format_JS_dates(d, keys, format_='%d.%m.%Y'):
+    def format_JS_dates(d, keys, format_='%d.%m.%Y', format_from='%Y-%m-%d'):
         for key in keys:
-            dt = datetime.strptime(d[key].split('T')[0], '%Y-%m-%d')
+            dt = datetime.strptime(d[key].split('T')[0], format_from)
             d[key] = dt.strftime(format_)
 
     @staticmethod
-    def format_locale_JS_dates(d, keys, format_='d E Y'):
+    def format_locale_JS_dates(d, keys, format_='d E Y', format_from='%Y-%m-%d'):
         for key in keys:
-            dt = datetime.strptime(d[key].split('T')[0], '%Y-%m-%d')
+            dt = datetime.strptime(d[key].split('T')[0], format_from)
             d[key] = dateformat.format(dt, format_) + ' г.'
             #d[key] = dt.strftime(format_)
 

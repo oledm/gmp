@@ -28,15 +28,20 @@ class Passport(ReportMixin):
         super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5, toc_styles=toc_styles)
 
     def create(self):
+        self.procExcelData()
         self.setup_page_templates(self.doc)
 
         # Filter empty team members appeared after accident click on 'Add'
         # team's member button
         self.data['team'] = list(filter(lambda x: x.get('id') and x.get('rank'), self.data['team']))
 
-        self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
-        self.format_JS_dates(self.data['engine'], ('new_date',))
-        self.format_JS_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
+        # TODO for debug
+        self.data['files'].update(excel='gdhsfsdgfdsgds')
+
+        if not self.data['files'].get('excel'):
+            self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
+            self.format_JS_dates(self.data['engine'], ('new_date',))
+            self.format_JS_dates(self.data, ('workBegin', 'workEnd', 'investigationDate'))
 
         self.connection = Connection.objects.get(pk=self.data['engine']['connection'])
 
@@ -67,7 +72,6 @@ class Passport(ReportMixin):
 
         ]
         self.Story.append(NextPageTemplate('Content'))
-        #self.procExcelData()
         self.page3()
         self.page4()
         self.page5_6()
@@ -98,7 +102,50 @@ class Passport(ReportMixin):
 
     def procExcelData(self):
         excel_importer = ExcelImporter()
-        header, rows = excel_importer.read(name)
+        header, rows = excel_importer.read('/home/dm/rep.xls')
+        rows_w_values = dict(map(lambda x: (x[0], x[1]), filter(lambda x: x[1], rows)))
+
+        #print(rows_w_values)
+        self.data['obj_data']['ks'] = rows_w_values['Наименование КС или установки']
+        self.data['obj_data']['plant'] = rows_w_values['Название цеха']
+        self.data['obj_data']['location'] = rows_w_values['Место установки']
+
+        self.data['engine']['serial_number'] = rows_w_values['Заводской номер']
+        self.data['engine']['station_number'] = rows_w_values['Станционный номер']
+        self.data['engine']['manufactured_at'] = rows_w_values['Год изготовления']
+        self.data['engine']['started_at'] = rows_w_values['Год ввода в эксплуатацию']
+        self.data['engine']['new_date'] = rows_w_values['Дата продления срока эксплуатации']
+
+        self.data['workBegin'] = rows_w_values['Дата начала работ']
+        self.data['investigationDate'] = rows_w_values['Дата обследования']
+        self.data['workEnd'] = rows_w_values['Дата окончания работ']
+
+        self.data['values']['factory_values']['resistance_isolation'] = rows_w_values['Сопротивление изоляции обмотки статора относительно корпуса двигателя, МОм']
+        self.data['values']['factory_values']['resistance_phase'] = rows_w_values['Сопротивление фазы обмотки статора постоянному току в холодном состоянии при 20°C']
+
+        self.data['therm']['distance'] = rows_w_values['Расстояние до объекта, м']
+        self.data['therm']['temp_env'] = rows_w_values['Температура окружающей среды']
+        self.data['therm']['temp_max'] = rows_w_values['Максимальная температура, °С']
+        self.data['therm']['temp_min'] = rows_w_values['Минимальная температура, °С']
+        self.data['therm']['temp_avg'] = rows_w_values['Средняя температура, °С']
+
+        self.data['vibro']['vert'] = rows_w_values['Подшипниковый узел со стороны привода (вертикальная зона)']
+        self.data['vibro']['horiz'] = rows_w_values['Подшипниковый узел со стороны привода (горизонтальная зона)']
+        self.data['vibro']['axis'] = rows_w_values['Подшипниковый узел со стороны привода (осевая зона)']
+        self.data['vibro']['reverse_vert'] = rows_w_values['Подшипниковый узел с противоположной приводу (вертикальная зона)']
+        self.data['vibro']['reverse_horiz'] = rows_w_values['Подшипниковый узел с противоположной приводу (горизонтальная зона)']
+        self.data['vibro']['reverse_axis'] = rows_w_values['Подшипниковый узел с противоположной приводу (осевая зона)']
+        self.data['vibro']['norm'] = rows_w_values['Норма']
+
+        self.data['resistance']['isolation'] = rows_w_values['Сопротивление изоляции, МОм']
+        self.data['resistance']['wireAB'] = rows_w_values['Сопротивление обмотки, мОм (фаза A-B)']
+        self.data['resistance']['wireBC'] = rows_w_values['Сопротивление обмотки, мОм (фаза B-C)']
+        self.data['resistance']['wireCA'] = rows_w_values['Сопротивление обмотки, мОм (фаза C-A)']
+
+        self.data['signers']['approve']['rank'] = rows_w_values['Кто утверждает (должность)']
+        self.data['signers']['approve']['fio'] = rows_w_values['Кто утверждает (ФИО)']
+        self.data['signers']['signer']['rank'] = rows_w_values['Подписант из службы (должность)']
+        self.data['signers']['signer']['fio'] = rows_w_values['Подписант из службы (ФИО)']
 
     def put_toc(self):
         self.new_page()
@@ -934,6 +981,7 @@ class Passport(ReportMixin):
         frame_full = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id='no_header')
         template_title = PageTemplate(id='Title', frames=frame_full)
 
+        print('obj_data', self.data['obj_data'])
         frame_with_header = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height-2*cm,
                 bottomPadding=0, leftPadding=0, rightPadding=0, topPadding=0,
                 id='with_header')

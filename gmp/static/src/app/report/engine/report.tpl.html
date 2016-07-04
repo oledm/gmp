@@ -38,6 +38,12 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-sm-6">
+                  <files-upload ng-model="vm.report.files.excel" label="Заполненный Excel-файл для упрощения формирования отчета"></files-upload>
+            </div>
+        </div>
+
         <div class="block" ng-repeat="page in vm.pages" ng-include="'/static/src/app/report/' + page"></div>
 
         <div class="block"></div>
