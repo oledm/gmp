@@ -19,7 +19,6 @@ class MediaFileSystemStorage(FileSystemStorage):
     def _save(self, name, content):
         h = get_hash_path(content)
         path = '{}/{}/{}/{}'.format(h[:2], h[2:4], h, name[2:])
-        print('path', path)
 
         if self.exists(path):
             return path

@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" ng-if="!vm.excelDataExist()">
         <div class="row">
             <div class="col-sm-6" ng-class="{ 'has-error': vm.LPUForm.ks.$touched && vm.LPUForm.ks.$invalid }">
                   <label class="control-label" for="ks">Наименование КС или установки</label>

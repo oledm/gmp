@@ -90,6 +90,7 @@
         vm.control_types = control_types;
         vm.createPassport = createPassport;
         vm.engine = engine;
+        vm.excelDataExist = excelDataExist;
         vm.workBegin = undefined;
         vm.workEnd = undefined;
         vm.investigationDate = undefined;
@@ -158,6 +159,10 @@
                 addToCollection(arr, clickEvent.target.value);
                 clickEvent.target.value = '';
             }
+        }
+
+        function excelDataExist() {
+            return (vm.report.files.excel && vm.report.files.excel.length > 0) === true;
         }
 
         function showError(msg, title='Ошибка!') {

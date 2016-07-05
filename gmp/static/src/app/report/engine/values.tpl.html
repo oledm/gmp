@@ -1,4 +1,4 @@
-<ng-form name="vm.valuesForm" novalidate ng-if="vm.report.type.alias === 'passport'">
+<ng-form name="vm.valuesForm" novalidate ng-if="vm.report.type.alias === 'passport' && !vm.excelDataExist()">
   <h4 checkmark>Данные произведенных замеров</h4>
     <div class="form-group">
         <div class="row">

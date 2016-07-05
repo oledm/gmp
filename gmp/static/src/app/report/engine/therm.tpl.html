@@ -18,6 +18,20 @@
             </div>
 
             <div class="col-sm-4"
+                 ng-class="{ 'has-error': vm.thermForm.correct.$touched && vm.thermForm.correct.$invalid }"
+                >
+              <label class="control-label" for="correct">Соответствие температурному классу</label>
+              <select class="form-control" required ng-model="vm.report.therm.correct" name="correct" id="correct">
+                  <option>Соответствует</option>
+                  <option>Не соответствует</option>
+              </select>
+              <div class="help-block" role="alert" ng-messages="vm.thermForm.correct.$error" ng-if="vm.thermForm.correct.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+
+            <div class="col-sm-4"
+                 ng-if="!vm.excelDataExist()"
                  ng-class="{ 'has-error': vm.thermForm.distance.$touched && vm.thermForm.distance.$invalid }"
                 >
               <label class="control-label" for="distance">Расстояние до объекта, м</label>
@@ -27,7 +41,9 @@
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
             </div>
+        </div>
 
+        <div class="row" ng-if="!vm.excelDataExist()">
             <div class="col-sm-4"
                  ng-class="{ 'has-error': vm.thermForm.temp_env.$touched && vm.thermForm.temp_env.$invalid }"
                 >
@@ -38,8 +54,7 @@
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
             </div>
-        </div>
-        <div class="row">
+
             <div class="col-sm-4"
                  ng-class="{ 'has-error': vm.thermForm.temp_max.$touched && vm.thermForm.temp_max.$invalid }"
                 >
@@ -61,7 +76,9 @@
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
             </div>
+        </div>
 
+        <div class="row" ng-if="!vm.excelDataExist()">
             <div class="col-sm-4"
                  ng-class="{ 'has-error': vm.thermForm.temp_avg.$touched && vm.thermForm.temp_avg.$invalid }"
                 >
@@ -69,20 +86,6 @@
               <input class="form-control" type="text" id="temp_avg" required ng-pattern="/^[0-9.,]*$/"
                   name="temp_avg" ng-maxlength="50" ng-model="vm.report.therm.temp_avg" />
               <div class="help-block" role="alert" ng-messages="vm.thermForm.temp_avg.$error" ng-if="vm.thermForm.temp_avg.$touched">
-                  <div ng-messages-include="/static/src/assets/messages.html"></div>
-              </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4"
-                 ng-class="{ 'has-error': vm.thermForm.correct.$touched && vm.thermForm.correct.$invalid }"
-                >
-              <label class="control-label" for="correct">Соответствие температурному классу</label>
-              <select class="form-control" required ng-model="vm.report.therm.correct" name="correct" id="correct">
-                  <option>Соответствует</option>
-                  <option>Не соответствует</option>
-              </select>
-              <div class="help-block" role="alert" ng-messages="vm.thermForm.correct.$error" ng-if="vm.thermForm.correct.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
             </div>

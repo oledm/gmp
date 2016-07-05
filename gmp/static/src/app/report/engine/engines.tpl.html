@@ -30,6 +30,7 @@
             </div>
 
             <div class="col-sm-4"
+                 ng-if="!vm.excelDataExist()"
                  ng-class="{ 'has-error': vm.engineForm.location.$touched && vm.engineForm.location.$invalid }"
                 >
               <label class="control-label" for="location">Место установки</label>
@@ -45,6 +46,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4"
+                 ng-if="!vm.excelDataExist()"
                  ng-class="{ 'has-error': vm.engineForm.serial_number.$touched && vm.engineForm.serial_number.$invalid }"
                 >
               <label class="control-label" for="serial_number">Заводской номер</label>
@@ -56,6 +58,7 @@
             </div>
 
             <div class="col-sm-4"
+                 ng-if="!vm.excelDataExist()"
                  ng-class="{ 'has-error': vm.engineForm.station_number.$touched && vm.engineForm.station_number.$invalid }"
                 >
               <label class="control-label" for="station_number">Станционный номер</label>
@@ -67,6 +70,7 @@
             </div>
 
             <div class="col-sm-4"  ng-controller="DatepickerController as dc"
+                 ng-if="!vm.excelDataExist()"
                  ng-class="{ 'has-error':
                      vm.engineForm.manufactured_at.$touched &&
                      vm.engineForm.manufactured_at.$invalid }"
@@ -89,6 +93,7 @@
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4"  ng-controller="DatepickerController as dc"
+                 ng-if="!vm.excelDataExist()"
                  ng-class="{ 'has-error':
                      vm.engineForm.started_at.$touched &&
                      vm.engineForm.started_at.$invalid }"
@@ -106,6 +111,7 @@
             </div>
 
             <div class="col-sm-4"  ng-controller="DatepickerController as dc"
+                 ng-if="!vm.excelDataExist()"
                  ng-class="{ 'has-error':
                      vm.engineForm.new_date.$touched &&
                      vm.engineForm.new_date.$invalid }"

@@ -120,6 +120,8 @@ class Passport(ReportMixin):
         self.data['investigationDate'] = rows_w_values['Дата обследования']
         self.data['workEnd'] = rows_w_values['Дата окончания работ']
 
+        if 'values' not in self.data:
+            self.data.update(values={'factory_values': {}})
         self.data['values']['factory_values']['resistance_isolation'] = rows_w_values['Сопротивление изоляции обмотки статора относительно корпуса двигателя, МОм']
         self.data['values']['factory_values']['resistance_phase'] = rows_w_values['Сопротивление фазы обмотки статора постоянному току в холодном состоянии при 20°C']
 
@@ -142,6 +144,8 @@ class Passport(ReportMixin):
         self.data['resistance']['wireBC'] = rows_w_values['Сопротивление обмотки, мОм (фаза B-C)']
         self.data['resistance']['wireCA'] = rows_w_values['Сопротивление обмотки, мОм (фаза C-A)']
 
+        if 'signers' not in self.data:
+            self.data.update(signers={'approve': {}, 'signer': {}})
         self.data['signers']['approve']['rank'] = rows_w_values['Кто утверждает (должность)']
         self.data['signers']['approve']['fio'] = rows_w_values['Кто утверждает (ФИО)']
         self.data['signers']['signer']['rank'] = rows_w_values['Подписант из службы (должность)']
@@ -520,11 +524,11 @@ class Passport(ReportMixin):
 
         self.formular('5 Общий вид электродвигателя')
         self.add_to_toc('ФОРМУЛЯР № 5', 'Общий вид электродвигателя')
-        self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', 1)
+        self.put('Взрывозащищённый электродвигатель ' + self.data['engine']['type'], 'Regular Bold Center', .7)
 
         image = FileStorage.objects.get(pk=int(self.data['files']['main'][0]['id']))
-        self.put_photo(image.fileupload)
-        self.Story.append(Spacer(1, 1 * cm))
+        self.put_photo(image.fileupload, height=22)
+        #self.Story.append(Spacer(1, 1 * cm))
 
     def page11(self):
         self.Story.append(PageBreak())
