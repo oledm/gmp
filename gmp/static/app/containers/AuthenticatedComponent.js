@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { redirectTo } from '../actions/index'
 
@@ -13,6 +14,10 @@ const requireAuthentication = Component => {
         }
 
         checkAuth(isAuthenticated) {
+            console.log('location:', this.props.location.pathname);
+            console.log('params:', this.props.params);
+            console.log('context:', this.props.router);
+
             if (!isAuthenticated) {
                 this.props.dispatch(redirectTo('/login'))
 
@@ -31,11 +36,12 @@ const requireAuthentication = Component => {
         }
     }
 
+
     const mapStateToProps = state => ({
         isAuthenticated: state.auth.isAuthenticated
     })
 
-    return connect(mapStateToProps)(AuthenticatedComponent)
+    return withRouter(connect(mapStateToProps)(AuthenticatedComponent))
 }
 
 export default requireAuthentication
