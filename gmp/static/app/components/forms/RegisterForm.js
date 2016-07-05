@@ -16,47 +16,51 @@ const submit = (values, dispatch) => {
 
 class LoginForm extends Component {
 
-  render() {
-    const { fields: { department, email, password },
-        valid, handleSubmit, submitting } = this.props
-
-    return (
-        <form onSubmit={handleSubmit(this.props.createPost.bind(this))}>
-            <div className="form-group">
-                <div className="row">
-                    <DepartmentSelector className="col-xs-6" label="Отдел" {...department} />
+    render() {
+        const { fields: { department, email, password },
+            valid, handleSubmit, submitting } = this.props
+      
+        return (
+            <form onSubmit={handleSubmit(this.props.submit.bind(this))}>
+                <div className="form-group">
+                    <div className="row">
+                        <DepartmentSelector
+                            className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8"
+                            label="Отдел"
+                            {...department}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputText
+                            className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8"
+                            label="Email"
+                            icon="user"
+                            type="email"
+                            {...email}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputText
+                            className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8"
+                            label="Пароль"
+                            icon="lock"
+                            type="password"
+                            {...password}
+                        />
+                    </div>
                 </div>
-                <div className="row">
-                    <InputText
-                        className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8"
-                        label="Email"
-                        icon="user"
-                        type="email"
-                        {...email}
-                    />
+                <div className="form-group">
+                    <div className="row">
+                      <div className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+                          <button className="btn btn-primary" type="submit" disabled={submitting || !valid}>
+                            {submitting ? <i/> : <i/>} Войти
+                          </button>
+                      </div>
+                    </div>
                 </div>
-                <div className="row">
-                    <InputText
-                        className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8"
-                        label="Пароль"
-                        icon="lock"
-                        type="password"
-                        {...password}
-                    />
-                </div>
-            </div>
-            <div className="form-group">
-                <div className="row">
-                  <div className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
-                      <button className="btn btn-primary" type="submit" disabled={submitting || !valid}>
-                        {submitting ? <i/> : <i/>} Отправить
-                      </button>
-                  </div>
-                </div>
-            </div>
-        </form>
-    )
-  }
+            </form>
+        )
+    }
 }
 
 LoginForm.propTypes = {
@@ -67,7 +71,7 @@ LoginForm.propTypes = {
 }
 
 const mapDispatchToProps = dispatch => ({
-    createPost: submit
+    submit
 })
 
 export default reduxForm({

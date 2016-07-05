@@ -10,22 +10,24 @@ class DepartmentSelector extends Component {
     }
 
     render() {
-        const { options, ...rest } = this.props
+        const { departments, ...rest } = this.props
         return (
             <Select {...rest}>
-                <option value=""></option>
-                {options.map(o => <option key={o.id} value={o.name}>{o.name}</option>)}
+                <option value=''></option>
+                {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
             </Select>
         )
     }
 }
 
 DepartmentSelector.propTypes = {
-    options: React.PropTypes.array.isRequired
+    departments: React.PropTypes.array.isRequired,
+    label: React.PropTypes.string,
+    className: React.PropTypes.string
 }
 
 const mapStateToProps = (state) => ({
-    options: state.departments.departments
+    departments: state.departments.departments
 })
 
 export default connect(mapStateToProps)(DepartmentSelector)
