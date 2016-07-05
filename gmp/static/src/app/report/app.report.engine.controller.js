@@ -129,8 +129,6 @@
         /////////////////////////////////////////////////////////////////
 
         function activate() {
-            console.log('reportId:', reportId);
-            console.log('readOnlyMode:', readOnlyMode);
             var modeldata = History.getCurrentModelValue();
             if(angular.isDefined(modeldata)) {
                 angular.copy(modeldata, vm.report);

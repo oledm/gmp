@@ -35,9 +35,6 @@ class Passport(ReportMixin):
         # team's member button
         self.data['team'] = list(filter(lambda x: x.get('id') and x.get('rank'), self.data['team']))
 
-        # TODO for debug
-        self.data['files'].update(excel='gdhsfsdgfdsgds')
-
         if not self.data['files'].get('excel'):
             self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
             self.format_JS_dates(self.data['engine'], ('new_date',))
@@ -101,10 +98,12 @@ class Passport(ReportMixin):
             [1, 2, 3, 4])
 
     def procExcelData(self):
-        excel_importer = ExcelImporter()
-        file_entry = FileStorage.objects.get(pk=int(self.data['files']['excel'][0]['id']))
+        try:
+            file_entry = FileStorage.objects.get(pk=int(self.data['files']['excel'][0]['id']))
+        except IndexError:
+            return
         file_ = self.get_file(file_entry.fileupload)
-        print('data_file', file_)
+        excel_importer = ExcelImporter()
         header, rows = excel_importer.read(file_)
         rows_w_values = dict(map(lambda x: (x[0], x[1]), filter(lambda x: x[1], rows)))
 
