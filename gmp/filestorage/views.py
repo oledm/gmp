@@ -25,7 +25,6 @@ def file_response(request):
     #response['Content-Type'] = 'image/jpeg'
     type_, encoding = mimetypes.guess_type(full_filename)
     response['Content-Type'] = type_
-    #response['Content-Disposition'] = 'attachment'
 
     #verbose_name = request.GET.get('name')
     #if verbose_name:

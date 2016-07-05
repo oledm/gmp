@@ -62,12 +62,27 @@
     <div class="row">
         <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
             <div class="form-group" ng-class="{ 'has-error': userForm.password.$touched && userForm.password.$invalid }">
-              <label for="password">Пароль</label>
+              <label for="password">Новый пароль</label>
 		<div class="input-group">
 		    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                  <input class="form-control" type="password" id="password" md-maxlength="50" name="password" ng-model="vm.password" />
+                  <input class="form-control" type="password" id="password" md-maxlength="50" name="password" ng-model="vm.userdata.data.password" />
 		</div>
               <div class="help-block" role="alert" ng-messages="userForm.password.$error" ng-if="userForm.password.$touched">
+                  <div ng-messages-include="/static/src/assets/messages.html"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+            <div class="form-group" ng-class="{ 'has-error': userForm.confirm_password.$touched && userForm.confirm_password.$invalid }">
+              <label for="confirm_password">Подтверждение нового пароля</label>
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                  <input class="form-control" type="password" id="confirm_password" md-maxlength="50" name="confirm_password" ng-model="vm.userdata.data.confirm_password" />
+		</div>
+              <div class="help-block" role="alert" ng-messages="userForm.confirm_password.$error" ng-if="userForm.confirm_password.$touched">
                   <div ng-messages-include="/static/src/assets/messages.html"></div>
               </div>
             </div>

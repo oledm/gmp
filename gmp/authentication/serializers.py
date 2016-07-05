@@ -46,15 +46,15 @@ class EmployeeSerializer(serializers.ModelSerializer):
         #dep_name = validated_data.get('department', instance.department)['name']
         #department = Department.objects.get(name=dep_name)
         #print('NEW DEP:', department)
+        print('validated data from update:', validated_data)
         instance.email = validated_data.get('email', instance.email)
         instance.username = validated_data.get('username', instance.username)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.middle_name = validated_data.get('middle_name', instance.middle_name)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
-        print('validated data from update:', validated_data)
-        #instance.department = department
         instance.phone = validated_data.get('phone', instance.phone)
+        instance.password = validated_data.get('password', instance.password)
 
         instance.save()
 
