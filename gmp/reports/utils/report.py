@@ -109,6 +109,9 @@ class Report(ReportMixin):
 
         self.data['docs'] = rows_w_values['Документация, предоставленная заказчиком']
 
+        self.data['order']['date'] = rows_w_values['Дата создания приказа']
+        self.data['order']['number'] = rows_w_values['Номер приказа']
+
         self.data['engine']['serial_number'] = rows_w_values['Заводской номер']
         self.data['engine']['station_number'] = rows_w_values['Станционный номер']
         self.data['engine']['manufactured_at'] = rows_w_values['Год изготовления']

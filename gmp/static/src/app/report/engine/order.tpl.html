@@ -1,4 +1,4 @@
-<ng-form name="vm.orderForm" ng-if="vm.report.type.alias === 'report'" novalidate>
+<ng-form name="vm.orderForm" ng-if="vm.report.type.alias === 'report' && !vm.excelDataExist()" novalidate>
     <h4 checkmark>Данные приказа о создании бригады</h4>
 
     <div class="form-group">
