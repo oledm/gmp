@@ -213,12 +213,12 @@
         function reportTypeChange() {
             switch (vm.report.type.alias) {
                 case 'passport':
-                    vm.report.files = {"main": [], "licenses": [], "therm1": [], "therm2": []};
+                    vm.report.files = {'main': [], 'licenses': [], 'therm1': [], 'therm2': [], 'excel': []};
                     vm.report.team = [{'id': '', 'required': true}];
                     vm.report.docs = docs;
                     break;
                 case 'report':
-                    vm.report.files = {"main": [], "therm1": [], "therm2": []};
+                    vm.report.files = {'main': [], 'therm1': [], 'therm2': [], 'excel': []};
                     vm.report.team = {};
                     vm.report.docs = [];
                     vm.report.info = {

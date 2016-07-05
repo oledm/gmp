@@ -13,13 +13,11 @@ from reportlab.lib import colors
 
 from gmp.authentication.models import Employee
 from gmp.certificate.models import Certificate, EBcertificate
-#from gmp.inspections.models import Organization, LPU
 from gmp.departments.models import Measurer
 from gmp.engines.models import Engine, ThermClass, Connection
 from gmp.filestorage.models import FileStorage
 
 from .helpers import ReportMixin, DoubledLine
-from .excel_import import ExcelImporter
 
 
 class Passport(ReportMixin):
@@ -28,7 +26,7 @@ class Passport(ReportMixin):
         super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5, toc_styles=toc_styles)
 
     def create(self):
-        self.procExcelData()
+        self.proc_excel_data()
         self.setup_page_templates(self.doc)
 
         # Filter empty team members appeared after accident click on 'Add'
@@ -97,16 +95,8 @@ class Passport(ReportMixin):
             ['Дата', 'Вид', 'Содержание', 'Заключение'],
             [1, 2, 3, 4])
 
-    def procExcelData(self):
-        try:
-            file_entry = FileStorage.objects.get(pk=int(self.data['files']['excel'][0]['id']))
-        except IndexError:
-            return
-        file_ = self.get_file(file_entry.fileupload)
-        excel_importer = ExcelImporter()
-        header, rows = excel_importer.read(file_)
-        rows_w_values = dict(map(lambda x: (x[0], x[1]), filter(lambda x: x[1], rows)))
-
+    def proc_excel_data(self):
+        rows_w_values = self.read_excel_data()
         self.data['obj_data']['ks'] = rows_w_values['Наименование КС или установки']
         self.data['obj_data']['plant'] = rows_w_values['Название цеха']
         self.data['obj_data']['location'] = rows_w_values['Место установки']

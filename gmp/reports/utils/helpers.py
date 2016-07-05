@@ -1,5 +1,5 @@
 import csv
-from functools import partial
+from functools import partial, reduce
 from datetime import datetime
 from hashlib import sha1
 
@@ -28,6 +28,10 @@ from reportlab.pdfbase import ttfonts
 from pdfrw import PdfReader
 from pdfrw.buildxobj import pagexobj
 from pdfrw.toreportlab import makerl
+
+from .excel_import import ExcelImporter
+from gmp.filestorage.models import FileStorage
+
 
 class PdfImage(Flowable):
 
@@ -377,19 +381,38 @@ class ReportMixin():
         image = PILImage.open(file_)
         max_width = self.full_width
         max_height = self.full_height
-        #print('max_width', max_width, 'max_height', max_height)
         maxsize = (
-            #(width * cm or self.full_width), 
-            #(height * cm or self.full_height)
             (width * cm or max_width), 
             (height * cm or max_height - 2.4 * cm)
         )
         # Get new image dimensions to fit in desired size
         image.thumbnail(maxsize, PILImage.ANTIALIAS)
-        #print(file_, 'maxsize', maxsize, 'computed', image.width, image.height)
         w, h = Image(file_, width=image.width, height=image.height).wrap(image.width, image.height)
-        #print('w', self.full_width, 'h', self.full_height)
         return Image(file_, width=image.width, height=image.height)
+
+    def read_excel_data(self):
+        try:
+            file_entry = FileStorage.objects.get(pk=int(self.data['files']['excel'][0]['id']))
+        except IndexError:
+            return
+        file_ = self.get_file(file_entry.fileupload)
+        excel_importer = ExcelImporter()
+        header, rows = excel_importer.read(file_)
+        values = tuple(map(lambda x: (x[0], x[1]), filter(lambda x: x[1], rows)))
+        
+        # Group keys with possible multiple values in tuples instead of plain string
+        def mapToDict(res, x):
+            key, value = x
+            if key not in res:
+                res[key] = value
+            else:
+                if isinstance(res[key], str):
+                    res[key] = (res[key], value)
+                else:
+                    res[key] = (*res[key], value)
+            return res
+
+        return reduce(mapToDict, values, {})
 
     '''
         Other setup utils
@@ -408,7 +431,6 @@ class ReportMixin():
 
     def register_font(self, font_name, font_file):
         file_ = str(settings.APPS_DIR.path('static', 'src', 'assets', 'fonts', font_file))
-        #print('Font file', file_)
         MyFontObject = ttfonts.TTFont(font_name, file_)
         pdfmetrics.registerFont(MyFontObject)
      

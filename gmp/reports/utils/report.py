@@ -29,12 +29,14 @@ class Report(ReportMixin):
         super().__init__(data, report, title, leftMargin=1.2, rightMargin=.5, toc_styles=toc_styles)
 
     def create(self):
+        self.proc_excel_data()
         self.setup_page_templates(self.doc, self.header_content())
 
-        self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
-        self.format_JS_dates(self.data['engine'], ('new_date',))
-        self.format_JS_dates(self.data, ('workBegin', 'workEnd'))
-        self.format_JS_dates(self.data['order'], ('date',))
+        if not self.data['files'].get('excel'):
+            self.format_JS_dates(self.data['engine'], ('manufactured_at', 'started_at'), '%Y')
+            self.format_JS_dates(self.data['engine'], ('new_date',))
+            self.format_JS_dates(self.data, ('workBegin', 'workEnd'))
+            self.format_JS_dates(self.data['order'], ('date',))
 
         self.Story.append(NextPageTemplate('Title'))
         self.toc_entry = [
@@ -97,6 +99,44 @@ class Report(ReportMixin):
         self.appendix9()
         self.appendix10()
         self.appendix11()
+
+    def proc_excel_data(self):
+        rows_w_values = self.read_excel_data()
+        self.data['obj_data']['ks'] = rows_w_values['Наименование КС или установки']
+        self.data['obj_data']['plant'] = rows_w_values['Название цеха']
+        self.data['obj_data']['location'] = rows_w_values['Место установки']
+        self.data['obj_data']['detail_info'] = rows_w_values['Краткая характеристика и назначение объекта экспертизы']
+
+        self.data['docs'] = rows_w_values['Документация, предоставленная заказчиком']
+
+        self.data['engine']['serial_number'] = rows_w_values['Заводской номер']
+        self.data['engine']['station_number'] = rows_w_values['Станционный номер']
+        self.data['engine']['manufactured_at'] = rows_w_values['Год изготовления']
+        self.data['engine']['started_at'] = rows_w_values['Год ввода в эксплуатацию']
+        self.data['engine']['new_date'] = rows_w_values['Дата продления срока эксплуатации']
+
+        self.data['workBegin'] = rows_w_values['Дата начала работ']
+        self.data['workEnd'] = rows_w_values['Дата окончания работ']
+
+        self.data['therm']['distance'] = rows_w_values['Расстояние до объекта, м']
+        self.data['therm']['temp_env'] = rows_w_values['Температура окружающей среды']
+        self.data['therm']['temp_max'] = rows_w_values['Максимальная температура, °С']
+        self.data['therm']['temp_min'] = rows_w_values['Минимальная температура, °С']
+        self.data['therm']['temp_avg'] = rows_w_values['Средняя температура, °С']
+
+        self.data['vibro']['vert'] = rows_w_values['Подшипниковый узел со стороны привода (вертикальная зона)']
+        self.data['vibro']['horiz'] = rows_w_values['Подшипниковый узел со стороны привода (горизонтальная зона)']
+        self.data['vibro']['axis'] = rows_w_values['Подшипниковый узел со стороны привода (осевая зона)']
+        self.data['vibro']['reverse_vert'] = rows_w_values['Подшипниковый узел с противоположной приводу (вертикальная зона)']
+        self.data['vibro']['reverse_horiz'] = rows_w_values['Подшипниковый узел с противоположной приводу (горизонтальная зона)']
+        self.data['vibro']['reverse_axis'] = rows_w_values['Подшипниковый узел с противоположной приводу (осевая зона)']
+        self.data['vibro']['norm'] = rows_w_values['Норма']
+
+        self.data['resistance']['isolation'] = rows_w_values['Сопротивление изоляции, МОм']
+        self.data['resistance']['wireAB'] = rows_w_values['Сопротивление обмотки, мОм (фаза A-B)']
+        self.data['resistance']['wireBC'] = rows_w_values['Сопротивление обмотки, мОм (фаза B-C)']
+        self.data['resistance']['wireCA'] = rows_w_values['Сопротивление обмотки, мОм (фаза C-A)']
+
 
     def put_toc(self):
         self.new_page()
