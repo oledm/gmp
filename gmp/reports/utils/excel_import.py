@@ -2,7 +2,7 @@ import xlrd
 
 class ExcelImporter():
     def read(self, filename):
-        rb = xlrd.open_workbook(filename, formatting_info=True)
+        rb = xlrd.open_workbook(filename)
         sheet = rb.sheet_by_index(0)
         rows = []
         for rownum in range(sheet.nrows):
