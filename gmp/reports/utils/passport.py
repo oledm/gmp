@@ -102,10 +102,12 @@ class Passport(ReportMixin):
 
     def procExcelData(self):
         excel_importer = ExcelImporter()
-        header, rows = excel_importer.read('/home/dm/rep.xls')
+        file_entry = FileStorage.objects.get(pk=int(self.data['files']['excel'][0]['id']))
+        file_ = self.get_file(file_entry.fileupload)
+        print('data_file', file_)
+        header, rows = excel_importer.read(file_)
         rows_w_values = dict(map(lambda x: (x[0], x[1]), filter(lambda x: x[1], rows)))
 
-        #print(rows_w_values)
         self.data['obj_data']['ks'] = rows_w_values['Наименование КС или установки']
         self.data['obj_data']['plant'] = rows_w_values['Название цеха']
         self.data['obj_data']['location'] = rows_w_values['Место установки']
@@ -528,7 +530,6 @@ class Passport(ReportMixin):
 
         image = FileStorage.objects.get(pk=int(self.data['files']['main'][0]['id']))
         self.put_photo(image.fileupload, height=22)
-        #self.Story.append(Spacer(1, 1 * cm))
 
     def page11(self):
         self.Story.append(PageBreak())
