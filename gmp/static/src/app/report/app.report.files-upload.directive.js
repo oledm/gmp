@@ -26,6 +26,10 @@
                 ngModel.$setValidity(attrs.ngModel, ngModel.$viewValue.length > 0);
             });
 
+            el.bind('click', event => {
+                event.target.value = null;
+            });
+
             el.bind('change', event => {
                 angular.forEach(event.target.files, file => {
                     Upload.upload({
@@ -33,7 +37,7 @@
                         data: {fileupload: file}
                     }).
                     then(response => {
-                        console.log('Successful upload with status', response.status)
+//                        console.log('Successful upload with status', response.status)
                         let values = [];
                         if (attrs.multiple !== undefined && ngModel.$viewValue !== undefined) {
                             // Save last model value
