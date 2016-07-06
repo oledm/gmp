@@ -8,10 +8,9 @@ import { logout, redirectTo } from '../actions/index'
 class App extends React.Component {
     componentWillMount() {
         const { location: {pathname}, isAuthenticated, redirectTo } = this.props;
-        const pathsForAuthentication = (pathname === '/login' || pathname === '/register');
+        const pathForAuthentication = (pathname === '/login' || pathname === '/register');
 
-        if ( pathsForAuthentication && isAuthenticated ) {
-//            console.log(`Need redirect to /. Current url is ${pathname}`);
+        if ( pathForAuthentication && isAuthenticated ) {
             redirectTo('/');
         }
     }
@@ -20,8 +19,11 @@ class App extends React.Component {
         const { isAuthenticated, handleClick, children } = this.props
         return (
             <div>
-                <Toolbar isAuthenticated={isAuthenticated} handleClick={() => handleClick()} />
-                    { children }
+                <Toolbar
+                    isAuthenticated={isAuthenticated}
+                    handleClick={() => handleClick()}
+                />
+                { children }
             </div>
         )
     }

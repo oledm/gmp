@@ -1,9 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, withRouter } from 'react-router'
 
 class TabLink extends React.Component {
     render() {
-        const isActive = this.context.router.isActive(this.props.to, true)
+        const isActive = this.props.router.isActive(this.props.to, true)
         const activeClass = isActive ? 'active' : null
 
         return (
@@ -14,8 +14,4 @@ class TabLink extends React.Component {
     } 
 }
 
-TabLink.contextTypes = {
-    router: React.PropTypes.object.isRequired
-}
-
-export default TabLink
+export default withRouter(TabLink)

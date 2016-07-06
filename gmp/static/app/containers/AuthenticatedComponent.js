@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { redirectTo } from '../actions/index'
 
@@ -36,7 +35,7 @@ const requireAuthentication = Component => {
         isAuthenticated: state.auth.isAuthenticated
     })
 
-    return withRouter(connect(mapStateToProps)(AuthenticatedComponent))
+    return connect(mapStateToProps)(AuthenticatedComponent)
 }
 
 export default requireAuthentication
