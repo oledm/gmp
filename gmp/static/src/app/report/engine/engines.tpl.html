@@ -16,7 +16,7 @@
             </div>
 
             <div class="col-sm-4"
-                 ng-class="{ 'has-error': vm.engineForm.connection.$touched && vm.engineForm.location.$invalid }"
+                 ng-class="{ 'has-error': vm.engineForm.connection.$touched && vm.engineForm.connection.$invalid }"
                 >
               <label class="control-label" for="connection">Схема соединения</label>
               <select class="form-control" required ng-model="vm.report.engine.connection"
