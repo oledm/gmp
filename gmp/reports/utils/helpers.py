@@ -394,7 +394,7 @@ class ReportMixin():
         try:
             file_entry = FileStorage.objects.get(pk=int(self.data['files']['excel'][0]['id']))
         except IndexError:
-            return
+            return None
         file_ = self.get_file(file_entry.fileupload)
         excel_importer = ExcelImporter()
         header, rows = excel_importer.read(file_)

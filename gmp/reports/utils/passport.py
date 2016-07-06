@@ -97,6 +97,8 @@ class Passport(ReportMixin):
 
     def proc_excel_data(self):
         rows_w_values = self.read_excel_data()
+        if rows_w_values is None:
+            return
         self.data['obj_data']['ks'] = rows_w_values['Наименование КС или установки']
         self.data['obj_data']['plant'] = rows_w_values['Название цеха']
         self.data['obj_data']['location'] = rows_w_values['Место установки']
