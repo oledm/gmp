@@ -6,21 +6,16 @@ import { redirectTo } from '../actions/index'
 const requireAuthentication = Component => {
     class AuthenticatedComponent extends React.Component {
         componentWillMount() {
-            this.checkAuth(this.props.isAuthenticated)
+            this.checkAuth(this.props.isAuthenticated);
         }
 
         componentWillReceiveProps(nextProps) {
-            this.checkAuth(nextProps.isAuthenticated)
+            this.checkAuth(nextProps.isAuthenticated);
         }
 
         checkAuth(isAuthenticated) {
-            console.log('location:', this.props.location.pathname);
-            console.log('params:', this.props.params);
-            console.log('context:', this.props.router);
-
             if (!isAuthenticated) {
-                this.props.dispatch(redirectTo('/login'))
-
+                this.props.dispatch(redirectTo('/login'));
             }
         }
 

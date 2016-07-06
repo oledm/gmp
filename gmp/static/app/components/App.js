@@ -1,15 +1,26 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 import Toolbar from '../components/Toolbar'
 import LoginRegisterForm from '../components/forms/LoginRegisterForm'
-import { logout } from '../actions/index'
+import { logout, redirectTo } from '../actions/index'
 
 class App extends React.Component {
+    componentWillMount() {
+        const { location: {pathname}, isAuthenticated, redirectTo } = this.props;
+        const pathsForAuthentication = (pathname === '/login' || pathname === '/register');
+
+        if ( pathsForAuthentication && isAuthenticated ) {
+//            console.log(`Need redirect to /. Current url is ${pathname}`);
+            redirectTo('/');
+        }
+    }
+
     render() {
         const { isAuthenticated, handleClick, children } = this.props
         return (
             <div>
-                <Toolbar isAuthenticated={isAuthenticated} handleClick={handleClick} />
+                <Toolbar isAuthenticated={isAuthenticated} handleClick={() => handleClick()} />
                     { children }
             </div>
         )
@@ -20,8 +31,10 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
 })
 
-const mapDispatchToProps = dispatch => ({
-    handleClick: () => dispatch(logout())
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default withRouter(connect(
+    mapStateToProps,
+    {
+        handleClick: logout,
+        redirectTo
+    }
+)(App))
