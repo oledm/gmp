@@ -46,9 +46,9 @@ export const loginRequest = (creds) => ({
     creds
 })
 
-export const loginSuccess = (token) => ({
+export const loginSuccess = (authData) => ({
     type: LOGIN_SUCCESS,
-    token
+    authData
 })
 
 export const loginFailed = (error) => ({
@@ -103,13 +103,42 @@ export const login = (values) => dispatch => {
         .then(response => response.json().then(data => ({data, response}))
             .then(({data, response}) => {
                 if (!response.ok) {
-                    dispatch(loginFailed('ERROR!'))
+                    dispatch(loginFailed('Ошибка! Неверные имя пользователя или пароль'))
                     return Promise.reject(data)
                 } else {
                     console.log('Login data', data)
-                    let token = data.token
-                    localStorage.setItem('auth_token', token)
-                    dispatch(loginSuccess(token))
+                    localStorage.setItem('auth_token', data.token)
+                    dispatch(loginSuccess(data))
+                    dispatch(redirectTo('/'))
+                }
+            })
+        )
+        .catch(error => console.error('Error:', error))
+}
+
+export const register = (values) => dispatch => {
+    dispatch(loginRequest(values))
+    
+    return fetch(`/api/department/${values.department}/user/`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: values.email,
+                password: values.password
+            })
+        })
+        .then(response => response.json().then(data => ({data, response}))
+            .then(({data, response}) => {
+                if (!response.ok) {
+                    dispatch(loginFailed('Ошибка! Регистрация не проведена. Неверные имя пользователя или пароль'))
+                    return Promise.reject(data)
+                } else {
+                    console.log('Login data after register', data)
+                    localStorage.setItem('auth_token', data.token)
+                    dispatch(loginSuccess(data))
                     dispatch(redirectTo('/'))
                 }
             })

@@ -255,3 +255,8 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
 }
+
+JWT_AUTH = {
+    'JWT_PAYLOAD_HANDLER': 'gmp.authentication.views.jwt_payload_handler'
+    
+}

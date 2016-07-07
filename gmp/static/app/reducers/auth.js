@@ -17,7 +17,8 @@ const auth = (state = {
         case LOGIN_SUCCESS:
             return {...state,
                 isPending: false,
-                isAuthenticated: true
+                isAuthenticated: true,
+                user: action.authData
             }
         case LOGIN_FAILED:
         case LOGOUT_FAILED:

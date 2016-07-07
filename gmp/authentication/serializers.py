@@ -30,7 +30,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         types = set(['Электрический контроль'])
         for cert in obj.certificate_set.all():
             types |= {str(t.full_name) for t in cert.control_types.all()}
-        return types
+        return tuple(types)
 
     def get_full_fio(self, obj):
         return obj.get_full_name()

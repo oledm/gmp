@@ -4,9 +4,8 @@ import { fetchDepartments } from '../actions/index'
 import Select from '../components/inputs/Select'
 
 class DepartmentSelector extends Component {
-    constructor(props) {
-        super(props)
-        props.dispatch(fetchDepartments())
+    componentWillMount() {
+        this.props.dispatch(fetchDepartments())
     }
 
     render() {
@@ -14,7 +13,7 @@ class DepartmentSelector extends Component {
         return (
             <Select {...rest}>
                 <option value=''></option>
-                {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+                {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
             </Select>
         )
     }

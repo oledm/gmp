@@ -1,20 +1,20 @@
 import React, { Component, PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
 import InputText from '../inputs/InputText'
-import LoginValidation from './LoginValidation'
+import RegisterValidation from './RegisterValidation'
 import DepartmentSelector from '../../containers/DepartmentSelector'
-import { login } from '../../actions/index'
+import { register } from '../../actions/index'
 
 const fields = [ 'department', 'email', 'password' ]
 
 const submit = (values, dispatch) => {
     return new Promise((resolve, reject) => {
-        dispatch(login(values))
+        dispatch(register(values))
         resolve()
     })
 }
 
-class LoginForm extends Component {
+class RegisterForm extends Component {
 
     render() {
         const { fields: { department, email, password },
@@ -63,7 +63,7 @@ class LoginForm extends Component {
     }
 }
 
-LoginForm.propTypes = {
+RegisterForm.propTypes = {
     fields: PropTypes.object.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
@@ -75,10 +75,10 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default reduxForm({
-    form: 'Login',
+    form: 'Register',
     fields,
-    validate: LoginValidation,
+    validate: RegisterValidation,
 },
     null,
     mapDispatchToProps
-)(LoginForm)
+)(RegisterForm)
