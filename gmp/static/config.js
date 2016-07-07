@@ -3,7 +3,7 @@ System.config({
   defaultJSExtensions: true,
   transpiler: "babel",
   babelOptions: {
-    stage: 0,
+    "stage": 0,
     "optional": [
       "runtime",
       "optimisation.modules.system"
@@ -23,6 +23,7 @@ System.config({
     "classnames": "npm:classnames@2.2.5",
     "core-js": "npm:core-js@1.2.6",
     "isomorphic-fetch": "npm:isomorphic-fetch@2.2.1",
+    "jwt-decode": "npm:jwt-decode@2.0.1",
     "lru-memoize": "npm:lru-memoize@1.0.1",
     "node-uuid": "npm:node-uuid@1.4.7",
     "react": "npm:react@15.1.0",
@@ -322,6 +323,10 @@ System.config({
     "npm:isomorphic-fetch@2.2.1": {
       "node-fetch": "npm:node-fetch@1.5.3",
       "whatwg-fetch": "npm:whatwg-fetch@1.0.0"
+    },
+    "npm:jwt-decode@2.0.1": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
     "npm:lodash@4.13.1": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",

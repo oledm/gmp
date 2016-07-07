@@ -19,6 +19,7 @@
       "babel-polyfill": "npm:babel-polyfill@^6.9.1",
       "classnames": "npm:classnames@^2.2.5",
       "isomorphic-fetch": "npm:isomorphic-fetch@^2.2.1",
+      "jwt-decode": "npm:jwt-decode@^2.0.1",
       "lru-memoize": "npm:lru-memoize@^1.0.1",
       "node-uuid": "npm:node-uuid@^1.4.7",
       "react": "npm:react@^15.1.0",

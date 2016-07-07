@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import jwtDecode from 'jwt-decode'
 import {
     ADD_TODO,
     TOGGLE_TODO,
@@ -46,9 +47,9 @@ export const loginRequest = (creds) => ({
     creds
 })
 
-export const loginSuccess = (authData) => ({
+export const loginSuccess = (data) => ({
     type: LOGIN_SUCCESS,
-    authData
+    user: data.user
 })
 
 export const loginFailed = (error) => ({
@@ -106,9 +107,12 @@ export const login = (values) => dispatch => {
                     dispatch(loginFailed('Ошибка! Неверные имя пользователя или пароль'))
                     return Promise.reject(data)
                 } else {
-                    console.log('Login data', data)
-                    localStorage.setItem('auth_token', data.token)
-                    dispatch(loginSuccess(data))
+//                    console.log('Login data', data)
+                    let token = data.token
+                    localStorage.setItem('auth_token', token)
+
+                    let decodedToken = jwtDecode(token)
+                    dispatch(loginSuccess(decodedToken))
                     dispatch(redirectTo('/'))
                 }
             })
@@ -137,8 +141,11 @@ export const register = (values) => dispatch => {
                     return Promise.reject(data)
                 } else {
                     console.log('Login data after register', data)
-                    localStorage.setItem('auth_token', data.token)
-                    dispatch(loginSuccess(data))
+                    let token = data.token
+                    localStorage.setItem('auth_token', token)
+
+                    let decodedToken = jwtDecode(token)
+                    dispatch(loginSuccess(decodedToken))
                     dispatch(redirectTo('/'))
                 }
             })

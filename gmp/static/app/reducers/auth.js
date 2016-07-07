@@ -18,7 +18,7 @@ const auth = (state = {
             return {...state,
                 isPending: false,
                 isAuthenticated: true,
-                user: action.authData
+                user: action.user
             }
         case LOGIN_FAILED:
         case LOGOUT_FAILED:
