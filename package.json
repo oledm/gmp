@@ -4,6 +4,7 @@
   "description": "",
   "dependencies": {},
   "devDependencies": {
+    "chokidar-socket-emitter": "^0.5.2",
     "jspm": "^0.16.36"
   },
   "repository": {
@@ -29,12 +30,15 @@
       "react-router": "npm:react-router@^2.4.1",
       "redux": "npm:redux@^3.5.2",
       "redux-form": "npm:redux-form@^5.2.5",
-      "redux-thunk": "npm:redux-thunk@^2.1.0"
+      "redux-thunk": "npm:redux-thunk@^2.1.0",
+      "systemjs-hot-reloader-store": "github:peteruithoven/systemjs-hot-reloader-store@^1.0.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
-      "core-js": "npm:core-js@^1.1.4"
+      "chokidar-socket-emitter": "npm:chokidar-socket-emitter@^0.5.2",
+      "core-js": "npm:core-js@^1.1.4",
+      "systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@^0.6.0"
     }
   }
 }

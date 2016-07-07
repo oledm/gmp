@@ -7,6 +7,7 @@ var ngAnnotate = require('gulp-ng-annotate')
 var sourcemaps = require('gulp-sourcemaps')
 var templateCache = require('gulp-angular-templatecache');
 var sleep = require('sleep');
+var chokidarEvEmitter = require('chokidar-socket-emitter');
 var exec = require('gulp-exec');
 exec = require('child_process').exec;
 
@@ -49,6 +50,10 @@ gulp.task('build', ['js', 'templates']);
 
 gulp.task('watch-report', ['report'], () => {
     gulp.watch('gmp/**/*.py', ['report']);
+});
+
+gulp.task('emitter', () => {
+    chokidarEvEmitter({ port: 5776 });
 });
 
 gulp.task('watch', ['js', 'templates', 'sass'], () => {
