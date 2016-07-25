@@ -1,11 +1,16 @@
+import jwtDecode from 'jwt-decode'
 import {
     LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILED,
     LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILED,
 
 } from '../constants/index'
 
+const token = localStorage.getItem('auth_token') 
+const decodedToken = jwtDecode(token)
+
 const auth = (state = {
-    isAuthenticated: localStorage.getItem('auth_token') ? true : false,
+    isAuthenticated: token ? true : false,
+    user: decodedToken.user || 'not logged in',
     isPending: false
 }, action) => {
     switch(action.type) {

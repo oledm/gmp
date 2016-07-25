@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-const Toolbar = ({ isAuthenticated, handleClick }) => {
+const Toolbar = ({ isAuthenticated, handleClick, user }) => {
     return (
         !isAuthenticated
         ? null
@@ -29,11 +29,14 @@ const Toolbar = ({ isAuthenticated, handleClick }) => {
                </ul>
 
               <ul className="nav navbar-nav navbar-right">
-
-              <div className="navbar-text hidden-sm hidden-xs">ФИО</div>
-                <li>
-                    <Link to="/" onClick={handleClick}>Выход</Link>
-                </li>
+                  <div className="navbar-text hidden-sm hidden-xs">
+                      {user.full_fio}
+                      <br/>
+                      <small>{user.department.name}</small>
+                  </div>
+                  <li>
+                      <Link to="/" onClick={handleClick}>Выход</Link>
+                  </li>
               </ul>
             </div>
           </div>

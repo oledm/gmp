@@ -16,12 +16,13 @@ class App extends React.Component {
     }
 
     render() {
-        const { isAuthenticated, handleClick, children } = this.props
+        const { isAuthenticated, user, handleClick, children } = this.props
         return (
             <div>
                 <Toolbar
                     isAuthenticated={isAuthenticated}
                     handleClick={() => handleClick()}
+                    user={user}
                 />
                 { children }
             </div>
@@ -30,7 +31,8 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user
 })
 
 export default withRouter(connect(
