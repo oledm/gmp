@@ -22,9 +22,7 @@ const Toolbar = ({ isAuthenticated, handleClick, user }) => {
             <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                <ul className="nav navbar-nav">
                    <li data-target="#bs-example-navbar-collapse-1">
-                        <a href="#">
-                        Link
-                        </a>
+                        <Link to="/profile">Профиль</Link>
                    </li>
                </ul>
 

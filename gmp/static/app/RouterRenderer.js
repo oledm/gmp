@@ -4,6 +4,7 @@ import App from './components/App'
 import AuthForm from './components/forms/AuthForm'
 import LoginForm from './components/forms/LoginForm'
 import RegisterForm from './components/forms/RegisterForm'
+import ProfileEditForm from './components/forms/ProfileEditForm'
 import Dashboard from './components/Dashboard'
 import requireAuthentication from './containers/AuthenticatedComponent'
 
@@ -16,6 +17,7 @@ const routes = {
     childRoutes: [
         { path: '/login', component: AuthForm(LoginForm) },
         { path: '/register', component: AuthForm(RegisterForm) },
+        { path: '/profile', component: AuthForm(ProfileEditForm) },
     ]
 };
 

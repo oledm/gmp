@@ -6,11 +6,15 @@ import {
 } from '../constants/index'
 
 const token = localStorage.getItem('auth_token') 
-const decodedToken = jwtDecode(token)
+
+var user 
+if (token) {
+    user = jwtDecode(token).user
+}
 
 const auth = (state = {
     isAuthenticated: token ? true : false,
-    user: decodedToken.user || 'not logged in',
+    user: user,
     isPending: false
 }, action) => {
     switch(action.type) {
