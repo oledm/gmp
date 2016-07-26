@@ -29,6 +29,7 @@ def jwt_payload_handler(user=None):
     user_data = EmployeeSerializer(user).data
     #print('user_data', user_data)
     return {
+        'username': user_data.get('email'),
         'user': user_data
     }
 

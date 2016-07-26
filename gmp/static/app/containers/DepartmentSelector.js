@@ -21,8 +21,6 @@ class DepartmentSelector extends Component {
 
 DepartmentSelector.propTypes = {
     departments: React.PropTypes.array.isRequired,
-    label: React.PropTypes.string,
-    className: React.PropTypes.string
 }
 
 const mapStateToProps = (state) => ({

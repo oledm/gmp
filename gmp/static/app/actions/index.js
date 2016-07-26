@@ -13,34 +13,36 @@ import {
     LOGOUT_SUCCESS,
     LOGOUT_FAILED,
     ROUTING,
+    IS_SUBMITTING,
+    UPDATE_STORE_USER_DATA,
 } from '../constants/index'
 
-let nextId = 0;
+let nextId = 0
 
 export const addTodo = text => ({
     type: ADD_TODO,
     text: text,
     id: nextId++
-});
+})
 
 export const toggleTodo = id => ({
     type: TOGGLE_TODO,
     id
-});
+})
 
 export const setVisibilityFilter = filter => ({
     type: SET_VISIBILITY_FILTER,
     filter
-});
+})
 
 export const requestDepartments = () => ({
     type: REQUEST_DEPARTMENTS
-});
+})
 
 export const receiveDepartments = response => ({
     type: RECEIVE_DEPARTMENTS,
     departments: response
-});
+})
 
 export const loginRequest = (creds) => ({
     type: LOGIN_REQUEST,
@@ -68,6 +70,16 @@ export const logoutSuccess = () => ({
 export const logoutFailed = () => ({
     type: LOGOUT_FAILED,
     error: error
+})
+
+export const submitChanged = isSubmitting => ({
+    type: IS_SUBMITTING,
+    isSubmitting
+})
+
+export const updateStoreUserData = data => ({
+    type: UPDATE_STORE_USER_DATA,
+    data
 })
 
 export const fetchDepartments = () => dispatch => {
@@ -157,25 +169,42 @@ export const logout = () => dispatch => {
     dispatch(logoutRequest())
     localStorage.removeItem('auth_token')
     dispatch(logoutSuccess())
-//    console.log('logout')
-//    
-//    return fetch('/api/logout/', {
-//            method: 'POST',
-//            credentials: 'same-origin',
-//            headers: {
-//                'Accept': 'application/json',
-//                'Content-Type': 'application/json',
-//                'Cookie': 'email: oleynik@mosgmp.ru'
-//            }
-//        })
-//        .then(response =>
-//            {
-//                console.log('response')
-//                response.json()
-//            }, error => console.log('Network error:' , error))
-//        .then(json => {
-//            console.log('Login data', json)
-//            dispatch(logoutSuccess())
-//        })
+}
+
+export const updateProfile = (values) => (dispatch, getState) => {
+    dispatch(submitChanged(true))
+    const { department: {id: depId}, username} = getState().auth.user
+    const token = localStorage.getItem('auth_token')
+    
+    return fetch(`/api/department/${depId}/user/${username}/`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `JWT ${token}`
+            },
+            body: JSON.stringify({
+                first_name: values.first_name,
+                last_name: values.last_name,
+                middle_name: values.middle_name,
+                email: values.email,
+                password: values.password
+            })
+        })
+        .then(response => response.json().then(data => ({data, response}))
+            .then(({data, response}) => {
+                dispatch(submitChanged(false))
+                if (!response.ok) {
+//                    dispatch(loginFailed('Ошибка! Регистрация не проведена. Неверные имя пользователя или пароль'))
+                    console.log('Update failed:', data)
+                    return Promise.reject(data)
+                } else {
+                    console.log('Update success:', data)
+                    dispatch(updateStoreUserData(data))
+                    return Promise.resolve(data)
+                }
+            })
+        )
+        .catch(error => Promise.reject(error))
 }
 

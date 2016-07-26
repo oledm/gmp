@@ -24,7 +24,9 @@ class App extends React.Component {
                     handleClick={() => handleClick()}
                     user={user}
                 />
-                { children }
+                <div className="container">
+                    { children }
+                </div>
             </div>
         )
     }

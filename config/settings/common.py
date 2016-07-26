@@ -257,6 +257,5 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_PAYLOAD_HANDLER': 'gmp.authentication.views.jwt_payload_handler'
-    
+    'JWT_PAYLOAD_HANDLER': 'gmp.authentication.views.jwt_payload_handler',
 }

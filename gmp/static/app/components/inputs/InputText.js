@@ -1,13 +1,11 @@
 import React from 'react';
 import InputWrapper from './InputWrapper'
 import InputPure from './InputPure'
-//import className from ''
 import v4 from 'node-uuid'
 
-const InputText = (props) => {
+export default (props) => {
     const id = v4()
-
-//    const classes = classNames("glyphicon glyphicon-user")
+    const input = <InputPure id={id} {...props} />
 
     return (
         <InputWrapper {...props} id={id}>
@@ -16,13 +14,11 @@ const InputText = (props) => {
                     <span className="input-group-addon">
                         <i className={"glyphicon glyphicon-" + props.icon}></i>
                     </span>
-                    <InputPure id={id} {...props} />
+                    {input}
                 </div>
                 : 
-                <InputPure id={id} {...props} />
+                input
             }
 	</InputWrapper>
     )
 }
-
-export default InputText

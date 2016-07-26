@@ -21,11 +21,10 @@ class LoginForm extends Component {
       
         return (
             <form onSubmit={handleSubmit(this.props.submit.bind(this))}>
-                <div className="form-group">
                     <div className="row">
                         <InputText
                             className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8"
-                            label="Email"
+                            label="E-mail"
                             icon="user"
                             type="email"
                             {...email}
@@ -40,8 +39,7 @@ class LoginForm extends Component {
                             {...password}
                         />
                     </div>
-                </div>
-                <div className="form-group">
+
                     <div className="row">
                       <div className="col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
                           <button className="btn btn-primary" type="submit" disabled={submitting || !valid}>
@@ -49,7 +47,6 @@ class LoginForm extends Component {
                           </button>
                       </div>
                     </div>
-                </div>
             </form>
         )
     }

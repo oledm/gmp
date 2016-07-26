@@ -2,12 +2,13 @@ import jwtDecode from 'jwt-decode'
 import {
     LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILED,
     LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILED,
+    UPDATE_STORE_USER_DATA,
 
 } from '../constants/index'
 
 const token = localStorage.getItem('auth_token') 
 
-var user 
+let user 
 if (token) {
     user = jwtDecode(token).user
 }
@@ -43,6 +44,10 @@ const auth = (state = {
             return {...state,
                 isPending: false,
                 isAuthenticated: false
+            }
+        case UPDATE_STORE_USER_DATA:
+            return {...state,
+                user: {...state.user, ...action.data}
             }
         default:
             return state

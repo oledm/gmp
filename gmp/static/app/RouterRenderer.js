@@ -17,7 +17,7 @@ const routes = {
     childRoutes: [
         { path: '/login', component: AuthForm(LoginForm) },
         { path: '/register', component: AuthForm(RegisterForm) },
-        { path: '/profile', component: AuthForm(ProfileEditForm) },
+        { path: '/profile', component: ProfileEditForm },
     ]
 };
 

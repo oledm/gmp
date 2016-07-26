@@ -7,7 +7,7 @@ const InputWrapper = ({
     valid, error, touched, value, onBlur, onChange,
     className, id, label, children
 }) => {
-    const classes = classNames(className, {
+    const classes = classNames('form-group', className, {
         'has-error': touched && !valid
     });
 
