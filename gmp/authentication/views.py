@@ -106,9 +106,14 @@ class EmployeeViewset(viewsets.ModelViewSet):
         print('update')
         data = request.data
         serializer = self.serializer_class(data=data, context={'request': request}, partial=True)
-        serializer.is_valid()
-        #print('Serializer errors', serializer.errors)
-        #print('valideted data:', serializer.validated_data)
-        serializer.update(self.get_object(), serializer.validated_data)
-        return Response(dict(serializer.validated_data),
-            status=status.HTTP_200_OK)
+        if serializer.is_valid(raise_exception=True):
+            #print('Serializer errors', serializer.errors)
+            #print('valideted data:', serializer.validated_data)
+            user = self.get_object()
+            serializer.update(user, serializer.validated_data)
+            return Response(dict(serializer.validated_data, full_fio=user.get_full_name()),
+                status=status.HTTP_200_OK)
+        return Response({
+            'status': 'Bad request',
+            'message': 'Невозможно обновить данные пользователя'
+            }, status=status.HTTP_400_BAD_REQUEST)

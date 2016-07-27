@@ -99,7 +99,7 @@ export const redirectTo = url => dispatch => {
     })
 }
 
-export const login = (values) => dispatch => {
+export const login = values => dispatch => {
     dispatch(loginRequest(values))
     
     return fetch('/api/login/', {
@@ -132,7 +132,7 @@ export const login = (values) => dispatch => {
         .catch(error => console.error('Error:', error))
 }
 
-export const register = (values) => dispatch => {
+export const register = values => dispatch => {
     dispatch(loginRequest(values))
     
     return fetch(`/api/department/${values.department}/user/`, {
@@ -171,7 +171,7 @@ export const logout = () => dispatch => {
     dispatch(logoutSuccess())
 }
 
-export const updateProfile = (values) => (dispatch, getState) => {
+export const updateProfile = values => (dispatch, getState) => {
     dispatch(submitChanged(true))
     const { department: {id: depId}, username} = getState().auth.user
     const token = localStorage.getItem('auth_token')
@@ -196,10 +196,10 @@ export const updateProfile = (values) => (dispatch, getState) => {
                 dispatch(submitChanged(false))
                 if (!response.ok) {
 //                    dispatch(loginFailed('Ошибка! Регистрация не проведена. Неверные имя пользователя или пароль'))
-                    console.log('Update failed:', data)
+//                    console.log('Update failed:', data)
                     return Promise.reject(data)
                 } else {
-                    console.log('Update success:', data)
+//                    console.log('Update success:', data)
                     dispatch(updateStoreUserData(data))
                     return Promise.resolve(data)
                 }
