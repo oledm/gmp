@@ -52,3 +52,4 @@ drf-nested-routers
 reportlab
 pdfrw
 xlrd
+uwsgi
