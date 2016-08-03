@@ -28,14 +28,13 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 #SESSION_COOKIE_SECURE = False
 #SESSION_COOKIE_HTTPONLY = True
 #SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['192.168.20.19'])
-MEDIA_ROOT = "/storage/acfod_media"
 
 # SITE CONFIGURATION
 # ------------------------------------------------------------------------------
 # Hosts/domain names that are valid for this site
 # See https://docs.djangoproject.com/en/1.6/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['192.168.20.54'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['192.168.20.19'])
+MEDIA_ROOT = "/storage/acfod_media"
 
 # See: https://github.com/antonagestam/collectfast
 # For Django 1.7+, 'collectfast' should come before
