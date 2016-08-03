@@ -200,29 +200,28 @@ STATICFILES_FINDERS = (
 
 BOWER_COMPONENTS_ROOT = str(APPS_DIR.path('static/vendor'))
 BOWER_PATH = '/usr/bin/bower'
-BOWER_INSTALLED_APPS = ( 
-    'angular',
-    'angular-i18n',
-    'angular-resource',
-    'angular-ui-router',
-    'angular-cookies',
-    'angular-messages',
-    'angular-animate',
-    'angular-sanitize',
-    'angular-cookies',
-    'ng-file-upload-shim',
-    'ng-file-upload',
-    'bootstrap-sass',
-    'angular-ui-bootstrap-bower',
-    'angular-datepicker',
-    #'angular-ui-select',
-    #'https://github.com/JustGoscha/allmighty-autocomplete.git'
-    'moment',
-    'angular-moment',
-    'lodash',
-    'angular-local-storage',
-    'angular-uuids',
-)
+BOWER_INSTALLED_APPS = [ 
+ 'angular#1.5.7',
+ 'angular-animate#1.5.7',
+ 'angular-bootstrap#1.3.3',
+ 'angular-cookies#1.5.7',
+ 'angular-datepicker#2.0.3',
+ 'angular-i18n#1.5.7',
+ 'angular-local-storage#0.2.7',
+ 'angular-messages#1.5.7',
+ 'angular-moment#0.10.3',
+ 'angular-resource#1.5.7',
+ 'angular-sanitize#1.5.7',
+ 'angular-ui-router#0.3.1',
+ 'angular-uuids#0.0.3',
+ 'bootstrap-sass#3.3.6',
+ 'jquery#2.2.3',
+ 'lodash#4.13.1',
+ 'moment#2.13.0',
+ 'moment-timezone#0.4.1',
+ 'ng-file-upload#12.0.4',
+ 'ng-file-upload-shim#12.0.4']
+
 
 
 # MEDIA CONFIGURATION
