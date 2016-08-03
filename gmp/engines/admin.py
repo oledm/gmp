@@ -4,7 +4,19 @@ from .models import Engine, Connection, Factory, ExClass, WarmingClass, ThermCla
 from gmp.authentication.behaviors import SuperUserAccessMixin
 
 class EngineAdmin(SuperUserAccessMixin, admin.ModelAdmin):
-    pass
+    dep_name = 'Лаборатория энергосбережения и экологии'
+
+    def get_queryset(self, request):
+        if request.user.department.name == self.dep_name:
+            return self.model.objects.all()
+        else:
+            return super().get_queryset(request)
+
+    def get_model_perms(self, request):
+        if request.user.department.name == self.dep_name:
+            return {'change': True, 'add': True, 'delete': True}
+        else:
+            return super().get_model_perms(request)
 
 class ConnectionAdmin(EngineAdmin):
     pass

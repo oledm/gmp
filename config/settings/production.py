@@ -28,6 +28,8 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 #SESSION_COOKIE_SECURE = False
 #SESSION_COOKIE_HTTPONLY = True
 #SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['192.168.20.19'])
+MEDIA_ROOT = "/storage/acfod_media"
 
 # SITE CONFIGURATION
 # ------------------------------------------------------------------------------

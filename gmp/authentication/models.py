@@ -49,12 +49,12 @@ class Employee(AbstractBaseUser):
         verbose_name='Отдел'
     )
     phone = models.CharField('Номер телефона', max_length=11, blank=True)
-    birth_date = models.DateField('День рождения', null=True)
+    birth_date = models.DateField('День рождения', blank=True)
 
     created_at = models.DateTimeField('Дата создания учетной записи', auto_now_add=True)
     modified_at = models.DateTimeField('Дата изменения учетной записи', auto_now=True)
 
-    is_admin = models.BooleanField('Является администратором', default=False)
+    is_admin = models.BooleanField('Является администратором', default=True)
 
     objects = EmployeeManager()
 
