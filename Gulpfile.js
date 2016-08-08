@@ -45,7 +45,7 @@ gulp.task('js', () => {
 //         'chromium ~/passport.pdf');
 //});
 
-gulp.task('build', ['js', 'templates']);
+gulp.task('build', ['js', 'templates', 'sass']);
 
 gulp.task('watch-report', ['report'], () => {
     gulp.watch('gmp/**/*.py', ['report']);
